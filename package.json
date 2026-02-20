@@ -1,0 +1,59 @@
+{
+  "name": "studio-story",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "build:mcp": "tsc -p src/mcp-server/tsconfig.json",
+    "mcp-server": "node dist/mcp-server/index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.35.0",
+    "@hello-pangea/dnd": "^18.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@supabase/supabase-js": "^2.76.1",
+    "@tanstack/react-query": "^5.90.5",
+    "@tiptap/pm": "^3.10.1",
+    "@tiptap/react": "^3.10.1",
+    "@tiptap/starter-kit": "^3.10.1",
+    "@types/dagre": "^0.7.53",
+    "@use-gesture/react": "^10.3.1",
+    "clsx": "^2.1.1",
+    "dagre": "^0.8.5",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.548.0",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-resizable-panels": "^3.0.6",
+    "reactflow": "^11.11.4",
+    "tailwind-merge": "^3.3.1",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "16.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.0.4"
+  },
+  "overrides": {
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2"
+  }
+}
