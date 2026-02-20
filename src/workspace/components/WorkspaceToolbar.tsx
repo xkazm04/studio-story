@@ -52,11 +52,11 @@ export default function WorkspaceToolbar() {
   if (panels.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1 border-b border-slate-800/40 bg-slate-950/60">
+    <div className="flex shrink-0 items-center gap-2 overflow-x-auto border-b border-slate-800/40 bg-slate-950/70 px-3 py-1.5">
       {(() => {
         const fitnesses = getLayoutFitnesses(panels);
         return (
-          <div className="flex items-center gap-0.5 bg-slate-900/50 rounded-md border border-slate-800/40 p-0.5">
+          <div className="flex items-center gap-0.5 rounded-md border border-slate-800/40 bg-slate-900/50 p-0.5">
             {LAYOUT_ORDER.map((variant) => {
               const tmpl = LAYOUT_TEMPLATES[variant];
               const isActive = layout === variant;
@@ -69,9 +69,9 @@ export default function WorkspaceToolbar() {
                   onClick={() => setLayout(variant)}
                   title={`${tmpl.label}${isPoorFit ? ' (panels may not fit)' : ''}`}
                   className={cn(
-                    'p-1 rounded transition-colors',
+                    'rounded p-1 transition-colors',
                     isActive
-                      ? 'bg-slate-700/60 text-slate-200'
+                      ? 'bg-slate-700/70 text-slate-100'
                       : isGoodFit
                         ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/40'
                         : isPoorFit
@@ -87,12 +87,12 @@ export default function WorkspaceToolbar() {
         );
       })()}
 
-      <div className="flex-1" />
+      <div className="flex-1 min-w-4" />
 
       <button
         onClick={clearPanels}
         className={cn(
-          'flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-medium',
+          'flex items-center gap-1 rounded-md px-2.5 py-1 text-[10px] font-medium',
           'text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-colors'
         )}
         title="Clear workspace"
@@ -101,13 +101,13 @@ export default function WorkspaceToolbar() {
         <span>Clear</span>
       </button>
 
-      <div className="flex-1" />
+      <div className="flex-1 min-w-4" />
 
       {availablePanels.length > 0 && (
         <div className="relative group">
           <button
             className={cn(
-              'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium',
+              'flex items-center gap-1 rounded px-2 py-1 text-[10px] font-medium',
               'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
             )}
           >
@@ -115,7 +115,7 @@ export default function WorkspaceToolbar() {
             <span>Add Panel</span>
           </button>
 
-          <div className="absolute right-0 top-full mt-1 py-1 bg-slate-900 border border-slate-800/60 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 min-w-[160px]">
+          <div className="absolute right-0 top-full mt-1 py-1 bg-slate-900 border border-slate-800/60 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 min-w-40">
             {availablePanels.map((entry) => {
               const Icon = entry.icon;
               return (

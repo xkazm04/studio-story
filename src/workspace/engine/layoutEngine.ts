@@ -156,8 +156,61 @@ function scoreAssignment(perm: WorkspacePanelInstance[], slots: SlotSpec[]): num
     score += s.acceptsSizes.includes(entry.sizeClass) ? 15 : -25;
     score += perm[i].role === s.preferredRole ? 5 : 0;
     score += (entry.sizeClass === 'compact' && s.isNarrow) ? 3 : 0;
+    score += Math.max(0, 6 - perm[i].slotIndex * 0.5);
   }
   return score;
+}
+
+const LAYOUT_COUNT_PRIOR: Record<WorkspaceLayout, Record<number, number>> = {
+  single: { 1: 36, 2: -12, 3: -24, 4: -32 },
+  'split-2': { 1: -10, 2: 28, 3: -6, 4: -16 },
+  'split-3': { 1: -18, 2: 4, 3: 24, 4: -8 },
+  'grid-4': { 1: -24, 2: -8, 3: 10, 4: 22 },
+  'primary-sidebar': { 1: -8, 2: 16, 3: 2, 4: -12 },
+  triptych: { 1: -18, 2: 10, 3: 18, 4: -10 },
+  studio: { 1: -30, 2: -20, 3: 8, 4: 20 },
+};
+
+function getCountPrior(layout: WorkspaceLayout, panelCount: number): number {
+  const clampedCount = Math.min(4, Math.max(1, panelCount));
+  return LAYOUT_COUNT_PRIOR[layout][clampedCount] ?? 0;
+}
+
+function getSlotUtilizationBonus(layout: WorkspaceLayout, panelCount: number): number {
+  const slotCount = LAYOUT_TEMPLATES[layout].slots.length;
+  const unused = Math.max(0, slotCount - panelCount);
+  return -unused * 6;
+}
+
+function rankPanelForSlot(panel: WorkspacePanelInstance, slot: SlotSpec): number {
+  const entry = PANEL_REGISTRY[panel.type];
+  let score = 0;
+  score += slot.acceptsSizes.includes(entry.sizeClass) ? 15 : -25;
+  score += panel.role === slot.preferredRole ? 6 : 0;
+  score += (entry.sizeClass === 'compact' && slot.isNarrow) ? 4 : 0;
+  return score;
+}
+
+function pickCandidatesForTemplate(
+  panels: WorkspacePanelInstance[],
+  template: LayoutTemplate,
+): WorkspacePanelInstance[] {
+  const slotCount = template.slots.length;
+  if (panels.length <= slotCount) return [...panels];
+
+  const ranked = [...panels].map((panel) => {
+    const slotScores = template.slots.map((slot) => rankPanelForSlot(panel, slot));
+    const bestSlotScore = Math.max(...slotScores);
+    const rolePriorityBoost = ROLE_PRIORITY.length - ROLE_PRIORITY.indexOf(panel.role);
+    const stabilityBoost = Math.max(0, 8 - panel.slotIndex * 0.75);
+    return {
+      panel,
+      score: bestSlotScore + rolePriorityBoost + stabilityBoost,
+    };
+  });
+
+  ranked.sort((a, b) => b.score - a.score);
+  return ranked.slice(0, slotCount).map((item) => item.panel);
 }
 
 // ─── Panel-to-Slot Assignment ────────────────────────────
@@ -167,13 +220,10 @@ export function assignPanelsToSlots(
   layout: WorkspaceLayout,
 ): WorkspacePanelInstance[] {
   const template = LAYOUT_TEMPLATES[layout];
-  const slotCount = template.slots.length;
 
   if (panels.length === 0) return [];
 
-  const candidates = panels.length > slotCount
-    ? sortPanelsByRole(panels).slice(0, slotCount)
-    : [...panels];
+  const candidates = pickCandidatesForTemplate(panels, template);
 
   if (candidates.length <= 1) return candidates;
 
@@ -204,6 +254,9 @@ export function computeLayoutFitness(
 
   let score = 0;
 
+  score += getCountPrior(layout, panels.length);
+  score += getSlotUtilizationBonus(layout, panels.length);
+
   const diff = panels.length - slotCount;
   if (diff === 0) score += 40;
   else if (diff > 0) score -= diff * 25;
@@ -233,6 +286,17 @@ export function resolveLayout(panels: WorkspacePanelInstance[]): WorkspaceLayout
   return LAYOUT_ORDER
     .map(layout => ({ layout, score: computeLayoutFitness(layout, panels) }))
     .sort((a, b) => b.score - a.score)[0].layout;
+}
+
+export function resolvePreferredLayout(
+  panels: WorkspacePanelInstance[],
+  preferredLayout?: WorkspaceLayout,
+  minPreferredFitness = 25,
+): WorkspaceLayout {
+  if (!preferredLayout) return resolveLayout(panels);
+  const preferredScore = computeLayoutFitness(preferredLayout, panels);
+  if (preferredScore >= minPreferredFitness) return preferredLayout;
+  return resolveLayout(panels);
 }
 
 // ─── Utilities ───────────────────────────────────────────

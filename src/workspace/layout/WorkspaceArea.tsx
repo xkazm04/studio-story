@@ -8,7 +8,7 @@ import WorkspaceGrid from '../components/WorkspaceGrid';
  */
 export default function WorkspaceArea() {
   return (
-    <div className="h-full overflow-hidden">
+    <div className="h-full min-h-0 overflow-hidden bg-slate-950/30">
       <WorkspaceGrid />
     </div>
   );

@@ -41,12 +41,12 @@ export default function PanelFrame({
   return (
     <div
       className={cn(
-        'flex flex-col h-full bg-slate-950/90 border border-slate-800/60 rounded-lg overflow-hidden',
+        'flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-slate-800/60 bg-slate-950/90 shadow-[0_0_0_1px_rgba(15,23,42,0.25)]',
         className
       )}
     >
       <div className={cn(
-        'flex items-center gap-2 h-7 px-3 border-b border-slate-800/50 shrink-0',
+        'flex h-8 shrink-0 items-center gap-2 border-b border-slate-800/50 px-3',
         accent ? `${accent.bg} border-l-2 ${accent.border}` : 'bg-slate-900/80'
       )}>
         {Icon && <Icon className={cn('w-3.5 h-3.5', accent ? accent.icon : 'text-slate-500')} />}
@@ -68,7 +68,7 @@ export default function PanelFrame({
         )}
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 min-h-0 overflow-auto">
         {children}
       </div>
     </div>

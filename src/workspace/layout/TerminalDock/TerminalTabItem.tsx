@@ -38,10 +38,10 @@ export default function TerminalTabItem({
     <button
       onClick={onSelect}
       className={cn(
-        'group flex items-center gap-1.5 px-2.5 py-1 rounded-t-md text-xs transition-colors whitespace-nowrap',
+        'group flex items-center gap-1.5 whitespace-nowrap rounded-t-md px-2.5 py-1 text-xs transition-colors',
         'border border-b-0',
         isActive
-          ? 'bg-slate-950 text-slate-50 border-slate-700/60'
+          ? 'bg-slate-950 text-slate-50 border-slate-700/70'
           : 'bg-slate-900/40 text-slate-400 border-slate-800/40 hover:bg-slate-900/60 hover:text-slate-300'
       )}
     >
@@ -52,7 +52,7 @@ export default function TerminalTabItem({
       {isRunning && <Loader2 className="w-3 h-3 text-blue-400 animate-spin shrink-0" />}
 
       {/* Label */}
-      <span className="max-w-[120px] truncate">{tab.label}</span>
+      <span className="max-w-35 truncate">{tab.label}</span>
 
       {/* Pin indicator */}
       {tab.isPinned && (
@@ -67,7 +67,7 @@ export default function TerminalTabItem({
             e.stopPropagation();
             onClose();
           }}
-          className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-slate-300"
+          className="ml-0.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:text-slate-300"
         >
           <X className="w-3 h-3" />
         </span>

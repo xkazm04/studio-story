@@ -44,15 +44,15 @@ export default function TerminalDock() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-slate-950/95 border-t border-slate-800/60">
+    <div className="flex h-full min-h-0 flex-col border-t border-slate-800/60 bg-slate-950/95">
       {/* Horizontally centered dock */}
-      <div className="mx-auto w-[60%] min-w-[480px] max-w-full flex flex-col h-full">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-350 flex-col px-2 md:px-3">
         {/* Tab bar — always visible */}
         <TerminalTabBar />
 
         {/* Terminal content — hidden when collapsed */}
         {!isCollapsed && (
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-hidden">
             {tabs.length > 0 ? (
               tabs.map((tab) => (
                 <div

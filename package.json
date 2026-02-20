@@ -25,6 +25,8 @@
     "@tiptap/starter-kit": "^3.10.1",
     "@types/dagre": "^0.7.53",
     "@use-gesture/react": "^10.3.1",
+    "better-sqlite3": "^12.6.2",
+    "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "dagre": "^0.8.5",
     "date-fns": "^4.1.0",
@@ -43,6 +45,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",

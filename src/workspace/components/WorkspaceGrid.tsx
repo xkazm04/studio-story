@@ -26,7 +26,7 @@ export default function WorkspaceGrid({ onTriggerSkill, onTriggerPrompt }: Works
   // Empty state
   if (panels.length === 0) {
     return (
-      <div className="h-full p-3">
+      <div className="h-full p-4">
         <EmptyWelcomePanel />
       </div>
     );
@@ -36,14 +36,15 @@ export default function WorkspaceGrid({ onTriggerSkill, onTriggerPrompt }: Works
   const assignedPanels = assignPanelsToSlots(panels, layout);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full min-h-0 flex-col">
       <WorkspaceToolbar />
       <div
-        className="flex-1 p-3 gap-3 min-h-0"
+        className="flex-1 min-h-0 gap-3 overflow-hidden p-3 pt-2"
         style={{
           display: 'grid',
           gridTemplateRows: template.gridTemplateRows,
           gridTemplateColumns: template.gridTemplateColumns,
+          gridAutoRows: 'minmax(0, 1fr)',
         }}
       >
         <AnimatePresence mode="popLayout">
@@ -59,7 +60,7 @@ export default function WorkspaceGrid({ onTriggerSkill, onTriggerPrompt }: Works
                 exit="exit"
                 transition={{ duration: 0.25, ease: 'easeOut' }}
                 style={slotStyle}
-                className="min-w-0 min-h-0"
+                className="min-h-0 min-w-0 overflow-hidden"
               >
                 <WorkspacePanelWrapper
                   panel={panel}

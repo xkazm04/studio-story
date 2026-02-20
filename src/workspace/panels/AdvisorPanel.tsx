@@ -41,7 +41,7 @@ function SuggestionCard({
   onDismiss: (id: string) => void;
 }) {
   return (
-    <div className="bg-amber-500/[0.06] border border-amber-500/20 rounded-lg p-2.5 space-y-2">
+    <div className="bg-amber-500/6 border border-amber-500/20 rounded-lg p-2.5 space-y-2">
       <p className="text-xs text-amber-200/80 leading-relaxed">{suggestion.content}</p>
       <div className="flex items-center gap-1.5">
         {suggestion.action && (

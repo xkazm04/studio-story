@@ -13,7 +13,7 @@ interface WorkspacePanelWrapperProps {
 }
 
 const PanelSkeleton = () => (
-  <div className="flex flex-col h-full bg-slate-950/90 border border-slate-800/60 rounded-lg overflow-hidden">
+  <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-slate-800/60 bg-slate-950/90">
     <div className="h-7 bg-slate-900/80 border-b border-slate-800/50 flex items-center px-3">
       <div className="w-20 h-2.5 bg-slate-800/60 rounded animate-pulse" />
     </div>
@@ -38,7 +38,7 @@ export default function WorkspacePanelWrapper({
 
   if (!entry || !LazyComponent) {
     return (
-      <div className="flex items-center justify-center h-full bg-slate-950/90 border border-slate-800/60 rounded-lg text-slate-500 text-xs">
+      <div className="flex h-full min-h-0 items-center justify-center rounded-lg border border-slate-800/60 bg-slate-950/90 px-3 text-center text-xs text-slate-500">
         Unknown panel: {panel.type}
       </div>
     );
@@ -52,8 +52,10 @@ export default function WorkspacePanelWrapper({
   };
 
   return (
-    <Suspense fallback={<PanelSkeleton />}>
-      <LazyComponent {...panelProps} />
-    </Suspense>
+    <div className="h-full min-h-0 min-w-0">
+      <Suspense fallback={<PanelSkeleton />}>
+        <LazyComponent {...panelProps} />
+      </Suspense>
+    </div>
   );
 }

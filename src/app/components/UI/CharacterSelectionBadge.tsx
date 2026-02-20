@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, X } from 'lucide-react';
 import { useCharacterStore } from '@/app/store/slices/characterSlice';
-import { characterApi } from '@/app/api/characters';
-import { factionApi } from '@/app/api/factions';
+import { characterApi } from '@/app/hooks/integration/useCharacters';
+import { factionApi } from '@/app/hooks/integration/useFactions';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 
 /**

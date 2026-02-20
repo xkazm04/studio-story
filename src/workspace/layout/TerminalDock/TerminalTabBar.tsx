@@ -3,6 +3,7 @@
 import React from 'react';
 import { Plus, ChevronsDown, ChevronsUp } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { useCLISessionStore } from '@/cli/store/cliSessionStore';
 import { useTerminalDockStore } from '../../store/terminalDockStore';
 import TerminalTabItem from './TerminalTabItem';
 
@@ -14,15 +15,17 @@ export default function TerminalTabBar() {
   const closeTab = useTerminalDockStore((s) => s.closeTab);
   const setActiveTab = useTerminalDockStore((s) => s.setActiveTab);
   const toggleCollapsed = useTerminalDockStore((s) => s.toggleCollapsed);
+  const sessions = useCLISessionStore((s) => s.sessions);
 
   return (
-    <div className="flex items-end gap-0.5 px-2 pt-1.5 bg-slate-900/50 border-b border-slate-800/60 overflow-x-auto scrollbar-none">
+    <div className="flex items-end gap-0.5 overflow-x-auto border-b border-slate-800/60 bg-slate-900/50 px-2 pt-1.5 scrollbar-none">
       {/* Tabs */}
       {tabs.map((tab) => (
         <TerminalTabItem
           key={tab.id}
           tab={tab}
           isActive={tab.id === activeTabId}
+          isRunning={Boolean(sessions[tab.sessionId]?.isRunning)}
           onSelect={() => setActiveTab(tab.id)}
           onClose={() => closeTab(tab.id)}
         />

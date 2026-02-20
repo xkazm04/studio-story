@@ -20,35 +20,38 @@ export default function V2Layout() {
 
   return (
     <V2Provider>
-      <WorkspaceHeader />
-      <ResizablePanelGroup
-        direction="vertical"
-        className="flex-1"
-        autoSaveId="v2-layout-panels"
-      >
-        {/* Workspace area — panels appear here */}
-        <ResizablePanel
-          defaultSize={70}
-          minSize={40}
-          className="bg-slate-950/50"
+      <div className="flex h-full min-h-0 flex-col bg-slate-950">
+        <WorkspaceHeader />
+        <ResizablePanelGroup
+          direction="vertical"
+          className="flex-1 min-h-0"
+          autoSaveId="v2-layout-panels"
         >
-          <WorkspaceArea />
-        </ResizablePanel>
+          {/* Workspace area — panels appear here */}
+          <ResizablePanel
+            defaultSize={72}
+            minSize={25}
+            className="min-h-0 bg-slate-950/40"
+          >
+            <WorkspaceArea />
+          </ResizablePanel>
 
-        {/* Resize handle */}
-        <ResizableHandle withHandle className="ms-transition" />
+          {/* Resize handle */}
+          <ResizableHandle withHandle className="ms-transition bg-slate-900/40" />
 
-        {/* Terminal dock */}
-        <ResizablePanel
-          defaultSize={30}
-          minSize={isCollapsed ? 3 : 10}
-          maxSize={60}
-          collapsible={true}
-          collapsedSize={3}
-        >
-          <TerminalDock />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+          {/* Terminal dock */}
+          <ResizablePanel
+            defaultSize={28}
+            minSize={isCollapsed ? 4 : 14}
+            maxSize={62}
+            collapsible={true}
+            collapsedSize={4}
+            className="min-h-0"
+          >
+            <TerminalDock />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </V2Provider>
   );
 }
