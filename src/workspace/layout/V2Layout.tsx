@@ -4,6 +4,7 @@ import React from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/app/components/UI/resizable';
 import { useTerminalDockStore } from '../store/terminalDockStore';
 import V2Provider from '../V2Provider';
+import WorkspaceHeader from './header/WorkspaceHeader';
 import WorkspaceArea from './WorkspaceArea';
 import TerminalDock from './TerminalDock/TerminalDock';
 
@@ -19,6 +20,7 @@ export default function V2Layout() {
 
   return (
     <V2Provider>
+      <WorkspaceHeader />
       <ResizablePanelGroup
         direction="vertical"
         className="flex-1"
