@@ -3,12 +3,15 @@
 import React, { useCallback } from 'react';
 import { useTerminalDockStore } from '../../store/terminalDockStore';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
+import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useWorkspaceComposition } from '../../hooks/useWorkspaceComposition';
-import { useCLIDataSync } from '../../hooks/useCLIDataSync';
+import { extractBaseName, useCLIDataSync } from '../../hooks/useCLIDataSync';
+import { useWorkflowHintStore } from '../../store/workflowHintStore';
 import { cn } from '@/app/lib/utils';
 import CompactTerminal from '@/cli/CompactTerminal';
 import TerminalTabBar from './TerminalTabBar';
 import TerminalDockEmpty from './TerminalDockEmpty';
+import { TOOL_PANEL_HINTS } from '../../config/workflowHints';
 
 /**
  * TerminalDock — Simplified for studio-story.
@@ -21,6 +24,9 @@ export default function TerminalDock() {
   const activeTabId = useTerminalDockStore((s) => s.activeTabId);
   const isCollapsed = useTerminalDockStore((s) => s.isCollapsed);
   const { selectedProject, selectedAct, selectedSceneId } = useProjectStore();
+  const showPanels = useWorkspaceStore((s) => s.showPanels);
+  const getPanelByType = useWorkspaceStore((s) => s.getPanelByType);
+  const recordTool = useWorkflowHintStore((s) => s.recordTool);
   const { handleToolUse: handleWorkspaceToolUse } = useWorkspaceComposition();
   const { trackToolUse, flush } = useCLIDataSync();
 
@@ -30,9 +36,20 @@ export default function TerminalDock() {
   const handleToolUse = useCallback(
     (toolName: string, toolInput: Record<string, unknown>) => {
       trackToolUse(toolName);
+
+      const baseName = extractBaseName(toolName);
+      recordTool(baseName);
+      const hintedPanels = TOOL_PANEL_HINTS[baseName];
+      if (hintedPanels?.length) {
+        const missingPanels = hintedPanels.filter((directive) => !getPanelByType(directive.type));
+        if (missingPanels.length > 0) {
+          showPanels(missingPanels);
+        }
+      }
+
       return handleWorkspaceToolUse(toolName, toolInput);
     },
-    [trackToolUse, handleWorkspaceToolUse]
+    [trackToolUse, recordTool, getPanelByType, showPanels, handleWorkspaceToolUse]
   );
 
   // Flush accumulated query invalidations when CLI execution completes

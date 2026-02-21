@@ -12,7 +12,7 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
     functionDeclarations: [
       {
         name: 'compose_workspace',
-        description: 'Rearrange the workspace panels. Use this to help the user by showing relevant panels for their current task.',
+        description: 'Rearrange workspace panels for the current user task. Keep composition focused and role-consistent.',
         parameters: {
           type: 'object',
           properties: {
@@ -23,12 +23,12 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
             },
             layout: {
               type: 'string',
-              description: 'Grid layout preset. Omit to auto-resolve from panel count.',
+              description: 'Optional layout preset. Omit unless a specific structure is clearly needed.',
               enum: ['single', 'split-2', 'split-3', 'grid-4', 'primary-sidebar', 'triptych', 'studio'],
             },
             panels: {
               type: 'string',
-              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar"}]. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor',
+              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar"}]. Recommended 1-3 panels (max 5) with one primary panel. Sidebar role only for compact/context panels. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor',
             },
             reasoning: {
               type: 'string',
@@ -111,6 +111,13 @@ You observe the user's workspace and provide proactive guidance. You can rearran
 
 ## Layouts
 single, split-2, split-3, grid-4, primary-sidebar, triptych, studio
+
+## Composition Policy
+- Default to 1-3 panels; use 4+ only if user explicitly needs broader multi-view context
+- Include one primary panel maximum; companions should be secondary or sidebar
+- Sidebar role is for compact/context/navigation panels, not primary writing surfaces
+- Omit layout unless a specific arrangement is clearly required
+- Prefer show/hide over replace for incremental help, unless user is switching task context
 
 ## Guidelines
 - Be proactive but not intrusive — suggest, don't demand

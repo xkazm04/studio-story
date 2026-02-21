@@ -72,6 +72,14 @@ Available: single, split-2, split-3, grid-4, primary-sidebar, triptych, studio
 - triptych: 250px sidebar + center + 280px sidebar
 - studio: Top bar + left sidebar + center + right sidebar + bottom gallery
 
+## COMPOSITION POLICY
+- Keep workspace focused: prefer 1-3 panels unless user asks for a broad multi-view.
+- Always include at most one primary panel in each composition.
+- Sidebar role is for compact navigation/context panels only.
+- Prefer action=show/hide for incremental updates; use replace when user clearly changes task context.
+- Omit layout by default and let runtime auto-resolve; set layout only when specific structure is required.
+- If uncertain between two panels, choose the one explicitly requested by user language.
+
 ## ROLES
 primary (main focus), secondary (supporting), tertiary (minor), sidebar (narrow navigation)`;
 
@@ -93,15 +101,15 @@ export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _c
   // ─── compose_workspace ───────────────────────────
   server.tool(
     'compose_workspace',
-    'Compose the workspace layout. Choose panels based on manifests, assign roles, and optionally set layout. The workspace will render the panels dynamically.',
+    'Compose workspace panels for the user task. Keep layouts focused, choose role-appropriate panels from manifests, and set layout only when explicit structure is needed.',
     {
       action: z.enum(['show', 'hide', 'replace', 'clear']).describe('show: add panels, hide: remove panels, replace: clear and set new panels, clear: remove all'),
-      layout: z.enum(LAYOUT_TYPES).optional().describe('Grid layout. Auto-resolved if omitted.'),
+      layout: z.enum(LAYOUT_TYPES).optional().describe('Optional explicit layout. Omit unless a specific arrangement is required.'),
       panels: z.array(z.object({
         type: z.enum(PANEL_TYPES).describe('Panel type from manifests'),
-        role: z.enum(ROLE_TYPES).optional().describe('Panel role (primary, secondary, tertiary, sidebar)'),
+        role: z.enum(ROLE_TYPES).optional().describe('Panel role. Use sidebar only for compact/context panels; use one primary panel maximum.'),
         props: z.record(z.string(), z.unknown()).optional().describe('Props to pass to the panel'),
-      })).optional().describe('Panels to show/hide'),
+      })).max(5).optional().describe('Panels to show/hide (recommended 1-3, hard limit 5)'),
       reasoning: z.string().optional().describe('Brief explanation of why these panels were chosen'),
     },
     async ({ action, layout, panels, reasoning }) => {

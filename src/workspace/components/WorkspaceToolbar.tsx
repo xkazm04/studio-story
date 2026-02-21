@@ -1,11 +1,15 @@
 'use client';
 
-import React from 'react';
-import { Plus, X } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Plus, RotateCcw, X } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { useWorkspaceStore } from '../store/workspaceStore';
+import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { LAYOUT_TEMPLATES, LAYOUT_ORDER, getLayoutFitnesses } from '../engine/layoutEngine';
 import { PANEL_REGISTRY } from '../engine/panelRegistry';
+import { WORKSPACE_PRESETS } from '../config/workspacePresets';
+import { getExplainedPresetRecommendations } from '../config/presetRecommendations';
+import { useWorkflowHintStore } from '../store/workflowHintStore';
 import type { WorkspacePanelType, WorkspaceLayout } from '../types';
 
 function LayoutIcon({ variant, size = 16 }: { variant: WorkspaceLayout; size?: number }) {
@@ -37,12 +41,36 @@ export default function WorkspaceToolbar() {
   const panels = useWorkspaceStore((s) => s.panels);
   const setLayout = useWorkspaceStore((s) => s.setLayout);
   const showPanels = useWorkspaceStore((s) => s.showPanels);
+  const replaceAllPanels = useWorkspaceStore((s) => s.replaceAllPanels);
   const clearPanels = useWorkspaceStore((s) => s.clearPanels);
+  const { selectedProject, selectedAct, selectedScene } = useProjectStore();
+  const recentTools = useWorkflowHintStore((s) => s.recentTools);
+  const presetFeedback = useWorkflowHintStore((s) => s.presetFeedback);
+  const dismissedRecommendationIds = useWorkflowHintStore((s) => s.dismissedRecommendationIds);
+  const markPresetHelpful = useWorkflowHintStore((s) => s.markPresetHelpful);
+  const dismissRecommendation = useWorkflowHintStore((s) => s.dismissRecommendation);
+  const resetRecommendationLearning = useWorkflowHintStore((s) => s.resetRecommendationLearning);
 
   const existingTypes = new Set(panels.map((p) => p.type));
 
   const availablePanels = Object.values(PANEL_REGISTRY).filter(
     (entry) => entry.type !== 'empty-welcome' && !existingTypes.has(entry.type)
+  );
+
+  const explainedRecommendations = useMemo(
+    () =>
+      getExplainedPresetRecommendations({
+        presets: WORKSPACE_PRESETS,
+        activePanelTypes: panels.map((panel) => panel.type),
+        recentTools,
+        hasProject: Boolean(selectedProject?.id),
+        hasAct: Boolean(selectedAct?.id),
+        hasScene: Boolean(selectedScene?.id),
+        presetFeedback,
+        dismissedRecommendationIds,
+        limit: 3,
+      }),
+    [panels, recentTools, selectedProject?.id, selectedAct?.id, selectedScene?.id, presetFeedback, dismissedRecommendationIds]
   );
 
   const handleAddPanel = (type: WorkspacePanelType) => {
@@ -65,6 +93,7 @@ export default function WorkspaceToolbar() {
               const isPoorFit = fitness < 0;
               return (
                 <button
+                  type="button"
                   key={variant}
                   onClick={() => setLayout(variant)}
                   title={`${tmpl.label}${isPoorFit ? ' (panels may not fit)' : ''}`}
@@ -76,7 +105,8 @@ export default function WorkspaceToolbar() {
                         ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/40'
                         : isPoorFit
                           ? 'text-slate-800 opacity-40'
-                          : 'text-slate-600 hover:text-slate-500'
+                          : 'text-slate-600 hover:text-slate-500',
+                    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40'
                   )}
                 >
                   <LayoutIcon variant={variant} size={14} />
@@ -87,13 +117,60 @@ export default function WorkspaceToolbar() {
         );
       })()}
 
+      <div className="hidden items-center gap-1 lg:flex">
+        {explainedRecommendations.map(({ preset, reasons }) => {
+          const Icon = preset.icon;
+          const topReason = reasons[0] ?? preset.description;
+          return (
+            <div
+              key={preset.id}
+              className="inline-flex items-center gap-1 rounded-md border border-slate-800/50 bg-slate-900/40 px-1 py-0.5 text-[10px] text-slate-400"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  markPresetHelpful(preset.id);
+                  replaceAllPanels(preset.panels, preset.layout);
+                }}
+                className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[10px] text-slate-400 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40"
+                title={`${preset.description}\nReason: ${topReason}`}
+              >
+                <Icon className="h-3 w-3" />
+                <span>{preset.label}</span>
+                <span className="hidden text-[9px] text-slate-600 xl:inline">• {topReason}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => dismissRecommendation(preset.id)}
+                className="rounded p-0.5 text-slate-600 transition-colors hover:bg-slate-800/60 hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
+                title="Not relevant"
+                aria-label={`Dismiss ${preset.label} recommendation`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          );
+        })}
+        <button
+          type="button"
+          onClick={resetRecommendationLearning}
+          className="inline-flex items-center gap-1 rounded-md border border-slate-800/50 bg-slate-900/40 px-2 py-0.5 text-[10px] text-slate-500 transition-colors hover:border-slate-700/60 hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
+          title="Reset recommendation learning"
+        >
+          <RotateCcw className="h-3 w-3" />
+          <span>Reset</span>
+        </button>
+      </div>
+
       <div className="flex-1 min-w-4" />
 
       <button
+        type="button"
         onClick={clearPanels}
         className={cn(
           'flex items-center gap-1 rounded-md px-2.5 py-1 text-[10px] font-medium',
-          'text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-colors'
+          'text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-colors',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500/40'
         )}
         title="Clear workspace"
       >
@@ -106,23 +183,26 @@ export default function WorkspaceToolbar() {
       {availablePanels.length > 0 && (
         <div className="relative group">
           <button
+            type="button"
             className={cn(
               'flex items-center gap-1 rounded px-2 py-1 text-[10px] font-medium',
-              'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
+              'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-colors',
+              'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40'
             )}
           >
             <Plus className="w-3 h-3" />
             <span>Add Panel</span>
           </button>
 
-          <div className="absolute right-0 top-full mt-1 py-1 bg-slate-900 border border-slate-800/60 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 min-w-40">
+          <div className="absolute right-0 top-full z-50 mt-1 min-w-40 rounded-lg border border-slate-800/60 bg-slate-900 py-1 shadow-xl opacity-0 invisible transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
             {availablePanels.map((entry) => {
               const Icon = entry.icon;
               return (
                 <button
+                  type="button"
                   key={entry.type}
                   onClick={() => handleAddPanel(entry.type)}
-                  className="flex items-center gap-2 w-full px-3 py-1.5 text-[11px] text-slate-300 hover:bg-slate-800/50 transition-colors"
+                  className="flex w-full items-center gap-2 px-3 py-1.5 text-[11px] text-slate-300 transition-colors hover:bg-slate-800/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
                 >
                   <Icon className="w-3 h-3 text-slate-500" />
                   {entry.label}

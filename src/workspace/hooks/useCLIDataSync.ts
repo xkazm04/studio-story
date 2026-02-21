@@ -32,7 +32,7 @@ const TOOL_INVALIDATION_MAP: Record<string, string[]> = {
  * Claude Code names MCP tools as `mcp__<server>__<tool>` (e.g. `mcp__story__create_character`).
  * If no prefix, returns the name as-is.
  */
-function extractBaseName(toolName: string): string {
+export function extractBaseName(toolName: string): string {
   // Handle mcp__server__tool pattern
   const mcpMatch = toolName.match(/^mcp__[^_]+__(.+)$/);
   if (mcpMatch) return mcpMatch[1];

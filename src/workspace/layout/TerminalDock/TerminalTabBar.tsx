@@ -33,6 +33,7 @@ export default function TerminalTabBar() {
 
       {/* New tab button */}
       <button
+        type="button"
         onClick={() => createTab()}
         className={cn(
           'flex items-center justify-center w-7 h-7 rounded-t-md',
@@ -48,6 +49,7 @@ export default function TerminalTabBar() {
 
       {/* Collapse/expand button */}
       <button
+        type="button"
         onClick={toggleCollapsed}
         className={cn(
           'flex items-center justify-center w-7 h-7 rounded-md mb-0.5',

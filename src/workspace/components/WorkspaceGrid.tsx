@@ -6,7 +6,7 @@ import { useWorkspaceStore } from '../store/workspaceStore';
 import { getLayoutTemplate, assignPanelsToSlots } from '../engine/layoutEngine';
 import WorkspacePanelWrapper from './WorkspacePanelWrapper';
 import WorkspaceToolbar from './WorkspaceToolbar';
-import EmptyWelcomePanel from '../panels/EmptyWelcomePanel';
+import EmptyWelcomePanel from '../panels/shared/EmptyWelcomePanel';
 
 const panelVariants = {
   initial: { opacity: 0, scale: 0.96, y: 6 },

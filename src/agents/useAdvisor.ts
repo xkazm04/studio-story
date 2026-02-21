@@ -49,7 +49,7 @@ export function useAdvisor() {
           const { action, layout, panels: panelsJson, reasoning } = call.args as {
             action: string;
             layout?: string;
-            panels?: string;
+            panels?: string | Array<{ type: string; role?: string; props?: Record<string, unknown> }>;
             reasoning?: string;
           };
 

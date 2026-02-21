@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { resolveLayout } from '../engine/layoutEngine';
+import { resolveLayout, resolvePreferredLayout } from '../engine/layoutEngine';
 import type {
   WorkspacePanelInstance,
   WorkspaceLayout,
@@ -84,7 +84,10 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
           const allPanels = [...updatedPanels, ...newPanels];
           return {
             panels: allPanels,
-            layout: newPanels.length > 0 ? resolveLayout(allPanels) : state.layout,
+            layout:
+              newPanels.length > 0
+                ? resolvePreferredLayout(allPanels, state.layout, 35)
+                : state.layout,
           };
         });
       },
@@ -95,7 +98,7 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
           const remaining = state.panels.filter((p) => !typeSet.has(p.type));
           return {
             panels: remaining,
-            layout: resolveLayout(remaining),
+            layout: resolvePreferredLayout(remaining, state.layout, 20),
           };
         });
       },

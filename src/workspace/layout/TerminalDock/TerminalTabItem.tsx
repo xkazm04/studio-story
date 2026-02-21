@@ -36,13 +36,15 @@ export default function TerminalTabItem({
 
   return (
     <button
+      type="button"
       onClick={onSelect}
       className={cn(
         'group flex items-center gap-1.5 whitespace-nowrap rounded-t-md px-2.5 py-1 text-xs transition-colors',
         'border border-b-0',
         isActive
           ? 'bg-slate-950 text-slate-50 border-slate-700/70'
-          : 'bg-slate-900/40 text-slate-400 border-slate-800/40 hover:bg-slate-900/60 hover:text-slate-300'
+          : 'bg-slate-900/40 text-slate-400 border-slate-800/40 hover:bg-slate-900/60 hover:text-slate-300',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40'
       )}
     >
       {/* Domain color dot */}
@@ -61,16 +63,17 @@ export default function TerminalTabItem({
 
       {/* Close button */}
       {!tab.isPinned && (
-        <span
-          role="button"
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}
-          className="ml-0.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:text-slate-300"
+          className="ml-0.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
+          title="Close terminal tab"
         >
           <X className="w-3 h-3" />
-        </span>
+        </button>
       )}
     </button>
   );
