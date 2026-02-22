@@ -279,12 +279,12 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
       {/* Header */}
       <div className="flex items-center gap-2 h-9 px-3 bg-slate-900/40 border-b border-slate-800/30">
         <Grid3X3 className="w-3.5 h-3.5 text-amber-400" />
-        <span className="text-xs font-semibold text-slate-200">Beat Composer</span>
+        <span className="text-sm font-semibold text-slate-200">Beat Composer</span>
         {pattern.genre && (
-          <span className="text-[11px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">{pattern.genre}</span>
+          <span className="text-sm px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">{pattern.genre}</span>
         )}
         {pattern.reasoning && (
-          <span className="text-[11px] text-slate-500 truncate max-w-64 ml-1" title={pattern.reasoning}>
+          <span className="text-sm text-slate-400 truncate max-w-64 ml-1" title={pattern.reasoning}>
             {pattern.reasoning}
           </span>
         )}
@@ -297,7 +297,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
           value={genPrompt}
           onChange={(e) => setGenPrompt(e.target.value)}
           placeholder="Describe a beat..."
-          className="w-48 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-300
+          className="w-48 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-300
             placeholder:text-slate-500 focus:outline-none focus:border-amber-500/40 transition-colors"
         />
 
@@ -306,8 +306,8 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
           onClick={handleCLIGenerate}
           disabled={isGenerating}
           className={cn(
-            'flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium transition-colors',
-            isGenerating ? 'text-slate-500 cursor-not-allowed' : 'text-slate-300 hover:text-amber-400 hover:bg-amber-500/10'
+            'flex items-center gap-1 px-2 py-1 rounded text-sm font-medium transition-colors',
+            isGenerating ? 'text-slate-400 cursor-not-allowed' : 'text-slate-300 hover:text-amber-400 hover:bg-amber-500/10'
           )}
           title="Generate with CLI (shows reasoning)"
         >
@@ -320,8 +320,8 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
           onClick={handleAIGenerate}
           disabled={isGenerating}
           className={cn(
-            'flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium transition-colors',
-            isGenerating ? 'text-slate-500 cursor-not-allowed' : 'text-amber-400 hover:bg-amber-500/10'
+            'flex items-center gap-1 px-2 py-1 rounded text-sm font-medium transition-colors',
+            isGenerating ? 'text-slate-400 cursor-not-allowed' : 'text-amber-400 hover:bg-amber-500/10'
           )}
           title="Generate instantly (no terminal)"
         >
@@ -329,7 +329,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
           AI Gen
         </button>
 
-        <button onClick={onClose} className="p-1 rounded text-slate-500 hover:text-slate-300 transition-colors">
+        <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-slate-300 transition-colors">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -338,19 +338,19 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
       <div className="flex items-center gap-3 px-3 py-1.5 border-b border-slate-800/20">
         {/* BPM */}
         <div className="flex items-center gap-1">
-          <span className="text-[11px] text-slate-400">BPM</span>
+          <span className="text-sm text-slate-400">BPM</span>
           <input
             type="number"
             value={pattern.bpm}
             onChange={(e) => updateBPM(Number(e.target.value))}
-            className="w-12 px-1.5 py-0.5 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+            className="w-12 px-1.5 py-0.5 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
               text-center font-mono focus:outline-none focus:border-amber-500/40"
           />
         </div>
 
         {/* Swing */}
         <div className="flex items-center gap-1">
-          <span className="text-[11px] text-slate-400">Swing</span>
+          <span className="text-sm text-slate-400">Swing</span>
           <input
             type="range"
             min={0}
@@ -359,12 +359,12 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
             onChange={(e) => updateSwing(Number(e.target.value) / 100)}
             className="w-16 h-1 accent-amber-500"
           />
-          <span className="text-[11px] text-slate-500 font-mono w-6">{Math.round(pattern.swing * 100)}%</span>
+          <span className="text-sm text-slate-400 font-mono w-6">{Math.round(pattern.swing * 100)}%</span>
         </div>
 
         {/* Bars */}
         <div className="flex items-center gap-1">
-          <span className="text-[11px] text-slate-400">Bars</span>
+          <span className="text-sm text-slate-400">Bars</span>
           <select
             value={pattern.bars}
             onChange={(e) => {
@@ -381,7 +381,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
                 };
               });
             }}
-            className="px-1.5 py-0.5 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+            className="px-1.5 py-0.5 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
               focus:outline-none focus:border-amber-500/40"
           >
             {[1, 2, 4].map((b) => (
@@ -396,7 +396,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
         <button
           onClick={handlePlayStop}
           className={cn(
-            'flex items-center gap-1 px-2.5 py-1 rounded text-[11px] font-medium transition-colors',
+            'flex items-center gap-1 px-2.5 py-1 rounded text-sm font-medium transition-colors',
             isPlaying
               ? 'bg-orange-600 text-white'
               : 'bg-slate-800/60 text-slate-300 hover:bg-slate-700/60'
@@ -407,7 +407,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
         </button>
 
         {isPlaying && (
-          <span className="text-[11px] text-slate-400 font-mono">
+          <span className="text-sm text-slate-400 font-mono">
             Step {currentStep + 1}/{totalSteps}
           </span>
         )}
@@ -419,7 +419,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
           <button
             onClick={() => setShowAddTrack(!showAddTrack)}
             disabled={availableInstruments.length === 0}
-            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors disabled:opacity-30"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors disabled:opacity-30"
           >
             <Plus className="w-3 h-3" /> Track
           </button>
@@ -431,7 +431,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
                   <button
                     key={inst}
                     onClick={() => addTrack(inst)}
-                    className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800/60 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800/60 transition-colors"
                   >
                     <span className={cn('w-2 h-2 rounded-sm', style.bgClass)} />
                     {style.label}
@@ -446,7 +446,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors"
           >
             Presets <ChevronDown className="w-3 h-3" />
           </button>
@@ -456,16 +456,16 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
                 <button
                   key={i}
                   onClick={() => loadPreset(preset)}
-                  className="w-full px-3 py-2 text-left text-xs text-slate-300 hover:bg-slate-800/60 transition-colors"
+                  className="w-full px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-800/60 transition-colors"
                 >
                   <span className="font-medium block">{preset.name}</span>
-                  <span className="text-[11px] text-slate-500">{preset.bpm} BPM / {preset.genre}</span>
+                  <span className="text-sm text-slate-400">{preset.bpm} BPM / {preset.genre}</span>
                 </button>
               ))}
               <div className="border-t border-slate-700/40" />
               <button
                 onClick={() => { setPattern(createEmptyPattern()); setShowPresets(false); }}
-                className="w-full px-3 py-2 text-left text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors"
+                className="w-full px-3 py-2 text-left text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors"
               >
                 Empty Pattern
               </button>
@@ -477,7 +477,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
         <button
           onClick={handleExport}
           disabled={!onGenerated}
-          className="flex items-center gap-1 px-2.5 py-1 rounded text-[11px] font-medium
+          className="flex items-center gap-1 px-2.5 py-1 rounded text-sm font-medium
             bg-amber-600/80 hover:bg-amber-500 text-white transition-colors disabled:opacity-40"
         >
           <Download className="w-3 h-3" /> Export
@@ -487,7 +487,7 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
       {/* Error */}
       {error && (
         <div className="px-3 py-1 bg-red-500/5 border-b border-red-500/20">
-          <span className="text-[11px] text-red-400">{error}</span>
+          <span className="text-sm text-red-400">{error}</span>
         </div>
       )}
 
@@ -508,9 +508,9 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
                 )}
               >
                 {isBeatStart ? (
-                  <span className="text-[10px] text-slate-400 font-mono">{beatNum}</span>
+                  <span className="text-sm text-slate-400 font-mono">{beatNum}</span>
                 ) : (
-                  <span className="text-[10px] text-slate-600">.</span>
+                  <span className="text-sm text-slate-400">.</span>
                 )}
               </div>
             );
@@ -528,18 +528,18 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
                   onClick={() => toggleTrackMute(trackIdx)}
                   className={cn(
                     'w-4 h-4 rounded flex items-center justify-center transition-colors',
-                    track.muted ? 'text-red-400' : 'text-slate-500 hover:text-slate-300'
+                    track.muted ? 'text-red-400' : 'text-slate-400 hover:text-slate-300'
                   )}
                   title={track.muted ? 'Unmute' : 'Mute'}
                 >
                   {track.muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
                 </button>
-                <span className={cn('text-[11px] font-medium truncate', style.textClass)}>
+                <span className={cn('text-sm font-medium truncate', style.textClass)}>
                   {style.label}
                 </span>
                 <button
                   onClick={() => removeTrack(trackIdx)}
-                  className="ml-auto opacity-0 group-hover/track:opacity-100 text-slate-600 hover:text-red-400 transition-all"
+                  className="ml-auto opacity-0 group-hover/track:opacity-100 text-slate-400 hover:text-red-400 transition-all"
                   title="Remove track"
                 >
                   <Trash2 className="w-3 h-3" />

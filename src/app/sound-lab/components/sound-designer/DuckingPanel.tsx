@@ -32,11 +32,11 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <VolumeX className="w-3.5 h-3.5 text-amber-400" />
-          <span className="text-xs font-semibold text-slate-200">Auto-Duck</span>
+          <span className="text-sm font-semibold text-slate-200">Auto-Duck</span>
         </div>
         <button
           onClick={onClose}
-          className="text-[11px] text-slate-500 hover:text-slate-300 transition-colors"
+          className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
         >
           Close
         </button>
@@ -44,7 +44,7 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
 
       {/* Enable Toggle */}
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-slate-400">Enabled</span>
+        <span className="text-sm text-slate-400">Enabled</span>
         <button
           onClick={() => onChange({ ...config, enabled: !config.enabled })}
           className={cn(
@@ -61,11 +61,11 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
 
       {/* Source Lane */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-slate-500 w-14 shrink-0">Source</span>
+        <span className="text-sm text-slate-400 w-14 shrink-0">Source</span>
         <select
           value={config.sourceLane}
           onChange={(e) => onChange({ ...config, sourceLane: e.target.value as AudioAssetType })}
-          className="flex-1 h-5 bg-slate-800/60 border border-slate-700/40 rounded px-1.5 text-[11px] text-slate-300
+          className="flex-1 h-5 bg-slate-800/60 border border-slate-700/40 rounded px-1.5 text-sm text-slate-300
             focus:outline-none focus:border-orange-500/40"
         >
           {LANE_OPTIONS.map((l) => (
@@ -76,11 +76,11 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
 
       {/* Target Lane */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-slate-500 w-14 shrink-0">Target</span>
+        <span className="text-sm text-slate-400 w-14 shrink-0">Target</span>
         <select
           value={config.targetLane}
           onChange={(e) => onChange({ ...config, targetLane: e.target.value as AudioAssetType })}
-          className="flex-1 h-5 bg-slate-800/60 border border-slate-700/40 rounded px-1.5 text-[11px] text-slate-300
+          className="flex-1 h-5 bg-slate-800/60 border border-slate-700/40 rounded px-1.5 text-sm text-slate-300
             focus:outline-none focus:border-orange-500/40"
         >
           {LANE_OPTIONS.filter((l) => l.value !== config.sourceLane).map((l) => (
@@ -91,7 +91,7 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
 
       {/* Amount (dB) */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-slate-500 w-14 shrink-0">Amount</span>
+        <span className="text-sm text-slate-400 w-14 shrink-0">Amount</span>
         <input
           type="range"
           min={5}
@@ -103,14 +103,14 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-400"
         />
-        <span className="text-[11px] text-amber-400 font-mono w-10 text-right">
+        <span className="text-sm text-amber-400 font-mono w-10 text-right">
           {toDB(config.amount)}
         </span>
       </div>
 
       {/* Attack */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-slate-500 w-14 shrink-0">Attack</span>
+        <span className="text-sm text-slate-400 w-14 shrink-0">Attack</span>
         <input
           type="range"
           min={50}
@@ -122,14 +122,14 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-400"
         />
-        <span className="text-[11px] text-slate-400 font-mono w-10 text-right">
+        <span className="text-sm text-slate-400 font-mono w-10 text-right">
           {Math.round(config.attack * 1000)}ms
         </span>
       </div>
 
       {/* Release */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-slate-500 w-14 shrink-0">Release</span>
+        <span className="text-sm text-slate-400 w-14 shrink-0">Release</span>
         <input
           type="range"
           min={100}
@@ -141,7 +141,7 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-400"
         />
-        <span className="text-[11px] text-slate-400 font-mono w-10 text-right">
+        <span className="text-sm text-slate-400 font-mono w-10 text-right">
           {Math.round(config.release * 1000)}ms
         </span>
       </div>
@@ -151,10 +151,10 @@ export default function DuckingPanel({ config, onChange, onApply, onClose }: Duc
         onClick={onApply}
         disabled={!config.enabled}
         className={cn(
-          'w-full flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all',
+          'w-full flex items-center justify-center gap-1.5 py-1.5 rounded-md text-sm font-medium transition-all',
           config.enabled
             ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:from-amber-500 hover:to-orange-500'
-            : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+            : 'bg-slate-800 text-slate-400 cursor-not-allowed'
         )}
       >
         <Volume2 className="w-3 h-3" />

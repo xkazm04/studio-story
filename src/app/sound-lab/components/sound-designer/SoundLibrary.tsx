@@ -105,17 +105,17 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
         />
 
         <div className="flex items-center justify-between mb-2.5 relative">
-          <span className="text-xs font-semibold text-slate-200 tracking-wide">Library</span>
+          <span className="text-sm font-semibold text-slate-200 tracking-wide">Library</span>
           <div className="flex items-center gap-2">
             <span
-              className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/80"
+              className="text-sm font-mono px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/80"
               style={{ textShadow: '0 0 8px rgba(249, 115, 22, 0.3)' }}
             >
               {filtered.length}
             </span>
             <button
               onClick={onCollapse}
-              className="p-1 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-300 hover:bg-slate-800/60 transition-all"
               title="Collapse sidebar"
             >
               <PanelLeftClose className="w-3.5 h-3.5" />
@@ -125,14 +125,14 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
 
         {/* Search */}
         <div className="relative mb-2.5">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search assets..."
             className="w-full pl-8 pr-2.5 py-1.5 bg-slate-950/60 border border-slate-700/30 rounded-lg
-              text-xs text-slate-300 placeholder:text-slate-600 backdrop-blur-sm
+              text-sm text-slate-300 placeholder:text-slate-600 backdrop-blur-sm
               focus:outline-none focus:border-orange-500/30 focus:ring-1 focus:ring-orange-500/10 transition-all"
           />
         </div>
@@ -144,10 +144,10 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
               key={f.value}
               onClick={() => setFilter(f.value)}
               className={cn(
-                'text-[10px] px-2 py-1 rounded-md font-medium transition-all',
+                'text-sm px-2 py-1 rounded-md font-medium transition-all',
                 filter === f.value
                   ? 'bg-orange-500/15 text-orange-400 border border-orange-500/20 shadow-[0_0_8px_rgba(249,115,22,0.1)]'
-                  : 'text-slate-500 hover:text-slate-300 border border-transparent hover:bg-slate-800/40'
+                  : 'text-slate-400 hover:text-slate-300 border border-transparent hover:bg-slate-800/40'
               )}
             >
               {f.label}
@@ -155,7 +155,7 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
           ))}
           <button
             onClick={() => setSort((s) => s === 'name' ? 'duration' : s === 'duration' ? 'type' : 'name')}
-            className="ml-auto p-1 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-all"
+            className="ml-auto p-1 rounded-md text-slate-400 hover:text-slate-300 hover:bg-slate-800/40 transition-all"
             title={`Sort by ${sort}`}
           >
             <ArrowUpDown className="w-3 h-3" />
@@ -174,8 +174,8 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
           <>
             <MenuHeader>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-slate-200 truncate max-w-32">{ctxTarget.asset.name}</span>
-                <span className={cn('text-[9px] px-1.5 py-0.5 rounded', TRACK_TYPE_STYLES[ctxTarget.asset.type].bgClass, TRACK_TYPE_STYLES[ctxTarget.asset.type].textClass)}>
+                <span className="text-sm font-medium text-slate-200 truncate max-w-32">{ctxTarget.asset.name}</span>
+                <span className={cn('text-sm px-1.5 py-0.5 rounded', TRACK_TYPE_STYLES[ctxTarget.asset.type].bgClass, TRACK_TYPE_STYLES[ctxTarget.asset.type].textClass)}>
                   {TRACK_TYPE_STYLES[ctxTarget.asset.type].label}
                 </span>
               </div>
@@ -226,8 +226,8 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
             >
               <Music className="w-5 h-5 text-orange-400/40" />
             </div>
-            <span className="text-[11px] font-medium text-slate-400 mb-1">No assets yet</span>
-            <span className="text-[10px] text-slate-600 leading-relaxed max-w-[180px]">
+            <span className="text-sm font-medium text-slate-400 mb-1">No assets yet</span>
+            <span className="text-sm text-slate-400 leading-relaxed max-w-[180px]">
               Generate audio in Composer or export beats to populate your library.
             </span>
           </div>
@@ -265,7 +265,7 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
                     ? 'bg-orange-500 text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]'
                     : asset.audioUrl
                       ? 'bg-slate-800/60 opacity-0 group-hover:opacity-100 text-slate-300 hover:bg-slate-700/80'
-                      : 'bg-slate-800/60 opacity-0 group-hover:opacity-30 text-slate-500'
+                      : 'bg-slate-800/60 opacity-0 group-hover:opacity-30 text-slate-400'
                 )}
               >
                 {isPlaying ? (
@@ -289,11 +289,11 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
                       }}
                       onClick={(e) => e.stopPropagation()}
                       onMouseDown={(e) => e.stopPropagation()}
-                      className="text-xs text-slate-200 bg-slate-800/80 border border-orange-500/40 rounded-md px-1.5 py-0.5 outline-none w-full focus:border-orange-500/60"
+                      className="text-sm text-slate-200 bg-slate-800/80 border border-orange-500/40 rounded-md px-1.5 py-0.5 outline-none w-full focus:border-orange-500/60"
                     />
                   ) : (
                     <span className={cn(
-                      'text-xs truncate block',
+                      'text-sm truncate block',
                       isPlaying ? 'text-slate-100' : 'text-slate-300'
                     )}>
                       {asset.name}
@@ -314,7 +314,7 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
                       <Wand2 className="w-2.5 h-2.5 text-violet-400/60" />
                     )}
                     <span className={cn(
-                      'text-[10px] font-mono',
+                      'text-sm font-mono',
                       asset.source === 'beats' ? 'text-amber-400/60' : 'text-violet-400/60'
                     )}>
                       {asset.source === 'beats' ? 'Beats' : 'Composer'}
@@ -325,8 +325,8 @@ export default function SoundLibrary({ onCollapse, extraAssets = [], onAddToTime
 
               {/* Duration */}
               <span className={cn(
-                'text-[10px] font-mono shrink-0',
-                isPlaying ? 'text-orange-400' : 'text-slate-500'
+                'text-sm font-mono shrink-0',
+                isPlaying ? 'text-orange-400' : 'text-slate-400'
               )}>
                 {formatDuration(asset.duration)}
               </span>
@@ -369,7 +369,7 @@ export function CollapsedLibrary({ onExpand, assetCount }: { onExpand: () => voi
             key={type}
             className={cn(
               'p-1.5 rounded-lg transition-all',
-              'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+              'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
             )}
             title={style.label}
           >
@@ -381,7 +381,7 @@ export function CollapsedLibrary({ onExpand, assetCount }: { onExpand: () => voi
       {/* Spacer + count */}
       <div className="flex-1" />
       <span
-        className="text-[10px] text-orange-400/70 font-mono"
+        className="text-sm text-orange-400/70 font-mono"
         style={{ textShadow: '0 0 6px rgba(249, 115, 22, 0.3)' }}
       >
         {assetCount}

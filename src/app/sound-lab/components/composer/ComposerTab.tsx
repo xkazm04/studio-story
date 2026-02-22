@@ -61,7 +61,7 @@ function SceneChips({ selectedId, onSelect, onClear }: {
           key={scene.id}
           onClick={() => onSelect(scene.id)}
           className={cn(
-            'shrink-0 px-3 py-1 rounded-lg text-[10px] font-medium transition-all border',
+            'shrink-0 px-3 py-1 rounded-lg text-sm font-medium transition-all border',
             selectedId === scene.id
               ? 'bg-orange-500/12 text-orange-400 border-orange-500/25 shadow-[0_0_10px_rgba(249,115,22,0.1)]'
               : 'bg-slate-900/30 text-slate-400 border-slate-800/30 hover:border-slate-600/40 hover:text-slate-200 hover:bg-slate-800/30'
@@ -73,7 +73,7 @@ function SceneChips({ selectedId, onSelect, onClear }: {
       {selectedId && (
         <button
           onClick={onClear}
-          className="shrink-0 p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
+          className="shrink-0 p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
           title="Clear selection"
         >
           <X className="w-3 h-3" />
@@ -127,7 +127,7 @@ function CLIPromptInput({ value, onChange, onSubmit, isProcessing, placeholder }
         placeholder={placeholder}
         rows={2}
         disabled={isProcessing}
-        className="flex-1 bg-transparent text-xs text-slate-200 placeholder:text-slate-600 font-mono leading-relaxed resize-none focus:outline-none disabled:opacity-50 relative"
+        className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 font-mono leading-relaxed resize-none focus:outline-none disabled:opacity-50 relative"
       />
       <button
         onClick={onSubmit}
@@ -135,7 +135,7 @@ function CLIPromptInput({ value, onChange, onSubmit, isProcessing, placeholder }
         className={cn(
           'shrink-0 p-1.5 rounded-lg transition-all mt-0.5 relative',
           isProcessing || !value.trim()
-            ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
+            ? 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
             : 'bg-orange-600 text-white hover:bg-orange-500 shadow-[0_0_12px_rgba(249,115,22,0.3)]'
         )}
         title="Submit (Ctrl+Enter)"
@@ -189,9 +189,9 @@ function CompositionPlanEditor({ plan, onChange, onCompose, isComposing }: {
         >
           <Music className="w-3 h-3 text-violet-400" />
         </div>
-        <span className="text-[11px] font-semibold text-violet-300 tracking-wide">Composition Plan</span>
+        <span className="text-sm font-semibold text-violet-300 tracking-wide">Composition Plan</span>
         {plan.summary && (
-          <span className="text-[10px] text-slate-500 truncate flex-1 ml-1">{plan.summary}</span>
+          <span className="text-sm text-slate-400 truncate flex-1 ml-1">{plan.summary}</span>
         )}
       </div>
 
@@ -199,23 +199,23 @@ function CompositionPlanEditor({ plan, onChange, onCompose, isComposing }: {
         {/* Global Styles */}
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-[10px] text-violet-400/70 block mb-0.5">Positive Styles</label>
+            <label className="text-sm text-violet-400/70 block mb-0.5">Positive Styles</label>
             <input
               type="text"
               value={plan.positive_global_styles}
               onChange={(e) => onChange({ ...plan, positive_global_styles: e.target.value })}
-              className="w-full px-2.5 py-1.5 bg-slate-900/60 border border-slate-700/40 rounded-md text-[11px] text-slate-200
+              className="w-full px-2.5 py-1.5 bg-slate-900/60 border border-slate-700/40 rounded-md text-sm text-slate-200
                 placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
               placeholder="cinematic orchestral, emotional"
             />
           </div>
           <div>
-            <label className="text-[10px] text-violet-400/70 block mb-0.5">Avoid</label>
+            <label className="text-sm text-violet-400/70 block mb-0.5">Avoid</label>
             <input
               type="text"
               value={plan.negative_global_styles}
               onChange={(e) => onChange({ ...plan, negative_global_styles: e.target.value })}
-              className="w-full px-2.5 py-1.5 bg-slate-900/60 border border-slate-700/40 rounded-md text-[11px] text-slate-200
+              className="w-full px-2.5 py-1.5 bg-slate-900/60 border border-slate-700/40 rounded-md text-sm text-slate-200
                 placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
               placeholder="harsh, distorted"
             />
@@ -226,13 +226,13 @@ function CompositionPlanEditor({ plan, onChange, onCompose, isComposing }: {
         <div className="space-y-1">
           {plan.sections.map((section, i) => (
             <div key={i} className="flex items-center gap-1.5 group">
-              <span className="text-[10px] text-violet-400/50 w-4 text-right shrink-0 font-mono">{i + 1}.</span>
+              <span className="text-sm text-violet-400/50 w-4 text-right shrink-0 font-mono">{i + 1}.</span>
               <input
                 type="text"
                 value={section.text}
                 onChange={(e) => updateSection(i, 'text', e.target.value)}
                 placeholder="Describe this section..."
-                className="flex-1 px-2.5 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                className="flex-1 px-2.5 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                   placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
               />
               <div className="flex items-center gap-0.5 shrink-0">
@@ -240,15 +240,15 @@ function CompositionPlanEditor({ plan, onChange, onCompose, isComposing }: {
                   type="number"
                   value={section.duration_ms / 1000}
                   onChange={(e) => updateSection(i, 'duration_ms', Math.max(1, Number(e.target.value)) * 1000)}
-                  className="w-12 px-1.5 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                  className="w-12 px-1.5 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                     text-center font-mono focus:outline-none focus:border-violet-500/40"
                 />
-                <span className="text-[9px] text-slate-500">s</span>
+                <span className="text-sm text-slate-400">s</span>
               </div>
               {plan.sections.length > 1 && (
                 <button
                   onClick={() => removeSection(i)}
-                  className="p-0.5 text-slate-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                  className="p-0.5 text-slate-400 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
                 >
                   <X className="w-2.5 h-2.5" />
                 </button>
@@ -261,17 +261,17 @@ function CompositionPlanEditor({ plan, onChange, onCompose, isComposing }: {
         <div className="flex items-center gap-2 pt-0.5">
           <button
             onClick={addSection}
-            className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors"
           >
             <Plus className="w-3 h-3" /> Add Section
           </button>
           <div className="flex-1" />
-          <span className="text-[10px] text-slate-500 font-mono">{totalSeconds.toFixed(0)}s</span>
+          <span className="text-sm text-slate-400 font-mono">{totalSeconds.toFixed(0)}s</span>
           <button
             onClick={onCompose}
             disabled={isComposing || !plan.positive_global_styles.trim()}
             className={cn(
-              'flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[11px] font-semibold transition-all',
+              'flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all',
               isComposing || !plan.positive_global_styles.trim()
                 ? 'bg-violet-600/20 text-violet-300/40 cursor-not-allowed'
                 : 'bg-violet-600 text-white hover:bg-violet-500 shadow-[0_0_16px_rgba(139,92,246,0.3)]'
@@ -312,9 +312,9 @@ function PromptIdeasPanel({ ideas, onUpdate, onGenerate, onGenerateAll, onSave, 
         >
           <Zap className="w-3 h-3 text-sky-400" />
         </div>
-        <span className="text-[11px] font-semibold text-sky-300 tracking-wide">Prompt Ideas</span>
+        <span className="text-sm font-semibold text-sky-300 tracking-wide">Prompt Ideas</span>
         <span
-          className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400/80"
+          className="text-sm font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400/80"
           style={{ textShadow: '0 0 8px rgba(14, 165, 233, 0.3)' }}
         >
           {ideas.length}
@@ -325,7 +325,7 @@ function PromptIdeasPanel({ ideas, onUpdate, onGenerate, onGenerateAll, onSave, 
             onClick={onGenerateAll}
             disabled={anyGenerating}
             className={cn(
-              'flex items-center gap-1 px-3 py-1 rounded-lg text-[10px] font-medium transition-all',
+              'flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium transition-all',
               anyGenerating
                 ? 'bg-sky-600/15 text-sky-300/40 cursor-not-allowed'
                 : 'bg-sky-600/80 text-white hover:bg-sky-500 shadow-[0_0_12px_rgba(14,165,233,0.2)]'
@@ -390,14 +390,14 @@ function IdeaCard({ idea, onUpdate, onGenerate, onSave, onPlay, isPlaying, isSav
     >
       {/* Row 1: Label | Duration | Description | Status | Generate */}
       <div className="flex items-center gap-1.5 px-2.5 py-2">
-        <span className="text-[10px] font-semibold text-sky-400 shrink-0">{idea.label}</span>
-        <span className="text-[10px] text-slate-500 font-mono shrink-0">{idea.duration_seconds}s</span>
-        <span className="text-[11px] text-slate-400 truncate flex-1 min-w-0" title={idea.text}>
+        <span className="text-sm font-semibold text-sky-400 shrink-0">{idea.label}</span>
+        <span className="text-sm text-slate-400 font-mono shrink-0">{idea.duration_seconds}s</span>
+        <span className="text-sm text-slate-400 truncate flex-1 min-w-0" title={idea.text}>
           {idea.text}
         </span>
         {isGenerating && <Loader2 className="w-3 h-3 text-sky-400 animate-spin shrink-0" />}
         {isError && (
-          <span className="text-[9px] text-red-400 shrink-0 max-w-[80px] truncate" title={idea.error}>
+          <span className="text-sm text-red-400 shrink-0 max-w-[80px] truncate" title={idea.error}>
             {idea.error}
           </span>
         )}
@@ -485,13 +485,13 @@ function ResultRow({ result, isPlaying, isSaving, onPlay, onSend, onSave, onStem
     )}
       style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.6) 100%)' }}
     >
-      <span className={cn('text-[9px] px-1.5 py-0.5 rounded-md font-medium shrink-0 border', typeBg)}>
+      <span className={cn('text-sm px-1.5 py-0.5 rounded-md font-medium shrink-0 border', typeBg)}>
         {result.type.toUpperCase()}
       </span>
-      <span className="text-[11px] text-slate-300 truncate flex-1 min-w-0" title={result.name}>
+      <span className="text-sm text-slate-300 truncate flex-1 min-w-0" title={result.name}>
         {result.name}
       </span>
-      <span className="text-[10px] text-slate-500 font-mono shrink-0">{result.duration.toFixed(0)}s</span>
+      <span className="text-sm text-slate-400 font-mono shrink-0">{result.duration.toFixed(0)}s</span>
       <div className="w-16 shrink-0">
         <WaveformVisualizer data={result.waveformData} height={16} barWidth={1.5} gap={0.5} />
       </div>
@@ -921,7 +921,7 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
               key={m.value}
               onClick={() => setMode(m.value)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                 isActive
                   ? 'bg-orange-500/12 text-orange-400 border border-orange-500/20 shadow-[0_0_10px_rgba(249,115,22,0.1)]'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
@@ -934,7 +934,7 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
         })}
         <div className="flex-1" />
         <span
-          className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-800/40 text-slate-500 border border-slate-700/20 tracking-wider"
+          className="text-sm font-mono px-2 py-0.5 rounded-md bg-slate-800/40 text-slate-400 border border-slate-700/20 tracking-wider"
         >
           ELEVENLABS
         </span>
@@ -983,7 +983,7 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
                 }}
               >
                 <Loader2 className="w-3.5 h-3.5 text-orange-400 animate-spin" />
-                <span className="text-[11px] text-orange-400 font-mono">
+                <span className="text-sm text-orange-400 font-mono">
                   {mode === 'music' ? 'Generating composition plan...' : 'Generating prompt ideas...'}
                 </span>
               </div>
@@ -997,10 +997,10 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
               style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(2, 6, 23, 0.6) 100%)' }}
             >
               <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
-              <span className="text-[11px] text-red-300 flex-1">{error}</span>
+              <span className="text-sm text-red-300 flex-1">{error}</span>
               <button
                 onClick={() => setError(null)}
-                className="text-[10px] text-slate-500 hover:text-slate-300 px-1.5 py-0.5 rounded hover:bg-slate-800/40 transition-all"
+                className="text-sm text-slate-400 hover:text-slate-300 px-1.5 py-0.5 rounded hover:bg-slate-800/40 transition-all"
               >
                 Dismiss
               </button>
@@ -1041,9 +1041,9 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
                 >
                   <Download className="w-3 h-3 text-emerald-400" />
                 </div>
-                <span className="text-[11px] font-semibold text-slate-300 tracking-wide">Results</span>
+                <span className="text-sm font-semibold text-slate-300 tracking-wide">Results</span>
                 <span
-                  className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400/80"
+                  className="text-sm font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400/80"
                   style={{ textShadow: '0 0 8px rgba(16, 185, 129, 0.3)' }}
                 >
                   {results.length}
@@ -1083,10 +1083,10 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
               >
                 <Terminal className="w-6 h-6 text-orange-400/40" />
               </div>
-              <span className="text-xs font-medium text-slate-400 mb-1.5">
+              <span className="text-sm font-medium text-slate-400 mb-1.5">
                 {mode === 'music' ? 'Compose Something' : 'Design Sounds'}
               </span>
-              <span className="text-[11px] text-slate-600 max-w-[280px] leading-relaxed">
+              <span className="text-sm text-slate-400 max-w-[280px] leading-relaxed">
                 Select a scene or describe what you want to create.
                 {mode === 'music'
                   ? ' A composition plan will be generated for you to review and edit.'

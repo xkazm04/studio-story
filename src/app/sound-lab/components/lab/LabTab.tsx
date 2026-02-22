@@ -405,17 +405,17 @@ export default function LabTab({ onGenerated }: LabTabProps) {
           </div>
         </div>
 
-        <span className="text-xs font-semibold text-slate-200 tracking-tight relative">Lab</span>
+        <span className="text-sm font-semibold text-slate-200 tracking-tight relative">Lab</span>
 
         {/* Pipeline Toggle */}
         <div className="flex items-center gap-1 ml-3 relative">
           <button
             onClick={() => handlePipelineChange('midi-bridge')}
             className={cn(
-              'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all active:scale-95',
+              'px-2.5 py-1 rounded-md text-sm font-medium transition-all active:scale-95',
               activePipeline === 'midi-bridge'
                 ? 'bg-cyan-500/15 text-cyan-400'
-                : 'text-slate-500 hover:text-slate-300'
+                : 'text-slate-400 hover:text-slate-300'
             )}
           >
             MIDI Bridge
@@ -423,10 +423,10 @@ export default function LabTab({ onGenerated }: LabTabProps) {
           <button
             onClick={() => handlePipelineChange('character-modify')}
             className={cn(
-              'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all active:scale-95',
+              'px-2.5 py-1 rounded-md text-sm font-medium transition-all active:scale-95',
               activePipeline === 'character-modify'
                 ? 'bg-fuchsia-500/15 text-fuchsia-400'
-                : 'text-slate-500 hover:text-slate-300'
+                : 'text-slate-400 hover:text-slate-300'
             )}
           >
             Character Modify
@@ -434,7 +434,7 @@ export default function LabTab({ onGenerated }: LabTabProps) {
         </div>
 
         {/* Pipeline description */}
-        <span className="text-[10px] text-slate-500 ml-auto relative">
+        <span className="text-sm text-slate-400 ml-auto relative">
           {LAB_PIPELINE_STYLES[activePipeline].description}
         </span>
       </div>

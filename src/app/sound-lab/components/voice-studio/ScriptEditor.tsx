@@ -36,7 +36,7 @@ function makeDefaultLine(castings: Record<string, string>): ScriptLine {
 }
 
 const STATUS_STYLES: Record<ScriptLine['status'], { color: string; icon: typeof Check }> = {
-  pending: { color: 'text-slate-500', icon: Check },
+  pending: { color: 'text-slate-400', icon: Check },
   generating: { color: 'text-orange-400', icon: Loader2 },
   done: { color: 'text-emerald-400', icon: Check },
   error: { color: 'text-red-400', icon: AlertCircle },
@@ -132,7 +132,7 @@ export default function ScriptEditor({
           >
             {/* Line Number + Status */}
             <div className="flex flex-col items-center gap-1 pt-1 shrink-0 w-6">
-              <span className="text-[11px] text-slate-500 font-mono">{index + 1}</span>
+              <span className="text-sm text-slate-400 font-mono">{index + 1}</span>
               <StatusIcon
                 className={cn('w-3 h-3', statusStyle.color, line.status === 'generating' && 'animate-spin')}
               />
@@ -145,7 +145,7 @@ export default function ScriptEditor({
                 <select
                   value={line.character}
                   onChange={(e) => handleCharacterChange(line.id, e.target.value)}
-                  className="w-28 shrink-0 px-1.5 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-300
+                  className="w-28 shrink-0 px-1.5 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-300
                     focus:outline-none focus:border-orange-500/40"
                 >
                   {MOCK_CHARACTERS.map((c) => (
@@ -157,7 +157,7 @@ export default function ScriptEditor({
                   value={line.text}
                   onChange={(e) => updateLine(line.id, { text: e.target.value })}
                   placeholder="Enter dialogue line..."
-                  className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                  className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200
                     placeholder:text-slate-500 focus:outline-none focus:border-orange-500/40"
                 />
               </div>
@@ -165,7 +165,7 @@ export default function ScriptEditor({
               {/* Row 2: Emotion chips + Delivery (+ selected take indicator) */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 {line.selectedTakeIdx != null && line.selectedTakeIdx >= 0 && line.takes?.[line.selectedTakeIdx] && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium mr-1">
+                  <span className="text-sm px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium mr-1">
                     Take: {EMOTIONS.find((e) => e.type === line.takes![line.selectedTakeIdx!]!.emotion)?.label ?? line.takes[line.selectedTakeIdx].emotion}
                   </span>
                 )}
@@ -187,7 +187,7 @@ export default function ScriptEditor({
                 <select
                   value={line.delivery}
                   onChange={(e) => updateLine(line.id, { delivery: e.target.value })}
-                  className="px-1.5 py-0.5 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-400
+                  className="px-1.5 py-0.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-400
                     focus:outline-none focus:border-orange-500/40"
                 >
                   {DELIVERY_PRESETS.map((p) => (
@@ -198,7 +198,7 @@ export default function ScriptEditor({
 
               {/* Error display */}
               {line.error && (
-                <span className="text-[11px] text-red-400 block">{line.error}</span>
+                <span className="text-sm text-red-400 block">{line.error}</span>
               )}
             </div>
 
@@ -207,14 +207,14 @@ export default function ScriptEditor({
               <button
                 onClick={() => moveLine(index, -1)}
                 disabled={index === 0}
-                className="p-0.5 text-slate-600 hover:text-slate-400 disabled:opacity-30 transition-colors"
+                className="p-0.5 text-slate-400 hover:text-slate-400 disabled:opacity-30 transition-colors"
               >
                 <ChevronUp className="w-3 h-3" />
               </button>
               <button
                 onClick={() => moveLine(index, 1)}
                 disabled={index === lines.length - 1}
-                className="p-0.5 text-slate-600 hover:text-slate-400 disabled:opacity-30 transition-colors"
+                className="p-0.5 text-slate-400 hover:text-slate-400 disabled:opacity-30 transition-colors"
               >
                 <ChevronDown className="w-3 h-3" />
               </button>
@@ -254,7 +254,7 @@ export default function ScriptEditor({
               {(line.takes?.length ?? 0) > 0 && (
                 <button
                   onClick={() => onOpenTakes?.(line.id)}
-                  className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium"
+                  className="text-sm px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium"
                   title={`${line.takes!.length} takes — click to manage`}
                 >
                   {line.takes!.length}T
@@ -263,7 +263,7 @@ export default function ScriptEditor({
 
               <button
                 onClick={() => removeLine(line.id)}
-                className="p-0.5 text-slate-600 hover:text-red-400 transition-colors"
+                className="p-0.5 text-slate-400 hover:text-red-400 transition-colors"
               >
                 <Trash2 className="w-3 h-3" />
               </button>
@@ -276,7 +276,7 @@ export default function ScriptEditor({
       <div className="flex gap-2">
         <button
           onClick={addLine}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-[11px] font-medium
+          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium
             bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
         >
           <Plus className="w-3 h-3" />
@@ -285,7 +285,7 @@ export default function ScriptEditor({
         <button
           onClick={() => setShowBulkImport(!showBulkImport)}
           className={cn(
-            'flex items-center gap-1 px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors',
+            'flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
             showBulkImport
               ? 'bg-orange-500/10 text-orange-400'
               : 'bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
@@ -299,14 +299,14 @@ export default function ScriptEditor({
       {/* Bulk Import Panel */}
       {showBulkImport && (
         <div className="p-2.5 rounded-lg border border-slate-700/40 bg-slate-900/40 space-y-2">
-          <span className="text-[11px] text-slate-400 block">
+          <span className="text-sm text-slate-400 block">
             Paste lines in format: <code className="text-orange-400">CHARACTER: &quot;Line text&quot;</code>
           </span>
           <textarea
             value={bulkText}
             onChange={(e) => setBulkText(e.target.value)}
             rows={4}
-            className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+            className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200
               placeholder:text-slate-500 focus:outline-none focus:border-orange-500/40 font-mono resize-none"
             placeholder={'Commander Voss: "We march at dawn."\nLyra Stormwind: "Not without me."'}
           />
@@ -314,9 +314,9 @@ export default function ScriptEditor({
             onClick={handleBulkImport}
             disabled={!bulkText.trim()}
             className={cn(
-              'px-3 py-1.5 rounded text-[11px] font-medium transition-all',
+              'px-3 py-1.5 rounded text-sm font-medium transition-all',
               !bulkText.trim()
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                 : 'bg-orange-600 text-white hover:bg-orange-500'
             )}
           >

@@ -45,9 +45,9 @@ export default function StepGrid({
               style={isCurrent ? { background: 'rgba(245, 158, 11, 0.15)', boxShadow: '0 0 8px rgba(245, 158, 11, 0.1)' } : undefined}
             >
               {isBeatStart ? (
-                <span className={cn('text-[10px] font-mono', isCurrent ? 'text-amber-400' : 'text-slate-400')}>{beatNum}</span>
+                <span className={cn('text-sm font-mono', isCurrent ? 'text-amber-400' : 'text-slate-400')}>{beatNum}</span>
               ) : (
-                <span className="text-[10px] text-slate-700/50">.</span>
+                <span className="text-sm text-slate-700/50">.</span>
               )}
             </div>
           );
@@ -71,7 +71,7 @@ export default function StepGrid({
                   'w-5 h-5 rounded flex items-center justify-center transition-all shrink-0',
                   track.muted
                     ? 'text-red-400 bg-red-500/10'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
                 style={track.muted ? { boxShadow: '0 0 6px rgba(239, 68, 68, 0.15)' } : undefined}
                 title={track.muted ? 'Unmute' : 'Mute'}
@@ -79,13 +79,13 @@ export default function StepGrid({
                 {track.muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
               </button>
 
-              <span className={cn('text-[11px] font-medium truncate', style.textClass)}>
+              <span className={cn('text-sm font-medium truncate', style.textClass)}>
                 {style.label}
               </span>
 
               {/* Source badge */}
               {isSample && (
-                <span className={cn('text-[9px] px-1 rounded', TRACK_SOURCE_STYLES.sample.bgClass, TRACK_SOURCE_STYLES.sample.textClass)}>
+                <span className={cn('text-sm px-1 rounded', TRACK_SOURCE_STYLES.sample.bgClass, TRACK_SOURCE_STYLES.sample.textClass)}>
                   S
                 </span>
               )}
@@ -105,7 +105,7 @@ export default function StepGrid({
 
               <button
                 onClick={() => onRemoveTrack(trackIdx)}
-                className="ml-auto opacity-0 group-hover/track:opacity-100 text-slate-600 hover:text-red-400 p-0.5 rounded hover:bg-red-500/10 transition-all shrink-0"
+                className="ml-auto opacity-0 group-hover/track:opacity-100 text-slate-400 hover:text-red-400 p-0.5 rounded hover:bg-red-500/10 transition-all shrink-0"
                 title="Remove track"
               >
                 <Trash2 className="w-3 h-3" />
@@ -155,7 +155,7 @@ export default function StepGrid({
       })}
 
       {pattern.tracks.length === 0 && (
-        <div className="text-center py-8 text-slate-500 text-xs">
+        <div className="text-center py-8 text-slate-400 text-sm">
           No tracks yet. Add instruments from the rack or use AI to generate a pattern.
         </div>
       )}

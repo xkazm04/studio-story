@@ -57,12 +57,12 @@ export default function DrumPad({
         >
           <Keyboard className="w-3 h-3 text-amber-400" />
         </div>
-        <span className="text-[11px] font-semibold text-slate-300 tracking-wide">Keyboard Pad</span>
+        <span className="text-sm font-semibold text-slate-300 tracking-wide">Keyboard Pad</span>
         <div className="flex-1" />
         <button
           onClick={onToggleRecording}
           className={cn(
-            'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all',
+            'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium transition-all',
             recording
               ? 'bg-red-600 text-white'
               : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
@@ -75,7 +75,7 @@ export default function DrumPad({
       </div>
 
       {recording && (
-        <p className="text-[10px] text-slate-500 mb-2">
+        <p className="text-sm text-slate-400 mb-2">
           Press keys during playback to record hits at the current step
         </p>
       )}
@@ -102,14 +102,14 @@ export default function DrumPad({
                 style={isPressed ? { boxShadow: PAD_GLOW[instrument] } : undefined}
               >
                 <kbd className={cn(
-                  'text-xs font-mono font-bold mb-0.5 transition-colors',
+                  'text-sm font-mono font-bold mb-0.5 transition-colors',
                   isPressed ? 'text-white' : style.textClass
                 )}
                   style={isPressed ? { textShadow: PAD_GLOW[instrument] } : undefined}
                 >
                   {key}
                 </kbd>
-                <span className={cn('text-[8px]', isPressed ? 'text-white/80' : 'text-slate-500')}>
+                <span className={cn('text-sm', isPressed ? 'text-white/80' : 'text-slate-400')}>
                   {style.label}
                 </span>
               </div>
@@ -137,14 +137,14 @@ export default function DrumPad({
                 style={isPressed ? { boxShadow: PAD_GLOW[instrument] } : undefined}
               >
                 <kbd className={cn(
-                  'text-xs font-mono font-bold mb-0.5 transition-colors',
+                  'text-sm font-mono font-bold mb-0.5 transition-colors',
                   isPressed ? 'text-white' : style.textClass
                 )}
                   style={isPressed ? { textShadow: PAD_GLOW[instrument] } : undefined}
                 >
                   {key}
                 </kbd>
-                <span className={cn('text-[8px]', isPressed ? 'text-white/80' : 'text-slate-500')}>
+                <span className={cn('text-sm', isPressed ? 'text-white/80' : 'text-slate-400')}>
                   {style.label}
                 </span>
               </div>

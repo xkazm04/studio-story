@@ -207,7 +207,7 @@ export default function SaveLoadPanel({
       <div className="p-3 border-b border-slate-800/50">
         <div className="flex items-center gap-2 mb-2">
           <Save className="w-3.5 h-3.5 text-orange-400" />
-          <span className="text-xs font-medium text-slate-200">Save Soundscape</span>
+          <span className="text-sm font-medium text-slate-200">Save Soundscape</span>
         </div>
         <div className="flex gap-1.5">
           <input
@@ -215,7 +215,7 @@ export default function SaveLoadPanel({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Soundscape name..."
-            className="flex-1 px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+            className="flex-1 px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200
               placeholder:text-slate-500 focus:outline-none focus:border-orange-500/40"
             onKeyDown={(e) => e.key === 'Enter' && !isSaving && handleSave()}
           />
@@ -223,9 +223,9 @@ export default function SaveLoadPanel({
             onClick={handleSave}
             disabled={isSaving}
             className={cn(
-              'px-3 py-1.5 rounded text-[11px] font-medium transition-all',
+              'px-3 py-1.5 rounded text-sm font-medium transition-all',
               isSaving
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                 : saveStatus === 'saved'
                   ? 'bg-emerald-600/80 text-white'
                   : 'bg-orange-600 text-white hover:bg-orange-500'
@@ -246,11 +246,11 @@ export default function SaveLoadPanel({
       <div className="p-2">
         <div className="flex items-center gap-2 mb-1.5 px-1">
           <FolderOpen className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[11px] font-medium text-slate-400">Saved ({savedList.length})</span>
+          <span className="text-sm font-medium text-slate-400">Saved ({savedList.length})</span>
         </div>
 
         {savedList.length === 0 ? (
-          <div className="text-[11px] text-slate-500 text-center py-4">No saved soundscapes</div>
+          <div className="text-sm text-slate-400 text-center py-4">No saved soundscapes</div>
         ) : (
           <div className="space-y-0.5 max-h-48 overflow-auto">
             {savedList.map((s) => (
@@ -265,18 +265,18 @@ export default function SaveLoadPanel({
                 {loadingId === s.id ? (
                   <Loader2 className="w-3 h-3 text-orange-400 animate-spin shrink-0" />
                 ) : (
-                  <FolderOpen className="w-3 h-3 text-slate-500 shrink-0" />
+                  <FolderOpen className="w-3 h-3 text-slate-400 shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-slate-300 truncate block">{s.name}</span>
-                  <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                  <span className="text-sm text-slate-300 truncate block">{s.name}</span>
+                  <span className="text-sm text-slate-400 flex items-center gap-1">
                     <Clock className="w-2.5 h-2.5" />
                     {timeAgo(s.updated_at)}
                   </span>
                 </div>
                 <button
                   onClick={(e) => handleDelete(s.id, e)}
-                  className="p-0.5 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-0.5 text-slate-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -290,7 +290,7 @@ export default function SaveLoadPanel({
       <div className="px-3 py-1.5 border-t border-slate-800/50 flex justify-end">
         <button
           onClick={onClose}
-          className="text-[11px] text-slate-500 hover:text-slate-300 transition-colors"
+          className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
         >
           Close
         </button>

@@ -81,9 +81,9 @@ export default function MidiBridgePanel({
       <div className="shrink-0 px-4 py-2.5 border-b border-slate-800/30">
         <div className="flex items-center gap-2">
           <Music className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-[12px] font-semibold text-slate-200">MIDI Bridge</span>
+          <span className="text-sm font-semibold text-slate-200">MIDI Bridge</span>
           {extraction && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400">
               {extraction.tracks.length} tracks | {Math.round(extraction.tempo)} BPM
             </span>
           )}
@@ -99,9 +99,9 @@ export default function MidiBridgePanel({
               onClick={onExtract}
               disabled={isExtracting}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
+                'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
                 isExtracting
-                  ? 'bg-slate-800/40 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
                   : 'bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/20'
               )}
             >
@@ -117,7 +117,7 @@ export default function MidiBridgePanel({
                 </>
               )}
             </button>
-            <p className="text-[10px] text-slate-500 text-center max-w-xs">
+            <p className="text-sm text-slate-400 text-center max-w-xs">
               Uses machine learning to detect notes, chords, and rhythm from the audio file.
               First run may take a few seconds to load the model.
             </p>
@@ -134,7 +134,7 @@ export default function MidiBridgePanel({
 
             {/* Track instrument controls */}
             <div className="rounded-lg border border-slate-800/40 bg-slate-900/30 p-3 space-y-2">
-              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+              <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                 Instrument Assignment
               </span>
               {extraction.tracks.map((track, ti) => {
@@ -147,11 +147,11 @@ export default function MidiBridgePanel({
                 return (
                   <div key={ti} className="bg-slate-900/40 rounded-md p-2 space-y-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-medium text-slate-300">{track.name}</span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-slate-800/60 text-slate-400">
+                      <span className="text-sm font-medium text-slate-300">{track.name}</span>
+                      <span className="text-sm px-1 py-0.5 rounded bg-slate-800/60 text-slate-400">
                         {track.notes.length} notes
                       </span>
-                      <span className="text-[9px] text-slate-500 ml-auto">
+                      <span className="text-sm text-slate-400 ml-auto">
                         GM#{currentProgram}
                       </span>
                     </div>
@@ -163,7 +163,7 @@ export default function MidiBridgePanel({
                           const fam = GM_FAMILIES.find(f => f.family === e.target.value);
                           if (fam) updateSwap(ti, 'newInstrument', fam.range[0]);
                         }}
-                        className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/40"
+                        className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/40"
                       >
                         {GM_FAMILIES.map(f => (
                           <option key={f.family} value={f.family}>{f.label}</option>
@@ -173,7 +173,7 @@ export default function MidiBridgePanel({
                       <select
                         value={currentProgram}
                         onChange={(e) => updateSwap(ti, 'newInstrument', parseInt(e.target.value))}
-                        className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/40"
+                        className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/40"
                       >
                         {currentFamily && Array.from({ length: currentFamily.range[1] - currentFamily.range[0] + 1 }, (_, i) => {
                           const prog = currentFamily.range[0] + i;
@@ -190,12 +190,12 @@ export default function MidiBridgePanel({
 
             {/* Global controls */}
             <div className="rounded-lg border border-slate-800/40 bg-slate-900/30 p-3 space-y-2">
-              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+              <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                 Global Controls
               </span>
               {/* Transposition */}
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-400 w-20 shrink-0">Transpose</span>
+                <span className="text-sm text-slate-400 w-20 shrink-0">Transpose</span>
                 <input
                   type="range"
                   min={-24}
@@ -204,23 +204,23 @@ export default function MidiBridgePanel({
                   onChange={(e) => onTranspositionChange(parseInt(e.target.value))}
                   className="flex-1 accent-cyan-500"
                 />
-                <span className="text-[10px] font-mono text-slate-300 w-8 text-right">
+                <span className="text-sm font-mono text-slate-300 w-8 text-right">
                   {globalTransposition > 0 ? '+' : ''}{globalTransposition}
                 </span>
               </div>
               {/* Velocity curve */}
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-400 w-20 shrink-0">Velocity</span>
+                <span className="text-sm text-slate-400 w-20 shrink-0">Velocity</span>
                 <div className="flex gap-1">
                   {VELOCITY_CURVES.map(vc => (
                     <button
                       key={vc.value}
                       onClick={() => onVelocityCurveChange(vc.value)}
                       className={cn(
-                        'px-2 py-0.5 rounded text-[9px] font-medium active:scale-95 transition-all',
+                        'px-2 py-0.5 rounded text-sm font-medium active:scale-95 transition-all',
                         globalVelocityCurve === vc.value
                           ? 'bg-cyan-500/15 text-cyan-400'
-                          : 'text-slate-500 hover:text-slate-300'
+                          : 'text-slate-400 hover:text-slate-300'
                       )}
                     >
                       {vc.label}
@@ -236,7 +236,7 @@ export default function MidiBridgePanel({
                 onClick={isPlaying ? onStop : onPlay}
                 disabled={!extraction || isExtracting}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
                   isPlaying
                     ? 'bg-red-500/15 text-red-400'
                     : 'bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25'
@@ -249,9 +249,9 @@ export default function MidiBridgePanel({
                 onClick={onRender}
                 disabled={isRendering || !extraction}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed',
                   isRendering
-                    ? 'bg-slate-800/40 text-slate-500 cursor-not-allowed'
+                    ? 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
                     : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
                 )}
               >
@@ -262,7 +262,7 @@ export default function MidiBridgePanel({
                 onClick={onSendToMixer}
                 disabled={!hasOutput}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed ml-auto',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed ml-auto',
                   'bg-orange-500/10 text-orange-400 hover:bg-orange-500/20'
                 )}
               >

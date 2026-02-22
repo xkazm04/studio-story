@@ -42,7 +42,7 @@ function ScoreRing({ score }: { score: number }) {
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
-  const color = score >= 80 ? 'text-emerald-400' : score >= 60 ? 'text-orange-400' : 'text-slate-500';
+  const color = score >= 80 ? 'text-emerald-400' : score >= 60 ? 'text-orange-400' : 'text-slate-400';
   const stroke = score >= 80 ? '#34d399' : score >= 60 ? '#fb923c' : '#64748b';
 
   return (
@@ -56,7 +56,7 @@ function ScoreRing({ score }: { score: number }) {
           className="transition-all duration-500"
         />
       </svg>
-      <span className={cn('absolute text-[11px] font-bold', color)}>{score}</span>
+      <span className={cn('absolute text-sm font-bold', color)}>{score}</span>
     </div>
   );
 }
@@ -87,10 +87,10 @@ function MatchCard({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-medium text-slate-200 truncate">{match.voice.name}</span>
+          <span className="text-sm font-medium text-slate-200 truncate">{match.voice.name}</span>
           {isCast && <Check className="w-3 h-3 text-emerald-400" />}
         </div>
-        <p className="text-[11px] text-slate-500 truncate">{match.matchReasons.slice(0, 2).join(' / ')}</p>
+        <p className="text-sm text-slate-400 truncate">{match.matchReasons.slice(0, 2).join(' / ')}</p>
       </div>
 
       <div className="flex items-center gap-1 shrink-0">
@@ -98,7 +98,7 @@ function MatchCard({
           onClick={() => setShortlisted(!shortlisted)}
           className={cn(
             'p-1 rounded transition-colors',
-            shortlisted ? 'text-amber-400' : 'text-slate-600 hover:text-slate-400'
+            shortlisted ? 'text-amber-400' : 'text-slate-400 hover:text-slate-400'
           )}
         >
           <Star className="w-3 h-3" fill={shortlisted ? 'currentColor' : 'none'} />
@@ -107,7 +107,7 @@ function MatchCard({
           onClick={onPlay}
           className={cn(
             'p-1 rounded transition-colors',
-            isPlaying ? 'text-orange-400' : 'text-slate-600 hover:text-slate-400'
+            isPlaying ? 'text-orange-400' : 'text-slate-400 hover:text-slate-400'
           )}
           title="Preview voice"
         >
@@ -120,7 +120,7 @@ function MatchCard({
         {!isCast && (
           <button
             onClick={onCast}
-            className="text-[11px] px-2 py-0.5 rounded bg-orange-600/80 hover:bg-orange-500 text-white font-medium transition-colors"
+            className="text-sm px-2 py-0.5 rounded bg-orange-600/80 hover:bg-orange-500 text-white font-medium transition-colors"
           >
             Cast
           </button>
@@ -191,7 +191,7 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
                   ? 'border-orange-500 bg-orange-500/20 shadow-sm shadow-orange-500/20'
                   : 'border-slate-700 bg-slate-800'
               )}>
-                <span className={cn('text-[11px] font-semibold', isSelected ? 'text-orange-400' : 'text-slate-400')}>
+                <span className={cn('text-sm font-semibold', isSelected ? 'text-orange-400' : 'text-slate-400')}>
                   {initials}
                 </span>
                 {hasCast && (
@@ -200,7 +200,7 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
                   </div>
                 )}
               </div>
-              <span className={cn('text-[11px] font-medium', isSelected ? 'text-slate-200' : 'text-slate-500')}>
+              <span className={cn('text-sm font-medium', isSelected ? 'text-slate-200' : 'text-slate-400')}>
                 {char.name.split(' ')[0]}
               </span>
             </button>
@@ -212,17 +212,17 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
       <div className="px-3 py-2 border-b border-slate-800/30 bg-slate-900/30 shrink-0">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-medium text-slate-200">{selectedChar.name}</span>
-            <span className="text-[11px] text-slate-500 ml-2">{selectedChar.archetype} / {selectedChar.gender} / {selectedChar.ageRange}</span>
+            <span className="text-sm font-medium text-slate-200">{selectedChar.name}</span>
+            <span className="text-sm text-slate-400 ml-2">{selectedChar.archetype} / {selectedChar.gender} / {selectedChar.ageRange}</span>
           </div>
           <div className="flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-orange-400" />
-            <span className="text-[11px] text-orange-400">AI Match</span>
+            <span className="text-sm text-orange-400">AI Match</span>
           </div>
         </div>
         <div className="flex gap-1 mt-1">
           {selectedChar.traits.map((t) => (
-            <span key={t} className="text-[11px] px-1.5 py-0.5 rounded-full bg-slate-800/60 text-slate-400">{t}</span>
+            <span key={t} className="text-sm px-1.5 py-0.5 rounded-full bg-slate-800/60 text-slate-400">{t}</span>
           ))}
         </div>
       </div>
@@ -244,7 +244,7 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
       {/* Casting Summary */}
       <div className="shrink-0 px-3 py-2 border-t border-slate-800/50 bg-slate-900/30">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] text-slate-500">
+          <span className="text-sm text-slate-400">
             {Object.keys(castings).length}/{MOCK_CHARACTERS.length} characters cast
           </span>
           <div className="flex items-center gap-1">
@@ -252,7 +252,7 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
               const voice = voices.find((v) => v.id === voiceId);
               if (!voice) return null;
               return (
-                <span key={charId} className="text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span key={charId} className="text-sm px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                   {voice.name.split(' ')[0]}
                 </span>
               );

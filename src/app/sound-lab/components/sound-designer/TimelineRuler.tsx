@@ -139,7 +139,7 @@ export default function TimelineRuler({
           style={{ left: t * pixelsPerSecond }}
         >
           <div className="w-px h-3 bg-slate-700/50" />
-          <span className="text-[11px] text-slate-400 font-mono mt-0.5">{formatTime(t)}</span>
+          <span className="text-sm text-slate-400 font-mono mt-0.5">{formatTime(t)}</span>
         </div>
       ))}
 
@@ -186,7 +186,7 @@ export default function TimelineRuler({
             {/* Marker label (shown on hover) */}
             {isHovered && (
               <div
-                className="absolute top-8 -ml-6 px-1.5 py-0.5 rounded text-[9px] font-medium text-white whitespace-nowrap z-20"
+                className="absolute top-8 -ml-6 px-1.5 py-0.5 rounded text-sm font-medium text-white whitespace-nowrap z-20"
                 style={{ backgroundColor: strokeColor }}
               >
                 {marker.label}

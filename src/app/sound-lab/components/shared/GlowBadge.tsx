@@ -27,7 +27,7 @@ const STATUS_CONFIG: Record<BadgeStatus, { dot: string; text: string; bg: string
   },
   offline: {
     dot: 'bg-slate-500',
-    text: 'text-slate-500',
+    text: 'text-slate-400',
     bg: 'bg-slate-500/10 border-slate-500/20',
     glow: '',
     defaultLabel: 'Offline',
@@ -40,7 +40,7 @@ export default function GlowBadge({ status, label, className }: GlowBadgeProps) 
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[11px] font-medium shadow-sm',
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-sm font-medium shadow-sm',
         config.bg,
         config.text,
         config.glow,

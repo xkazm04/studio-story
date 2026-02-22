@@ -101,7 +101,7 @@ function InstrumentRow({
       {isDragOver && (
         <div className="absolute inset-0 flex items-center justify-center rounded-md pointer-events-none z-10">
           <span
-            className="text-[10px] font-medium text-emerald-400"
+            className="text-sm font-medium text-emerald-400"
             style={{ textShadow: '0 0 8px rgba(16, 185, 129, 0.4)' }}
           >
             Drop to assign
@@ -117,8 +117,8 @@ function InstrumentRow({
 
       {/* Label */}
       <span className={cn(
-        'text-[11px] font-medium shrink-0 w-10 truncate',
-        hasTrack ? style.textClass : 'text-slate-500'
+        'text-sm font-medium shrink-0 w-10 truncate',
+        hasTrack ? style.textClass : 'text-slate-400'
       )}>
         {style.label}
       </span>
@@ -132,7 +132,7 @@ function InstrumentRow({
               'p-0.5 rounded transition-all',
               !isSample
                 ? cn(TRACK_SOURCE_STYLES.synth.textClass, TRACK_SOURCE_STYLES.synth.bgClass, 'shadow-[0_0_6px_rgba(245,158,11,0.1)]')
-                : 'text-slate-600 hover:text-slate-400'
+                : 'text-slate-400 hover:text-slate-400'
             )}
             title="Synth mode"
           >
@@ -144,7 +144,7 @@ function InstrumentRow({
               'p-0.5 rounded transition-all',
               isSample
                 ? cn(TRACK_SOURCE_STYLES.sample.textClass, TRACK_SOURCE_STYLES.sample.bgClass, 'shadow-[0_0_6px_rgba(16,185,129,0.1)]')
-                : 'text-slate-600 hover:text-slate-400'
+                : 'text-slate-400 hover:text-slate-400'
             )}
             title="Sample mode"
           >
@@ -167,10 +167,10 @@ function InstrumentRow({
               ))}
             </div>
           )}
-          <span className="text-[9px] text-emerald-400/70 truncate font-mono">{sample.name}</span>
+          <span className="text-sm text-emerald-400/70 truncate font-mono">{sample.name}</span>
           <button
             onClick={(e) => { e.stopPropagation(); onRemoveSample(instrument); }}
-            className="opacity-0 group-hover/row:opacity-100 text-slate-600 hover:text-red-400 transition-all shrink-0"
+            className="opacity-0 group-hover/row:opacity-100 text-slate-400 hover:text-red-400 transition-all shrink-0"
           >
             <X className="w-2.5 h-2.5" />
           </button>
@@ -184,7 +184,7 @@ function InstrumentRow({
       {hasTrack ? (
         <button
           onClick={() => onRemoveTrack(trackIdx)}
-          className="opacity-0 group-hover/row:opacity-100 text-slate-600 hover:text-red-400 transition-all shrink-0"
+          className="opacity-0 group-hover/row:opacity-100 text-slate-400 hover:text-red-400 transition-all shrink-0"
           title="Remove track"
         >
           <Trash2 className="w-3 h-3" />
@@ -192,7 +192,7 @@ function InstrumentRow({
       ) : (
         <button
           onClick={() => onAddTrack(instrument)}
-          className="opacity-0 group-hover/row:opacity-100 text-slate-600 hover:text-slate-300 transition-all shrink-0"
+          className="opacity-0 group-hover/row:opacity-100 text-slate-400 hover:text-slate-300 transition-all shrink-0"
           title="Add track"
         >
           <Plus className="w-3 h-3" />
@@ -226,9 +226,9 @@ export default function InstrumentRack({
           >
             <Layers className="w-3 h-3 text-orange-400" />
           </div>
-          <span className="text-[11px] font-semibold text-slate-300 tracking-wide">Instruments</span>
+          <span className="text-sm font-semibold text-slate-300 tracking-wide">Instruments</span>
           <span
-            className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/80"
+            className="text-sm font-mono px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400/80"
             style={{ textShadow: '0 0 6px rgba(249, 115, 22, 0.3)' }}
           >
             {pattern.tracks.length}/10

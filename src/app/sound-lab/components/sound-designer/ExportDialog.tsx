@@ -107,14 +107,14 @@ export default function ExportDialog({
       <div className="space-y-4">
         {/* Format Options */}
         <div>
-          <span className="text-[11px] font-medium text-slate-400 block mb-2">Format</span>
+          <span className="text-sm font-medium text-slate-400 block mb-2">Format</span>
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="text-[11px] text-slate-500 block mb-1">Sample Rate</label>
+              <label className="text-sm text-slate-400 block mb-1">Sample Rate</label>
               <select
                 value={sampleRate}
                 onChange={(e) => setSampleRate(Number(e.target.value) as 44100 | 48000)}
-                className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-300
+                className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-300
                   focus:outline-none focus:border-orange-500/40"
               >
                 <option value={44100}>44100 Hz (CD)</option>
@@ -122,11 +122,11 @@ export default function ExportDialog({
               </select>
             </div>
             <div className="flex-1">
-              <label className="text-[11px] text-slate-500 block mb-1">Channels</label>
+              <label className="text-sm text-slate-400 block mb-1">Channels</label>
               <select
                 value={channels}
                 onChange={(e) => setChannels(Number(e.target.value) as 1 | 2)}
-                className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-[11px] text-slate-300
+                className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-300
                   focus:outline-none focus:border-orange-500/40"
               >
                 <option value={2}>Stereo</option>
@@ -134,14 +134,14 @@ export default function ExportDialog({
               </select>
             </div>
           </div>
-          <span className="text-[11px] text-slate-500 mt-1 block">
+          <span className="text-sm text-slate-400 mt-1 block">
             Est. size: {fileSizeMB} MB / {Math.floor(totalDuration / 60)}:{String(Math.floor(totalDuration % 60)).padStart(2, '0')}
           </span>
         </div>
 
         {/* Lane Selection */}
         <div>
-          <span className="text-[11px] font-medium text-slate-400 block mb-2">Include Lanes</span>
+          <span className="text-sm font-medium text-slate-400 block mb-2">Include Lanes</span>
           <div className="grid grid-cols-2 gap-1.5">
             {(['voice', 'music', 'sfx', 'ambience'] as AudioAssetType[]).map((lane) => {
               const info = LANE_INFO[lane];
@@ -154,15 +154,15 @@ export default function ExportDialog({
                   key={lane}
                   onClick={() => toggleLane(lane)}
                   className={cn(
-                    'flex items-center gap-2 px-2.5 py-2 rounded-md border text-[11px] transition-all',
+                    'flex items-center gap-2 px-2.5 py-2 rounded-md border text-sm transition-all',
                     enabled
                       ? 'border-orange-500/40 bg-orange-500/5 text-slate-200'
-                      : 'border-slate-800/50 bg-slate-900/30 text-slate-500'
+                      : 'border-slate-800/50 bg-slate-900/30 text-slate-400'
                   )}
                 >
                   <Icon className="w-3 h-3" />
                   <span className="font-medium">{info.label}</span>
-                  <span className={cn('ml-auto', enabled ? 'text-orange-400' : 'text-slate-600')}>
+                  <span className={cn('ml-auto', enabled ? 'text-orange-400' : 'text-slate-400')}>
                     {clipCount}
                   </span>
                 </button>
@@ -175,10 +175,10 @@ export default function ExportDialog({
         {isExporting && (
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] text-slate-400">
+              <span className="text-sm text-slate-400">
                 Rendering {exportMode === 'full' ? 'full mix' : exportMode}...
               </span>
-              <span className="text-[11px] text-orange-400 font-mono">{progress}%</span>
+              <span className="text-sm text-orange-400 font-mono">{progress}%</span>
             </div>
             <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div
@@ -195,11 +195,11 @@ export default function ExportDialog({
             onClick={() => handleExport('full')}
             disabled={isExporting || enabledLanes.size === 0}
             className={cn(
-              'w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-medium transition-all',
+              'w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium transition-all',
               isExporting
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                 : enabledLanes.size === 0
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-500 hover:to-amber-500'
             )}
           >
@@ -220,9 +220,9 @@ export default function ExportDialog({
                   onClick={() => handleExport(lane)}
                   disabled={isExporting}
                   className={cn(
-                    'flex-1 py-1.5 rounded text-[11px] font-medium transition-all',
+                    'flex-1 py-1.5 rounded text-sm font-medium transition-all',
                     isExporting
-                      ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                      ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                       : 'bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                   )}
                   title={`Export ${info.label} only`}

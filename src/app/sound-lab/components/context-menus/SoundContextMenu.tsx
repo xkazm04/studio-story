@@ -47,7 +47,7 @@ export function MenuItem({
       }}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors rounded',
+        'w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors rounded',
         disabled && 'opacity-40 cursor-not-allowed',
         danger && !disabled && 'text-red-400 hover:bg-red-500/10',
         success && !disabled && 'text-emerald-400 hover:bg-emerald-500/10',
@@ -66,7 +66,7 @@ export function MenuItem({
       </span>
       <span className="flex-1 truncate">{label}</span>
       {shortcut && (
-        <kbd className="px-1 py-0.5 text-[9px] font-mono bg-slate-800 text-slate-500 rounded border border-slate-700 shrink-0">
+        <kbd className="px-1 py-0.5 text-sm font-mono bg-slate-800 text-slate-400 rounded border border-slate-700 shrink-0">
           {shortcut}
         </kbd>
       )}
@@ -112,13 +112,13 @@ export function MenuSubmenu({ icon, label, children, disabled = false }: MenuSub
     >
       <div
         className={cn(
-          'w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors rounded cursor-default',
+          'w-full flex items-center gap-2 px-3 py-1.5 text-sm transition-colors rounded cursor-default',
           disabled ? 'opacity-40 cursor-not-allowed' : 'text-slate-300 hover:bg-slate-700/50',
         )}
       >
         <span className="w-4 h-4 shrink-0 text-slate-400">{icon}</span>
         <span className="flex-1 truncate">{label}</span>
-        <ChevronRight className="w-3 h-3 text-slate-500 shrink-0" />
+        <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
       </div>
 
       <AnimatePresence>

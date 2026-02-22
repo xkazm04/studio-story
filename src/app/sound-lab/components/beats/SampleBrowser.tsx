@@ -45,12 +45,12 @@ function SampleRow({
       onDragStart={handleDragStart}
       className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-800/30 transition-all cursor-grab active:cursor-grabbing group/row"
     >
-      <GripVertical className="w-3 h-3 text-slate-700 group-hover/row:text-slate-400 shrink-0 transition-colors" />
-      <span className="flex-1 text-[11px] text-slate-300 truncate">{sample.name}</span>
+      <GripVertical className="w-3 h-3 text-slate-400 group-hover/row:text-slate-400 shrink-0 transition-colors" />
+      <span className="flex-1 text-sm text-slate-300 truncate">{sample.name}</span>
       <button
         onClick={(e) => { e.stopPropagation(); onPreview(url); }}
         disabled={isLoadingPreview}
-        className="opacity-0 group-hover/row:opacity-100 text-slate-500 hover:text-amber-400 transition-all shrink-0 p-0.5 rounded hover:bg-amber-500/10"
+        className="opacity-0 group-hover/row:opacity-100 text-slate-400 hover:text-amber-400 transition-all shrink-0 p-0.5 rounded hover:bg-amber-500/10"
         title="Preview"
       >
         {isLoadingPreview ? (
@@ -109,7 +109,7 @@ export default function SampleBrowser({ onPreviewSample }: SampleBrowserProps) {
           >
             <Library className="w-3 h-3 text-emerald-400" />
           </div>
-          <span className="text-[11px] font-semibold text-slate-300 tracking-wide">Sample Browser</span>
+          <span className="text-sm font-semibold text-slate-300 tracking-wide">Sample Browser</span>
         </div>
       </div>
 
@@ -121,7 +121,7 @@ export default function SampleBrowser({ onPreviewSample }: SampleBrowserProps) {
             const kit = DRUM_MACHINES.find((m) => m.id === e.target.value);
             if (kit) setSelectedKit(kit);
           }}
-          className="w-full px-2 py-1 bg-slate-950/60 border border-slate-700/30 rounded-md text-xs text-slate-200 backdrop-blur-sm
+          className="w-full px-2 py-1 bg-slate-950/60 border border-slate-700/30 rounded-md text-sm text-slate-200 backdrop-blur-sm
             focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/10 transition-all"
         >
           {DRUM_MACHINES.map((m) => (
@@ -139,7 +139,7 @@ export default function SampleBrowser({ onPreviewSample }: SampleBrowserProps) {
             <div key={category} className="mb-1">
               {/* Category header */}
               <div className="px-2 py-1 relative">
-                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                   {label}
                 </span>
                 <div
@@ -168,7 +168,7 @@ export default function SampleBrowser({ onPreviewSample }: SampleBrowserProps) {
           className="absolute top-0 left-0 right-0 h-px"
           style={{ background: 'linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.15), transparent)' }}
         />
-        <p className="text-[9px] text-slate-600">
+        <p className="text-sm text-slate-400">
           Drag samples to instrument rack. CC0 license.
         </p>
       </div>

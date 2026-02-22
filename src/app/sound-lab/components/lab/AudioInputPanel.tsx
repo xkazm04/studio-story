@@ -123,7 +123,7 @@ export default function AudioInputPanel({
       <div className="shrink-0 px-4 py-2.5 border-b border-slate-800/30">
         <div className="flex items-center gap-2">
           <FileAudio className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[11px] font-semibold text-slate-300">Audio Input</span>
+          <span className="text-sm font-semibold text-slate-300">Audio Input</span>
         </div>
       </div>
 
@@ -145,12 +145,12 @@ export default function AudioInputPanel({
           >
             <Upload className={cn(
               'w-6 h-6 transition-colors',
-              isDragOver ? 'text-cyan-400 animate-bounce' : 'text-slate-500'
+              isDragOver ? 'text-cyan-400 animate-bounce' : 'text-slate-400'
             )} />
-            <span className="text-[11px] text-slate-400">
+            <span className="text-sm text-slate-400">
               Drop audio file or click to browse
             </span>
-            <span className="text-[9px] text-slate-600">
+            <span className="text-sm text-slate-400">
               WAV, MP3, OGG, FLAC
             </span>
             <input
@@ -165,10 +165,10 @@ export default function AudioInputPanel({
           <>
             {/* File info */}
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-300 truncate flex-1">{sourceName}</span>
+              <span className="text-sm text-slate-300 truncate flex-1">{sourceName}</span>
               <button
                 onClick={handleClear}
-                className="text-slate-500 hover:text-red-400 transition-colors shrink-0"
+                className="text-slate-400 hover:text-red-400 transition-colors shrink-0"
                 title="Clear"
               >
                 <Trash2 className="w-3 h-3" />
@@ -184,7 +184,7 @@ export default function AudioInputPanel({
                 >
                   <WaveformVisualizer data={waveformData} height={48} progress={progress} />
                 </div>
-                <div className="flex justify-between text-[9px] font-mono text-slate-500 mt-1">
+                <div className="flex justify-between text-sm font-mono text-slate-400 mt-1">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(sourceDuration)}</span>
                 </div>
@@ -195,7 +195,7 @@ export default function AudioInputPanel({
             <button
               onClick={togglePlay}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium transition-all active:scale-95 w-full justify-center',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all active:scale-95 w-full justify-center',
                 isPlaying
                   ? 'bg-red-500/15 text-red-400 hover:bg-red-500/25'
                   : 'bg-slate-800/40 text-slate-300 hover:bg-slate-800/60'
@@ -207,28 +207,28 @@ export default function AudioInputPanel({
 
             {/* Musical Analysis — shown for both pipelines */}
             {isAnalyzing ? (
-              <div className="text-[10px] text-slate-500 animate-pulse">Analyzing...</div>
+              <div className="text-sm text-slate-400 animate-pulse">Analyzing...</div>
             ) : spectralFeatures?.bpm != null && (
               <div className="space-y-1.5">
-                <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                   Musical Analysis
                 </span>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-cyan-500/8 border border-cyan-500/15">
                     <Music className="w-3 h-3 text-cyan-400" />
-                    <span className="text-[11px] font-mono font-semibold text-cyan-400">
+                    <span className="text-sm font-mono font-semibold text-cyan-400">
                       {spectralFeatures.bpm}
                     </span>
-                    <span className="text-[9px] text-cyan-400/60">BPM</span>
+                    <span className="text-sm text-cyan-400/60">BPM</span>
                   </div>
                   {spectralFeatures.key && spectralFeatures.scale && (
                     <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-500/8 border border-emerald-500/15">
                       <KeyRound className="w-3 h-3 text-emerald-400" />
-                      <span className="text-[11px] font-mono font-semibold text-emerald-400">
+                      <span className="text-sm font-mono font-semibold text-emerald-400">
                         {spectralFeatures.key} {spectralFeatures.scale}
                       </span>
                       {spectralFeatures.keyStrength != null && (
-                        <span className="text-[9px] text-emerald-400/60">
+                        <span className="text-sm text-emerald-400/60">
                           {Math.round(spectralFeatures.keyStrength * 100)}%
                         </span>
                       )}
@@ -241,7 +241,7 @@ export default function AudioInputPanel({
             {/* Detailed spectral features — character-modify only */}
             {activePipeline === 'character-modify' && spectralFeatures && !isAnalyzing && (
               <div className="space-y-1.5">
-                <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                   Spectral Detail
                 </span>
                 <div className="space-y-1">
@@ -251,7 +251,7 @@ export default function AudioInputPanel({
                   <FeatureMeter label="Rolloff" value={spectralFeatures.spectralRolloff} max={20000} suffix="Hz" />
                   <FeatureMeter label="ZCR" value={spectralFeatures.zcr} max={1} />
                   <FeatureMeter label="Energy" value={spectralFeatures.energy} max={1} />
-                  <p className="text-[9px] text-slate-500 mt-1 italic">
+                  <p className="text-sm text-slate-400 mt-1 italic">
                     {spectralFeatures.description}
                   </p>
                 </div>
@@ -268,14 +268,14 @@ function FeatureMeter({ label, value, max, suffix }: { label: string; value: num
   const pct = Math.min(100, (value / max) * 100);
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[9px] text-slate-500 w-12 shrink-0 text-right">{label}</span>
+      <span className="text-sm text-slate-400 w-12 shrink-0 text-right">{label}</span>
       <div className="flex-1 h-1.5 bg-slate-800/60 rounded-full overflow-hidden">
         <div
           className="h-full bg-cyan-500/50 rounded-full transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-[9px] text-slate-400 w-12 shrink-0 font-mono">
+      <span className="text-sm text-slate-400 w-12 shrink-0 font-mono">
         {value < 10 ? value.toFixed(3) : Math.round(value)}{suffix || ''}
       </span>
     </div>

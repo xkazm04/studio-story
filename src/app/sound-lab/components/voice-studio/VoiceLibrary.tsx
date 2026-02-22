@@ -63,7 +63,7 @@ function VoiceRow({
           : 'bg-slate-800/60 border-slate-700/40'
       )}>
         <span className={cn(
-          'text-[11px] font-semibold',
+          'text-sm font-semibold',
           isSelected ? 'text-orange-400' : 'text-slate-400'
         )}>
           {initials}
@@ -74,17 +74,17 @@ function VoiceRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className={cn(
-            'text-[11px] font-medium truncate',
+            'text-sm font-medium truncate',
             isSelected ? 'text-orange-300' : 'text-slate-200'
           )}>
             {voice.name}
           </span>
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-[11px] px-1.5 py-0 rounded bg-slate-800/60 text-slate-400">
+          <span className="text-sm px-1.5 py-0 rounded bg-slate-800/60 text-slate-400">
             {voice.provider}
           </span>
-          <span className="text-[11px] text-slate-500">{voice.gender}</span>
+          <span className="text-sm text-slate-400">{voice.gender}</span>
         </div>
       </div>
     </div>
@@ -117,18 +117,18 @@ export default function VoiceLibrary({ onCollapse, selectedVoiceId, onSelectVoic
       {/* Header */}
       <div className="flex items-center gap-2 h-8 px-2.5 bg-slate-900/60 border-b border-slate-700/40 shrink-0">
         <Mic className="w-3.5 h-3.5 text-orange-400/80" />
-        <span className="text-xs font-semibold text-slate-200">Voices</span>
+        <span className="text-sm font-semibold text-slate-200">Voices</span>
         <span className={cn(
-          'text-[11px] ml-auto mr-1 px-1.5 py-0.5 rounded-full font-medium',
+          'text-sm ml-auto mr-1 px-1.5 py-0.5 rounded-full font-medium',
           isConnected
             ? 'bg-emerald-500/10 text-emerald-400'
-            : 'bg-slate-800/40 text-slate-500'
+            : 'bg-slate-800/40 text-slate-400'
         )}>
           {isConnected ? 'Live' : 'Demo'} ({filteredVoices.length})
         </span>
         <button
           onClick={onCollapse}
-          className="p-0.5 rounded text-slate-500 hover:text-slate-300 transition-colors"
+          className="p-0.5 rounded text-slate-400 hover:text-slate-300 transition-colors"
           title="Collapse sidebar"
         >
           <PanelLeftClose className="w-3.5 h-3.5" />
@@ -138,14 +138,14 @@ export default function VoiceLibrary({ onCollapse, selectedVoiceId, onSelectVoic
       {/* Search */}
       <div className="px-2 pt-2 pb-1 shrink-0">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search voices..."
             className="w-full pl-6 pr-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded-md
-              text-xs text-slate-200 placeholder:text-slate-500
+              text-sm text-slate-200 placeholder:text-slate-500
               focus:outline-none focus:border-orange-500/40 transition-colors"
           />
         </div>
@@ -158,7 +158,7 @@ export default function VoiceLibrary({ onCollapse, selectedVoiceId, onSelectVoic
             key={f.value}
             onClick={() => setGenderFilter(f.value)}
             className={cn(
-              'text-[11px] px-2 py-0.5 rounded-md font-medium transition-all',
+              'text-sm px-2 py-0.5 rounded-md font-medium transition-all',
               genderFilter === f.value
                 ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30'
                 : 'bg-slate-800/40 text-slate-400 hover:text-slate-200'
@@ -182,7 +182,7 @@ export default function VoiceLibrary({ onCollapse, selectedVoiceId, onSelectVoic
 
         {filteredVoices.length === 0 && (
           <div className="text-center py-6">
-            <span className="text-[11px] text-slate-500">No voices found</span>
+            <span className="text-sm text-slate-400">No voices found</span>
           </div>
         )}
       </div>
@@ -193,7 +193,7 @@ export default function VoiceLibrary({ onCollapse, selectedVoiceId, onSelectVoic
           onClick={() => setShowUpload(!showUpload)}
           className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md
             border border-dashed border-orange-500/30 bg-orange-500/5
-            text-[11px] font-medium text-orange-400/80
+            text-sm font-medium text-orange-400/80
             hover:bg-orange-500/10 hover:border-orange-500/50 transition-all duration-200"
         >
           <Upload className="w-3.5 h-3.5" />
@@ -232,7 +232,7 @@ export function CollapsedVoiceLibrary({
 
       <div className="flex-1" />
 
-      <span className="text-[11px] text-slate-500 font-mono">{voiceCount}</span>
+      <span className="text-sm text-slate-400 font-mono">{voiceCount}</span>
     </div>
   );
 }

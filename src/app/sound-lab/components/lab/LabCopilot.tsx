@@ -146,10 +146,10 @@ export default function LabCopilot({
         <button
           onClick={() => onPipelineChange('midi-bridge')}
           className={cn(
-            'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all active:scale-95',
+            'flex items-center gap-1 px-2 py-0.5 rounded text-sm font-medium transition-all active:scale-95',
             activePipeline === 'midi-bridge'
               ? 'bg-cyan-500/15 text-cyan-400'
-              : 'text-slate-500 hover:text-slate-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Piano className="w-2.5 h-2.5" />MIDI
@@ -157,10 +157,10 @@ export default function LabCopilot({
         <button
           onClick={() => onPipelineChange('character-modify')}
           className={cn(
-            'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all active:scale-95',
+            'flex items-center gap-1 px-2 py-0.5 rounded text-sm font-medium transition-all active:scale-95',
             activePipeline === 'character-modify'
               ? 'bg-fuchsia-500/15 text-fuchsia-400'
-              : 'text-slate-500 hover:text-slate-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Waves className="w-2.5 h-2.5" />DSP
@@ -173,7 +173,7 @@ export default function LabCopilot({
             ? 'border-cyan-500/20 focus-within:border-cyan-500/40'
             : 'border-fuchsia-500/20 focus-within:border-fuchsia-500/40'
         )}>
-          <Terminal className="w-3 h-3 text-slate-500 shrink-0" />
+          <Terminal className="w-3 h-3 text-slate-400 shrink-0" />
           <textarea
             ref={textareaRef}
             value={briefText}
@@ -186,7 +186,7 @@ export default function LabCopilot({
             }
             rows={1}
             disabled={isProcessing}
-            className="flex-1 bg-transparent text-[11px] text-slate-200 placeholder:text-slate-600 font-mono leading-tight resize-none focus:outline-none disabled:opacity-50"
+            className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 font-mono leading-tight resize-none focus:outline-none disabled:opacity-50"
           />
           <button
             onClick={handleSubmit}
@@ -194,7 +194,7 @@ export default function LabCopilot({
             className={cn(
               'shrink-0 p-1 rounded transition-all',
               isProcessing || !briefText.trim()
-                ? 'text-slate-600 cursor-not-allowed'
+                ? 'text-slate-400 cursor-not-allowed'
                 : pipelineStyle.bgClass + ' ' + pipelineStyle.textClass + ' hover:opacity-80'
             )}
             title="Submit (Ctrl+Enter)"
@@ -206,7 +206,7 @@ export default function LabCopilot({
         {/* Context toggle */}
         <button
           onClick={() => setShowContext(!showContext)}
-          className="text-slate-500 hover:text-slate-300 transition-colors p-0.5"
+          className="text-slate-400 hover:text-slate-300 transition-colors p-0.5"
           title="Analysis Context"
         >
           <Code2 className="w-3 h-3" />
@@ -215,7 +215,7 @@ export default function LabCopilot({
         {/* Expand/collapse terminal */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-slate-500 hover:text-slate-300 transition-colors p-0.5"
+          className="text-slate-400 hover:text-slate-300 transition-colors p-0.5"
           title={expanded ? 'Collapse terminal' : 'Expand terminal'}
         >
           {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
@@ -225,7 +225,7 @@ export default function LabCopilot({
       {/* Context display */}
       {showContext && (
         <div className="shrink-0 px-2 pb-1.5">
-          <pre className="text-[9px] font-mono text-slate-400 bg-slate-950/60 rounded p-1.5 overflow-x-auto leading-relaxed whitespace-pre max-h-20 overflow-y-auto">
+          <pre className="text-sm font-mono text-slate-400 bg-slate-950/60 rounded p-1.5 overflow-x-auto leading-relaxed whitespace-pre max-h-20 overflow-y-auto">
             {contextText}
           </pre>
         </div>

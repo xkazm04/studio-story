@@ -46,7 +46,7 @@ function StemRow({ stem, onToggleMute, onToggleSolo, onVolumeChange, onDownload,
     )}>
       {/* Label */}
       <div className="w-16 shrink-0">
-        <span className={cn('text-xs font-medium', style.textClass)}>{style.label}</span>
+        <span className={cn('text-sm font-medium', style.textClass)}>{style.label}</span>
       </div>
 
       {/* Waveform */}
@@ -93,7 +93,7 @@ function StemRow({ stem, onToggleMute, onToggleSolo, onVolumeChange, onDownload,
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-slate-300"
         />
-        <span className="text-[11px] text-slate-400 font-mono w-8 text-right">
+        <span className="text-sm text-slate-400 font-mono w-8 text-right">
           {Math.round(stem.volume * 100)}%
         </span>
 
@@ -295,9 +295,9 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
         {/* Header */}
         <div className="flex items-center gap-2 h-10 px-4 bg-slate-900/60 border-b border-slate-700/40 rounded-t-lg">
           <Scissors className="w-4 h-4 text-orange-400" />
-          <span className="text-xs font-semibold text-slate-200">Stem Separator</span>
+          <span className="text-sm font-semibold text-slate-200">Stem Separator</span>
           <span className={cn(
-            'text-[11px] ml-1 px-1.5 py-0.5 rounded',
+            'text-sm ml-1 px-1.5 py-0.5 rounded',
             isMockFallback
               ? 'text-amber-400 bg-amber-500/10'
               : provider === 'elevenlabs'
@@ -310,7 +310,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
             {state === 'done' && (
               <button
                 onClick={handleReset}
-                className="text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
               >
                 Reset
               </button>
@@ -335,7 +335,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
                     key={mode}
                     onClick={() => handleStemModeChange(mode)}
                     className={cn(
-                      'px-3 py-1.5 rounded-md text-xs font-medium transition-all',
+                      'px-3 py-1.5 rounded-md text-sm font-medium transition-all',
                       stemMode === mode
                         ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30'
                         : 'bg-slate-800/40 text-slate-400 hover:text-slate-200'
@@ -345,18 +345,18 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
                   </button>
                 ))}
               </div>
-              <div className="text-center text-[11px] text-slate-500">
+              <div className="text-center text-sm text-slate-400">
                 {STEM_MODE_CONFIG[stemMode].description}
               </div>
 
               {/* Provider Toggle */}
               <div className="flex items-center justify-center gap-2">
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider mr-1">Provider</span>
+                <span className="text-sm text-slate-400 uppercase tracking-wider mr-1">Provider</span>
                 <button
                   onClick={() => setProvider('elevenlabs')}
                   disabled={stemMode === '4stem'}
                   className={cn(
-                    'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all',
+                    'px-2.5 py-1 rounded-md text-sm font-medium transition-all',
                     provider === 'elevenlabs'
                       ? 'bg-violet-500/15 text-violet-400 ring-1 ring-violet-500/30'
                       : 'bg-slate-800/40 text-slate-400 hover:text-slate-200',
@@ -368,7 +368,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
                 <button
                   onClick={() => setProvider('huggingface')}
                   className={cn(
-                    'px-2.5 py-1 rounded-md text-[11px] font-medium transition-all',
+                    'px-2.5 py-1 rounded-md text-sm font-medium transition-all',
                     provider === 'huggingface'
                       ? 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30'
                       : 'bg-slate-800/40 text-slate-400 hover:text-slate-200'
@@ -387,9 +387,9 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
                   border border-dashed border-slate-700/50 bg-slate-900/20
                   cursor-pointer hover:border-orange-500/40 hover:bg-orange-500/5 transition-all duration-200"
               >
-                <Upload className="w-8 h-8 text-slate-500" />
-                <span className="text-xs text-slate-300">Drop an audio file or click to upload</span>
-                <span className="text-[11px] text-slate-400">
+                <Upload className="w-8 h-8 text-slate-400" />
+                <span className="text-sm text-slate-300">Drop an audio file or click to upload</span>
+                <span className="text-sm text-slate-400">
                   Separate into {STEM_MODE_CONFIG[stemMode].label.toLowerCase()}
                 </span>
               </div>
@@ -412,9 +412,9 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
               <Loader2 className="w-8 h-8 text-orange-400 animate-spin" />
               <div className="flex items-center gap-2">
                 <FileAudio className="w-4 h-4 text-slate-400" />
-                <span className="text-xs text-slate-300">{fileName}</span>
+                <span className="text-sm text-slate-300">{fileName}</span>
               </div>
-              <span className="text-xs text-orange-400">
+              <span className="text-sm text-orange-400">
                 Separating into {STEM_MODE_CONFIG[stemMode].label.toLowerCase()} via {provider === 'elevenlabs' ? 'ElevenLabs' : 'HuggingFace'}...
               </span>
               <div className="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -423,7 +423,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
                   style={{ animation: 'stemProgress 8s ease-in-out infinite' }}
                 />
               </div>
-              <span className="text-[10px] text-slate-500">This may take up to 2 minutes</span>
+              <span className="text-sm text-slate-400">This may take up to 2 minutes</span>
               <style>{`@keyframes stemProgress { 0% { width: 0% } 50% { width: 85% } 100% { width: 95% } }`}</style>
             </div>
           )}
@@ -431,7 +431,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
           {errorMsg && (
             <div className="flex items-center gap-2 px-3 py-2 mt-2 rounded bg-amber-500/5 border border-amber-500/20">
               <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="text-[11px] text-amber-400">{errorMsg}</span>
+              <span className="text-sm text-amber-400">{errorMsg}</span>
             </div>
           )}
 
@@ -461,7 +461,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/30 mt-3">
                 <button
                   onClick={() => stems.forEach((s) => handleDownload(s))}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-slate-300
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-slate-300
                     bg-slate-800/60 hover:bg-slate-700/60 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -478,7 +478,7 @@ export default function StemSeparator({ onClose, audioUrl: autoAudioUrl, audioNa
         {ctxTarget?.type === 'stem' && (
           <>
             <MenuHeader>
-              <span className={cn('text-xs font-medium', STEM_TYPE_STYLES[ctxTarget.stemType].textClass)}>
+              <span className={cn('text-sm font-medium', STEM_TYPE_STYLES[ctxTarget.stemType].textClass)}>
                 {STEM_TYPE_STYLES[ctxTarget.stemType].label}
               </span>
             </MenuHeader>

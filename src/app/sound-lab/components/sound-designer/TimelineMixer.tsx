@@ -898,12 +898,12 @@ export default function TimelineMixer({
                     })}
                   >
                     {group.collapsed ? (
-                      <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+                      <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
                     ) : (
-                      <ChevronDown className="w-3 h-3 text-slate-600 shrink-0" />
+                      <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
                     )}
                     <Icon className={cn('w-3 h-3 shrink-0', style.textClass)} style={{ opacity: 0.7 }} />
-                    <span className={cn('text-[11px] font-medium flex-1 truncate', effectiveMuted ? 'text-slate-500' : 'text-slate-200')}>
+                    <span className={cn('text-sm font-medium flex-1 truncate', effectiveMuted ? 'text-slate-400' : 'text-slate-200')}>
                       {style.label}
                     </span>
 
@@ -915,16 +915,16 @@ export default function TimelineMixer({
                       orientation="vertical"
                     />
 
-                    <span className="text-[11px] text-slate-500">{group.clips.length}</span>
+                    <span className="text-sm text-slate-400">{group.clips.length}</span>
 
                     {/* Solo button */}
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleSolo(group.type); }}
                       className={cn(
-                        'px-1 py-0.5 rounded text-[11px] font-bold transition-colors leading-none',
+                        'px-1 py-0.5 rounded text-sm font-bold transition-colors leading-none',
                         isSoloed
                           ? 'text-orange-400 bg-orange-500/10'
-                          : 'text-slate-600 hover:text-slate-400'
+                          : 'text-slate-400 hover:text-slate-400'
                       )}
                       title={`Solo ${style.label}`}
                     >
@@ -936,7 +936,7 @@ export default function TimelineMixer({
                       onClick={(e) => { e.stopPropagation(); toggleMute(group.type); }}
                       className={cn(
                         'p-0.5 rounded transition-colors',
-                        effectiveMuted ? 'text-red-400' : 'text-slate-600 hover:text-slate-400'
+                        effectiveMuted ? 'text-red-400' : 'text-slate-400 hover:text-slate-400'
                       )}
                     >
                       {effectiveMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -945,7 +945,7 @@ export default function TimelineMixer({
                     {/* Add clip — revealed on hover */}
                     <button
                       onClick={(e) => { e.stopPropagation(); addEmptyClip(group.type); }}
-                      className="opacity-0 group-hover/lane:opacity-100 p-0.5 rounded hover:bg-slate-700/40 text-slate-500 hover:text-slate-300 transition-all"
+                      className="opacity-0 group-hover/lane:opacity-100 p-0.5 rounded hover:bg-slate-700/40 text-slate-400 hover:text-slate-300 transition-all"
                       title="Add empty clip at playhead"
                     >
                       <Plus className="w-2.5 h-2.5" />
@@ -954,7 +954,7 @@ export default function TimelineMixer({
 
                   {!group.collapsed && (group.clips.length > 0 ? group.clips : [null]).map((clip, i) => (
                     <div key={clip?.id ?? `empty-${i}`} className="h-7 border-b border-slate-800/20 pl-7 pr-2 flex items-center">
-                      <span className="text-[11px] text-slate-400 truncate">{clip?.name ?? ''}</span>
+                      <span className="text-sm text-slate-400 truncate">{clip?.name ?? ''}</span>
                     </div>
                   ))}
                 </div>
@@ -1233,10 +1233,10 @@ export default function TimelineMixer({
                               }}
                               onClick={(e) => e.stopPropagation()}
                               onMouseDown={(e) => e.stopPropagation()}
-                              className="absolute inset-0 px-2 bg-slate-800/90 border border-orange-500/60 text-[11px] text-slate-200 z-20 outline-none"
+                              className="absolute inset-0 px-2 bg-slate-800/90 border border-orange-500/60 text-sm text-slate-200 z-20 outline-none"
                             />
                           ) : (
-                            <span className={cn('text-[11px] font-medium truncate px-2 relative z-10', CLIP_TEXT[group.type])}>
+                            <span className={cn('text-sm font-medium truncate px-2 relative z-10', CLIP_TEXT[group.type])}>
                               {clip.name}
                             </span>
                           )}
@@ -1301,7 +1301,7 @@ export default function TimelineMixer({
             >
               {/* Close button */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-medium text-slate-300 truncate">
+                <span className="text-sm font-medium text-slate-300 truncate">
                   {editingClip.clip.name}
                 </span>
                 <button
@@ -1312,7 +1312,7 @@ export default function TimelineMixer({
                     }
                     setEditingClip(null);
                   }}
-                  className="p-0.5 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="p-0.5 text-slate-400 hover:text-slate-300 transition-colors"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -1320,7 +1320,7 @@ export default function TimelineMixer({
 
               {/* Gain slider */}
               <div className="flex items-center gap-2 mb-2">
-                <label className="text-[11px] text-slate-400 w-12 shrink-0">Gain</label>
+                <label className="text-sm text-slate-400 w-12 shrink-0">Gain</label>
                 <input
                   type="range"
                   min={0}
@@ -1330,14 +1330,14 @@ export default function TimelineMixer({
                   onChange={(e) => updateEditingClipGain(Number(e.target.value))}
                   className="flex-1 h-1 accent-orange-500"
                 />
-                <span className="text-[11px] text-slate-400 w-8 text-right font-mono">
+                <span className="text-sm text-slate-400 w-8 text-right font-mono">
                   {Math.round((editingClip.clip.gain ?? 1) * 100)}%
                 </span>
               </div>
 
               {/* Fade In */}
               <div className="flex items-center gap-2 mb-2">
-                <label className="text-[11px] text-slate-400 w-12 shrink-0">Fade In</label>
+                <label className="text-sm text-slate-400 w-12 shrink-0">Fade In</label>
                 <input
                   type="number"
                   min={0}
@@ -1345,14 +1345,14 @@ export default function TimelineMixer({
                   step={0.1}
                   value={editingClip.clip.fadeIn ?? 0}
                   onChange={(e) => updateEditingClipFadeIn(Number(e.target.value))}
-                  className="flex-1 h-5 bg-slate-800 border border-slate-700 rounded px-1.5 text-[11px] text-slate-300 font-mono"
+                  className="flex-1 h-5 bg-slate-800 border border-slate-700 rounded px-1.5 text-sm text-slate-300 font-mono"
                 />
-                <span className="text-[11px] text-slate-500 w-4">s</span>
+                <span className="text-sm text-slate-400 w-4">s</span>
               </div>
 
               {/* Fade Out */}
               <div className="flex items-center gap-2">
-                <label className="text-[11px] text-slate-400 w-12 shrink-0">Fade Out</label>
+                <label className="text-sm text-slate-400 w-12 shrink-0">Fade Out</label>
                 <input
                   type="number"
                   min={0}
@@ -1360,9 +1360,9 @@ export default function TimelineMixer({
                   step={0.1}
                   value={editingClip.clip.fadeOut ?? 0}
                   onChange={(e) => updateEditingClipFadeOut(Number(e.target.value))}
-                  className="flex-1 h-5 bg-slate-800 border border-slate-700 rounded px-1.5 text-[11px] text-slate-300 font-mono"
+                  className="flex-1 h-5 bg-slate-800 border border-slate-700 rounded px-1.5 text-sm text-slate-300 font-mono"
                 />
-                <span className="text-[11px] text-slate-500 w-4">s</span>
+                <span className="text-sm text-slate-400 w-4">s</span>
               </div>
             </div>
           )}
@@ -1383,14 +1383,14 @@ export default function TimelineMixer({
             <>
               <MenuHeader>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-slate-200 truncate max-w-32">{ctxTarget.clipName}</span>
-                  <span className={cn('text-[9px] px-1.5 py-0.5 rounded', TRACK_TYPE_STYLES[ctxTarget.laneType].bgClass, TRACK_TYPE_STYLES[ctxTarget.laneType].textClass)}>
+                  <span className="text-sm font-medium text-slate-200 truncate max-w-32">{ctxTarget.clipName}</span>
+                  <span className={cn('text-sm px-1.5 py-0.5 rounded', TRACK_TYPE_STYLES[ctxTarget.laneType].bgClass, TRACK_TYPE_STYLES[ctxTarget.laneType].textClass)}>
                     {TRACK_TYPE_STYLES[ctxTarget.laneType].label}
                   </span>
                   {ctxTarget.locked && <Lock className="w-3 h-3 text-amber-400" />}
                 </div>
                 {multi && (
-                  <span className="text-[10px] text-orange-400 mt-1 block">{ids.length} clips selected</span>
+                  <span className="text-sm text-orange-400 mt-1 block">{ids.length} clips selected</span>
                 )}
               </MenuHeader>
               <div className="py-1">
@@ -1459,10 +1459,10 @@ export default function TimelineMixer({
             <MenuHeader>
               <div className="flex items-center gap-2">
                 {(() => { const Icon = LANE_ICONS[ctxTarget.laneType]; return <Icon className="w-4 h-4 text-slate-400" />; })()}
-                <span className="text-xs font-medium text-slate-200">
+                <span className="text-sm font-medium text-slate-200">
                   {TRACK_TYPE_STYLES[ctxTarget.laneType].label}
                 </span>
-                <span className="text-[9px] text-slate-500">{ctxTarget.clipCount} clips</span>
+                <span className="text-sm text-slate-400">{ctxTarget.clipCount} clips</span>
               </div>
             </MenuHeader>
             <div className="py-1">
@@ -1556,7 +1556,7 @@ export default function TimelineMixer({
           disabled={!canUndo}
           className={cn(
             'p-1 rounded transition-colors',
-            canUndo ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
+            canUndo ? 'text-slate-400 hover:text-slate-200' : 'text-slate-400 cursor-not-allowed'
           )}
           title="Undo (Ctrl+Z)"
         >
@@ -1567,7 +1567,7 @@ export default function TimelineMixer({
           disabled={!canRedo}
           className={cn(
             'p-1 rounded transition-colors',
-            canRedo ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
+            canRedo ? 'text-slate-400 hover:text-slate-200' : 'text-slate-400 cursor-not-allowed'
           )}
           title="Redo (Ctrl+Shift+Z)"
         >
@@ -1583,7 +1583,7 @@ export default function TimelineMixer({
             'p-1 rounded transition-colors',
             selection.selectedClipIds.size > 0
               ? 'text-slate-400 hover:text-slate-200'
-              : 'text-slate-700 cursor-not-allowed'
+              : 'text-slate-400 cursor-not-allowed'
           )}
           disabled={selection.selectedClipIds.size === 0}
           title="Split at playhead (S)"
@@ -1598,7 +1598,7 @@ export default function TimelineMixer({
           onClick={() => setSnap((s) => ({ ...s, enabled: !s.enabled }))}
           className={cn(
             'p-1 rounded transition-colors',
-            snap.enabled ? 'text-orange-400 bg-orange-500/10' : 'text-slate-500 hover:text-slate-300'
+            snap.enabled ? 'text-orange-400 bg-orange-500/10' : 'text-slate-400 hover:text-slate-300'
           )}
           title={`Snap to grid: ${snap.enabled ? 'on' : 'off'} (${snap.gridSize}s)`}
         >
@@ -1608,7 +1608,7 @@ export default function TimelineMixer({
           <select
             value={snap.gridSize}
             onChange={(e) => setSnap((s) => ({ ...s, gridSize: Number(e.target.value) }))}
-            className="h-5 px-1 bg-slate-800/60 border border-slate-700/40 rounded text-[11px] text-slate-400
+            className="h-5 px-1 bg-slate-800/60 border border-slate-700/40 rounded text-sm text-slate-400
               focus:outline-none focus:border-orange-500/40"
           >
             {SNAP_PRESETS.map((v) => (
@@ -1631,7 +1631,7 @@ export default function TimelineMixer({
           onClick={handleToggleLoop}
           className={cn(
             'p-1 rounded transition-colors',
-            loopEnabled ? 'text-orange-400 bg-orange-500/10' : 'text-slate-500 hover:text-slate-300'
+            loopEnabled ? 'text-orange-400 bg-orange-500/10' : 'text-slate-400 hover:text-slate-300'
           )}
           title={`Loop: ${loopEnabled ? 'on' : 'off'} (L)`}
         >
@@ -1644,7 +1644,7 @@ export default function TimelineMixer({
             onClick={() => setShowDuckingPanel(!showDuckingPanel)}
             className={cn(
               'p-1 rounded transition-colors',
-              duckingConfig.enabled ? 'text-amber-400 bg-amber-500/10' : 'text-slate-500 hover:text-slate-300'
+              duckingConfig.enabled ? 'text-amber-400 bg-amber-500/10' : 'text-slate-400 hover:text-slate-300'
             )}
             title="Auto-Duck settings"
           >
@@ -1671,7 +1671,7 @@ export default function TimelineMixer({
         >
           <ZoomOut className="w-3.5 h-3.5" />
         </button>
-        <span className="text-[11px] text-slate-400 font-mono w-8 text-center">{zoom.toFixed(1)}x</span>
+        <span className="text-sm text-slate-400 font-mono w-8 text-center">{zoom.toFixed(1)}x</span>
         <button
           onClick={() => onTransportChange({ ...transport, zoom: Math.min(3, zoom + 0.25) })}
           className="p-1 text-slate-400 hover:text-slate-200 transition-colors"
@@ -1683,7 +1683,7 @@ export default function TimelineMixer({
         {selection.selectedClipIds.size > 0 && (
           <>
             <div className="w-px h-4 bg-slate-700/50" />
-            <span className="text-[11px] text-orange-400">
+            <span className="text-sm text-orange-400">
               {selection.selectedClipIds.size} selected
             </span>
           </>
@@ -1712,7 +1712,7 @@ export default function TimelineMixer({
 
         {/* Master volume slider */}
         <div className="flex items-center gap-1">
-          <Volume2 className="w-3 h-3 text-slate-500" />
+          <Volume2 className="w-3 h-3 text-slate-400" />
           <input
             type="range"
             min={0}
@@ -1752,7 +1752,7 @@ export default function TimelineMixer({
         )}
 
         {/* Duration */}
-        <span className="text-[10px] text-slate-500 font-mono tracking-wide">
+        <span className="text-sm text-slate-400 font-mono tracking-wide">
           <span className="text-slate-300">{formatTime(totalDuration)}</span>
         </span>
       </div>

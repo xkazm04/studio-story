@@ -141,10 +141,10 @@ export default function BeatsCopilot({
         <button
           onClick={() => setCopilotMode('generate')}
           className={cn(
-            'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all',
+            'flex items-center gap-1 px-2 py-0.5 rounded text-sm font-medium transition-all',
             copilotMode === 'generate'
               ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20 shadow-[0_0_6px_rgba(245,158,11,0.1)]'
-              : 'text-slate-500 hover:text-slate-300 border border-transparent'
+              : 'text-slate-400 hover:text-slate-300 border border-transparent'
           )}
         >
           <Sparkles className="w-2.5 h-2.5" />Gen
@@ -152,10 +152,10 @@ export default function BeatsCopilot({
         <button
           onClick={() => setCopilotMode('modify')}
           className={cn(
-            'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-all',
+            'flex items-center gap-1 px-2 py-0.5 rounded text-sm font-medium transition-all',
             copilotMode === 'modify'
               ? 'bg-violet-500/15 text-violet-400 border border-violet-500/20 shadow-[0_0_6px_rgba(139,92,246,0.1)]'
-              : 'text-slate-500 hover:text-slate-300 border border-transparent'
+              : 'text-slate-400 hover:text-slate-300 border border-transparent'
           )}
         >
           <Sliders className="w-2.5 h-2.5" />Mod
@@ -163,7 +163,7 @@ export default function BeatsCopilot({
 
         {/* Prompt input */}
         <div className="flex-1 flex items-center gap-1.5 bg-slate-950/60 border border-slate-700/30 rounded-md px-2 py-1 backdrop-blur-sm focus-within:border-amber-500/40 focus-within:ring-1 focus-within:ring-amber-500/10 transition-all">
-          <Terminal className="w-3 h-3 text-slate-500 shrink-0" />
+          <Terminal className="w-3 h-3 text-slate-400 shrink-0" />
           <textarea
             ref={textareaRef}
             value={briefText}
@@ -176,7 +176,7 @@ export default function BeatsCopilot({
             }
             rows={1}
             disabled={isProcessing}
-            className="flex-1 bg-transparent text-[11px] text-slate-200 placeholder:text-slate-600 font-mono leading-tight resize-none focus:outline-none disabled:opacity-50"
+            className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 font-mono leading-tight resize-none focus:outline-none disabled:opacity-50"
           />
           <button
             onClick={handleSubmit}
@@ -184,7 +184,7 @@ export default function BeatsCopilot({
             className={cn(
               'shrink-0 p-1 rounded transition-all',
               isProcessing || !briefText.trim()
-                ? 'text-slate-600 cursor-not-allowed'
+                ? 'text-slate-400 cursor-not-allowed'
                 : 'bg-amber-600 text-white hover:bg-amber-500'
             )}
             style={!isProcessing && briefText.trim() ? { boxShadow: '0 0 8px rgba(245, 158, 11, 0.2)' } : undefined}
@@ -197,7 +197,7 @@ export default function BeatsCopilot({
         {/* Context toggle */}
         <button
           onClick={() => setShowContext(!showContext)}
-          className="text-slate-500 hover:text-slate-300 transition-colors p-0.5"
+          className="text-slate-400 hover:text-slate-300 transition-colors p-0.5"
           title="Pattern Context"
         >
           <Code2 className="w-3 h-3" />
@@ -206,7 +206,7 @@ export default function BeatsCopilot({
         {/* Expand/collapse terminal */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-slate-500 hover:text-slate-300 transition-colors p-0.5"
+          className="text-slate-400 hover:text-slate-300 transition-colors p-0.5"
           title={expanded ? 'Collapse terminal' : 'Expand terminal'}
         >
           {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
@@ -217,7 +217,7 @@ export default function BeatsCopilot({
       {showContext && (
         <div className="shrink-0 px-2 pb-1.5">
           <pre
-            className="text-[9px] font-mono text-slate-400 rounded p-1.5 overflow-x-auto leading-relaxed whitespace-pre max-h-20 overflow-y-auto border border-slate-800/30"
+            className="text-sm font-mono text-slate-400 rounded p-1.5 overflow-x-auto leading-relaxed whitespace-pre max-h-20 overflow-y-auto border border-slate-800/30"
             style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(2, 6, 23, 0.8) 100%)' }}
           >
             {contextText}

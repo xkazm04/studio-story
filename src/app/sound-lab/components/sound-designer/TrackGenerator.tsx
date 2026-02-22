@@ -185,11 +185,11 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           <button
             onClick={() => { setShowModeMenu(!showModeMenu); setShowGenreMenu(false); setShowDurationMenu(false); }}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-700/50
-              bg-slate-800/40 text-xs text-slate-300 hover:border-slate-600 transition-colors"
+              bg-slate-800/40 text-sm text-slate-300 hover:border-slate-600 transition-colors"
           >
             <ModeIcon className="w-3.5 h-3.5 text-orange-400" />
             <span className="font-medium">{MODES.find((m) => m.value === mode)?.label}</span>
-            <ChevronDown className="w-3 h-3 text-slate-500" />
+            <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
           {showModeMenu && (
             <div className="absolute top-full left-0 mt-1 z-30 min-w-[120px] rounded-md border border-slate-700/50 bg-slate-900 shadow-xl shadow-black/30">
@@ -200,7 +200,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                     key={m.value}
                     onClick={() => { setMode(m.value); setShowModeMenu(false); }}
                     className={cn(
-                      'w-full flex items-center gap-2 px-3 py-2 text-xs transition-colors',
+                      'w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors',
                       mode === m.value ? 'text-orange-400 bg-orange-500/10' : 'text-slate-300 hover:bg-slate-800/60'
                     )}
                   >
@@ -226,7 +226,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                   : 'Dense rain forest with distant thunder...'
             }
             className="w-full px-3 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded-md
-              text-xs text-slate-200 placeholder:text-slate-500
+              text-sm text-slate-200 placeholder:text-slate-500
               focus:outline-none focus:border-orange-500/40 transition-colors"
           />
         </div>
@@ -236,10 +236,10 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           <button
             onClick={() => { setShowGenreMenu(!showGenreMenu); setShowModeMenu(false); setShowDurationMenu(false); }}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-slate-700/50
-              bg-slate-800/40 text-xs text-slate-300 hover:border-slate-600 transition-colors"
+              bg-slate-800/40 text-sm text-slate-300 hover:border-slate-600 transition-colors"
           >
             <span>{genre.charAt(0).toUpperCase() + genre.slice(1)}</span>
-            <ChevronDown className="w-3 h-3 text-slate-500" />
+            <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
           {showGenreMenu && (
             <div className="absolute top-full right-0 mt-1 z-30 min-w-[120px] rounded-md border border-slate-700/50 bg-slate-900 shadow-xl shadow-black/30">
@@ -248,7 +248,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                   key={g.value}
                   onClick={() => { setGenre(g.value); setShowGenreMenu(false); }}
                   className={cn(
-                    'w-full px-3 py-2 text-left text-xs transition-colors',
+                    'w-full px-3 py-2 text-left text-sm transition-colors',
                     genre === g.value ? 'text-orange-400 bg-orange-500/10' : 'text-slate-300 hover:bg-slate-800/60'
                   )}
                 >
@@ -264,10 +264,10 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           <button
             onClick={() => { setShowDurationMenu(!showDurationMenu); setShowModeMenu(false); setShowGenreMenu(false); }}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-slate-700/50
-              bg-slate-800/40 text-xs font-mono text-slate-300 hover:border-slate-600 transition-colors"
+              bg-slate-800/40 text-sm font-mono text-slate-300 hover:border-slate-600 transition-colors"
           >
             <span>{DURATIONS.find((d) => d.value === duration)?.label}</span>
-            <ChevronDown className="w-3 h-3 text-slate-500" />
+            <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
           {showDurationMenu && (
             <div className="absolute top-full right-0 mt-1 z-30 min-w-[80px] rounded-md border border-slate-700/50 bg-slate-900 shadow-xl shadow-black/30">
@@ -276,7 +276,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                   key={d.value}
                   onClick={() => { setDuration(d.value); setShowDurationMenu(false); }}
                   className={cn(
-                    'w-full px-3 py-2 text-left text-xs font-mono transition-colors',
+                    'w-full px-3 py-2 text-left text-sm font-mono transition-colors',
                     duration === d.value ? 'text-orange-400 bg-orange-500/10' : 'text-slate-300 hover:bg-slate-800/60'
                   )}
                 >
@@ -292,7 +292,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           onClick={handleGenerate}
           disabled={isGenerating}
           className={cn(
-            'flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-medium transition-all',
+            'flex items-center gap-1.5 px-4 py-1.5 rounded-md text-sm font-medium transition-all',
             isGenerating
               ? 'bg-orange-600/40 text-orange-300 cursor-not-allowed'
               : 'bg-orange-600 text-white hover:bg-orange-500'
@@ -373,10 +373,10 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
       {generationError && (
         <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/5 border-t border-red-500/20">
           <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
-          <span className="text-[11px] text-red-400 truncate">{generationError}</span>
+          <span className="text-sm text-red-400 truncate">{generationError}</span>
           <button
             onClick={() => setGenerationError(null)}
-            className="ml-auto text-[11px] text-slate-500 hover:text-slate-300"
+            className="ml-auto text-sm text-slate-400 hover:text-slate-300"
           >
             Dismiss
           </button>
@@ -389,14 +389,14 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           <div className="flex items-start gap-6">
             {/* Instruments */}
             <div>
-              <span className="text-[11px] text-slate-400 font-medium mb-1.5 block">Instruments</span>
+              <span className="text-sm text-slate-400 font-medium mb-1.5 block">Instruments</span>
               <div className="flex flex-wrap gap-1">
                 {INSTRUMENTS.map((inst) => (
                   <button
                     key={inst}
                     onClick={() => toggleInstrument(inst)}
                     className={cn(
-                      'text-[11px] px-2 py-0.5 rounded-md font-medium transition-all',
+                      'text-sm px-2 py-0.5 rounded-md font-medium transition-all',
                       instruments.includes(inst)
                         ? 'bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30'
                         : 'bg-slate-800/40 text-slate-400 hover:text-slate-200'
@@ -411,8 +411,8 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
             {/* Provider Badge + Composition Toggle */}
             <div className="ml-auto shrink-0 flex flex-col items-end gap-1.5">
               <div>
-                <span className="text-[11px] text-slate-400 font-medium mb-1.5 block">Provider</span>
-                <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800/60 text-slate-300">
+                <span className="text-sm text-slate-400 font-medium mb-1.5 block">Provider</span>
+                <span className="text-sm px-2 py-0.5 rounded bg-slate-800/60 text-slate-300">
                   ElevenLabs
                 </span>
               </div>
@@ -420,7 +420,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                 <button
                   onClick={() => setCompositionMode(!compositionMode)}
                   className={cn(
-                    'text-[11px] px-2 py-0.5 rounded-md font-medium transition-all',
+                    'text-sm px-2 py-0.5 rounded-md font-medium transition-all',
                     compositionMode
                       ? 'bg-violet-500/15 text-violet-400 ring-1 ring-violet-500/30'
                       : 'bg-slate-800/40 text-slate-400 hover:text-slate-200'
@@ -435,29 +435,29 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
           {/* Composition Plan Editor */}
           {compositionMode && mode === 'music' && (
             <div className="border-t border-slate-800/30 pt-2 space-y-2">
-              <span className="text-[11px] text-violet-400 font-medium block">Composition Plan (Multi-Section)</span>
+              <span className="text-sm text-violet-400 font-medium block">Composition Plan (Multi-Section)</span>
 
               {/* Global Styles */}
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <span className="text-[10px] text-slate-500 block mb-0.5">Positive Styles</span>
+                  <span className="text-sm text-slate-400 block mb-0.5">Positive Styles</span>
                   <input
                     type="text"
                     value={positiveStyles}
                     onChange={(e) => setPositiveStyles(e.target.value)}
                     placeholder="e.g., cinematic orchestral, emotional, sweeping strings"
-                    className="w-full px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                    className="w-full px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                       placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
                   />
                 </div>
                 <div className="flex-1">
-                  <span className="text-[10px] text-slate-500 block mb-0.5">Negative Styles (optional)</span>
+                  <span className="text-sm text-slate-400 block mb-0.5">Negative Styles (optional)</span>
                   <input
                     type="text"
                     value={negativeStyles}
                     onChange={(e) => setNegativeStyles(e.target.value)}
                     placeholder="e.g., harsh, distorted, noisy"
-                    className="w-full px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                    className="w-full px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                       placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
                   />
                 </div>
@@ -465,10 +465,10 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
 
               {/* Sections */}
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 block">Sections</span>
+                <span className="text-sm text-slate-400 block">Sections</span>
                 {sections.map((section, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-500 w-4 shrink-0">{i + 1}.</span>
+                    <span className="text-sm text-slate-400 w-4 shrink-0">{i + 1}.</span>
                     <input
                       type="text"
                       value={section.text}
@@ -478,7 +478,7 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                         setSections(updated);
                       }}
                       placeholder="Section description (intro, verse, chorus...)"
-                      className="flex-1 px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                      className="flex-1 px-2 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                         placeholder:text-slate-500 focus:outline-none focus:border-violet-500/40"
                     />
                     <div className="flex items-center gap-1">
@@ -490,17 +490,17 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                           updated[i] = { ...updated[i]!, duration_ms: Math.max(1, Number(e.target.value)) * 1000 };
                           setSections(updated);
                         }}
-                        className="w-12 px-1 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-[11px] text-slate-200
+                        className="w-12 px-1 py-1 bg-slate-900/60 border border-slate-700/40 rounded text-sm text-slate-200
                           text-center font-mono focus:outline-none focus:border-violet-500/40"
                       />
-                      <span className="text-[10px] text-slate-500">s</span>
+                      <span className="text-sm text-slate-400">s</span>
                     </div>
                     {sections.length > 1 && (
                       <button
                         onClick={() => setSections(sections.filter((_, j) => j !== i))}
-                        className="text-slate-600 hover:text-red-400 transition-colors"
+                        className="text-slate-400 hover:text-red-400 transition-colors"
                       >
-                        <span className="text-xs">&times;</span>
+                        <span className="text-sm">&times;</span>
                       </button>
                     )}
                   </div>
@@ -508,19 +508,19 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
                 <div className="flex items-center gap-2 pt-1">
                   <button
                     onClick={() => setSections([...sections, { text: '', duration_ms: 15000 }])}
-                    className="text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                    className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
                   >
                     + Add Section
                   </button>
                   <div className="flex-1" />
-                  <span className="text-[10px] text-slate-500 font-mono">
+                  <span className="text-sm text-slate-400 font-mono">
                     Total: {(sections.reduce((sum, s) => sum + s.duration_ms, 0) / 1000).toFixed(0)}s
                   </span>
                   <button
                     onClick={handleGenerateComposition}
                     disabled={isGenerating || !positiveStyles.trim()}
                     className={cn(
-                      'flex items-center gap-1 px-3 py-1 rounded text-[11px] font-medium transition-all',
+                      'flex items-center gap-1 px-3 py-1 rounded text-sm font-medium transition-all',
                       isGenerating
                         ? 'bg-violet-600/40 text-violet-300 cursor-not-allowed'
                         : 'bg-violet-600 text-white hover:bg-violet-500'

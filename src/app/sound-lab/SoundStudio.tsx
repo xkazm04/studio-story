@@ -88,8 +88,8 @@ export default function SoundStudio() {
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
                 <Music className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="text-xs font-semibold text-slate-200 tracking-tight">Sound Studio</span>
-              <span className="text-[11px] font-medium px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400">
+              <span className="text-sm font-semibold text-slate-200 tracking-tight">Sound Studio</span>
+              <span className="text-sm font-medium px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-400">
                 ElevenLabs + BS-RoFormer
               </span>
             </div>
@@ -104,7 +104,7 @@ export default function SoundStudio() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={cn(
-                      'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
+                      'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
                       isActive
                         ? 'bg-orange-500/15 text-orange-400'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'

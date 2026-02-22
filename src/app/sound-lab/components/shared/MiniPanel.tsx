@@ -23,7 +23,7 @@ export default function MiniPanel({ title, icon: Icon, actions, children, classN
       {/* Header — 32px */}
       <div className="flex items-center gap-2 h-8 px-3 bg-slate-900/60 border-b border-slate-700/40 shrink-0">
         {Icon && <Icon className="w-3.5 h-3.5 text-orange-400/80" />}
-        <span className="text-xs font-semibold text-slate-200 truncate">{title}</span>
+        <span className="text-sm font-semibold text-slate-200 truncate">{title}</span>
         {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
       </div>
 

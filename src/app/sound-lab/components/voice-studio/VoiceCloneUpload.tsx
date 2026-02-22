@@ -86,8 +86,8 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
     <div className="rounded-lg border border-slate-800/60 bg-slate-900/50 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800/40">
-        <span className="text-[11px] font-medium text-slate-400">Clone Voice</span>
-        <button onClick={onClose} className="text-slate-600 hover:text-slate-400 transition-colors">
+        <span className="text-sm font-medium text-slate-400">Clone Voice</span>
+        <button onClick={onClose} className="text-slate-400 hover:text-slate-400 transition-colors">
           <X className="w-3 h-3" />
         </button>
       </div>
@@ -97,8 +97,8 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
           <div className="flex items-center gap-2 px-2.5 py-2 rounded-md bg-emerald-500/10 border border-emerald-500/20">
             <Check className="w-4 h-4 text-emerald-400" />
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-medium text-emerald-400">Voice cloned</p>
-              <p className="text-[11px] text-slate-500 truncate">{voiceName}</p>
+              <p className="text-sm font-medium text-emerald-400">Voice cloned</p>
+              <p className="text-sm text-slate-400 truncate">{voiceName}</p>
             </div>
           </div>
         ) : (
@@ -110,7 +110,7 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
               onChange={(e) => setVoiceName(e.target.value)}
               placeholder="Voice name (required)"
               className="w-full px-2.5 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded-md
-                text-[11px] text-slate-200 placeholder:text-slate-500
+                text-sm text-slate-200 placeholder:text-slate-500
                 focus:outline-none focus:border-orange-500/40 transition-colors"
             />
 
@@ -127,9 +127,9 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
                   : 'border-slate-700/50 bg-slate-900/30 hover:border-slate-600/50'
               )}
             >
-              <Upload className="w-4 h-4 text-slate-600" />
-              <span className="text-[11px] text-slate-500">Drop audio or click to upload</span>
-              <span className="text-[11px] text-slate-600">MP3, WAV, FLAC — 10-30s each</span>
+              <Upload className="w-4 h-4 text-slate-400" />
+              <span className="text-sm text-slate-400">Drop audio or click to upload</span>
+              <span className="text-sm text-slate-400">MP3, WAV, FLAC — 10-30s each</span>
             </div>
 
             <input
@@ -147,13 +147,13 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
                 {files.map((file, i) => (
                   <div key={`${file.name}-${i}`} className="flex items-center gap-2 px-2 py-1 rounded bg-slate-800/40">
                     <FileAudio className="w-3 h-3 text-orange-400 shrink-0" />
-                    <span className="text-[11px] text-slate-300 truncate flex-1">{file.name}</span>
-                    <span className="text-[11px] text-slate-500 shrink-0">
+                    <span className="text-sm text-slate-300 truncate flex-1">{file.name}</span>
+                    <span className="text-sm text-slate-400 shrink-0">
                       {(file.size / 1024).toFixed(0)}KB
                     </span>
                     <button
                       onClick={(e) => { e.stopPropagation(); removeFile(i); }}
-                      className="text-slate-600 hover:text-slate-400 transition-colors"
+                      className="text-slate-400 hover:text-slate-400 transition-colors"
                     >
                       <X className="w-2.5 h-2.5" />
                     </button>
@@ -166,7 +166,7 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
             {errorMsg && (
               <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-red-500/5 border border-red-500/20">
                 <AlertCircle className="w-3 h-3 text-red-400 shrink-0" />
-                <span className="text-[11px] text-red-400 truncate">{errorMsg}</span>
+                <span className="text-sm text-red-400 truncate">{errorMsg}</span>
               </div>
             )}
 
@@ -175,11 +175,11 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
               onClick={handleClone}
               disabled={status === 'uploading' || !voiceName.trim() || files.length === 0}
               className={cn(
-                'w-full flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200',
+                'w-full flex items-center justify-center gap-1.5 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
                 status === 'uploading'
                   ? 'bg-orange-600/40 text-orange-300 cursor-not-allowed'
                   : !voiceName.trim() || files.length === 0
-                    ? 'bg-slate-800/40 text-slate-500 cursor-not-allowed'
+                    ? 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-500 hover:to-amber-500 shadow-sm shadow-orange-500/20'
               )}
             >

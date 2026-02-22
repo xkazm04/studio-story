@@ -71,7 +71,7 @@ export default function TakesGallery({
   if (takes.length === 0 && !isGenerating) {
     return (
       <div className="text-center py-4">
-        <span className="text-[11px] text-slate-500">No takes generated yet</span>
+        <span className="text-sm text-slate-400">No takes generated yet</span>
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function TakesGallery({
               style={{ width: progress.total > 0 ? `${(progress.done / progress.total) * 100}%` : '0%' }}
             />
           </div>
-          <span className="text-[11px] text-orange-400 font-mono shrink-0">
+          <span className="text-sm text-orange-400 font-mono shrink-0">
             {progress.done}/{progress.total}
           </span>
         </div>
@@ -114,7 +114,7 @@ export default function TakesGallery({
             {/* Emotion badge */}
             <div className="flex flex-col items-center gap-0.5 shrink-0 w-14">
               <div className={cn('w-4 h-4 rounded-full', emotionInfo.color)} />
-              <span className="text-[9px] text-slate-400 text-center leading-tight">
+              <span className="text-sm text-slate-400 text-center leading-tight">
                 {emotionInfo.label}
               </span>
             </div>
@@ -129,14 +129,14 @@ export default function TakesGallery({
                 animated={isPlaying}
               />
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-500 font-mono">
+                <span className="text-sm text-slate-400 font-mono">
                   {take.duration.toFixed(1)}s
                 </span>
-                <span className="text-[10px] text-slate-600">
+                <span className="text-sm text-slate-400">
                   {take.delivery} @ {take.intensity}%
                 </span>
                 {isBest && (
-                  <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">
+                  <span className="text-sm px-1 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">
                     BEST
                   </span>
                 )}
@@ -150,7 +150,7 @@ export default function TakesGallery({
                 onClick={() => handlePlay(idx)}
                 className={cn(
                   'p-1 rounded transition-colors',
-                  isPlaying ? 'text-orange-400' : 'text-slate-500 hover:text-slate-300'
+                  isPlaying ? 'text-orange-400' : 'text-slate-400 hover:text-slate-300'
                 )}
               >
                 {isPlaying ? (
@@ -168,7 +168,7 @@ export default function TakesGallery({
                     onClick={() => onRate(idx, star)}
                     className={cn(
                       'transition-colors',
-                      (take.rating ?? 0) >= star ? 'text-amber-400' : 'text-slate-700 hover:text-slate-500'
+                      (take.rating ?? 0) >= star ? 'text-amber-400' : 'text-slate-400 hover:text-slate-400'
                     )}
                   >
                     <Star className="w-2.5 h-2.5" fill={(take.rating ?? 0) >= star ? 'currentColor' : 'none'} />
@@ -180,7 +180,7 @@ export default function TakesGallery({
               <button
                 onClick={() => onSelect(idx)}
                 className={cn(
-                  'text-[9px] px-1.5 py-0.5 rounded font-medium transition-colors',
+                  'text-sm px-1.5 py-0.5 rounded font-medium transition-colors',
                   isSelected
                     ? 'bg-emerald-500/20 text-emerald-400'
                     : 'bg-orange-600/80 hover:bg-orange-500 text-white'

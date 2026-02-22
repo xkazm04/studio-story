@@ -90,24 +90,24 @@ export default function NarrationPipeline({
         className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-800/30 transition-colors"
       >
         {collapsed ? (
-          <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         ) : (
-          <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
         )}
         <BookOpen className="w-3.5 h-3.5 text-orange-400" />
-        <span className="text-xs font-medium text-slate-200">Narration Pipeline</span>
+        <span className="text-sm font-medium text-slate-200">Narration Pipeline</span>
         {lines.length > 0 && (
-          <span className="text-[11px] text-slate-500">
+          <span className="text-sm text-slate-400">
             {lines.length} line{lines.length !== 1 ? 's' : ''}
           </span>
         )}
         {estimatedDuration > 0 && (
-          <span className="text-[11px] text-slate-500">
+          <span className="text-sm text-slate-400">
             ~{Math.floor(estimatedDuration / 60)}:{String(Math.floor(estimatedDuration % 60)).padStart(2, '0')}
           </span>
         )}
         {isGenerating && (
-          <span className="text-[11px] text-orange-400 flex items-center gap-1 ml-auto">
+          <span className="text-sm text-orange-400 flex items-center gap-1 ml-auto">
             <Loader2 className="w-3 h-3 animate-spin" />
             {progress.done}/{progress.total}
           </span>
@@ -119,7 +119,7 @@ export default function NarrationPipeline({
         <div className="px-3 pb-3 space-y-3">
           {/* Casting Summary */}
           <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-slate-950/40 border border-slate-800/30">
-            <span className="text-[11px] text-slate-500">
+            <span className="text-sm text-slate-400">
               {hasCastings ? `${castingCount} voice casting${castingCount !== 1 ? 's' : ''}` : 'No castings yet — cast voices above first'}
             </span>
           </div>
@@ -139,7 +139,7 @@ export default function NarrationPipeline({
               <>
                 <button
                   onClick={cancel}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium
                     bg-red-600/80 text-white hover:bg-red-500 transition-colors"
                 >
                   <Square className="w-3 h-3" />
@@ -151,7 +151,7 @@ export default function NarrationPipeline({
                     style={{ width: progress.total > 0 ? `${(progress.done / progress.total) * 100}%` : '0%' }}
                   />
                 </div>
-                <span className="text-[11px] text-orange-400 font-mono shrink-0">
+                <span className="text-sm text-orange-400 font-mono shrink-0">
                   {progress.done}/{progress.total}
                 </span>
               </>
@@ -160,9 +160,9 @@ export default function NarrationPipeline({
                 onClick={handleGenerateAll}
                 disabled={!hasLines || !hasVoiceIds}
                 className={cn(
-                  'flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-medium transition-all',
+                  'flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all',
                   !hasLines || !hasVoiceIds
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                    ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-500 hover:to-amber-500'
                 )}
               >
@@ -175,7 +175,7 @@ export default function NarrationPipeline({
           {/* Preview Strip */}
           {previewClips.length > 0 && previewDuration > 0 && (
             <div className="space-y-1.5">
-              <span className="text-[11px] font-medium text-slate-400">Preview</span>
+              <span className="text-sm font-medium text-slate-400">Preview</span>
               <div className="h-6 bg-slate-950/60 border border-slate-800/40 rounded relative overflow-hidden">
                 {previewClips.map((clip, i) => {
                   const left = (clip.startTime / previewDuration) * 100;
@@ -187,14 +187,14 @@ export default function NarrationPipeline({
                       style={{ left: `${left}%`, width: `${Math.max(1, width)}%` }}
                       title={clip.asset.name}
                     >
-                      <span className="text-[9px] text-violet-300 truncate px-1 leading-[20px]">
+                      <span className="text-sm text-violet-300 truncate px-1 leading-[20px]">
                         {clip.asset.name.split(':')[0]}
                       </span>
                     </div>
                   );
                 })}
               </div>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-sm text-slate-400">
                 Total: {Math.floor(previewDuration / 60)}:{String(Math.floor(previewDuration % 60)).padStart(2, '0')}
               </span>
             </div>
@@ -204,7 +204,7 @@ export default function NarrationPipeline({
           {allDone && result && onNarrationComplete && (
             <button
               onClick={handleSendToTimeline}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-xs font-medium
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium
                 bg-emerald-600/80 text-white hover:bg-emerald-500 transition-colors"
             >
               <Send className="w-3.5 h-3.5" />

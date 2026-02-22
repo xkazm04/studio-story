@@ -127,12 +127,12 @@ export default function PianoRoll({ extraction, playbackTime = 0, height = 160 }
               className="w-2 h-2 rounded-sm"
               style={{ backgroundColor: TRACK_COLORS[i % TRACK_COLORS.length] }}
             />
-            <span className="text-[9px] text-slate-400">
+            <span className="text-sm text-slate-400">
               {track.name} ({track.notes.length})
             </span>
           </div>
         ))}
-        <span className="text-[9px] text-slate-500 ml-auto">
+        <span className="text-sm text-slate-400 ml-auto">
           {Math.round(extraction.tempo)} BPM | {extraction.duration.toFixed(1)}s
         </span>
       </div>

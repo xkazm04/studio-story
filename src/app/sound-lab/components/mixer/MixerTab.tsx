@@ -67,7 +67,7 @@ export default function MixerTab({ extraAssets }: MixerTabProps) {
           >
             <Layers className="w-3.5 h-3.5 text-orange-400" />
           </div>
-          <span className="text-xs font-semibold text-slate-200 tracking-wide">Mixer</span>
+          <span className="text-sm font-semibold text-slate-200 tracking-wide">Mixer</span>
         </div>
 
         <div className="flex-1" />

@@ -156,9 +156,9 @@ export default function OutputPreview({
       {/* Header */}
       <div className="shrink-0 px-4 py-2.5 border-b border-slate-800/30">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold text-slate-300">Output</span>
+          <span className="text-sm font-semibold text-slate-300">Output</span>
           {hasOutput && (
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
               {outputDuration.toFixed(1)}s
             </span>
           )}
@@ -170,12 +170,12 @@ export default function OutputPreview({
         {!hasOutput ? (
           <div className="flex flex-col items-center justify-center gap-2 py-8 text-center">
             <div className="w-8 h-8 rounded-lg bg-slate-800/40 flex items-center justify-center">
-              <FlaskConical className="w-4 h-4 text-slate-500" />
+              <FlaskConical className="w-4 h-4 text-slate-400" />
             </div>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-sm text-slate-400">
               Process audio to see output
             </span>
-            <span className="text-[9px] text-slate-600">
+            <span className="text-sm text-slate-400">
               Use MIDI Bridge or Character Modify
             </span>
           </div>
@@ -183,7 +183,7 @@ export default function OutputPreview({
           <>
             {/* Source waveform */}
             <div>
-              <span className="text-[9px] font-medium text-slate-500 uppercase tracking-wider">Source</span>
+              <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">Source</span>
               <div
                 onClick={handleSourceWaveformClick}
                 className={cn(
@@ -201,7 +201,7 @@ export default function OutputPreview({
 
             {/* Output waveform */}
             <div>
-              <span className="text-[9px] font-medium text-emerald-400/70 uppercase tracking-wider">Processed</span>
+              <span className="text-sm font-medium text-emerald-400/70 uppercase tracking-wider">Processed</span>
               <div
                 onClick={handleOutputWaveformClick}
                 className={cn(
@@ -219,7 +219,7 @@ export default function OutputPreview({
 
             {/* Time display */}
             {isAnythingPlaying && (
-              <div className="text-center text-[9px] font-mono text-slate-500">
+              <div className="text-center text-sm font-mono text-slate-400">
                 {formatTime(currentTime)} / {formatTime(outputDuration)}
               </div>
             )}
@@ -239,7 +239,7 @@ export default function OutputPreview({
               ) : (
                 <ToggleRight className="w-4 h-4 text-emerald-400" />
               )}
-              <span className="text-[10px]">
+              <span className="text-sm">
                 A/B: {abMode === 'source' ? 'Source' : 'Processed'}
               </span>
             </button>
@@ -248,7 +248,7 @@ export default function OutputPreview({
             <button
               onClick={togglePlayOutput}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium transition-all active:scale-95 w-full justify-center',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all active:scale-95 w-full justify-center',
                 playingOutput
                   ? 'bg-red-500/15 text-red-400'
                   : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
@@ -262,14 +262,14 @@ export default function OutputPreview({
             <div className="space-y-1.5">
               <button
                 onClick={handleSendToMixer}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-all active:scale-95 w-full justify-center"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-all active:scale-95 w-full justify-center"
               >
                 <Send className="w-3 h-3" />
                 Send to Mixer
               </button>
               <button
                 onClick={handleDownload}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium bg-slate-800/40 text-slate-300 hover:bg-slate-800/60 transition-all active:scale-95 w-full justify-center"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-slate-800/40 text-slate-300 hover:bg-slate-800/60 transition-all active:scale-95 w-full justify-center"
               >
                 <Download className="w-3 h-3" />
                 Download WAV

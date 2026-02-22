@@ -144,11 +144,11 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
             <button
               onClick={() => setShowVoiceMenu(!showVoiceMenu)}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-700/50
-                bg-slate-800/40 text-xs text-slate-300 hover:border-slate-600 transition-colors"
+                bg-slate-800/40 text-sm text-slate-300 hover:border-slate-600 transition-colors"
             >
               <Mic className="w-3.5 h-3.5 text-orange-400" />
               <span className="font-medium max-w-[120px] truncate">{selectedVoice.name}</span>
-              <ChevronDown className="w-3 h-3 text-slate-500" />
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
             {showVoiceMenu && (
               <div className="absolute top-full left-0 mt-1 z-30 min-w-[180px] max-h-[240px] overflow-auto
@@ -158,14 +158,14 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
                     key={v.id}
                     onClick={() => handleSelectVoice(v)}
                     className={cn(
-                      'w-full flex items-center gap-2 px-3 py-2 text-[11px] transition-colors',
+                      'w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors',
                       selectedVoice.id === v.id
                         ? 'text-orange-400 bg-orange-500/10'
                         : 'text-slate-300 hover:bg-slate-800/60'
                     )}
                   >
                     <div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-                      <span className="text-[11px] font-semibold text-slate-400">
+                      <span className="text-sm font-semibold text-slate-400">
                         {v.name.charAt(0)}
                       </span>
                     </div>
@@ -185,7 +185,7 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
               onKeyDown={(e) => e.key === 'Enter' && !isGenerating && handlePreview()}
               placeholder="Type text to preview voice performance..."
               className="w-full px-3 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded-md
-                text-xs text-slate-200 placeholder:text-slate-500
+                text-sm text-slate-200 placeholder:text-slate-500
                 focus:outline-none focus:border-orange-500/40 transition-colors"
             />
           </div>
@@ -195,11 +195,11 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
             onClick={handlePreview}
             disabled={isGenerating || !previewText.trim()}
             className={cn(
-              'flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-medium transition-all',
+              'flex items-center gap-1.5 px-4 py-1.5 rounded-md text-sm font-medium transition-all',
               isGenerating
                 ? 'bg-orange-600/40 text-orange-300 cursor-not-allowed'
                 : !previewText.trim()
-                  ? 'bg-slate-800/40 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
                   : 'bg-orange-600 text-white hover:bg-orange-500'
             )}
           >
@@ -245,10 +245,10 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
         {generationError && (
           <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/5 border-t border-red-500/20">
             <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
-            <span className="text-[11px] text-red-400 truncate">{generationError}</span>
+            <span className="text-sm text-red-400 truncate">{generationError}</span>
             <button
               onClick={() => setGenerationError(null)}
-              className="ml-auto text-[11px] text-slate-500 hover:text-slate-300"
+              className="ml-auto text-sm text-slate-400 hover:text-slate-300"
             >
               Dismiss
             </button>

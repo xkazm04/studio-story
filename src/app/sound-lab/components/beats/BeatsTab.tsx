@@ -500,18 +500,18 @@ export default function BeatsTab({ onGenerated }: BeatsTabProps) {
           >
             <Grid3X3 className="w-3.5 h-3.5 text-amber-400" />
           </div>
-          <span className="text-xs font-semibold text-slate-200 tracking-wide">Beat Composer</span>
+          <span className="text-sm font-semibold text-slate-200 tracking-wide">Beat Composer</span>
         </div>
         {pattern.genre && (
           <span
-            className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400/80 border border-amber-500/15"
+            className="text-sm font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400/80 border border-amber-500/15"
             style={{ textShadow: '0 0 8px rgba(245, 158, 11, 0.3)' }}
           >
             {pattern.genre}
           </span>
         )}
         {pattern.reasoning && (
-          <span className="text-[11px] text-slate-500 truncate max-w-80" title={pattern.reasoning}>
+          <span className="text-sm text-slate-400 truncate max-w-80" title={pattern.reasoning}>
             {pattern.reasoning}
           </span>
         )}
@@ -559,8 +559,8 @@ export default function BeatsTab({ onGenerated }: BeatsTabProps) {
               className="shrink-0 flex items-center gap-2 px-3 py-1.5 border-b border-red-500/20"
               style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(2, 6, 23, 0.6) 100%)' }}
             >
-              <span className="text-[11px] text-red-400">{error}</span>
-              <button onClick={() => setError(null)} className="ml-auto text-[10px] text-slate-500 hover:text-slate-300 px-1.5 py-0.5 rounded hover:bg-slate-800/40 transition-all">Dismiss</button>
+              <span className="text-sm text-red-400">{error}</span>
+              <button onClick={() => setError(null)} className="ml-auto text-sm text-slate-400 hover:text-slate-300 px-1.5 py-0.5 rounded hover:bg-slate-800/40 transition-all">Dismiss</button>
             </div>
           )}
 
