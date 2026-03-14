@@ -9,7 +9,7 @@ export default defineConfig({
           name: 'dzin',
           root: './packages/dzin/core',
           include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
-          environment: 'node',
+          environment: 'jsdom',
         },
       },
     ],
