@@ -21,3 +21,17 @@ export { scorePanelForSlot, scoreTemplateForDirectives } from './scoring';
 
 // Assignment
 export { assignPanelsToSlots } from './assignment';
+
+// Spatial budget
+export { parseGridFractions, estimateSlotDimensions, computeSpatialBudget } from './spatial';
+export type { SlotDimensions, SpatialOption, SpatialBudget } from './spatial';
+
+// Density
+export { assignSlotDensity } from './density';
+
+// Viewport
+export { VIEWPORT_BREAKPOINTS, getAllowedLayouts, clampLayoutToViewport } from './viewport';
+
+// Resolver (top-level pipeline)
+export { resolveLayout } from './resolver';
+export type { ResolveLayoutOptions } from './resolver';

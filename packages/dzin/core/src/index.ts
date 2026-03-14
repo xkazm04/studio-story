@@ -38,3 +38,42 @@ export { dataListDefinition, detailDefinition, mediaGridDefinition } from './dem
 export { MOCK_LIST_ITEMS, MOCK_DETAIL, MOCK_MEDIA_ITEMS } from './demo';
 export type { DataListPanelProps, DetailPanelProps, MediaGridPanelProps } from './demo';
 export type { ListItem, DetailEntity, DetailSection, MediaItem } from './demo';
+
+// Layout engine
+export {
+  // Templates
+  LAYOUT_TEMPLATES,
+  LAYOUT_ORDER,
+  getTemplate,
+  // Hungarian
+  hungarianSolve,
+  // Scoring
+  scorePanelForSlot,
+  scoreTemplateForDirectives,
+  // Assignment
+  assignPanelsToSlots,
+  // Spatial
+  parseGridFractions,
+  estimateSlotDimensions,
+  computeSpatialBudget,
+  // Density
+  assignSlotDensity,
+  // Viewport
+  VIEWPORT_BREAKPOINTS,
+  getAllowedLayouts,
+  clampLayoutToViewport,
+  // Resolver
+  resolveLayout,
+} from './layout';
+export type {
+  LayoutTemplateId,
+  SlotSpec,
+  LayoutTemplate,
+  PanelDirective,
+  SlotAssignment,
+  ResolvedLayout,
+  SlotDimensions,
+  SpatialOption,
+  SpatialBudget,
+  ResolveLayoutOptions,
+} from './layout';
