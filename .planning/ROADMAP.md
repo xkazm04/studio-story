@@ -182,13 +182,13 @@ Plans:
   2. Fiction-specific writing tools are available: show-don't-tell conversion, sensory rewrite, emotion amplification, cliche detection -- each transforming selected text
   3. User can generate voice narration for any scene, with different character-appropriate voices for each speaking character
   4. User can write dialogue, assign character voices, and generate a complete multi-voice audio drama with narration for a scene or act
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
-- [ ] 10-03: TBD
-- [ ] 10-04: TBD
+- [ ] 10-01-PLAN.md -- AI writing API route, story context assembly, writing prompts (WRITE-01, WRITE-02)
+- [ ] 10-02-PLAN.md -- ElevenLabs TTS/clone/voices API routes, screenplay parser, audio stitcher (VOICE-01, VOICE-02)
+- [ ] 10-03-PLAN.md -- TipTap inline diff extension, AI writing toolbar, SceneEditor integration (WRITE-01, WRITE-02)
+- [ ] 10-04-PLAN.md -- Multi-voice narration pipeline wiring, MP3 export, MCP voice tools (VOICE-01, VOICE-02)
 
 ### Phase 11: Multimodal Input
 **Goal**: Users can speak to Jinn as naturally as they type, and transition fluidly between voice, text, and direct manipulation without friction or mode switching
