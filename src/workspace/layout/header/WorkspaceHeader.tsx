@@ -9,9 +9,15 @@ import ProjectSelector from './ProjectSelector';
 import ActSelector from './ActSelector';
 import SceneSelector from './SceneSelector';
 import LayoutPicker from './LayoutPicker';
+import type { LLMTransportStatus } from '@dzin/core';
 import AdvisorOverlay from '@/agents/AdvisorOverlay';
+import LLMStatusDot from './LLMStatusDot';
 
-const WorkspaceHeader: React.FC = () => {
+export interface WorkspaceHeaderProps {
+  llmStatus?: LLMTransportStatus;
+}
+
+const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({ llmStatus = 'disconnected' }) => {
   const sessions = useCLISessionStore((s) => s.sessions);
   const expandAndFocus = useTerminalDockStore((s) => s.expandAndFocus);
 
@@ -50,8 +56,9 @@ const WorkspaceHeader: React.FC = () => {
         <AdvisorOverlay />
       </div>
 
-      {/* Right side — CLI indicator */}
+      {/* Right side — LLM status + CLI indicator */}
       <div className="flex items-center gap-2">
+        <LLMStatusDot status={llmStatus} />
         {activeCount > 0 && (
           <Tooltip content={tooltipContent} position="bottom">
             <button
