@@ -92,6 +92,10 @@ export interface GeminiServerContent {
     newHandle?: string;
     resumable?: boolean;
   };
+  /** Real-time transcription of user's voice input (requires inputAudioTranscription config) */
+  inputTranscription?: {
+    text: string;
+  };
 }
 
 export interface GeminiFunctionCall {
@@ -135,6 +139,12 @@ export interface AgentMessage {
     name: string;
     args: Record<string, unknown>;
   };
+  /** True if this message represents an error */
+  isError?: boolean;
+  /** True while streaming text is still arriving */
+  isStreaming?: boolean;
+  /** Auto-retry attempt info (e.g. "1/2") */
+  retryInfo?: string;
 }
 
 // ============ Suggestions ============
@@ -151,14 +161,59 @@ export interface AgentSuggestion {
   dismissed: boolean;
 }
 
+// ============ Proactive Muse Insights ============
+
+export type MuseInsightCategory = 'plot' | 'character' | 'pacing' | 'continuity';
+
+export interface MuseInsight {
+  id: string;
+  category: MuseInsightCategory;
+  priority: 'high' | 'medium' | 'low';
+  title: string;
+  description: string;
+  /** One-click action to navigate workspace */
+  action?: {
+    type: 'compose_workspace';
+    payload: Record<string, unknown>;
+  };
+  timestamp: number;
+  dismissed: boolean;
+}
+
+// ============ SSE Streaming Events ============
+
+/** Event types emitted during SSE streaming from the advisor route */
+export type SSEEventType =
+  | 'status'       // Processing status update (e.g. "Spawning CLI session...")
+  | 'text'         // Incremental text from Gemini
+  | 'tool_call'    // Client-side tool call
+  | 'error'        // Error during processing
+  | 'done';        // Stream complete
+
+export interface SSEEvent {
+  type: SSEEventType;
+  /** Processing status label for 'status' events */
+  status?: string;
+  /** Turn number within orchestrator loop */
+  turn?: number;
+  /** Text content for 'text' events */
+  text?: string;
+  /** Tool call for 'tool_call' events */
+  toolCall?: { name: string; args: Record<string, unknown> };
+  /** Error message for 'error' events */
+  error?: string;
+}
+
 // ============ Workspace State Snapshot ============
 
 export interface WorkspaceStateSnapshot {
-  panels: Array<{ type: string; role: string }>;
+  panels: Array<{ type: string; role: string; density?: string }>;
   layout: string;
   selectedProject: string | null;
   selectedScene: string | null;
   selectedAct: string | null;
   terminalTabCount: number;
   timestamp: number;
+  viewport?: { width: number; height: number };
+  focusedPanelType?: string;
 }

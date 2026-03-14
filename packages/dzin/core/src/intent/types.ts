@@ -17,7 +17,7 @@ export type IntentType = 'compose' | 'manipulate' | 'navigate' | 'query' | 'syst
 // ---------------------------------------------------------------------------
 
 /** Where the intent originated. */
-export type IntentSource = 'click' | 'keyboard' | 'drag' | 'menu' | 'llm' | 'slash-command';
+export type IntentSource = 'click' | 'keyboard' | 'drag' | 'menu' | 'llm' | 'slash-command' | 'voice';
 
 // ---------------------------------------------------------------------------
 // Payload Types
