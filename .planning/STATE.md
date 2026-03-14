@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-03-PLAN.md
-last_updated: "2026-03-14T17:41:44Z"
-last_activity: 2026-03-14 -- Completed 07-03-PLAN.md (Screenplay extensions & distraction-free editor)
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-03-14T17:49:34Z"
+last_activity: 2026-03-14 -- Completed 07-04-PLAN.md (LLM composition wiring for story authoring)
 progress:
   total_phases: 12
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 22
-  completed_plans: 21
-  percent: 95
+  completed_plans: 22
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 7 - Story Data & Authoring (3 of 4 plans complete)
+**Current focus:** Phase 7 - Story Data & Authoring (4 of 4 plans complete)
 
 ## Current Position
 
-Phase: 7 of 12 (Story Data & Authoring)
-Plan: 3 of 4 in current phase (07-03-PLAN.md complete)
+Phase: 7 of 12 (Story Data & Authoring) -- COMPLETE
+Plan: 4 of 4 in current phase (07-04-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 07-03-PLAN.md (Screenplay extensions & distraction-free editor)
+Last activity: 2026-03-14 -- Completed 07-04-PLAN.md (LLM composition wiring for story authoring)
 
-Progress: [█████████░] 21/22 plans
+Progress: [██████████] 22/22 plans
 
 ## Performance Metrics
 
@@ -49,10 +49,10 @@ Progress: [█████████░] 21/22 plans
 | 04 | 2 | 11 min | 6 min |
 | 05 | 3 | 13 min | 4 min |
 | 06 | 3 | 14 min | 5 min |
-| 07 | 3 | 15 min | 5 min |
+| 07 | 4 | 19 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (5 min), 06-03 (5 min), 07-01 (5 min), 07-02 (5 min), 07-03 (5 min)
+- Last 5 plans: 06-03 (5 min), 07-01 (5 min), 07-02 (5 min), 07-03 (5 min), 07-04 (4 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -73,6 +73,7 @@ Progress: [█████████░] 21/22 plans
 | Phase 07 P01 | 5 | 3 tasks | 11 files |
 | Phase 07 P02 | 5 | 2 tasks | 6 files |
 | Phase 07 P03 | 5 | 2 tasks | 5 files |
+| Phase 07 P04 | 4 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -155,6 +156,9 @@ Recent decisions affecting current work:
 - [07-03]: Dual-mode editor (TipTap default, blocks for legacy @marker content) preserves backward compatibility
 - [07-03]: Distraction-free mode at z-[8500] sits below advisor overlay (z-9000) but above workspace panels
 - [07-03]: Screenplay CSS uses --ms-* custom properties for theme consistency
+- [07-04]: Story authoring patterns added as appendix in PANEL_MANIFESTS constant rather than separate MCP tool
+- [07-04]: relationship-map added to PANEL_TYPES (was missing despite existing in panel registry)
+- [07-04]: Advisor route system instruction updated alongside advisorTools.ts for consistent dual-layer awareness
 
 ### Pending Todos
 
@@ -167,6 +171,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T17:41:44Z
-Stopped at: Completed 07-03-PLAN.md
-Resume file: .planning/phases/07-story-data-and-authoring/07-03-SUMMARY.md
+Last session: 2026-03-14T17:49:34Z
+Stopped at: Completed 07-04-PLAN.md
+Resume file: .planning/phases/07-story-data-and-authoring/07-04-SUMMARY.md
