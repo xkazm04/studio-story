@@ -1,20 +1,21 @@
 /**
- * Narration Export Hook — Download narration audio from V2 panels.
+ * Narration Export Hook — Stitch selected takes into final MP3 for download.
  *
- * Provides export options independent of the standalone DAW:
- * - Download individual clips as WAV files
- * - Download all clips as a ZIP archive
- * - Copy audio URLs for manual import
+ * Uses audioStitcher from Plan 02 to concatenate audio segments with
+ * appropriate silence gaps between character transitions.
+ * Supports individual clip download, batch download, and full MP3 export.
  */
 
 import { useState, useCallback } from 'react';
-import type { VoiceNarrationResult, VoiceNarrationClip } from '../types';
+import { stitchAudioSegments, computeGaps } from '../lib/audioStitcher';
+import type { VoiceNarrationResult, VoiceNarrationClip, ScriptLine } from '../types';
 
 interface UseNarrationExportReturn {
   isExporting: boolean;
   downloadClip: (clip: VoiceNarrationClip, filename?: string) => Promise<void>;
   downloadAll: (result: VoiceNarrationResult) => Promise<void>;
   copyUrls: (result: VoiceNarrationResult) => Promise<void>;
+  exportMp3: (lines: ScriptLine[], filename?: string) => Promise<string | null>;
 }
 
 export function useNarrationExport(): UseNarrationExportReturn {
@@ -76,10 +77,66 @@ export function useNarrationExport(): UseNarrationExportReturn {
     await navigator.clipboard.writeText(urls);
   }, []);
 
+  /**
+   * Export all selected takes as a single stitched MP3 file.
+   * Fetches audio buffers, computes gaps, stitches them, and triggers download.
+   * Returns the blob URL on success, or null on failure.
+   */
+  const exportMp3 = useCallback(async (lines: ScriptLine[], filename?: string): Promise<string | null> => {
+    setIsExporting(true);
+
+    try {
+      // Filter to only completed lines with audio
+      const completedLines = lines.filter((l) => l.status === 'done');
+      if (completedLines.length === 0) return null;
+
+      // Fetch audio buffers for selected takes
+      const audioBuffers: ArrayBuffer[] = [];
+      for (const line of completedLines) {
+        const selectedTake = (line.selectedTakeIdx != null && line.selectedTakeIdx >= 0 && line.takes)
+          ? line.takes[line.selectedTakeIdx]
+          : null;
+        const audioUrl = selectedTake?.audioUrl ?? line.audioUrl;
+
+        if (!audioUrl) continue;
+
+        const res = await fetch(audioUrl);
+        const buffer = await res.arrayBuffer();
+        audioBuffers.push(buffer);
+      }
+
+      if (audioBuffers.length === 0) return null;
+
+      // Compute silence gaps between segments
+      const gaps = computeGaps(completedLines);
+
+      // Build segments for stitcher
+      const segments = audioBuffers.map((audioBuffer, i) => ({
+        audioBuffer,
+        gapAfterMs: gaps[i] ?? 0,
+      }));
+
+      // Stitch all segments with gaps
+      const stitchedBuffer = stitchAudioSegments(segments);
+
+      // Create blob and trigger download
+      const blob = new Blob([stitchedBuffer], { type: 'audio/mpeg' });
+      const outputFilename = filename ?? `narration-export-${Date.now()}.mp3`;
+      downloadBlob(blob, outputFilename);
+
+      return URL.createObjectURL(blob);
+    } catch {
+      return null;
+    } finally {
+      setIsExporting(false);
+    }
+  }, [downloadBlob]);
+
   return {
     isExporting,
     downloadClip,
     downloadAll,
     copyUrls,
+    exportMp3,
   };
 }

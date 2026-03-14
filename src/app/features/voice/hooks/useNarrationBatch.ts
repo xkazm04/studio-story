@@ -3,11 +3,12 @@
  *
  * V2-compatible version. Processes ScriptLines one at a time,
  * applies emotion/delivery modifiers, and computes auto-placement.
+ * Supports multi-take generation (takesCount option) and progress tracking.
  */
 
 import { useState, useRef, useCallback } from 'react';
 import { applyModifiers } from '../lib/voiceModifiers';
-import type { VoiceSettings, ScriptLine } from '../types';
+import type { VoiceSettings, ScriptLine, ScriptLineTake } from '../types';
 
 interface AudioAssetLike {
   id: string;
@@ -23,12 +24,19 @@ interface NarrationResultInternal {
   totalDuration: number;
 }
 
+export interface GenerateOptions {
+  /** Number of takes to generate per line (default: 1) */
+  takesCount?: number;
+  /** Project ID for the TTS request */
+  projectId?: string;
+}
+
 interface UseNarrationBatchReturn {
   lines: ScriptLine[];
   setLines: React.Dispatch<React.SetStateAction<ScriptLine[]>>;
   isGenerating: boolean;
-  progress: { done: number; total: number };
-  generateAll: (baseSettings: VoiceSettings) => Promise<void>;
+  progress: { done: number; total: number; currentCharacter: string };
+  generateAll: (baseSettings: VoiceSettings, options?: GenerateOptions) => Promise<void>;
   regenerateLine: (lineId: string, baseSettings: VoiceSettings) => Promise<void>;
   cancel: () => void;
   result: NarrationResultInternal | null;
@@ -40,7 +48,7 @@ const GAP_CHAR_CHANGE = 1.5;
 export function useNarrationBatch(): UseNarrationBatchReturn {
   const [lines, setLines] = useState<ScriptLine[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [progress, setProgress] = useState({ done: 0, total: 0, currentCharacter: '' });
   const [result, setResult] = useState<NarrationResultInternal | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -48,17 +56,21 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     line: ScriptLine,
     baseSettings: VoiceSettings,
     signal: AbortSignal,
+    projectId?: string,
   ): Promise<{ audioUrl: string; duration: number }> => {
     const adjusted = applyModifiers(baseSettings, line.emotion, line.delivery, 70);
+
+    const body: Record<string, unknown> = {
+      text: line.text,
+      voice_id: line.voiceId,
+      voice_settings: adjusted,
+    };
+    if (projectId) body.project_id = projectId;
 
     const res = await fetch('/api/ai/audio/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: line.text,
-        voice_id: line.voiceId,
-        voice_settings: adjusted,
-      }),
+      body: JSON.stringify(body),
       signal,
     });
 
@@ -108,13 +120,14 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     return { clips, totalDuration: currentTime };
   }, []);
 
-  const generateAll = useCallback(async (baseSettings: VoiceSettings) => {
+  const generateAll = useCallback(async (baseSettings: VoiceSettings, options?: GenerateOptions) => {
     const controller = new AbortController();
     abortRef.current = controller;
     setIsGenerating(true);
 
-    const total = lines.filter((l) => l.status !== 'done').length || lines.length;
-    setProgress({ done: 0, total });
+    const takesCount = options?.takesCount ?? 1;
+    const total = lines.length;
+    setProgress({ done: 0, total, currentCharacter: '' });
 
     setLines((prev) => prev.map((l) => ({ ...l, status: 'pending' as const, error: undefined })));
 
@@ -125,19 +138,52 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
 
       const line = lines[i]!;
 
+      setProgress((prev) => ({ ...prev, currentCharacter: line.character }));
       setLines((prev) => prev.map((l, idx) =>
         idx === i ? { ...l, status: 'generating' as const } : l
       ));
 
       try {
-        const { audioUrl, duration } = await generateLine(line, baseSettings, controller.signal);
+        if (takesCount > 1) {
+          // Generate multiple takes per line
+          const takes: ScriptLineTake[] = [];
 
-        setLines((prev) => prev.map((l, idx) =>
-          idx === i ? { ...l, status: 'done' as const, audioUrl, duration } : l
-        ));
+          for (let t = 0; t < takesCount; t++) {
+            if (controller.signal.aborted) break;
+            const { audioUrl, duration } = await generateLine(line, baseSettings, controller.signal, options?.projectId);
+            takes.push({
+              id: `${line.id}-take-${t + 1}`,
+              emotion: line.emotion,
+              delivery: line.delivery,
+              intensity: 70,
+              audioUrl,
+              duration,
+              waveformData: generateSimpleWaveform(32),
+            });
+          }
+
+          const firstTake = takes[0];
+          setLines((prev) => prev.map((l, idx) =>
+            idx === i ? {
+              ...l,
+              status: 'done' as const,
+              takes,
+              selectedTakeIdx: 0,
+              audioUrl: firstTake?.audioUrl,
+              duration: firstTake?.duration,
+            } : l
+          ));
+        } else {
+          // Single take (default)
+          const { audioUrl, duration } = await generateLine(line, baseSettings, controller.signal, options?.projectId);
+
+          setLines((prev) => prev.map((l, idx) =>
+            idx === i ? { ...l, status: 'done' as const, audioUrl, duration } : l
+          ));
+        }
 
         done++;
-        setProgress({ done, total });
+        setProgress({ done, total, currentCharacter: line.character });
       } catch (err) {
         if (controller.signal.aborted) break;
 
