@@ -135,6 +135,11 @@ export {
   createManipulateHandler,
   createNavigateHandler,
   createSystemHandler,
+  computeResize,
+  initResizeState,
+  createIntentQueue,
+  IntentProvider,
+  useIntent,
 } from './intent';
 export type {
   IntentType,
@@ -151,4 +156,6 @@ export type {
   IntentEvent,
   IntentBus,
   Director,
+  ResizeState,
+  IntentQueue,
 } from './intent';
