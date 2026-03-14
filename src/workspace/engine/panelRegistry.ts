@@ -235,6 +235,20 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     complexity: 'medium',
   },
 
+  // ─── Narrative Intelligence ─────────────────────
+  'narrative-suggestions': {
+    type: 'narrative-suggestions',
+    label: 'Narrative Suggestions',
+    icon: Sparkles,
+    importFn: () => import('../panels/story/NarrativeSuggestionsPanel'),
+    defaultRole: 'sidebar',
+    sizeClass: 'compact',
+    minWidth: 240,
+    domains: ['story'],
+    complexity: 'low',
+    manifest: getManifest('narrative-suggestions'),
+  },
+
   // ─── Voice ───────────────────────────────────────
   'voice-manager': {
     type: 'voice-manager',

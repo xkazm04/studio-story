@@ -1053,4 +1053,43 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       micro: { minWidth: 60, minHeight: 48, description: 'AI status indicator dot (connected/disconnected)' },
     },
   },
+
+  // ─── Narrative Intelligence ─────────────────────
+  {
+    type: 'narrative-suggestions',
+    label: 'Narrative Suggestions',
+    description: 'AI-driven narrative suggestion sidebar showing prioritized insight cards from the StoryAnalyzer. Detects relationship tensions, plot gaps, pacing issues, and continuity problems without LLM calls.',
+    capabilities: [
+      'AI-driven narrative suggestions based on story data analysis',
+      'Relationship tension detection between rival/enemy characters',
+      'Plot gap detection for acts without beats',
+      'Pacing analysis for flat narrative stretches',
+      'One-click workspace composition from insight actions',
+    ],
+    domains: ['story'],
+    inputSchema: {
+      required: [],
+      optional: [
+        { name: 'projectId', type: 'string', description: 'Project to analyze. Falls back to store selection.', source: 'store:projectSlice.selectedProject' },
+      ],
+    },
+    outputs: [
+      { name: 'insights', type: 'MuseInsight[]', description: 'Prioritized narrative insights with actionable suggestions' },
+    ],
+    useCases: [
+      'User wants creative suggestions for their story',
+      'User wants to find narrative gaps or issues',
+      'User wants AI-powered story analysis without explicit prompting',
+      'User wants to discover character relationship opportunities',
+    ],
+    layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 240 },
+    complexity: 'low',
+    icon: 'Sparkles',
+    suggestedCompanions: ['scene-editor', 'character-cards', 'beats-manager'],
+    densityModes: {
+      full: { minWidth: 280, minHeight: 400, description: 'Full suggestion cards with category badges, priority indicators, and apply/dismiss actions' },
+      compact: { minWidth: 200, minHeight: 200, description: 'Condensed insight list with titles and priority dots' },
+      micro: { minWidth: 80, minHeight: 40, description: 'Suggestion count badge' },
+    },
+  },
 ];

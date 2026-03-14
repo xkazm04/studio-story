@@ -69,7 +69,8 @@ export type WorkspacePanelType =
   | 'scene-gallery'
   | 'audio-toolbar'
   | 'advisor'
-  | 'storyboard';
+  | 'storyboard'
+  | 'narrative-suggestions';
 
 // ============ Terminal Tab (legacy, kept for type compat) ============
 
