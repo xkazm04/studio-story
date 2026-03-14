@@ -20,20 +20,20 @@ describe('AIWritingExtension', () => {
   });
 
   it('has expected storage defaults', () => {
-    const storage = AIWritingExtension.storage as Record<string, unknown>;
+    const storage = AIWritingExtension.storage as unknown as Record<string, unknown>;
     expect(storage).toHaveProperty('isProcessing', false);
     expect(storage).toHaveProperty('currentTool', null);
     expect(storage).toHaveProperty('error', null);
   });
 
   it('has addCommands defined in config', () => {
-    const config = AIWritingExtension.config as Record<string, unknown>;
+    const config = AIWritingExtension.config as unknown as Record<string, unknown>;
     expect(config.addCommands).toBeDefined();
     expect(typeof config.addCommands).toBe('function');
   });
 
   it('addCommands returns runWritingTool and clearWritingState', () => {
-    const config = AIWritingExtension.config as Record<string, unknown>;
+    const config = AIWritingExtension.config as unknown as Record<string, unknown>;
     const commandsFn = config.addCommands as () => Record<string, unknown>;
     // Call addCommands to get the commands map (bind storage context)
     const commands = commandsFn.call({
@@ -50,20 +50,20 @@ describe('InlineDiffExtension', () => {
   });
 
   it('has expected storage defaults', () => {
-    const storage = InlineDiffExtension.storage as Record<string, unknown>;
+    const storage = InlineDiffExtension.storage as unknown as Record<string, unknown>;
     expect(storage).toHaveProperty('active', false);
     expect(storage).toHaveProperty('diffs');
     expect(Array.isArray(storage.diffs)).toBe(true);
   });
 
   it('has addCommands defined in config', () => {
-    const config = InlineDiffExtension.config as Record<string, unknown>;
+    const config = InlineDiffExtension.config as unknown as Record<string, unknown>;
     expect(config.addCommands).toBeDefined();
     expect(typeof config.addCommands).toBe('function');
   });
 
   it('addCommands returns showDiff, acceptDiff, rejectDiff, isDiffActive', () => {
-    const config = InlineDiffExtension.config as Record<string, unknown>;
+    const config = InlineDiffExtension.config as unknown as Record<string, unknown>;
     const commandsFn = config.addCommands as () => Record<string, unknown>;
     const commands = commandsFn.call({
       storage: InlineDiffExtension.storage,
@@ -75,7 +75,7 @@ describe('InlineDiffExtension', () => {
   });
 
   it('has addProseMirrorPlugins defined for decoration rendering', () => {
-    const config = InlineDiffExtension.config as Record<string, unknown>;
+    const config = InlineDiffExtension.config as unknown as Record<string, unknown>;
     expect(config.addProseMirrorPlugins).toBeDefined();
     expect(typeof config.addProseMirrorPlugins).toBe('function');
   });

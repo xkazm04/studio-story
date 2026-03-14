@@ -21,7 +21,11 @@ import {
   SceneHeading, ActionLine, CharacterCue, Dialogue, Parenthetical,
 } from '@/app/features/story/sub_SceneEditor/extensions/screenplayNodes';
 import { ScreenplayKeymap } from '@/app/features/story/sub_SceneEditor/extensions/screenplayKeymap';
+import { InlineDiffExtension } from '@/app/features/story/sub_SceneEditor/extensions/inlineDiffExtension';
+import { AIWritingExtension } from '@/app/features/story/sub_SceneEditor/extensions/aiWritingExtension';
 import { ScreenplayToolbar } from '@/app/features/story/sub_SceneEditor/components/ScreenplayToolbar';
+import { AIWritingToolbar } from '@/app/features/story/sub_SceneEditor/components/AIWritingToolbar';
+import { InlineDiffControls } from '@/app/features/story/sub_SceneEditor/components/InlineDiffControls';
 import type { LucideIcon } from 'lucide-react';
 import type { Character } from '@/app/types/Character';
 import type { Beat } from '@/app/types/Beat';
@@ -515,6 +519,8 @@ export default function SceneEditorPanel({
     Dialogue,
     Parenthetical,
     ScreenplayKeymap,
+    InlineDiffExtension,
+    AIWritingExtension,
   ], []);
 
   // ─── TipTap editor instance ──────────────────────────────
@@ -824,8 +830,18 @@ export default function SceneEditorPanel({
         distractionFree={distractionFree}
         onToggleDistractionFree={() => setDistractionFree((prev) => !prev)}
       />
-      <div className="h-full overflow-auto">
+      <div className="relative h-full overflow-auto">
         <EditorContent editor={tiptapEditor} />
+        {tiptapEditor && (
+          <>
+            <AIWritingToolbar
+              editor={tiptapEditor}
+              projectId={projectId}
+              sceneId={resolvedSceneId}
+            />
+            <InlineDiffControls editor={tiptapEditor} />
+          </>
+        )}
       </div>
     </div>
   );
