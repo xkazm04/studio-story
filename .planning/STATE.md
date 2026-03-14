@@ -3,31 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-03-14T10:15:16.623Z"
-last_activity: 2026-03-14 -- Completed 03-02-PLAN.md (StreamController for progressive LLM patch streaming)
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-14T11:12:00Z"
+last_activity: 2026-03-14 -- Completed 04-01-PLAN.md (Headless chat primitives in @dzin/core)
 progress:
   total_phases: 12
   completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-03-14T10:09:20Z"
-last_activity: 2026-03-14 -- Completed 03-02-PLAN.md (StreamController for progressive LLM patch streaming)
-progress:
-  [██████████] 100%
-  completed_phases: 2
-  total_plans: 10
-  completed_plans: 9
-  percent: 90
+  total_plans: 12
+  completed_plans: 11
+  percent: 92
 ---
 
 # Project State
@@ -37,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 3 - Jinn State and Streaming
+**Current focus:** Phase 4 - Jinn Conversation Shell
 
 ## Current Position
 
-Phase: 3 of 12 (Jinn State and Streaming)
-Plan: 2 of 3 in current phase
+Phase: 4 of 12 (Jinn Conversation Shell)
+Plan: 1 of 2 in current phase
 Status: Executing
-Last activity: 2026-03-14 -- Completed 03-02-PLAN.md (StreamController for progressive LLM patch streaming)
+Last activity: 2026-03-14 -- Completed 04-01-PLAN.md (Headless chat primitives in @dzin/core)
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 11
 - Average duration: 4 min
-- Total execution time: 0.60 hours
+- Total execution time: 0.65 hours
 
 **By Phase:**
 
@@ -61,10 +45,11 @@ Progress: [█████████░] 90%
 |-------|-------|-------|----------|
 | 01 | 4 | 19 min | 5 min |
 | 02 | 3 | 11 min | 4 min |
-| 03 | 2 | 7 min | 4 min |
+| 03 | 3 | 10 min | 3 min |
+| 04 | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (5 min), 02-02 (4 min), 02-03 (2 min), 03-01 (5 min), 03-02 (2 min)
+- Last 5 plans: 02-03 (2 min), 03-01 (5 min), 03-02 (2 min), 03-03 (3 min), 04-01 (3 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -74,6 +59,7 @@ Progress: [█████████░] 90%
 | Phase 03 P01 | 5 | 2 tasks | 11 files |
 | Phase 03 P02 | 2 | 1 tasks | 2 files |
 | Phase 03 P03 | 3 | 2 tasks | 8 files |
+| Phase 04 P01 | 3 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -115,6 +101,9 @@ Recent decisions affecting current work:
 - [Phase 03]: abort() delegates to commit() -- keeps rendered content as undoable group
 - [Phase 03]: useSyncExternalStore with JSON.parse(getSnapshot()) for tear-free React reads
 - [Phase 03]: Path-level locking with ancestor matching for nested path conflict detection
+- [04-01]: ChatStore.subscribe takes () => void (not state callback) for direct useSyncExternalStore compatibility
+- [04-01]: Tool calls stored as optional array on ChatMessage rather than separate collection
+- [04-01]: matchCommands strips leading slash for natural /command typing UX
 
 ### Pending Todos
 
@@ -127,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T10:15:16.620Z
-Stopped at: Completed 03-03-PLAN.md
-Resume file: None
+Last session: 2026-03-14T11:12:00Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: .planning/phases/04-jinn-conversation-shell/04-01-SUMMARY.md

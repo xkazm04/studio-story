@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
-| 4. Jinn Conversation Shell | 0/2 | Not started | - |
+| 4. Jinn Conversation Shell | 1/2 | In progress | - |
 | 5. Jinn Intent and Director | 0/4 | Not started | - |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
