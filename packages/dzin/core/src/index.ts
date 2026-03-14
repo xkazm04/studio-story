@@ -13,6 +13,13 @@ export type {
   PanelFrameProps,
 } from './types';
 
+// Density
+export { DensityProvider, useDensity } from './density';
+export type { DensityProviderProps } from './density';
+
+// Panel
+export { PanelFrame } from './panel';
+
 // Registry
 export { createRegistry, serializeRegistry } from './registry';
 export type {

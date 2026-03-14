@@ -1,7 +1,11 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { DensityProvider, useDensity } from '../DensityContext';
 import { PanelFrame } from '../../panel/PanelFrame';
+
+afterEach(() => {
+  cleanup();
+});
 
 // Helper component to read density from context
 function DensityReader() {
