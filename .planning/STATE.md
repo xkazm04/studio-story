@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-14T15:18:16Z"
-last_activity: 2026-03-14 -- Completed 06-02-PLAN.md (CLI session & multimodal tools)
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-03-14T15:27:47Z"
+last_activity: 2026-03-14 -- Completed 06-03-PLAN.md (Ambient observer & status UI)
 progress:
   total_phases: 12
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -20,23 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 6 - Jinn LLM Integration (2 of 3 plans complete)
+**Current focus:** Phase 6 - Jinn LLM Integration (3 of 3 plans complete - PHASE DONE)
 
 ## Current Position
 
 Phase: 6 of 12 (Jinn LLM Integration)
-Plan: 2 of 3 in current phase (06-02-PLAN.md complete)
-Status: Executing
-Last activity: 2026-03-14 -- Completed 06-02-PLAN.md (CLI session & multimodal tools)
+Plan: 3 of 3 in current phase (06-03-PLAN.md complete)
+Status: Phase 6 Complete
+Last activity: 2026-03-14 -- Completed 06-03-PLAN.md (Ambient observer & status UI)
 
-Progress: [████████░░] 17/39 plans
+Progress: [█████████░] 18/39 plans
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: 4 min
-- Total execution time: 1.15 hours
+- Total execution time: 1.23 hours
 
 **By Phase:**
 
@@ -47,10 +47,10 @@ Progress: [████████░░] 17/39 plans
 | 03 | 3 | 10 min | 3 min |
 | 04 | 2 | 11 min | 6 min |
 | 05 | 3 | 13 min | 4 min |
-| 06 | 2 | 9 min | 5 min |
+| 06 | 3 | 14 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (6 min), 05-02 (5 min), 05-03 (2 min), 06-01 (4 min), 06-02 (5 min)
+- Last 5 plans: 05-02 (5 min), 05-03 (2 min), 06-01 (4 min), 06-02 (5 min), 06-03 (5 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -67,6 +67,7 @@ Progress: [████████░░] 17/39 plans
 | Phase 05 P03 | 2 | 3 tasks | 9 files |
 | Phase 06 P01 | 4 | 2 tasks | 7 files |
 | Phase 06 P02 | 5 | 2 tasks | 6 files |
+| Phase 06 P03 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,10 @@ Recent decisions affecting current work:
 - [06-02]: executeCLI collects events via onEvent callback, resolves promise on result/error event
 - [06-02]: Multimodal tools use standalone handler array plus registerMultimodalTools for MCP server integration
 - [06-02]: Intent API route returns 200 with error status on CLI failure -- transport handles error routing
+- [06-03]: Entity-created trigger scans all recent events in debounce batch, not just last event -- handles rapid multi-type actions
+- [06-03]: Idle trigger uses separate setTimeout per pattern, all reset on any IntentBus event
+- [06-03]: WorkspaceHeader accepts llmStatus prop (default 'disconnected') for graceful degradation when transport not wired
+- [06-03]: SuggestionStack z-[8000] sits below advisor overlay z-[9000] but above workspace panels
 
 ### Pending Todos
 
@@ -147,6 +152,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T15:18:16Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-14T15:27:47Z
+Stopped at: Completed 06-03-PLAN.md (Phase 6 complete)
 Resume file: None
