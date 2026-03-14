@@ -12,3 +12,12 @@ export type {
   PanelDataSlice,
   PanelFrameProps,
 } from './types';
+
+// Registry
+export { createRegistry, serializeRegistry } from './registry';
+export type {
+  PanelDefinition,
+  PanelRegistry,
+  SerializedPanel,
+  SerializedRegistry,
+} from './registry';
