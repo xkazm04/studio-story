@@ -13,7 +13,7 @@ This roadmap builds the Jinn engine from the ground up as a separable LLM-orches
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
-- [x] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts (completed 2026-03-14)
+- [x] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts (completed 2026-03-14)
 - [ ] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering
 - [ ] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer
 - [ ] **Phase 5: Jinn Intent and Director** - Intent bus normalizing all inputs into typed objects with tiered local/LLM resolution
@@ -70,13 +70,12 @@ Plans:
   2. Changes originating from the user (direct manipulation, form input) are captured as JSON Patch operations and available to the LLM context on next interaction
   3. User can undo and redo any AI-initiated UI or content change, restoring previous state accurately
   4. Streaming LLM responses render progressively -- partial panel content is visible before the full response completes
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
-- [ ] 03-04: TBD
+- [ ] 03-01-PLAN.md -- State engine core with JSON Patch synchronization, undo/redo stack, and snapshot serialization
+- [ ] 03-02-PLAN.md -- Streaming controller for progressive LLM response rendering with abort/commit lifecycle
+- [ ] 03-03-PLAN.md -- React hooks, conflict resolution, CSS animations, and public API wiring
 
 ### Phase 4: Jinn Conversation Shell
 **Goal**: Users have a persistent chat interface for directing Jinn via natural language, and can see exactly what the LLM is doing through tool call visualization
@@ -239,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 |-------|----------------|--------|-----------|
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
-| 3. Jinn State and Streaming | 0/4 | Not started | - |
+| 3. Jinn State and Streaming | 0/3 | Not started | - |
 | 4. Jinn Conversation Shell | 0/3 | Not started | - |
 | 5. Jinn Intent and Director | 0/4 | Not started | - |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
