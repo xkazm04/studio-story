@@ -3,6 +3,21 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-14T15:11:10.908Z"
+last_activity: 2026-03-14 -- Completed 05-03-PLAN.md (Host app integration - resize handles, layout picker, IntentProvider)
+progress:
+  total_phases: 12
+  completed_phases: 5
+  total_plans: 18
+  completed_plans: 16
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
 stopped_at: Completed 05-03-PLAN.md
 last_updated: "2026-03-14T13:37:37.369Z"
 last_activity: 2026-03-14 -- Completed 05-03-PLAN.md (Host app integration - resize handles, layout picker, IntentProvider)
@@ -64,6 +79,7 @@ Progress: [████████░░] 15/39 plans
 | Phase 05 P01 | 6 | 2 tasks | 13 files |
 | Phase 05 P02 | 5 | 2 tasks | 9 files |
 | Phase 05 P03 | 2 | 3 tasks | 9 files |
+| Phase 06 P01 | 4 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -125,6 +141,9 @@ Recent decisions affecting current work:
 - [05-03]: LayoutPicker renders inline SVG thumbnails per template -- self-contained, theme-consistent
 - [05-03]: Ctrl+1-7 keyboard shortcuts mapped to LAYOUT_ORDER, excluding stack (mobile-only)
 - [05-03]: IntentProvider wraps inside QueryClientProvider via IntentSetup inner component
+- [Phase 06]: TimeoutError sentinel class for distinguishing timeout from other errors in retry loop
+- [Phase 06]: Promise.race via manual settle flag for timeout instead of AbortController -- simpler, no polyfill needed
+- [Phase 06]: Exponential backoff formula: BASE_BACKOFF_MS * 2^attempt (1s, 2s, 4s...)
 
 ### Pending Todos
 
@@ -137,6 +156,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T13:37:37.366Z
-Stopped at: Completed 05-03-PLAN.md
-Resume file: .planning/phases/06-jinn-llm-integration/06-01-PLAN.md
+Last session: 2026-03-14T15:11:10.905Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: None
