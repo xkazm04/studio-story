@@ -23,8 +23,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Jinn Intelligence
 
-- [ ] **JINT-01**: Intent bus that normalizes all user inputs (voice, text, click, ambient) into typed Intent objects
-- [ ] **JINT-02**: Director with tiered resolution — instant local resolution via workflow hints (~80% of intents) + LLM reasoning for complex/ambiguous intents (~20%)
+- [x] **JINT-01**: Intent bus that normalizes all user inputs (voice, text, click, ambient) into typed Intent objects
+- [x] **JINT-02**: Director with tiered resolution — instant local resolution via workflow hints (~80% of intents) + LLM reasoning for complex/ambiguous intents (~20%)
 - [ ] **JINT-03**: Claude Code CLI integration via MCP/stdio as primary reasoning and orchestration engine
 - [ ] **JINT-04**: Gemini API bridge for multimodal tasks (vision, image generation, audio) called as tools by Claude
 - [ ] **JINT-05**: Ambient observation mode — LLM watches user context and proactively adapts UI, surfaces relevant data, suggests next steps
@@ -117,8 +117,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JCORE-09 | Phase 2 | Complete |
 | JCORE-10 | Phase 4 | Complete |
 | JCORE-11 | Phase 1 | Complete |
-| JINT-01 | Phase 5 | Pending |
-| JINT-02 | Phase 5 | Pending |
+| JINT-01 | Phase 5 | Complete |
+| JINT-02 | Phase 5 | Complete |
 | JINT-03 | Phase 6 | Pending |
 | JINT-04 | Phase 6 | Pending |
 | JINT-05 | Phase 6 | Pending |

@@ -103,7 +103,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Intent types, bus, director, and built-in handlers (compose/manipulate/navigate/system)
+- [x] 05-01-PLAN.md -- Intent types, bus, director, and built-in handlers (compose/manipulate/navigate/system)
 - [ ] 05-02-PLAN.md -- Resize math, intent queue, React hooks (useIntent/IntentProvider), barrel export
 - [ ] 05-03-PLAN.md -- Host app integration (resize handles, layout picker, close buttons, IntentProvider wiring)
 
@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
-| 5. Jinn Intent and Director | 0/3 | Planning complete | - |
+| 5. Jinn Intent and Director | 1/3 | In progress | - |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |

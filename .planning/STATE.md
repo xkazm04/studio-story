@@ -3,15 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-14T11:25:30Z"
-last_activity: 2026-03-14 -- Completed 04-02-PLAN.md (Styled conversation shell overlay)
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-14T12:59:10Z"
+last_activity: 2026-03-14 -- Completed 05-01-PLAN.md (Intent types, director, bus, and handlers)
 progress:
   total_phases: 12
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -21,23 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 4 complete - Jinn Conversation Shell
+**Current focus:** Phase 5 - Jinn Intent and Director (Plan 1 of 3 complete)
 
 ## Current Position
 
-Phase: 4 of 12 (Jinn Conversation Shell) -- COMPLETE
-Plan: 2 of 2 in current phase (complete)
+Phase: 5 of 12 (Jinn Intent and Director) -- IN PROGRESS
+Plan: 1 of 3 in current phase (05-01-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 04-02-PLAN.md (Styled conversation shell overlay)
+Last activity: 2026-03-14 -- Completed 05-01-PLAN.md (Intent types, director, bus, and handlers)
 
-Progress: [██████████] 100%
+Progress: [█████████░] 13/39 plans
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 4 min
-- Total execution time: 0.78 hours
+- Total execution time: 0.88 hours
 
 **By Phase:**
 
@@ -47,9 +46,10 @@ Progress: [██████████] 100%
 | 02 | 3 | 11 min | 4 min |
 | 03 | 3 | 10 min | 3 min |
 | 04 | 2 | 11 min | 6 min |
+| 05 | 1 | 6 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (5 min), 03-02 (2 min), 03-03 (3 min), 04-01 (3 min), 04-02 (8 min)
+- Last 5 plans: 03-02 (2 min), 03-03 (3 min), 04-01 (3 min), 04-02 (8 min), 05-01 (6 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -61,6 +61,7 @@ Progress: [██████████] 100%
 | Phase 03 P03 | 3 | 2 tasks | 8 files |
 | Phase 04 P01 | 3 | 2 tasks | 9 files |
 | Phase 04 P02 | 8 | 3 tasks | 11 files |
+| Phase 05 P01 | 6 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,10 @@ Recent decisions affecting current work:
 - [04-02]: markdown-to-jsx for message rendering -- lightweight, React-native, no dangerouslySetInnerHTML
 - [04-02]: Mock echo handler (300ms delay) enables full visual testing without LLM transport
 - [04-02]: z-[9000] for overlay ensures it floats above all workspace panels
+- [05-01]: IntentHandler returns typeof NEEDS_LLM (unique Symbol) as sentinel for LLM fallthrough
+- [05-01]: Bus special-cases undo/redo descriptions to call stateEngine.undo()/redo() instead of dispatch()
+- [05-01]: Manipulate handler uses inline FALLBACK_THRESHOLDS to avoid PanelDefinition dependency
+- [05-01]: Compose handler accepts registryHas function rather than full PanelRegistry for minimal coupling
 
 ### Pending Todos
 
@@ -121,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T11:25:28.762Z
-Stopped at: Completed 04-02-PLAN.md
-Resume file: .planning/phases/04-jinn-conversation-shell/04-02-SUMMARY.md
+Last session: 2026-03-14T12:59:10Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: .planning/phases/05-jinn-intent-and-director/05-02-PLAN.md
