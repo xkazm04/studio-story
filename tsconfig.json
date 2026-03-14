@@ -25,6 +25,12 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@dzin/core": [
+        "./packages/dzin/core/src/index.ts"
+      ],
+      "@dzin/core/*": [
+        "./packages/dzin/core/src/*"
       ]
     }
   },
@@ -33,7 +39,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "packages/dzin/core/src/**/*.ts",
+    "packages/dzin/core/src/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ['@dzin/core'],
   turbopack: {
     resolveAlias: {
       fs: { browser: './src/lib/empty-module.js' },

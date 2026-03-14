@@ -1,0 +1,21 @@
+{
+  "name": "@dzin/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./themes/default": "./src/theme/default.css"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "echo 'no lint configured yet'"
+  }
+}

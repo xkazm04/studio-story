@@ -2,6 +2,9 @@
   "name": "studio-story",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/dzin/*"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -10,17 +13,19 @@
     "test": "vitest",
     "test:run": "vitest run",
     "build:mcp": "tsc -p src/mcp-server/tsconfig.json",
-    "mcp-server": "node dist/mcp-server/index.js"
+    "mcp-server": "node dist/mcp-server/index.js",
+    "check-types": "turbo check-types"
   },
   "dependencies": {
     "@google/genai": "^1.35.0",
     "@hello-pangea/dnd": "^18.0.1",
-    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-switch": "^1.2.6",
     "@spotify/basic-pitch": "^1.0.1",
     "@supabase/supabase-js": "^2.76.1",
     "@tanstack/react-query": "^5.90.5",
+    "@tanstack/react-virtual": "^3.13.21",
     "@tiptap/pm": "^3.10.1",
     "@tiptap/react": "^3.10.1",
     "@tiptap/starter-kit": "^3.10.1",
@@ -33,6 +38,7 @@
     "dagre": "^0.8.5",
     "date-fns": "^4.1.0",
     "essentia.js": "^0.1.3",
+    "focus-trap-react": "^12.0.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.548.0",
     "next": "^16.1.1",
@@ -59,7 +65,9 @@
     "@types/react-dom": "19.2.2",
     "eslint": "^9.38.0",
     "eslint-config-next": "16.0.0",
+    "pg": "^8.18.0",
     "tailwindcss": "^4",
+    "turbo": "^2.8.17",
     "typescript": "^5",
     "vitest": "^4.0.4"
   },
