@@ -41,8 +41,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **STORY-02**: User can create and manage character profiles with traits, descriptions, relationships, and faction membership
 - [x] **STORY-03**: Interactive relationship map that visualizes character connections and faction dynamics
 - [x] **STORY-04**: User can edit scene content and dialogue in a rich text editor within Jinn panels
-- [ ] **STORY-05**: AI-driven narrative suggestions — LLM analyzes relationship tensions and story structure to suggest plot developments, conflicts, and resolutions
-- [ ] **STORY-06**: Branching narrative system — user can create choose-your-own-adventure story paths with scene graph visualization
+- [x] **STORY-05**: AI-driven narrative suggestions — LLM analyzes relationship tensions and story structure to suggest plot developments, conflicts, and resolutions
+- [x] **STORY-06**: Branching narrative system — user can create choose-your-own-adventure story paths with scene graph visualization
 
 ### Story Visual
 
@@ -129,8 +129,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STORY-02 | Phase 7 | Complete |
 | STORY-03 | Phase 7 | Complete |
 | STORY-04 | Phase 7 | Complete |
-| STORY-05 | Phase 8 | Pending |
-| STORY-06 | Phase 8 | Pending |
+| STORY-05 | Phase 8 | Complete |
+| STORY-06 | Phase 8 | Complete |
 | VISUAL-01 | Phase 9 | Pending |
 | VISUAL-02 | Phase 9 | Pending |
 | VISUAL-03 | Phase 9 | Pending |
