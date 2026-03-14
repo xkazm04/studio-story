@@ -1012,26 +1012,62 @@ export class LeonardoProvider implements AIProvider {
   }
 
   /**
+   * Generate 4 scene illustration alternatives with optional controlnets.
+   * This is a dedicated method for the scene illustration pipeline that
+   * avoids modifying the existing AIProvider interface.
+   */
+  async generateSceneIllustration(
+    prompt: string,
+    width: number,
+    height: number,
+    controlnets: Array<{ initImageId: string; initImageType: string; preprocessorId: number; strengthType?: string }>
+  ): Promise<{ generationId: string }> {
+    if (!this.isAvailable()) {
+      throw new AIError(
+        'Leonardo API key not configured',
+        'PROVIDER_UNAVAILABLE',
+        'leonardo'
+      );
+    }
+
+    const generationId = await this.startGenerationAPI(prompt, width, height, 4, controlnets);
+    return { generationId };
+  }
+
+  /**
    * Start generation via API
+   *
+   * @param controlnets - Optional controlnet references. When non-empty, styleUUID is omitted
+   *                       (they conflict per Leonardo docs).
    */
   private async startGenerationAPI(
     prompt: string,
     width: number,
     height: number,
-    numImages: number
+    numImages: number,
+    controlnets?: Array<{ initImageId: string; initImageType: string; preprocessorId: number; strengthType?: string }>
   ): Promise<string> {
     // Apply truncation to prompt before sending to API
     const truncatedPrompt = truncatePromptForLeonardo(prompt);
 
-    const payload = {
+    const hasControlnets = controlnets && controlnets.length > 0;
+
+    // Build base payload
+    const payload: Record<string, unknown> = {
       alchemy: false,
       height,
       width,
       modelId: this.modelId,
-      styleUUID: this.styleId,
       prompt: truncatedPrompt,
       num_images: Math.min(Math.max(numImages, 1), 4),
     };
+
+    // Controlnets and styleUUID are mutually exclusive per Leonardo docs
+    if (hasControlnets) {
+      payload.controlnets = controlnets;
+    } else {
+      payload.styleUUID = this.styleId;
+    }
 
     const response = await fetch(`${BASE_URL}/generations`, {
       method: 'POST',
