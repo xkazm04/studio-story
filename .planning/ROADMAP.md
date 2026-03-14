@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
 - [x] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts (completed 2026-03-14)
-- [ ] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering
+- [x] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering (completed 2026-03-14)
 - [ ] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer
 - [ ] **Phase 5: Jinn Intent and Director** - Intent bus normalizing all inputs into typed objects with tiered local/LLM resolution
 - [ ] **Phase 6: Jinn LLM Integration** - Claude Code CLI and Gemini API wired as reasoning and multimodal engines with ambient observation
@@ -70,7 +70,7 @@ Plans:
   2. Changes originating from the user (direct manipulation, form input) are captured as JSON Patch operations and available to the LLM context on next interaction
   3. User can undo and redo any AI-initiated UI or content change, restoring previous state accurately
   4. Streaming LLM responses render progressively -- partial panel content is visible before the full response completes
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 03-01-PLAN.md -- State engine core with JSON Patch synchronization, undo/redo stack, and snapshot serialization
@@ -85,12 +85,11 @@ Plans:
   1. An always-available chat interface exists where the user can type natural language requests and receive LLM responses
   2. When the LLM invokes tools (compose workspace, query data, generate content), the user sees a real-time visualization of which tools are running and their results
   3. The chat interface works as a fallback when panel composition is insufficient -- the user can always fall back to conversation
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md -- Headless chat primitives in @dzin/core (types, store, commands, hooks, tests)
+- [ ] 04-02-PLAN.md -- Styled conversation shell overlay (floating popover, markdown, tool cards, slash commands, drag/resize)
 
 ### Phase 5: Jinn Intent and Director
 **Goal**: All user inputs (text, clicks, keyboard, future voice) are normalized into typed Intent objects, and a two-tier director resolves most intents locally in under 1ms while routing complex ones to the LLM
@@ -238,8 +237,8 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 |-------|----------------|--------|-----------|
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
-| 3. Jinn State and Streaming | 1/3 | In Progress|  |
-| 4. Jinn Conversation Shell | 0/3 | Not started | - |
+| 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
+| 4. Jinn Conversation Shell | 0/2 | Not started | - |
 | 5. Jinn Intent and Director | 0/4 | Not started | - |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
