@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-14T13:09:52Z"
-last_activity: 2026-03-14 -- Completed 05-02-PLAN.md (Resize math, intent queue, and React hooks)
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-03-14T13:37:37.369Z"
+last_activity: 2026-03-14 -- Completed 05-03-PLAN.md (Host app integration - resize handles, layout picker, IntentProvider)
 progress:
   total_phases: 12
-  completed_phases: 4
-  total_plans: 14
-  completed_plans: 14
+  completed_phases: 5
+  total_plans: 15
+  completed_plans: 15
 ---
 
 # Project State
@@ -20,23 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 5 - Jinn Intent and Director (Plan 2 of 3 complete)
+**Current focus:** Phase 5 - Jinn Intent and Director (COMPLETE -- all 3 plans executed)
 
 ## Current Position
 
-Phase: 5 of 12 (Jinn Intent and Director) -- IN PROGRESS
-Plan: 2 of 3 in current phase (05-02-PLAN.md complete)
+Phase: 5 of 12 (Jinn Intent and Director) -- COMPLETE
+Plan: 3 of 3 in current phase (05-03-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 05-02-PLAN.md (Resize math, intent queue, and React hooks)
+Last activity: 2026-03-14 -- Completed 05-03-PLAN.md (Host app integration - resize handles, layout picker, IntentProvider)
 
-Progress: [█████████░] 14/39 plans
+Progress: [████████░░] 15/39 plans
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 4 min
-- Total execution time: 0.97 hours
+- Total execution time: 1.00 hours
 
 **By Phase:**
 
@@ -46,10 +46,10 @@ Progress: [█████████░] 14/39 plans
 | 02 | 3 | 11 min | 4 min |
 | 03 | 3 | 10 min | 3 min |
 | 04 | 2 | 11 min | 6 min |
-| 05 | 2 | 11 min | 6 min |
+| 05 | 3 | 13 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (3 min), 04-01 (3 min), 04-02 (8 min), 05-01 (6 min), 05-02 (5 min)
+- Last 5 plans: 04-01 (3 min), 04-02 (8 min), 05-01 (6 min), 05-02 (5 min), 05-03 (2 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -63,6 +63,7 @@ Progress: [█████████░] 14/39 plans
 | Phase 04 P02 | 8 | 3 tasks | 11 files |
 | Phase 05 P01 | 6 | 2 tasks | 13 files |
 | Phase 05 P02 | 5 | 2 tasks | 9 files |
+| Phase 05 P03 | 2 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -119,6 +120,11 @@ Recent decisions affecting current work:
 - [05-02]: computeResize works in pixel space during drag, converts to fractions once per call to avoid cumulative drift
 - [05-02]: Density hysteresis tracks densityChangePx and requires 20px buffer before allowing another density change
 - [05-02]: IntentQueue.startBuffering captures optional initial state snapshot for conflict detection on drain
+- [05-03]: Pointer Events API (setPointerCapture) for resize -- zero deps, better touch support, consistent with 04-02
+- [05-03]: Resize state in useRef avoids re-renders during pointermove; density committed only on pointerup
+- [05-03]: LayoutPicker renders inline SVG thumbnails per template -- self-contained, theme-consistent
+- [05-03]: Ctrl+1-7 keyboard shortcuts mapped to LAYOUT_ORDER, excluding stack (mobile-only)
+- [05-03]: IntentProvider wraps inside QueryClientProvider via IntentSetup inner component
 
 ### Pending Todos
 
@@ -131,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T13:09:52Z
-Stopped at: Completed 05-02-PLAN.md
-Resume file: .planning/phases/05-jinn-intent-and-director/05-03-PLAN.md
+Last session: 2026-03-14T13:37:37.366Z
+Stopped at: Completed 05-03-PLAN.md
+Resume file: .planning/phases/06-jinn-llm-integration/06-01-PLAN.md
