@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
 - [x] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts (completed 2026-03-14)
 - [x] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering (completed 2026-03-14)
-- [ ] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer
+- [x] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer (completed 2026-03-14)
 - [ ] **Phase 5: Jinn Intent and Director** - Intent bus normalizing all inputs into typed objects with tiered local/LLM resolution
 - [ ] **Phase 6: Jinn LLM Integration** - Claude Code CLI and Gemini API wired as reasoning and multimodal engines with ambient observation
 - [ ] **Phase 7: Story Data and Authoring** - Story structure, character management, relationship visualization, and rich text editing on Jinn
@@ -85,11 +85,11 @@ Plans:
   1. An always-available chat interface exists where the user can type natural language requests and receive LLM responses
   2. When the LLM invokes tools (compose workspace, query data, generate content), the user sees a real-time visualization of which tools are running and their results
   3. The chat interface works as a fallback when panel composition is insufficient -- the user can always fall back to conversation
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 04-01-PLAN.md -- Headless chat primitives in @dzin/core (types, store, commands, hooks, tests)
-- [ ] 04-02-PLAN.md -- Styled conversation shell overlay (floating popover, markdown, tool cards, slash commands, drag/resize)
+- [x] 04-01-PLAN.md -- Headless chat primitives in @dzin/core (types, store, commands, hooks, tests)
+- [x] 04-02-PLAN.md -- Styled conversation shell overlay (floating popover, markdown, tool cards, slash commands, drag/resize)
 
 ### Phase 5: Jinn Intent and Director
 **Goal**: All user inputs (text, clicks, keyboard, future voice) are normalized into typed Intent objects, and a two-tier director resolves most intents locally in under 1ms while routing complex ones to the LLM
@@ -100,13 +100,12 @@ Plans:
   2. Common intents (open panel, navigate, filter) resolve locally via workflow hints without any LLM call, in under 50ms
   3. Complex or ambiguous intents are routed to the LLM for resolution, with the user seeing a brief loading indicator
   4. User can directly manipulate panels (drag, resize, rearrange) while the LLM is simultaneously composing other panels -- both paths coexist without conflict
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
-- [ ] 05-04: TBD
+- [ ] 05-01-PLAN.md -- Intent types, bus, director, and built-in handlers (compose/manipulate/navigate/system)
+- [ ] 05-02-PLAN.md -- Resize math, intent queue, React hooks (useIntent/IntentProvider), barrel export
+- [ ] 05-03-PLAN.md -- Host app integration (resize handles, layout picker, close buttons, IntentProvider wiring)
 
 ### Phase 6: Jinn LLM Integration
 **Goal**: Claude Code CLI serves as the primary reasoning engine via MCP/stdio, Gemini API handles multimodal tasks as a tool, and the system proactively observes user context to suggest next steps
@@ -238,8 +237,8 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
-| 4. Jinn Conversation Shell | 1/2 | In progress | - |
-| 5. Jinn Intent and Director | 0/4 | Not started | - |
+| 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
+| 5. Jinn Intent and Director | 0/3 | Planning complete | - |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |

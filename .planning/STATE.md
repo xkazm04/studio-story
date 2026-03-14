@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-14T11:12:00Z"
-last_activity: 2026-03-14 -- Completed 04-01-PLAN.md (Headless chat primitives in @dzin/core)
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-14T11:25:30Z"
+last_activity: 2026-03-14 -- Completed 04-02-PLAN.md (Styled conversation shell overlay)
 progress:
   total_phases: 12
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 12
-  completed_plans: 11
-  percent: 92
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 4 - Jinn Conversation Shell
+**Current focus:** Phase 4 complete - Jinn Conversation Shell
 
 ## Current Position
 
-Phase: 4 of 12 (Jinn Conversation Shell)
-Plan: 1 of 2 in current phase
+Phase: 4 of 12 (Jinn Conversation Shell) -- COMPLETE
+Plan: 2 of 2 in current phase (complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 04-01-PLAN.md (Headless chat primitives in @dzin/core)
+Last activity: 2026-03-14 -- Completed 04-02-PLAN.md (Styled conversation shell overlay)
 
-Progress: [█████████░] 92%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 4 min
-- Total execution time: 0.65 hours
+- Total execution time: 0.78 hours
 
 **By Phase:**
 
@@ -46,10 +46,10 @@ Progress: [█████████░] 92%
 | 01 | 4 | 19 min | 5 min |
 | 02 | 3 | 11 min | 4 min |
 | 03 | 3 | 10 min | 3 min |
-| 04 | 1 | 3 min | 3 min |
+| 04 | 2 | 11 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2 min), 03-01 (5 min), 03-02 (2 min), 03-03 (3 min), 04-01 (3 min)
+- Last 5 plans: 03-01 (5 min), 03-02 (2 min), 03-03 (3 min), 04-01 (3 min), 04-02 (8 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -60,6 +60,7 @@ Progress: [█████████░] 92%
 | Phase 03 P02 | 2 | 1 tasks | 2 files |
 | Phase 03 P03 | 3 | 2 tasks | 8 files |
 | Phase 04 P01 | 3 | 2 tasks | 9 files |
+| Phase 04 P02 | 8 | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,10 @@ Recent decisions affecting current work:
 - [04-01]: ChatStore.subscribe takes () => void (not state callback) for direct useSyncExternalStore compatibility
 - [04-01]: Tool calls stored as optional array on ChatMessage rather than separate collection
 - [04-01]: matchCommands strips leading slash for natural /command typing UX
+- [04-02]: Pointer Events API for drag/resize instead of third-party library -- zero dependencies, better touch support
+- [04-02]: markdown-to-jsx for message rendering -- lightweight, React-native, no dangerouslySetInnerHTML
+- [04-02]: Mock echo handler (300ms delay) enables full visual testing without LLM transport
+- [04-02]: z-[9000] for overlay ensures it floats above all workspace panels
 
 ### Pending Todos
 
@@ -116,6 +121,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T11:12:00Z
-Stopped at: Completed 04-01-PLAN.md
-Resume file: .planning/phases/04-jinn-conversation-shell/04-01-SUMMARY.md
+Last session: 2026-03-14T11:25:28.762Z
+Stopped at: Completed 04-02-PLAN.md
+Resume file: .planning/phases/04-jinn-conversation-shell/04-02-SUMMARY.md
