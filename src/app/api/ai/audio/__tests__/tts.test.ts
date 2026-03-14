@@ -5,7 +5,7 @@
  * Mocks fetch to ElevenLabs API and Supabase Storage upload.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock environment
 vi.stubEnv('ELEVENLABS_API_KEY', 'test-api-key');
@@ -43,7 +43,7 @@ describe('POST /api/ai/audio/tts', () => {
       headers: new Headers({ 'content-type': 'audio/mpeg' }),
     }) as unknown as typeof fetch;
 
-    const mod = await import('../../tts/route');
+    const mod = await import('../tts/route');
     POST = mod.POST;
   });
 
@@ -108,7 +108,7 @@ describe('POST /api/ai/audio/tts', () => {
 
     // Re-import with fresh mocks
     vi.resetModules();
-    const mod = await import('../../tts/route');
+    const mod = await import('../tts/route');
 
     const request = new Request('http://localhost:3000/api/ai/audio/tts', {
       method: 'POST',

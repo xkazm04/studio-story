@@ -40,7 +40,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
         });
       }) as unknown as typeof fetch;
 
-    const mod = await import('../../clone-voice/route');
+    const mod = await import('../clone-voice/route');
     POST = mod.POST;
   });
 
@@ -112,7 +112,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
       }) as unknown as typeof fetch;
 
     vi.resetModules();
-    const mod = await import('../../clone-voice/route');
+    const mod = await import('../clone-voice/route');
 
     const request = new Request('http://localhost:3000/api/ai/audio/clone-voice', {
       method: 'POST',
