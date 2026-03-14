@@ -113,3 +113,15 @@ export type {
   StateSubscriber,
   StreamController,
 } from './state';
+
+// Chat
+export { createChatStore, matchCommands, useChatMessages } from './chat';
+export type {
+  MessageRole,
+  ToolCallStatus,
+  ToolCall,
+  ChatMessage,
+  CompositionSummary,
+  SlashCommand,
+  ChatStore,
+} from './chat';
