@@ -35,3 +35,9 @@ export { VIEWPORT_BREAKPOINTS, getAllowedLayouts, clampLayoutToViewport } from '
 // Resolver (top-level pipeline)
 export { resolveLayout } from './resolver';
 export type { ResolveLayoutOptions } from './resolver';
+
+// React integration
+export { useLayout } from './useLayout';
+export type { UseLayoutOptions, UseLayoutResult, ContainerProps, SlotProps } from './useLayout';
+export { DzinLayout } from './LayoutProvider';
+export type { DzinLayoutProps } from './LayoutProvider';

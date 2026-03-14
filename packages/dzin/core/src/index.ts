@@ -64,6 +64,9 @@ export {
   clampLayoutToViewport,
   // Resolver
   resolveLayout,
+  // React integration
+  useLayout,
+  DzinLayout,
 } from './layout';
 export type {
   LayoutTemplateId,
@@ -76,4 +79,9 @@ export type {
   SpatialOption,
   SpatialBudget,
   ResolveLayoutOptions,
+  UseLayoutOptions,
+  UseLayoutResult,
+  ContainerProps,
+  SlotProps,
+  DzinLayoutProps,
 } from './layout';
