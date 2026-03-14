@@ -116,13 +116,12 @@ Plans:
   2. When a task requires vision, image generation, or audio processing, Claude delegates to Gemini API and the result flows back through the same intent pipeline
   3. Ambient observation mode watches user context (which panels are open, what data is focused, idle time) and proactively surfaces relevant suggestions or adapts the UI
   4. The system degrades gracefully when Claude CLI is slow or unavailable -- local resolution still works, and the user sees clear status about LLM connectivity
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
-- [ ] 06-04: TBD
+- [ ] 06-01-PLAN.md -- Headless LLM transport layer in @dzin/core (types, serializer, transport factory with timeout/retry/status)
+- [ ] 06-02-PLAN.md -- Persistent CLI session manager, intent API route, Gemini multimodal MCP tools
+- [ ] 06-03-PLAN.md -- Ambient observer with workflow patterns, SuggestionCard, LLMStatusDot in header
 
 ### Phase 7: Story Data and Authoring
 **Goal**: Users can create and manage complete story structures (premise, acts, beats, scenes), character profiles with relationships, and edit scene content -- all through Jinn's panel composition
@@ -239,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
 | 5. Jinn Intent and Director | 3/3 | Complete | 2026-03-14 |
-| 6. Jinn LLM Integration | 0/4 | Not started | - |
+| 6. Jinn LLM Integration | 0/3 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |
 | 9. Visual Pipeline | 0/4 | Not started | - |
