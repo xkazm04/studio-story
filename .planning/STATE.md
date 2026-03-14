@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 10-01-PLAN.md
-last_updated: "2026-03-14T22:25:04Z"
-last_activity: 2026-03-14 -- Completed 10-01-PLAN.md (AI writing tools backend)
+stopped_at: Completed 10-02-PLAN.md
+last_updated: "2026-03-14T22:35:05Z"
+last_activity: 2026-03-14 -- Completed 10-02-PLAN.md (Voice/TTS backend infrastructure)
 progress:
   total_phases: 12
   completed_phases: 9
   total_plans: 32
-  completed_plans: 29
-  percent: 91
+  completed_plans: 30
+  percent: 94
 ---
 
 ---
@@ -52,16 +52,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 10 - Writing Tools and Voice (1 of 4 plans complete)
+**Current focus:** Phase 10 - Writing Tools and Voice (2 of 4 plans complete)
 
 ## Current Position
 
 Phase: 10 of 12 (Writing Tools and Voice)
-Plan: 1 of 4 in current phase (10-01-PLAN.md complete)
+Plan: 2 of 4 in current phase (10-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 10-01-PLAN.md (AI writing tools backend)
+Last activity: 2026-03-14 -- Completed 10-02-PLAN.md (Voice/TTS backend infrastructure)
 
-Progress: [████████████████████████████] 29/32 plans
+Progress: [█████████████████████████████] 30/32 plans
 
 ## Performance Metrics
 
@@ -112,6 +112,7 @@ Progress: [███████████████████████
 | Phase 09 P02 | 4 | 2 tasks | 5 files |
 | Phase 09 P03 | 3 | 2 tasks | 4 files |
 | Phase 10 P01 | 8 | 2 tasks | 7 files |
+| Phase 10 P02 | 6 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -216,6 +217,9 @@ Recent decisions affecting current work:
 - [10-01]: Token budget at 80K tokens, truncating oldest prior scenes first while preserving characters/premise/current scene
 - [10-01]: vi.hoisted() for mock functions referenced in vi.mock factories (Vitest 4 hoisting)
 - [10-01]: Vitest config updated with @/ path alias for proper module resolution in tests
+- [10-02]: cobalt.tools API for YouTube extraction instead of ytdl-core (no native dependency)
+- [10-02]: TTS duration estimated from byte size (bytes/16000 for 128kbps MP3) rather than audio analysis
+- [10-02]: Voice listing includes all premade + cloned + generated voices with broad filter and 5-min cache
 
 ### Pending Todos
 
@@ -228,6 +232,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:25:04Z
-Stopped at: Completed 10-01-PLAN.md
-Resume file: .planning/phases/10-writing-tools-and-voice/10-02-PLAN.md
+Last session: 2026-03-14T22:35:05Z
+Stopped at: Completed 10-02-PLAN.md
+Resume file: .planning/phases/10-writing-tools-and-voice/10-03-PLAN.md

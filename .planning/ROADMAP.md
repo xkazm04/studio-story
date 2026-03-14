@@ -240,6 +240,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 7. Story Data and Authoring | 3/4 | In Progress|  |
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 1/3 | In Progress|  |
-| 10. Writing Tools and Voice | 1/4 | In Progress | - |
+| 10. Writing Tools and Voice | 2/4 | In Progress|  |
 | 11. Multimodal Input | 0/3 | Not started | - |
 | 12. Export and Package Boundary | 0/4 | Not started | - |

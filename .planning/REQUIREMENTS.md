@@ -57,8 +57,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Story Voice
 
-- [ ] **VOICE-01**: TTS narration — user can generate voice narration for scenes with character-appropriate voices
-- [ ] **VOICE-02**: Script-to-performance pipeline — write dialogue, assign character voices, generate multi-voice audio drama with narration
+- [x] **VOICE-01**: TTS narration — user can generate voice narration for scenes with character-appropriate voices
+- [x] **VOICE-02**: Script-to-performance pipeline — write dialogue, assign character voices, generate multi-voice audio drama with narration
 
 ### Export
 
@@ -136,8 +136,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VISUAL-03 | Phase 9 | Complete |
 | WRITE-01 | Phase 10 | Complete |
 | WRITE-02 | Phase 10 | Complete |
-| VOICE-01 | Phase 10 | Pending |
-| VOICE-02 | Phase 10 | Pending |
+| VOICE-01 | Phase 10 | Complete |
+| VOICE-02 | Phase 10 | Complete |
 | EXPORT-01 | Phase 12 | Pending |
 | EXPORT-02 | Phase 12 | Pending |
 | EXPORT-03 | Phase 12 | Pending |
