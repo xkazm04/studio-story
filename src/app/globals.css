@@ -451,3 +451,61 @@ textarea { field-sizing: content; }
 /* Resizable panel handles */
 [data-panel-group-direction="horizontal"] > [data-resize-handle] { @apply w-1 bg-slate-800/50 hover:bg-cyan-500/30 transition-colors; }
 [data-panel-group-direction="horizontal"] > [data-resize-handle][data-resize-handle-active] { @apply bg-cyan-500/50; }
+
+/* =============================================================================
+   Screenplay Node Styles
+   Used by TipTap custom nodes in the SceneEditorPanel screenplay mode.
+   ============================================================================= */
+
+.screenplay-editor.ProseMirror {
+  min-height: 300px;
+}
+
+.screenplay-editor.ProseMirror:focus {
+  outline: none;
+}
+
+.screenplay-scene-heading {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--ms-accent-primary, #06b6d4);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+  padding-bottom: 4px;
+  margin-top: 24px;
+}
+
+.screenplay-action {
+  color: var(--ms-text-secondary, #cbd5e1);
+  margin: 8px 0;
+}
+
+.screenplay-character-cue {
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 16px;
+  margin-left: 25%;
+  color: var(--ms-text-primary, #f1f5f9);
+}
+
+.screenplay-dialogue {
+  margin-left: 15%;
+  margin-right: 15%;
+  color: var(--ms-text-secondary, #cbd5e1);
+}
+
+.screenplay-parenthetical {
+  font-style: italic;
+  margin-left: 20%;
+  color: var(--ms-text-muted, #94a3b8);
+}
+
+.screenplay-parenthetical::before {
+  content: '(';
+}
+
+.screenplay-parenthetical::after {
+  content: ')';
+}

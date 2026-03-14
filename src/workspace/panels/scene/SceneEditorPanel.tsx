@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Film, Type, Settings2, Quote, AlignLeft, ListChecks,
-  Trash2, Plus, Users,
+  Trash2, Plus, Users, PenTool, Columns2,
 } from 'lucide-react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
@@ -15,9 +17,15 @@ import { cn } from '@/app/lib/utils';
 import { useScriptContextStore } from '../../store/scriptContextStore';
 import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelSaveStateBadge } from '../shared/PanelPrimitives';
+import {
+  SceneHeading, ActionLine, CharacterCue, Dialogue, Parenthetical,
+} from '@/app/features/story/sub_SceneEditor/extensions/screenplayNodes';
+import { ScreenplayKeymap } from '@/app/features/story/sub_SceneEditor/extensions/screenplayKeymap';
+import { ScreenplayToolbar } from '@/app/features/story/sub_SceneEditor/components/ScreenplayToolbar';
 import type { LucideIcon } from 'lucide-react';
 import type { Character } from '@/app/types/Character';
 import type { Beat } from '@/app/types/Beat';
+import type { PanelDensity } from '@/workspace/types';
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -198,9 +206,9 @@ function SpeakerSelect({ speaker, characters, onChange, selectRef }: SpeakerSele
         onChange={(e) => onChange(e.target.value)}
         className={cn(
           'bg-slate-900/60 border border-slate-800/50 rounded px-1.5 py-0.5',
-          'text-[10px] font-semibold uppercase tracking-wider text-violet-300',
+          'text-sm font-semibold uppercase tracking-wider text-violet-300',
           'outline-none focus:border-violet-500/40 cursor-pointer',
-          !speaker && 'text-slate-600',
+          !speaker && 'text-slate-400',
         )}
       >
         <option value="">Select speaker...</option>
@@ -231,9 +239,9 @@ function BeatSelect({ beatRef, beats, onChange, selectRef }: BeatSelectProps) {
         onChange={(e) => onChange(e.target.value)}
         className={cn(
           'bg-slate-900/60 border border-slate-800/50 rounded px-1.5 py-0.5',
-          'text-[10px] font-semibold uppercase tracking-wider text-indigo-300',
+          'text-sm font-semibold uppercase tracking-wider text-indigo-300',
           'outline-none focus:border-indigo-500/40 cursor-pointer',
-          !beatRef && 'text-slate-600',
+          !beatRef && 'text-slate-400',
         )}
       >
         <option value="">Select beat...</option>
@@ -281,7 +289,7 @@ function ContextMenu({ x, y, onClose, onAdd }: ContextMenuProps) {
       style={{ top: y, left: x }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="px-3 py-1.5 text-[9px] uppercase tracking-wider text-slate-500 border-b border-slate-800/50">
+      <div className="px-3 py-1.5 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800/50">
         Add Block
       </div>
       {MENU_ITEMS.map((item) => (
@@ -291,7 +299,7 @@ function ContextMenu({ x, y, onClose, onAdd }: ContextMenuProps) {
             onAdd(item.type);
             onClose();
           }}
-          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800/80 hover:text-white transition-colors"
+          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800/80 hover:text-white transition-colors"
         >
           <item.icon className={cn('w-3.5 h-3.5', item.color)} />
           {item.label}
@@ -361,7 +369,7 @@ function BlockRow({
       )}
     >
       {/* Type badge */}
-      <span className="text-[9px] uppercase tracking-wider text-slate-600 select-none mb-0.5 block">
+      <span className="text-xs uppercase tracking-wider text-slate-400 select-none mb-0.5 block">
         {config.label}
         {block.type === 'dialogue' && block.speaker && (
           <span className="ml-1.5 text-violet-400/70">{block.speaker}</span>
@@ -374,7 +382,7 @@ function BlockRow({
       {/* Delete button */}
       <button
         onClick={() => onDelete(block.id)}
-        className="absolute top-1.5 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-slate-700 hover:text-red-400"
+        className="absolute top-1.5 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-red-400"
         title="Delete block"
       >
         <Trash2 className="w-2.5 h-2.5" />
@@ -425,14 +433,14 @@ function EmptyPrompt({ onAddDefault }: { onAddDefault: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-6">
       <div className="w-12 h-12 rounded-xl bg-slate-900/60 border border-slate-800/40 flex items-center justify-center mb-4">
-        <FileText className="w-5 h-5 text-slate-600" />
+        <FileText className="w-5 h-5 text-slate-400" />
       </div>
-      <p className="text-xs text-slate-400 mb-1">Right-click to add your first block</p>
-      <p className="text-[10px] text-slate-600 mb-4">Or start with a scene header</p>
+      <p className="text-sm text-slate-400 mb-1">Right-click to add your first block</p>
+      <p className="text-sm text-slate-400 mb-4">Or start with a scene header</p>
       <button
         type="button"
         onClick={onAddDefault}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600/15 text-amber-400 border border-amber-500/25 hover:bg-amber-600/25 transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-amber-600/15 text-amber-400 border border-amber-500/25 hover:bg-amber-600/25 transition-colors"
       >
         <Plus className="w-3 h-3" />
         Add Scene Header
@@ -441,16 +449,27 @@ function EmptyPrompt({ onAddDefault }: { onAddDefault: () => void }) {
   );
 }
 
+// ─── Mode Detection ─────────────────────────────────────────
+
+type EditorMode = 'blocks' | 'tiptap';
+
+/** Returns true if content uses legacy @marker format */
+function hasLegacyMarkers(content: string): boolean {
+  return /^@(scene|action|dialogue|direction|content|beat)/m.test(content);
+}
+
 // ─── Main Component ─────────────────────────────────────────
 
 interface SceneEditorPanelProps {
   sceneId?: string;
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 export default function SceneEditorPanel({
   sceneId: propSceneId,
   onClose,
+  density,
 }: SceneEditorPanelProps) {
   const { selectedProject, selectedScene, selectedAct } = useProjectStore();
   const projectId = selectedProject?.id || '';
@@ -465,6 +484,10 @@ export default function SceneEditorPanel({
   const setReferences = useScriptContextStore((s) => s.setReferences);
   const pendingInsert = useScriptContextStore((s) => s.pendingInsert);
   const consumeInsert = useScriptContextStore((s) => s.consumeInsert);
+
+  // ─── Editor mode ─────────────────────────────────────────
+  const [editorMode, setEditorMode] = useState<EditorMode>('tiptap');
+  const [distractionFree, setDistractionFree] = useState(false);
 
   const [blocks, setBlocks] = useState<EditorBlock[]>([]);
   const [isDirty, setIsDirty] = useState(false);
@@ -482,6 +505,74 @@ export default function SceneEditorPanel({
 
   const dialogueCount = blocks.filter((block) => block.type === 'dialogue').length;
   const beatCount = blocks.filter((block) => block.type === 'beat').length;
+
+  // ─── TipTap extensions (stable reference) ────────────────
+  const tiptapExtensions = useMemo(() => [
+    StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+    SceneHeading,
+    ActionLine,
+    CharacterCue,
+    Dialogue,
+    Parenthetical,
+    ScreenplayKeymap,
+  ], []);
+
+  // ─── TipTap editor instance ──────────────────────────────
+  const tiptapEditor = useEditor({
+    extensions: tiptapExtensions,
+    content: '',
+    immediatelyRender: false,
+    onUpdate: ({ editor: ed }) => {
+      setIsDirty(true);
+      setSaveState('dirty');
+      tiptapContentRef.current = ed.getHTML();
+    },
+    editorProps: {
+      attributes: {
+        class: 'prose prose-invert max-w-none focus:outline-none p-4 screenplay-editor',
+      },
+    },
+  });
+
+  // Keep latest TipTap HTML in a ref so save can read it without re-renders
+  const tiptapContentRef = useRef<string>('');
+
+  // Sync TipTap editor content when scene data changes
+  useEffect(() => {
+    if (tiptapEditor && scene?.description !== undefined && editorMode === 'tiptap') {
+      const desc = scene.description || '';
+      if (!hasLegacyMarkers(desc)) {
+        tiptapEditor.commands.setContent(desc);
+        tiptapContentRef.current = desc;
+      }
+    }
+  }, [tiptapEditor, scene?.description, resolvedSceneId, editorMode]);
+
+  // ─── Auto-detect mode from content ───────────────────────
+  useEffect(() => {
+    if (scene?.description) {
+      setEditorMode(hasLegacyMarkers(scene.description) ? 'blocks' : 'tiptap');
+    } else {
+      setEditorMode('tiptap');
+    }
+  }, [scene?.description, resolvedSceneId]);
+
+  // ─── Distraction-free keyboard shortcut ──────────────────
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'F11') {
+        e.preventDefault();
+        setDistractionFree((prev) => !prev);
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'F') {
+        e.preventDefault();
+        setDistractionFree((prev) => !prev);
+      }
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
 
   // Register/unregister textarea refs
   const registerRef = useCallback((id: string, el: HTMLTextAreaElement | null) => {
@@ -557,8 +648,10 @@ export default function SceneEditorPanel({
     setSaving(true);
     setSaveState('saving');
     try {
-      const markdown = serializeBlocks(blocks);
-      await sceneApi.updateScene(resolvedSceneId, { description: markdown });
+      const content = editorMode === 'tiptap'
+        ? tiptapContentRef.current
+        : serializeBlocks(blocks);
+      await sceneApi.updateScene(resolvedSceneId, { description: content });
       queryClient.invalidateQueries({ queryKey: ['scenes'] });
       setIsDirty(false);
       setSaveState('saved');
@@ -567,7 +660,7 @@ export default function SceneEditorPanel({
     } finally {
       setSaving(false);
     }
-  }, [resolvedSceneId, isDirty, blocks, queryClient]);
+  }, [resolvedSceneId, isDirty, blocks, queryClient, editorMode]);
 
   // ─── Block operations ───────────────────────────────────
   const handleUpdateBlock = useCallback((id: string, updates: Partial<EditorBlock>) => {
@@ -693,47 +786,67 @@ export default function SceneEditorPanel({
     [blocks, handleSave],
   );
 
-  // ─── Render ─────────────────────────────────────────────
-  return (
-    <PanelFrame
-      title={scene?.name || 'Scene Editor'}
-      icon={FileText}
-      onClose={onClose}
-      headerAccent="amber"
-      actions={
-        <div className="flex items-center gap-1">
-          <PanelSaveStateBadge state={isDirty ? 'dirty' : saveState} />
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving || !isDirty}
-            className="rounded px-2 py-0.5 text-[10px] font-medium bg-amber-600/20 text-amber-300 transition-colors hover:bg-amber-600/30 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Save
-          </button>
-        </div>
+  // ─── TipTap save shortcut ────────────────────────────────
+  useEffect(() => {
+    if (editorMode !== 'tiptap' || !tiptapEditor) return;
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
       }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [editorMode, tiptapEditor, handleSave]);
+
+  // ─── Mode toggle button ────────────────────────────────
+  const modeToggle = (
+    <button
+      type="button"
+      onClick={() => setEditorMode((prev) => (prev === 'tiptap' ? 'blocks' : 'tiptap'))}
+      className="rounded p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors"
+      title={editorMode === 'tiptap' ? 'Switch to block editor' : 'Switch to rich-text editor'}
     >
-      {!resolvedSceneId ? (
-        <PanelEmptyState
-          icon={FileText}
-          title="No scene selected"
-          description="Select a scene in the project to start writing structured blocks."
-        />
-      ) : blocks.length === 0 && !isDirty ? (
+      {editorMode === 'tiptap' ? <Columns2 size={14} /> : <PenTool size={14} />}
+    </button>
+  );
+
+  // ─── Distraction-free wrapper ──────────────────────────
+  const distractionFreeClass = distractionFree
+    ? 'fixed inset-0 z-[8500] bg-slate-950 flex flex-col'
+    : undefined;
+
+  // ─── TipTap editor content ─────────────────────────────
+  const renderTipTapEditor = () => (
+    <div className="flex h-full min-h-0 flex-col">
+      <ScreenplayToolbar
+        editor={tiptapEditor}
+        distractionFree={distractionFree}
+        onToggleDistractionFree={() => setDistractionFree((prev) => !prev)}
+      />
+      <div className="h-full overflow-auto">
+        <EditorContent editor={tiptapEditor} />
+      </div>
+    </div>
+  );
+
+  // ─── Block editor content (legacy) ────────────────────
+  const renderBlockEditor = () => (
+    <>
+      {blocks.length === 0 && !isDirty ? (
         <div onContextMenu={handleContextMenu}>
           <EmptyPrompt onAddDefault={handleAddDefault} />
         </div>
       ) : (
         <div className="flex h-full min-h-0 flex-col">
-          <div className="shrink-0 border-b border-slate-800/40 bg-slate-900/35 px-3 py-1.5 text-[10px] text-slate-500">
+          <div className="shrink-0 border-b border-slate-800/40 bg-slate-900/35 px-3 py-1.5 text-sm text-slate-400">
             <span>{blocks.length} blocks</span>
-            <span className="mx-1.5 text-slate-700">•</span>
-            <span>{dialogueCount} dialogue</span>
-            <span className="mx-1.5 text-slate-700">•</span>
-            <span>{beatCount} beats</span>
-            <span className="mx-2 text-slate-700">|</span>
-            <span>Right-click to insert blocks</span>
+            <span className="hidden @md:inline mx-1.5 text-slate-500">&bull;</span>
+            <span className="hidden @md:inline">{dialogueCount} dialogue</span>
+            <span className="hidden @md:inline mx-1.5 text-slate-500">&bull;</span>
+            <span className="hidden @md:inline">{beatCount} beats</span>
+            <span className="hidden @sm:inline mx-2 text-slate-500">|</span>
+            <span className="hidden @sm:inline">Right-click to insert blocks</span>
           </div>
 
           <div
@@ -770,6 +883,52 @@ export default function SceneEditorPanel({
           />
         )}
       </AnimatePresence>
+    </>
+  );
+
+  // ─── Render ─────────────────────────────────────────────
+  // In distraction-free mode, skip PanelFrame -- render a full-screen container
+  if (distractionFree) {
+    return (
+      <div className={distractionFreeClass}>
+        {renderTipTapEditor()}
+      </div>
+    );
+  }
+
+  return (
+    <PanelFrame
+      title={scene?.name || 'Scene Editor'}
+      icon={FileText}
+      onClose={onClose}
+      headerAccent="amber"
+      density={density}
+      actions={
+        <div className="flex items-center gap-1">
+          {modeToggle}
+          <PanelSaveStateBadge state={isDirty ? 'dirty' : saveState} />
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || !isDirty}
+            className="rounded px-2 py-0.5 text-sm font-medium bg-amber-600/20 text-amber-300 transition-colors hover:bg-amber-600/30 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Save
+          </button>
+        </div>
+      }
+    >
+      {!resolvedSceneId ? (
+        <PanelEmptyState
+          icon={FileText}
+          title="No scene selected"
+          description="Select a scene in the project to start writing structured blocks."
+        />
+      ) : editorMode === 'tiptap' ? (
+        renderTipTapEditor()
+      ) : (
+        renderBlockEditor()
+      )}
     </PanelFrame>
   );
 }
