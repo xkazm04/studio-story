@@ -10,6 +10,7 @@ const PANEL_TYPES = [
   'image-canvas', 'image-generator', 'art-style', 'storyboard',
   'voice-manager', 'voice-casting', 'script-dialog', 'narration', 'voice-performance',
   'writing-desk', 'cast-sidebar', 'audio-toolbar', 'advisor',
+  'narrative-suggestions', 'reader-view',
 ] as const;
 
 const LAYOUT_TYPES = [
@@ -61,6 +62,10 @@ const PANEL_MANIFESTS = `WORKSPACE PANELS (use compose_workspace to arrange thes
 - **writing-desk** [primary/wide/high]: Multi-tab workspace (Content, Blocks, Image). Use when: User wants a comprehensive writing environment.
 - **cast-sidebar** [sidebar/compact/low]: Compact character list for current scene. Use when: Sidebar companion during scene writing.
 - **audio-toolbar** [tertiary/compact/low]: Audio control toolbar. Use when: Audio production workflow.
+
+## STORY INTELLIGENCE
+- **narrative-suggestions** [sidebar/compact/medium]: AI-driven narrative suggestions sidebar. Shows prioritized creative insights based on story analysis (relationship tensions, plot gaps, pacing issues). Each card has accept (composes relevant panels) and dismiss actions. Best as sidebar alongside editing panels.
+- **reader-view** [primary/wide/high]: Interactive branching story reader simulation. Displays scene text with clickable choice buttons, variable state sidebar, path history with rewind support. Use when: User wants to test/preview their branching narrative. Best as primary panel, optionally paired with story-graph.
 
 ## AGENT
 - **advisor** [sidebar/compact/low]: AI advisor panel with Gemini Live chat, proactive suggestions, and workspace observation. Use when: User wants AI guidance or creative suggestions.
@@ -143,7 +148,33 @@ LAYOUT SELECTION:
 
 DENSITY: More panels = more compact. Set density 'compact' for secondary/sidebar panels when 3+ panels are visible. Use 'full' for the primary panel. Use 'micro' for reference-only panels in studio layout.
 
-DATA SLICES: Always pass entityId in dataSlice when opening a specific entity. Example: { entityId: 'scene-uuid' } for scene-editor, { entityId: 'char-uuid' } for character-detail.`;
+DATA SLICES: Always pass entityId in dataSlice when opening a specific entity. Example: { entityId: 'scene-uuid' } for scene-editor, { entityId: 'char-uuid' } for character-detail.
+
+## STORY INTELLIGENCE COMPOSITION PATTERNS
+
+When user is writing or editing story content:
+- Add narrative-suggestions as sidebar: layout=primary-sidebar, panels=[{editing panel}, narrative-suggestions]
+- Example: user editing a scene -> [scene-editor, narrative-suggestions]
+
+When user wants to test branching story:
+- Reader view as primary: layout=split-2, panels=[reader-view, story-graph]
+- The story-graph highlights current position during simulation
+
+When user asks "what should happen next?" or "suggest plot ideas":
+- Show narrative-suggestions panel: layout=primary-sidebar, panels=[narrative-suggestions, story-graph]
+- The suggestions come from StoryAnalyzer rules (relationship tensions, plot gaps, etc.)
+
+When user wants to create branches:
+- Use create_branch CLI tool to create scenes + choices atomically
+- Then show: layout=split-2, panels=[story-graph, scene-editor] (graph shows new branches, editor focuses on new scene)
+
+When user wants to review story structure with suggestions:
+- layout=triptych, panels=[narrative-suggestions, story-graph, scene-editor]
+
+Layout selection rules:
+- narrative-suggestions is always sidebar role (sizeClass sm)
+- reader-view is always primary role (sizeClass lg)
+- story-graph pairs well with both narrative-suggestions and reader-view`;
 
 function textContent(text: string) {
   return { content: [{ type: 'text' as const, text }] };
