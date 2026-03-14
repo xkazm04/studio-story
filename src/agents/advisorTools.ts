@@ -12,7 +12,7 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
     functionDeclarations: [
       {
         name: 'compose_workspace',
-        description: 'Rearrange workspace panels for the current user task. Keep composition focused and role-consistent. Story authoring patterns: use primary-sidebar for scene editing (scene-editor + scene-metadata/beats-sidebar), split-2 for story structure (story-map + beats-manager), show action for smart merge when adding context panels. Use relationship-map when discussing character relationships or factions. Always pass entityId in dataSlice when opening a specific entity.',
+        description: 'Rearrange workspace panels for the current user task. Keep composition focused and role-consistent. Story authoring patterns: use primary-sidebar for scene editing (scene-editor + scene-metadata/beats-sidebar), split-2 for story structure (story-map + beats-manager), show action for smart merge when adding context panels. Use relationship-map when discussing character relationships or factions. Visual pipeline patterns: split-2 scene-editor + image-generator for illustration, primary-sidebar art-style + scene-gallery for style setup, triptych scene-editor + image-generator + character-detail for character-referenced illustration. Always pass entityId in dataSlice when opening a specific entity.',
         parameters: {
           type: 'object',
           properties: {
@@ -28,7 +28,7 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
             },
             panels: {
               type: 'string',
-              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"...","filter":"...","view":"...","highlight":["..."],"sort":"..."}}]. Recommended 1-3 panels (max 5) with one primary panel. Sidebar role only for compact/context panels. density defaults to "full" — use "compact" for sidebars, "micro" for badge-only reference. dataSlice tells the panel what specific data to show. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor, storyboard, narrative-suggestions, reader-view. Story intelligence examples: Show suggestions alongside editing: { panels: [{ type: "scene-editor" }, { type: "narrative-suggestions" }], layout: "primary-sidebar" }. Test branching story: { panels: [{ type: "reader-view" }, { type: "story-graph" }], layout: "split-2" }',
+              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"...","filter":"...","view":"...","highlight":["..."],"sort":"..."}}]. Recommended 1-3 panels (max 5) with one primary panel. Sidebar role only for compact/context panels. density defaults to "full" — use "compact" for sidebars, "micro" for badge-only reference. dataSlice tells the panel what specific data to show. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor, storyboard, narrative-suggestions, reader-view. Story intelligence examples: Show suggestions alongside editing: { panels: [{ type: "scene-editor" }, { type: "narrative-suggestions" }], layout: "primary-sidebar" }. Test branching story: { panels: [{ type: "reader-view" }, { type: "story-graph" }], layout: "split-2" }. Visual pipeline examples: Illustrate a scene: { panels: [{ type: "image-generator", dataSlice: { entityId: "scene-id" } }, { type: "scene-editor" }], layout: "split-2" }. Set art style: { panels: [{ type: "art-style" }, { type: "scene-gallery" }], layout: "primary-sidebar" }. Illustrate with character reference: { panels: [{ type: "scene-editor" }, { type: "image-generator" }, { type: "character-detail" }], layout: "triptych" }',
             },
             reasoning: {
               type: 'string',
@@ -40,7 +40,7 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
       },
       {
         name: 'suggest_action',
-        description: 'Send a proactive suggestion to the user. The suggestion appears as a dismissible card in the advisor panel. Use for creative tips, workflow improvements, or observations. Story examples: "Open character relationships" with compose_on_accept to show relationship-map, "Edit this scene" to compose scene-editor with primary-sidebar, "Show story structure" to compose story-map + beats-manager.',
+        description: 'Send a proactive suggestion to the user. The suggestion appears as a dismissible card in the advisor panel. Use for creative tips, workflow improvements, or observations. Story examples: "Open character relationships" with compose_on_accept to show relationship-map, "Edit this scene" to compose scene-editor with primary-sidebar, "Show story structure" to compose story-map + beats-manager. Visual pipeline examples: "Illustrate this scene" to compose image-generator + scene-editor, "Set up art style first" to compose art-style panel, "Upload character reference for consistency" to compose character-detail.',
         parameters: {
           type: 'object',
           properties: {
@@ -220,6 +220,37 @@ Composition actions:
 - Each suggestion card has an "Apply" action that composes the right panels for addressing that insight
 - When user asks to test or preview their story: compose reader-view panel (optionally with story-graph for position tracking)
 - When user says "add a choice" or "create a branch": the CLI handles this via create_branch tool, then compose story-graph to show the result
+
+## Visual Pipeline
+
+The user can generate scene illustrations with character and art style consistency.
+
+### Available Tools
+- generate_scene_illustration: Start 4-image generation for a scene
+- check_illustration_status: Poll generation progress
+- save_scene_illustration: Persist selected image to scene
+
+### Workflow Guidance
+1. First: Help user define art style (art-style panel, upload reference images)
+2. Then: Illustrate scenes (image-generator panel with scene context)
+3. Visual consistency comes from: character reference images (avatar_url) and project art style
+
+### Character Reference Setup
+When the user wants consistent characters in illustrations:
+- Check if key characters have avatar_url set. If not, guide user to upload reference images first (character-detail panel).
+- For best results, reference images should show the character clearly (face, distinctive features, outfit).
+- If character has no avatar_url, the illustration will still work but without character visual consistency -- mention this trade-off.
+- Troubleshooting: "characters look different each time" -> check avatar_url is set, suggest uploading a clear reference image.
+
+### Panel Composition
+- "Illustrate a scene" -> split-2: scene-editor + image-generator
+- "Set art style" -> primary-sidebar: art-style + scene-gallery
+- "Review illustrations" -> split-2: scene-gallery + image-canvas
+- "Show character for reference" -> triptych: scene-editor + image-generator + character-detail
+
+### CLI Event Mapping
+- generate_scene_illustration -> compose [image-generator (primary), scene-editor (secondary)]
+- save_scene_illustration -> compose [scene-gallery (primary), scene-editor (secondary)]
 
 ## Guidelines
 - Be proactive — the user expects the workspace to react to CLI activity automatically

@@ -200,12 +200,42 @@ const SYSTEM_INSTRUCTION = `You are the Workspace Advisor for Studio Story. You 
 - extract_art_style → show art-style (primary)
 - create_branch → show story-graph (primary) + scene-editor (secondary) to see new branches
 - create_choice → show story-graph (primary) to see new connection
+- generate_scene_illustration → show image-generator (primary) + scene-editor (secondary)
+- check_illustration_status → show image-generator (primary)
+- save_scene_illustration → show scene-gallery (primary) + scene-editor (secondary)
 
 ## Story Intelligence
 - When user asks "what should happen next?" or "any suggestions?": compose narrative-suggestions panel as sidebar
 - narrative-suggestions shows AI-analyzed insights about relationship tensions, plot gaps, character underuse
 - When user asks to test or preview their story: compose reader-view (primary) optionally with story-graph
 - When user says "add a choice" or "create a branch": CLI handles via create_branch, then compose story-graph
+
+## Visual Pipeline
+
+The user can generate scene illustrations with character and art style consistency.
+
+### Available Tools
+- generate_scene_illustration: Start 4-image generation for a scene
+- check_illustration_status: Poll generation progress
+- save_scene_illustration: Persist selected image to scene
+
+### Workflow Guidance
+1. First: Help user define art style (art-style panel, upload reference images)
+2. Then: Illustrate scenes (image-generator panel with scene context)
+3. Visual consistency comes from: character reference images (avatar_url) and project art style
+
+### Character Reference Setup
+When the user wants consistent characters in illustrations:
+- Check if key characters have avatar_url set. If not, guide user to upload reference images first (character-detail panel).
+- For best results, reference images should show the character clearly (face, distinctive features, outfit).
+- If character has no avatar_url, the illustration will still work but without character visual consistency -- mention this trade-off.
+- Troubleshooting: "characters look different each time" -> check avatar_url is set, suggest uploading a clear reference image.
+
+### Panel Composition
+- "Illustrate a scene" -> split-2: scene-editor + image-generator
+- "Set art style" -> primary-sidebar: art-style + scene-gallery
+- "Review illustrations" -> split-2: scene-gallery + image-canvas
+- "Show character for reference" -> triptych: scene-editor + image-generator + character-detail
 
 ## Story Authoring Composition Patterns
 When user discusses characters (e.g., "show me Elena"):
