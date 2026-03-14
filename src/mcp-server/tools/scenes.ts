@@ -1,16 +1,16 @@
 /**
- * Scene Tools — CRUD for scenes and relationships
+ * Scene Tools — CRUD for scenes and relationships (direct Supabase)
  */
 
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { StoryHttpClient } from '../http-client.js';
 import type { McpConfig } from '../config.js';
+import { dbSelect, dbSelectOne, dbInsert, dbUpdate } from '../db.js';
 
 const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
 const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
 
-export function registerSceneTools(server: McpServer, config: McpConfig, client: StoryHttpClient) {
+export function registerSceneTools(server: McpServer, config: McpConfig) {
   server.tool(
     'list_scenes',
     `List all scenes in a project or act, ordered by sequence. Returns: id, project_id, act_id, name, description, order, created_at, updated_at.`,
@@ -22,10 +22,13 @@ export function registerSceneTools(server: McpServer, config: McpConfig, client:
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const params: Record<string, string> = { projectId: pid };
-      if (actId) params.actId = actId;
+      const eq: Record<string, string> = { project_id: pid };
+      if (actId) eq.act_id = actId;
 
-      const result = await client.get('/api/scenes', params);
+      const result = await dbSelect('scenes', {
+        eq,
+        order: { column: 'order', ascending: true },
+      });
       if (!result.success) return errorContent(`Failed to list scenes: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -39,7 +42,7 @@ export function registerSceneTools(server: McpServer, config: McpConfig, client:
       sceneId: z.string().describe('Scene UUID.'),
     },
     async ({ sceneId }) => {
-      const result = await client.get(`/api/scenes/${sceneId}`);
+      const result = await dbSelectOne('scenes', sceneId);
       if (!result.success) return errorContent(`Failed to get scene: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -60,11 +63,11 @@ export function registerSceneTools(server: McpServer, config: McpConfig, client:
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const body: Record<string, unknown> = { name, project_id: pid, act_id: actId };
-      if (description) body.description = description;
-      if (order !== undefined) body.order = order;
+      const row: Record<string, unknown> = { name, project_id: pid, act_id: actId };
+      if (description) row.description = description;
+      if (order !== undefined) row.order = order;
 
-      const result = await client.post('/api/scenes', body);
+      const result = await dbInsert('scenes', row);
       if (!result.success) return errorContent(`Failed to create scene: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -81,7 +84,7 @@ export function registerSceneTools(server: McpServer, config: McpConfig, client:
     async ({ sceneId, updates }) => {
       let parsed: Record<string, unknown>;
       try { parsed = JSON.parse(updates); } catch { return errorContent('Invalid JSON in updates.'); }
-      const result = await client.put(`/api/scenes/${sceneId}`, parsed);
+      const result = await dbUpdate('scenes', sceneId, parsed);
       if (!result.success) return errorContent(`Failed to update scene: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -97,10 +100,27 @@ export function registerSceneTools(server: McpServer, config: McpConfig, client:
       characterId: z.string().describe('Character UUID to get relationships for.'),
     },
     async ({ characterId }) => {
-      const result = await client.get('/api/relationships', { characterId });
-      if (!result.success) return errorContent(`Failed to list relationships: ${result.error}`);
+      // Relationships can be on either side (character_a or character_b)
+      const resultA = await dbSelect('character_relationships', {
+        eq: { character_a_id: characterId },
+      });
+      const resultB = await dbSelect('character_relationships', {
+        eq: { character_b_id: characterId },
+      });
 
-      return textContent(JSON.stringify(result.data, null, 2));
+      if (!resultA.success) return errorContent(`Failed to list relationships: ${resultA.error}`);
+      if (!resultB.success) return errorContent(`Failed to list relationships: ${resultB.error}`);
+
+      // Merge and deduplicate by id
+      const allRels = [...(resultA.data as Array<{ id: string }>), ...(resultB.data as Array<{ id: string }>)];
+      const seen = new Set<string>();
+      const deduped = allRels.filter(r => {
+        if (seen.has(r.id)) return false;
+        seen.add(r.id);
+        return true;
+      });
+
+      return textContent(JSON.stringify(deduped, null, 2));
     }
   );
 }

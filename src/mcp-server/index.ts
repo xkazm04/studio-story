@@ -5,12 +5,13 @@
  * Provides tools for Claude Code CLI to interact with Story app's internal APIs:
  *
  * CRUD Tools:
- *   get_project, list_projects
+ *   get_project, list_projects, create_project, update_project
  *   get_character, list_characters, update_character, create_character
+ *   create_relationship, list_relationships
  *   get_faction, list_factions, update_faction
  *   list_acts, list_beats, get_beat, update_beat, create_beat
  *   get_scene, list_scenes, update_scene
- *   list_relationships, list_traits
+ *   list_traits, create_trait, update_trait
  *
  * Image Tools:
  *   generate_image_gemini, generate_image_leonardo, evaluate_image, describe_image
@@ -22,10 +23,16 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { parseConfig } from './config.js';
+import { initDb } from './db.js';
 import { registerTools } from './tools/index.js';
 
 async function main() {
   const config = parseConfig();
+
+  // Initialize direct Supabase client (falls back to HTTP if env vars missing)
+  const dbReady = initDb(config);
+  console.error(`[story-mcp] Direct DB: ${dbReady ? 'enabled' : 'disabled (falling back to HTTP)'}`);
+
 
   const server = new McpServer({
     name: 'story',
@@ -37,12 +44,13 @@ async function main() {
     instructions: `Story MCP server provides tools for reading and writing storytelling project data.
 
 CRUD Tools (use projectId from config or pass explicitly):
-- get_project / list_projects: Read project metadata
+- get_project / list_projects / create_project / update_project: Project CRUD (premise, genre, setting)
 - get_character / list_characters / update_character / create_character: Character CRUD
+- create_relationship / list_relationships: Character relationship CRUD
 - get_faction / list_factions / update_faction: Faction CRUD
 - list_acts / list_beats / get_beat / update_beat / create_beat: Story structure
 - get_scene / list_scenes / update_scene: Scene CRUD
-- list_relationships / list_traits: Read relationships and traits
+- list_traits / create_trait / update_trait: Character trait CRUD
 
 Image Tools:
 - generate_image_gemini: Generate/transform images via Gemini

@@ -14,8 +14,11 @@ import { useQueryClient } from '@tanstack/react-query';
 // MCP tool name → TanStack Query key prefixes to invalidate
 // Only write/mutate operations — reads don't dirty the cache.
 const TOOL_INVALIDATION_MAP: Record<string, string[]> = {
+  create_project: ['projects'],
+  update_project: ['projects'],
   create_character: ['characters'],
   update_character: ['characters'],
+  create_relationship: ['relationships', 'characters'],
   create_act: ['acts'],
   create_scene: ['scenes'],
   update_scene: ['scenes'],

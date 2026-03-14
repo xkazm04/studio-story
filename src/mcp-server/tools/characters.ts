@@ -1,16 +1,16 @@
 /**
- * Character Tools — CRUD for characters and traits
+ * Character Tools — CRUD for characters and traits (direct Supabase)
  */
 
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { StoryHttpClient } from '../http-client.js';
 import type { McpConfig } from '../config.js';
+import { dbSelect, dbSelectOne, dbInsert, dbUpdate, resolveStoryStackId } from '../db.js';
 
 const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
 const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
 
-export function registerCharacterTools(server: McpServer, config: McpConfig, client: StoryHttpClient) {
+export function registerCharacterTools(server: McpServer, config: McpConfig) {
   server.tool(
     'list_characters',
     `List all characters in a project. Returns array of character objects with fields: id, project_id, faction_id, name, type, voice, avatar_url, created_at, updated_at. Ordered by name.`,
@@ -21,7 +21,10 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const result = await client.get('/api/characters', { projectId: pid });
+      const result = await dbSelect('characters', {
+        eq: { project_id: pid },
+        order: { column: 'name', ascending: true },
+      });
       if (!result.success) return errorContent(`Failed to list characters: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -35,7 +38,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       characterId: z.string().describe('Character UUID.'),
     },
     async ({ characterId }) => {
-      const result = await client.get(`/api/characters/${characterId}`);
+      const result = await dbSelectOne('characters', characterId);
       if (!result.success) return errorContent(`Failed to get character: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -56,12 +59,16 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const body: Record<string, unknown> = { name, project_id: pid };
-      if (type) body.type = type;
-      if (voice) body.voice = voice;
-      if (factionId) body.faction_id = factionId;
+      const row: Record<string, unknown> = { name, project_id: pid };
+      if (type) row.type = type;
+      if (voice) row.voice = voice;
+      if (factionId) row.faction_id = factionId;
 
-      const result = await client.post('/api/characters', body);
+      // Resolve story_stack_id (mirrors POST /api/characters logic)
+      const stackId = await resolveStoryStackId();
+      if (stackId) row.story_stack_id = stackId;
+
+      const result = await dbInsert('characters', row);
       if (!result.success) return errorContent(`Failed to create character: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -78,7 +85,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
     async ({ characterId, updates }) => {
       let parsed: Record<string, unknown>;
       try { parsed = JSON.parse(updates); } catch { return errorContent('Invalid JSON in updates.'); }
-      const result = await client.put(`/api/characters/${characterId}`, parsed);
+      const result = await dbUpdate('characters', characterId, parsed);
       if (!result.success) return errorContent(`Failed to update character: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -92,7 +99,9 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       characterId: z.string().describe('Character UUID to get traits for.'),
     },
     async ({ characterId }) => {
-      const result = await client.get('/api/traits', { characterId });
+      const result = await dbSelect('traits', {
+        eq: { character_id: characterId },
+      });
       if (!result.success) return errorContent(`Failed to list traits: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -108,7 +117,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       description: z.string().describe('Trait description text (1-3 paragraphs).'),
     },
     async ({ characterId, type, description }) => {
-      const result = await client.post('/api/traits', { character_id: characterId, type, description });
+      const result = await dbInsert('traits', { character_id: characterId, type, description });
       if (!result.success) return errorContent(`Failed to create trait: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -123,8 +132,38 @@ export function registerCharacterTools(server: McpServer, config: McpConfig, cli
       description: z.string().describe('New description text.'),
     },
     async ({ traitId, description }) => {
-      const result = await client.put(`/api/traits/${traitId}`, { description });
+      const result = await dbUpdate('traits', traitId, { description });
       if (!result.success) return errorContent(`Failed to update trait: ${result.error}`);
+
+      return textContent(JSON.stringify(result.data, null, 2));
+    }
+  );
+
+  // ---- Relationships ----
+
+  server.tool(
+    'create_relationship',
+    `Create a relationship between two characters. Required: sourceId (character_a), targetId (character_b), description. Optional: type (relationship_type), actId (when the relationship begins), eventDate. Table: character_relationships.`,
+    {
+      sourceId: z.string().describe('Source character UUID (character_a_id).'),
+      targetId: z.string().describe('Target character UUID (character_b_id).'),
+      description: z.string().describe('Description of the relationship (required).'),
+      type: z.string().optional().describe('Relationship type: ally, enemy, family, rival, mentor, romantic, neutral, etc.'),
+      actId: z.string().optional().describe('Act UUID where this relationship begins.'),
+      eventDate: z.string().optional().describe('In-story date of the relationship event.'),
+    },
+    async ({ sourceId, targetId, description, type, actId, eventDate }) => {
+      const row: Record<string, unknown> = {
+        character_a_id: sourceId,
+        character_b_id: targetId,
+        description,
+      };
+      if (type) row.relationship_type = type;
+      if (actId) row.act_id = actId;
+      if (eventDate) row.event_date = eventDate;
+
+      const result = await dbInsert('character_relationships', row);
+      if (!result.success) return errorContent(`Failed to create relationship: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
     }

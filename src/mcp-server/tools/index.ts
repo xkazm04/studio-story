@@ -39,11 +39,12 @@ export function registerTools(server: McpServer, config: McpConfig) {
   registerMultimodalTools(server);
 
   const tools = [
-    'get_project', 'list_projects',
+    'get_project', 'list_projects', 'create_project', 'update_project',
     'list_characters', 'get_character', 'create_character', 'update_character', 'list_traits', 'create_trait', 'update_trait',
+    'create_relationship', 'list_relationships',
     'list_factions', 'get_faction', 'create_faction', 'update_faction',
     'list_acts', 'create_act', 'list_beats', 'get_beat', 'create_beat', 'update_beat',
-    'list_scenes', 'get_scene', 'create_scene', 'update_scene', 'list_relationships',
+    'list_scenes', 'get_scene', 'create_scene', 'update_scene',
     'generate_image_gemini', 'generate_image_leonardo', 'evaluate_image', 'describe_image',
     'update_workspace', 'compose_workspace', 'get_panel_manifests',
     'analyze_image', 'generate_image_multimodal', 'extract_audio',
