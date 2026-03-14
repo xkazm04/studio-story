@@ -102,4 +102,82 @@ export function registerImageTools(server: McpServer, _config: McpConfig, client
       return textContent(JSON.stringify(result.data, null, 2));
     }
   );
+
+  // ============================================================================
+  // Scene Illustration Pipeline Tools
+  // ============================================================================
+
+  server.tool(
+    'generate_scene_illustration',
+    'Generate 4 illustration alternatives for a scene. Uses scene context (characters, location, mood) to auto-draft a prompt, applies project art style and character reference images for visual consistency. Returns a generationId for polling status.',
+    {
+      sceneId: z.string().describe('ID of the scene to illustrate.'),
+      promptOverride: z.string().optional().describe('Optional custom prompt to use instead of auto-generated one.'),
+    },
+    async ({ sceneId, promptOverride }) => {
+      const body: Record<string, unknown> = {};
+      if (promptOverride) body.promptOverride = promptOverride;
+
+      const result = await client.post(`/api/scenes/${sceneId}/illustrate`, body);
+      if (!result.success) return errorContent(`Scene illustration failed: ${result.error}`);
+
+      const data = result.data as Record<string, unknown>;
+      const lines = [
+        `Scene illustration started.`,
+        `Generation ID: ${data.generationId}`,
+        `Prompt: ${data.prompt}`,
+        `Controlnets used: ${data.controlnetsUsed}`,
+        `Character refs: ${data.characterRefsUsed}`,
+        `Style ref: ${data.hasStyleRef ? 'yes' : 'no'}`,
+        ``,
+        `Use check_illustration_status to poll for completion.`,
+      ];
+      return textContent(lines.join('\n'));
+    }
+  );
+
+  server.tool(
+    'check_illustration_status',
+    'Check the status of a scene illustration generation. Returns pending, complete (with image URLs), or failed.',
+    {
+      sceneId: z.string().describe('ID of the scene being illustrated.'),
+      generationId: z.string().describe('Generation ID returned by generate_scene_illustration.'),
+    },
+    async ({ sceneId, generationId }) => {
+      const result = await client.get(`/api/scenes/${sceneId}/illustrate`, { generationId });
+      if (!result.success) return errorContent(`Status check failed: ${result.error}`);
+
+      const data = result.data as Record<string, unknown>;
+      if (data.status === 'complete' && Array.isArray(data.images)) {
+        const images = data.images as Array<{ id: string; url: string }>;
+        const lines = [
+          `Generation complete! ${images.length} images available.`,
+          ``,
+          ...images.map((img, i) => `Image ${i + 1}: ${img.url}`),
+          ``,
+          `Use save_scene_illustration with one of the image URLs to persist it.`,
+        ];
+        return textContent(lines.join('\n'));
+      }
+
+      return textContent(JSON.stringify(data, null, 2));
+    }
+  );
+
+  server.tool(
+    'save_scene_illustration',
+    'Save a selected illustration as the scene\'s image. Downloads from CDN, uploads to permanent storage, and updates the scene record.',
+    {
+      sceneId: z.string().describe('ID of the scene to save the illustration for.'),
+      imageUrl: z.string().describe('URL of the selected image from the generation results.'),
+      generationId: z.string().describe('Generation ID for tracking.'),
+    },
+    async ({ sceneId, imageUrl, generationId }) => {
+      const result = await client.put(`/api/scenes/${sceneId}/illustrate`, { imageUrl, generationId });
+      if (!result.success) return errorContent(`Save illustration failed: ${result.error}`);
+
+      const data = result.data as Record<string, unknown>;
+      return textContent(`Illustration saved successfully.\nPermanent URL: ${data.permanentUrl}\nScene: ${data.sceneId}`);
+    }
+  );
 }
