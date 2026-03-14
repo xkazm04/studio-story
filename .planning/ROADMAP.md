@@ -12,7 +12,7 @@ This roadmap builds the Jinn engine from the ground up as a separable LLM-orches
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
+- [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
 - [ ] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts
 - [ ] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering
 - [ ] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer
@@ -54,12 +54,12 @@ Plans:
   2. The engine computes pixel-level spatial budgets for each slot and assigns panel density based on available space
   3. Layouts adapt to viewport resize -- panels reflow or change density without losing content
   4. At least 5 layout templates (single, split-2, split-3, grid-4, primary-sidebar) are available and the engine selects the best fit for the requested panel count and roles
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md -- Layout types, 8 CSS Grid templates, Hungarian algorithm, template scoring, panel-to-slot assignment
+- [ ] 02-02-PLAN.md -- Spatial budget computation, auto-density assignment, viewport breakpoints, resolveLayout pipeline
+- [ ] 02-03-PLAN.md -- React integration (useLayout hook with ResizeObserver, DzinLayout component, public API wiring)
 
 ### Phase 3: Jinn State and Streaming
 **Goal**: LLM context and UI state stay synchronized through JSON Patch deltas, users can undo/redo any AI-initiated change, and partial LLM results render progressively
@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
-| 2. Jinn Layout Engine | 0/3 | Not started | - |
+| 2. Jinn Layout Engine | 0/3 | Planned | - |
 | 3. Jinn State and Streaming | 0/4 | Not started | - |
 | 4. Jinn Conversation Shell | 0/3 | Not started | - |
 | 5. Jinn Intent and Director | 0/4 | Not started | - |
