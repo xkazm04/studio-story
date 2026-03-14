@@ -123,7 +123,9 @@ export function createStateEngine<T>(
     if (!group) return null;
 
     // Re-apply forward patches (strip origin tag for applyPatch)
-    const rawOps: Operation[] = group.patches.map(({ origin: _o, ...rest }) => rest);
+    const rawOps: Operation[] = group.patches.map(
+      ({ origin: _o, ...rest }) => rest as Operation,
+    );
     const result = applyPatch(
       structuredClone(state),
       structuredClone(rawOps),

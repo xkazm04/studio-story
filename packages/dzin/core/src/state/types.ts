@@ -14,10 +14,10 @@ export type PatchOrigin = 'llm' | 'user';
 // ---------------------------------------------------------------------------
 
 /** An RFC 6902 JSON Patch operation annotated with its origin. */
-export interface TaggedOperation extends Operation {
+export type TaggedOperation = Operation & {
   /** Who initiated this operation. */
   origin: PatchOrigin;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Patch Group
