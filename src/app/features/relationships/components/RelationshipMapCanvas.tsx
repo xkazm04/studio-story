@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Controls,
@@ -11,49 +11,151 @@ import ReactFlow, {
   EdgeTypes,
   useNodesState,
   useEdgesState,
-  addEdge,
-  Connection,
   NodeChange,
   EdgeChange,
   applyNodeChanges,
-  applyEdgeChanges
+  applyEdgeChanges,
+  useViewport,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import CharacterNode from './CharacterNode';
 import FactionNode from './FactionNode';
 import RelationshipEdge from './RelationshipEdge';
-import { RelationshipNode, RelationshipEdge as RelEdge, RelationshipType } from '../types';
+import { RelationshipNode, RelationshipEdge as RelEdge, RelationshipType, CharacterNodeData } from '../types';
+import { computeFactionClusters, FactionCluster } from '../lib/factionClusters';
+import { Faction } from '@/app/types/Faction';
 
 interface RelationshipMapCanvasProps {
   nodes: RelationshipNode[];
   edges: RelEdge[];
+  factions: Faction[];
+  factionColorMap: Record<string, string>;
   onNodesChange: (nodes: RelationshipNode[]) => void;
   onEdgesChange: (edges: RelEdge[]) => void;
   onNodeDragStop: (nodeId: string, position: { x: number; y: number }) => void;
   activeFilters: Set<RelationshipType>;
 }
 
+// ---------------------------------------------------------------------------
+// Cluster overlay component — renders SVG hull backgrounds behind nodes
+// ---------------------------------------------------------------------------
+
+function ClusterOverlay({ clusters }: { clusters: Map<string, FactionCluster> }) {
+  const viewport = useViewport();
+
+  if (clusters.size === 0) return null;
+
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 0 }}
+    >
+      <g
+        transform={`translate(${viewport.x}, ${viewport.y}) scale(${viewport.zoom})`}
+      >
+        {Array.from(clusters.values()).map((cluster) => (
+          <g key={cluster.factionId}>
+            {/* Hull background */}
+            <path
+              d={cluster.hullPath}
+              fill={`${cluster.color}14`}
+              stroke={`${cluster.color}33`}
+              strokeWidth={1}
+            />
+            {/* Faction label */}
+            <text
+              x={cluster.labelPosition.x}
+              y={cluster.labelPosition.y}
+              textAnchor="middle"
+              fill={`${cluster.color}cc`}
+              fontSize={13}
+              fontWeight={600}
+              fontFamily="system-ui, sans-serif"
+            >
+              {cluster.factionName}
+            </text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Canvas
+// ---------------------------------------------------------------------------
+
 const RelationshipMapCanvas: React.FC<RelationshipMapCanvasProps> = ({
   nodes: initialNodes,
   edges: initialEdges,
+  factions,
+  factionColorMap,
   onNodesChange,
   onEdgesChange,
   onNodeDragStop,
-  activeFilters
+  activeFilters,
 }) => {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
+  const [clusters, setClusters] = useState<Map<string, FactionCluster>>(new Map());
+  const clusterTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Inject factionColor into character node data
+  const enrichedNodes = useMemo(() => {
+    return nodes.map((node) => {
+      if (node.type !== 'character') return node;
+      const charData = node.data as CharacterNodeData;
+      const factionId = charData.character?.faction_id;
+      const factionColor = factionId ? factionColorMap[factionId] : undefined;
+      return {
+        ...node,
+        data: {
+          ...charData,
+          factionColor,
+        },
+      };
+    });
+  }, [nodes, factionColorMap]);
 
   // Update nodes when initialNodes change
-  React.useEffect(() => {
+  useEffect(() => {
     setNodes(initialNodes);
   }, [initialNodes, setNodes]);
 
   // Update edges when initialEdges change
-  React.useEffect(() => {
+  useEffect(() => {
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
+
+  // Compute clusters whenever character nodes change position
+  const recomputeClusters = useCallback(() => {
+    const charNodes = nodes.filter(
+      (n): n is Node<CharacterNodeData> => n.type === 'character'
+    );
+    const newClusters = computeFactionClusters(charNodes, factions);
+    setClusters(newClusters);
+  }, [nodes, factions]);
+
+  // Initial cluster computation
+  useEffect(() => {
+    recomputeClusters();
+  }, [recomputeClusters]);
+
+  // Debounced cluster recomputation on drag
+  const debouncedRecompute = useCallback(() => {
+    if (clusterTimerRef.current) clearTimeout(clusterTimerRef.current);
+    clusterTimerRef.current = setTimeout(() => {
+      recomputeClusters();
+    }, 200);
+  }, [recomputeClusters]);
+
+  // Cleanup timer
+  useEffect(() => {
+    return () => {
+      if (clusterTimerRef.current) clearTimeout(clusterTimerRef.current);
+    };
+  }, []);
 
   // Define custom node types
   const nodeTypes = useMemo<NodeTypes>(
@@ -89,8 +191,11 @@ const RelationshipMapCanvas: React.FC<RelationshipMapCanvasProps> = ({
       const updatedNodes = applyNodeChanges(changes, nodes) as RelationshipNode[];
       setNodes(updatedNodes);
       onNodesChange(updatedNodes);
+      // Recompute clusters on position changes
+      const hasDrag = changes.some((c) => c.type === 'position');
+      if (hasDrag) debouncedRecompute();
     },
-    [nodes, setNodes, onNodesChange]
+    [nodes, setNodes, onNodesChange, debouncedRecompute]
   );
 
   // Handle edge changes
@@ -107,49 +212,31 @@ const RelationshipMapCanvas: React.FC<RelationshipMapCanvasProps> = ({
   const handleNodeDragStop = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       onNodeDragStop(node.id, node.position);
+      recomputeClusters(); // Immediate recompute on drop
     },
-    [onNodeDragStop]
-  );
-
-  // Handle new connections (for future use)
-  const handleConnect = useCallback(
-    (connection: Connection) => {
-      // For now, just add the edge visually
-      // In a full implementation, this would create a new relationship via API
-      const newEdge = {
-        ...connection,
-        type: 'relationship',
-        data: {
-          relationshipId: `temp-${Date.now()}`,
-          relationshipType: RelationshipType.UNKNOWN,
-          description: 'New relationship'
-        }
-      };
-      setEdges((eds) => addEdge(newEdge, eds));
-    },
-    [setEdges]
+    [onNodeDragStop, recomputeClusters]
   );
 
   return (
     <div className="w-full h-full relative">
       <ReactFlow
-        nodes={nodes}
+        nodes={enrichedNodes}
         edges={filteredEdges}
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onNodeDragStop={handleNodeDragStop}
-        onConnect={handleConnect}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
         attributionPosition="bottom-left"
         minZoom={0.1}
         maxZoom={2}
+        // Read-only: disable new connections
+        nodesConnectable={false}
         defaultEdgeOptions={{
-          animated: true,
-          style: { strokeWidth: 2 }
+          style: { strokeWidth: 2 },
         }}
-        className="bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900"
+        className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-900"
       >
         {/* Background Pattern */}
         <Background
@@ -169,7 +256,12 @@ const RelationshipMapCanvas: React.FC<RelationshipMapCanvasProps> = ({
         <MiniMap
           className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg"
           nodeColor={(node) => {
-            if (node.type === 'character') return '#3b82f6';
+            if (node.type === 'character') {
+              const charData = node.data as CharacterNodeData;
+              const fId = charData.character?.faction_id;
+              if (fId && factionColorMap[fId]) return factionColorMap[fId];
+              return '#3b82f6';
+            }
             if (node.type === 'faction') return '#a855f7';
             return '#6b7280';
           }}
@@ -180,10 +272,15 @@ const RelationshipMapCanvas: React.FC<RelationshipMapCanvasProps> = ({
         />
       </ReactFlow>
 
-      {/* Animated Background Gradient */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      {/* Faction cluster overlays */}
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+        <ClusterOverlay clusters={clusters} />
+      </div>
+
+      {/* Subtle ambient background */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
       </div>
     </div>
   );
