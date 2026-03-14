@@ -1,0 +1,204 @@
+/* ---------------------------------------------------------------------------
+ * Conversation Shell CSS
+ * Uses --dzin-chat-* custom properties bridging to the --ms-* design system.
+ * --------------------------------------------------------------------------- */
+
+:root {
+  --dzin-chat-bg: var(--ms-bg-surface, #0f172a);
+  --dzin-chat-border: var(--ms-bg-elevated, #1e293b);
+  --dzin-chat-text: var(--ms-text-primary, #f1f5f9);
+  --dzin-chat-muted: var(--ms-text-muted, #94a3b8);
+  --dzin-chat-accent: var(--ms-accent-primary, #06b6d4);
+  --dzin-chat-success: var(--ms-success, #22c55e);
+  --dzin-chat-error: var(--ms-error, #ef4444);
+  --dzin-chat-warning: var(--ms-warning, #eab308);
+}
+
+/* ---------------------------------------------------------------------------
+ * Message Separator
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-messages] > div + div {
+  border-top: 1px solid var(--dzin-chat-border);
+}
+
+/* ---------------------------------------------------------------------------
+ * Tool Call Card
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-tool-call] {
+  border-left: 2px solid var(--dzin-chat-border);
+  padding: 6px 10px;
+  margin: 6px 0;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.5);
+  font-size: 0.8125rem;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+[data-dzin-chat-tool-call][data-status='running'] {
+  border-left-color: var(--dzin-chat-accent);
+  opacity: 1;
+}
+
+[data-dzin-chat-tool-call][data-status='pending'] {
+  border-left-color: var(--dzin-chat-muted);
+  opacity: 0.7;
+}
+
+[data-dzin-chat-tool-call][data-status='success'] {
+  border-left-color: var(--dzin-chat-success);
+}
+
+[data-dzin-chat-tool-call][data-status='error'] {
+  border-left-color: var(--dzin-chat-error);
+}
+
+/* Spinner animation for running state */
+@keyframes dzin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-dzin-chat-tool-call] .dzin-spinner {
+  animation: dzin-spin 1s linear infinite;
+}
+
+/* Minimum 200ms visual display for running spinner */
+[data-dzin-chat-tool-call][data-status='success'],
+[data-dzin-chat-tool-call][data-status='error'] {
+  transition: border-color 0.2s ease 0.2s;
+}
+
+/* ---------------------------------------------------------------------------
+ * Composition Summary Card
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-composition] {
+  border-left: 3px solid var(--dzin-chat-accent);
+  background: rgba(6, 182, 212, 0.06);
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  color: var(--dzin-chat-muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * Slash Command Menu
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-command-menu] {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 4px;
+  background: var(--dzin-chat-bg);
+  border: 1px solid var(--dzin-chat-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+[data-dzin-chat-command-menu] [data-active='true'] {
+  background: rgba(6, 182, 212, 0.15);
+}
+
+[data-dzin-chat-command-menu] [data-command-item] {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+[data-dzin-chat-command-menu] [data-command-item]:hover {
+  background: rgba(6, 182, 212, 0.1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Chat Input
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-input] textarea {
+  resize: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--dzin-chat-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  width: 100%;
+  max-height: 96px; /* 4 lines * 24px */
+  overflow-y: auto;
+}
+
+[data-dzin-chat-input] textarea::placeholder {
+  color: var(--dzin-chat-muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * Markdown / Code Block Styling
+ * --------------------------------------------------------------------------- */
+
+[data-dzin-chat-messages] [data-dzin-chat-code-block] {
+  background: #0f172a;
+  border: 1px solid var(--dzin-chat-border);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--dzin-chat-text);
+}
+
+[data-dzin-chat-messages] [data-dzin-chat-inline-code] {
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  color: var(--dzin-chat-accent);
+}
+
+/* Markdown list styling */
+[data-dzin-chat-messages] ul,
+[data-dzin-chat-messages] ol {
+  padding-left: 1.25em;
+  margin: 4px 0;
+}
+
+[data-dzin-chat-messages] li {
+  margin: 2px 0;
+}
+
+/* Markdown link styling */
+[data-dzin-chat-messages] a {
+  color: var(--dzin-chat-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(6, 182, 212, 0.4);
+  text-underline-offset: 2px;
+}
+
+[data-dzin-chat-messages] a:hover {
+  text-decoration-color: var(--dzin-chat-accent);
+}
+
+/* Markdown paragraph spacing */
+[data-dzin-chat-messages] p + p {
+  margin-top: 8px;
+}
+
+/* Bold / italic */
+[data-dzin-chat-messages] strong {
+  font-weight: 600;
+  color: var(--dzin-chat-text);
+}
+
+[data-dzin-chat-messages] em {
+  font-style: italic;
+}
