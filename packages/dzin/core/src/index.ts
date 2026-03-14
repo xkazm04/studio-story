@@ -159,3 +159,14 @@ export type {
   ResizeState,
   IntentQueue,
 } from './intent';
+
+// LLM Transport
+export { serializeForClaude, createLLMTransport } from './llm';
+export type {
+  LLMTransportStatus,
+  WorkspaceSnapshot,
+  SerializedContext,
+  LLMResponse,
+  LLMTransportConfig,
+  LLMTransport,
+} from './llm';
