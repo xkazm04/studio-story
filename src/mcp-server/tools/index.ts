@@ -14,6 +14,7 @@ import { registerSceneTools } from './scenes.js';
 import { registerImageTools } from './images.js';
 import { registerWorkspaceTools } from './workspace.js';
 import { registerMultimodalTools } from './multimodal.js';
+import { registerVoiceTools } from './voice.js';
 
 /**
  * Register all Story MCP tools
@@ -38,6 +39,9 @@ export function registerTools(server: McpServer, config: McpConfig) {
   // Multimodal tools (Gemini delegation via API routes)
   registerMultimodalTools(server);
 
+  // Voice/narration tools (TTS generation, voice assignment, cloning)
+  registerVoiceTools(server, config, client);
+
   const tools = [
     'get_project', 'list_projects', 'create_project', 'update_project',
     'list_characters', 'get_character', 'create_character', 'update_character', 'list_traits', 'create_trait', 'update_trait',
@@ -48,6 +52,7 @@ export function registerTools(server: McpServer, config: McpConfig) {
     'generate_image_gemini', 'generate_image_leonardo', 'evaluate_image', 'describe_image',
     'update_workspace', 'compose_workspace', 'get_panel_manifests',
     'analyze_image', 'generate_image_multimodal', 'extract_audio',
+    'generate_scene_narration', 'check_voice_assignments', 'list_voices', 'assign_character_voice',
   ];
 
   console.error(`[story-mcp] Registered ${tools.length} tools: ${tools.join(', ')}`);
