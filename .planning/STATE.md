@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-03-14T22:35:05Z"
-last_activity: 2026-03-14 -- Completed 10-02-PLAN.md (Voice/TTS backend infrastructure)
+stopped_at: Completed 10-03-PLAN.md
+last_updated: "2026-03-14T22:46:53Z"
+last_activity: 2026-03-14 -- Completed 10-03-PLAN.md (AI writing editor UI with inline diff)
 progress:
   total_phases: 12
   completed_phases: 9
   total_plans: 32
-  completed_plans: 30
-  percent: 94
+  completed_plans: 31
+  percent: 97
 ---
 
 ---
@@ -57,11 +57,11 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 10 of 12 (Writing Tools and Voice)
-Plan: 2 of 4 in current phase (10-02-PLAN.md complete)
+Plan: 3 of 4 in current phase (10-03-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 10-02-PLAN.md (Voice/TTS backend infrastructure)
+Last activity: 2026-03-14 -- Completed 10-03-PLAN.md (AI writing editor UI with inline diff)
 
-Progress: [█████████████████████████████] 30/32 plans
+Progress: [██████████████████████████████] 31/32 plans
 
 ## Performance Metrics
 
@@ -113,6 +113,7 @@ Progress: [███████████████████████
 | Phase 09 P03 | 3 | 2 tasks | 4 files |
 | Phase 10 P01 | 8 | 2 tasks | 7 files |
 | Phase 10 P02 | 6 | 2 tasks | 10 files |
+| Phase 10 P03 | 8 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -220,6 +221,10 @@ Recent decisions affecting current work:
 - [10-02]: cobalt.tools API for YouTube extraction instead of ytdl-core (no native dependency)
 - [10-02]: TTS duration estimated from byte size (bytes/16000 for 128kbps MP3) rather than audio analysis
 - [10-02]: Voice listing includes all premade + cloned + generated voices with broad filter and 5-min cache
+- [10-03]: Replace-then-decorate diff strategy: replace text on showDiff, add decorations; acceptDiff clears decorations; rejectDiff calls undo
+- [10-03]: Widget decorations for deletions (zero-width position with strikethrough span), inline decorations for additions
+- [10-03]: BubbleMenu from @tiptap/react/menus with Floating UI options (TipTap v3 replaced Tippy with Floating UI)
+- [10-03]: Integration into SceneEditorPanel.tsx (workspace panel with TipTap) rather than SceneEditor.tsx (textarea-based feature component)
 
 ### Pending Todos
 
@@ -232,6 +237,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:35:05Z
-Stopped at: Completed 10-02-PLAN.md
-Resume file: .planning/phases/10-writing-tools-and-voice/10-03-PLAN.md
+Last session: 2026-03-14T22:46:53Z
+Stopped at: Completed 10-03-PLAN.md
+Resume file: .planning/phases/10-writing-tools-and-voice/10-04-PLAN.md
