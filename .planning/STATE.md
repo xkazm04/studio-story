@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-14T00:29:16Z"
-last_activity: 2026-03-14 -- Completed 01-01-PLAN.md (monorepo scaffold + type system)
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-14T00:36:15Z"
+last_activity: 2026-03-14 -- Completed 01-02-PLAN.md (unified panel registry)
 progress:
   total_phases: 12
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
-  percent: 2
+  completed_plans: 2
+  percent: 50
 ---
 
 # Project State
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 1 of 12 (Jinn Package Scaffold and Component Catalog)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: Executing
-Last activity: 2026-03-14 -- Completed 01-01-PLAN.md (monorepo scaffold + type system)
+Last activity: 2026-03-14 -- Completed 01-02-PLAN.md (unified panel registry)
 
-Progress: [▓░░░░░░░░░] 2%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 5 min
-- Total execution time: 0.08 hours
+- Total plans completed: 2
+- Average duration: 4 min
+- Total execution time: 0.12 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 1 | 5 min | 5 min |
+| 01 | 2 | 7 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (5 min)
-- Trend: baseline
+- Last 5 plans: 01-01 (5 min), 01-02 (2 min)
+- Trend: accelerating
 
 *Updated after each plan completion*
 
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [01-01]: Vitest 4 uses test.projects instead of defineWorkspace -- adapted workspace config
 - [01-01]: @dzin/core uses JIT (no build step) via Next.js transpilePackages
 - [01-01]: PanelFrameProps uses ReactNode for icon/actions/children for max composition flexibility
+- [01-02]: PanelDefinition.component uses ComponentType<Record<string, unknown>> -- generic yet type-safe
+- [01-02]: serializeRegistry excludes component ref by explicit field mapping rather than delete/omit
+- [01-02]: SerializedPanel is a separate type from PanelDefinition rather than Omit<> -- cleaner serialization contract
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T00:29:16Z
-Stopped at: Completed 01-01-PLAN.md
-Resume file: .planning/phases/01-jinn-package-scaffold-and-component-catalog/01-02-PLAN.md
+Last session: 2026-03-14T00:36:15Z
+Stopped at: Completed 01-02-PLAN.md
+Resume file: .planning/phases/01-jinn-package-scaffold-and-component-catalog/01-03-PLAN.md

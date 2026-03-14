@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Jinn Core Engine
 
-- [ ] **JCORE-01**: Component registry where LLM selects from pre-registered panel types with metadata (size, role, complexity, domains)
-- [ ] **JCORE-02**: Machine-readable panel manifests declaring capabilities, inputs, outputs, density modes, and data slice schemas
+- [x] **JCORE-01**: Component registry where LLM selects from pre-registered panel types with metadata (size, role, complexity, domains)
+- [x] **JCORE-02**: Machine-readable panel manifests declaring capabilities, inputs, outputs, density modes, and data slice schemas
 - [ ] **JCORE-03**: Layout composition engine that resolves LLM panel directives into CSS Grid layouts with viewport-aware responsive breakpoints
 - [ ] **JCORE-04**: Bidirectional state synchronization between LLM context and UI state using JSON Patch (RFC 6902) deltas
 - [ ] **JCORE-05**: Streaming response rendering — partial LLM results visible immediately, progressive panel population
@@ -106,8 +106,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| JCORE-01 | Phase 1 | Pending |
-| JCORE-02 | Phase 1 | Pending |
+| JCORE-01 | Phase 1 | Complete |
+| JCORE-02 | Phase 1 | Complete |
 | JCORE-03 | Phase 2 | Pending |
 | JCORE-04 | Phase 3 | Pending |
 | JCORE-05 | Phase 3 | Pending |
