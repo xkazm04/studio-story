@@ -150,12 +150,12 @@ Plans:
   2. User can create branching story paths where scenes lead to multiple possible next scenes based on reader choices
   3. A scene graph visualization shows all story paths, branches, and convergence points, with unreachable or dead-end paths highlighted
   4. User can simulate walking through a branching story to verify all paths make narrative sense
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01-PLAN.md -- Scene choices API routes, SceneChoice condition field, StoryAnalyzer relationship-tension rules, narrative-suggestions panel registration
+- [ ] 08-02-PLAN.md -- Reader view panel with simulation/choices/variables/rewind, MCP create_branch and create_choice tools
+- [ ] 08-03-PLAN.md -- LLM composition wiring for narrative-suggestions and reader-view panels, advisor story intelligence guidance
 
 ### Phase 9: Visual Pipeline
 **Goal**: AI generates scene illustrations that match the story's art style, and characters look visually consistent across every generated image

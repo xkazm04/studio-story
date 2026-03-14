@@ -28,6 +28,8 @@ const TOOL_INVALIDATION_MAP: Record<string, string[]> = {
   create_faction: ['factions'],
   create_trait: ['traits', 'characters'],
   update_trait: ['traits', 'characters'],
+  create_choice: ['sceneChoices'],
+  create_branch: ['sceneChoices'],
 };
 
 /**

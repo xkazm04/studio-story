@@ -9,6 +9,10 @@ export interface SceneChoice {
   target_scene_id: string | null;
   label: string;
   order_index: number;
+  /** JSONB condition object — choice is only available when condition is met */
+  condition?: Record<string, unknown> | null;
+  /** Whether the condition gate is active */
+  condition_enabled?: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -18,12 +22,16 @@ export interface SceneChoiceCreateInput {
   target_scene_id?: string | null;
   label: string;
   order_index?: number;
+  condition?: Record<string, unknown> | null;
+  condition_enabled?: boolean;
 }
 
 export interface SceneChoiceUpdateInput {
   target_scene_id?: string | null;
   label?: string;
   order_index?: number;
+  condition?: Record<string, unknown> | null;
+  condition_enabled?: boolean;
 }
 
 /**
