@@ -125,3 +125,30 @@ export type {
   SlashCommand,
   ChatStore,
 } from './chat';
+
+// Intent
+export {
+  createDirector,
+  NEEDS_LLM,
+  createIntentBus,
+  createComposeHandler,
+  createManipulateHandler,
+  createNavigateHandler,
+  createSystemHandler,
+} from './intent';
+export type {
+  IntentType,
+  IntentSource,
+  ComposePayload,
+  ManipulatePayload,
+  NavigatePayload,
+  QueryPayload,
+  SystemPayload,
+  IntentPayloadMap,
+  Intent,
+  IntentResult,
+  IntentHandler,
+  IntentEvent,
+  IntentBus,
+  Director,
+} from './intent';
