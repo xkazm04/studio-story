@@ -20,6 +20,9 @@ export type { DensityProviderProps } from './density';
 // Panel
 export { PanelFrame } from './panel';
 
+// Theme
+export { DZIN_TOKENS } from './theme';
+
 // Registry
 export { createRegistry, serializeRegistry } from './registry';
 export type {
