@@ -3,14 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-03-14T17:22:53Z"
-last_activity: 2026-03-14 -- Completed 07-01-PLAN.md (Story data foundations)
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-03-14T17:34:27Z"
+last_activity: 2026-03-14 -- Completed 07-02-PLAN.md (Relationship map enhancement)
 progress:
   total_phases: 12
   completed_phases: 6
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 22
+  completed_plans: 20
+  percent: 91
 ---
 
 # Project State
@@ -20,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 7 - Story Data & Authoring (1 of 4 plans complete)
+**Current focus:** Phase 7 - Story Data & Authoring (2 of 4 plans complete)
 
 ## Current Position
 
 Phase: 7 of 12 (Story Data & Authoring)
-Plan: 1 of 4 in current phase (07-01-PLAN.md complete)
+Plan: 2 of 4 in current phase (07-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 07-01-PLAN.md (Story data foundations)
+Last activity: 2026-03-14 -- Completed 07-02-PLAN.md (Relationship map enhancement)
 
-Progress: [█████████░] 19/39 plans
+Progress: [█████████░] 20/22 plans
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: 4 min
-- Total execution time: 1.31 hours
+- Total execution time: 1.40 hours
 
 **By Phase:**
 
@@ -48,10 +49,10 @@ Progress: [█████████░] 19/39 plans
 | 04 | 2 | 11 min | 6 min |
 | 05 | 3 | 13 min | 4 min |
 | 06 | 3 | 14 min | 5 min |
-| 07 | 1 | 5 min | 5 min |
+| 07 | 2 | 10 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (2 min), 06-01 (4 min), 06-02 (5 min), 06-03 (5 min), 07-01 (5 min)
+- Last 5 plans: 06-01 (4 min), 06-02 (5 min), 06-03 (5 min), 07-01 (5 min), 07-02 (5 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -70,6 +71,7 @@ Progress: [█████████░] 19/39 plans
 | Phase 06 P02 | 5 | 2 tasks | 6 files |
 | Phase 06 P03 | 5 | 2 tasks | 7 files |
 | Phase 07 P01 | 5 | 3 tasks | 11 files |
+| Phase 07 P02 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -145,6 +147,10 @@ Recent decisions affecting current work:
 - [07-01]: Default MCP user_id (00000000-...) for create_project since MCP config has no userId concept
 - [07-01]: create_relationship uses character_relationships table (not relationships) matching actual DB schema
 - [07-01]: RelationshipMapPanel uses React.lazy for existing RelationshipMap component
+- [07-02]: Graham scan inline instead of d3-shape dependency for convex hull of <20 points
+- [07-02]: useViewport hook for reactive SVG overlay tracking during pan/zoom
+- [07-02]: Faction color resolution: faction.color -> branding.primary_color -> FACTION_COLOR_PALETTE[index]
+- [07-02]: Clusters require 2+ members; <3 use padded bounding rectangle, 3+ use convex hull with 60px expansion
 
 ### Pending Todos
 
@@ -157,6 +163,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T17:22:53Z
-Stopped at: Completed 07-01-PLAN.md
-Resume file: .planning/phases/07-story-data-and-authoring/07-01-SUMMARY.md
+Last session: 2026-03-14T17:34:27.694Z
+Stopped at: Completed 07-02-PLAN.md
+Resume file: .planning/phases/07-story-data-and-authoring/07-02-SUMMARY.md

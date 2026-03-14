@@ -133,7 +133,7 @@ Plans:
   3. An interactive relationship map visualizes character connections and faction dynamics, updating as relationships are added or modified
   4. User can edit scene content and dialogue in a rich text editor that appears as a Jinn panel, with formatting toolbar and character dialogue markup
   5. Asking Jinn "show me the castle scene with Elena" opens the scene editor focused on that scene with Elena's character panel alongside it
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 - [ ] 07-01-PLAN.md -- Schema extensions (Project premise/genre/setting), missing MCP tools (create_project, update_project, create_relationship), relationship-map panel registration
@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
 | 5. Jinn Intent and Director | 3/3 | Complete | 2026-03-14 |
 | 6. Jinn LLM Integration | 0/3 | Not started | - |
-| 7. Story Data and Authoring | 1/4 | In Progress|  |
+| 7. Story Data and Authoring | 2/4 | In Progress|  |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |
 | 9. Visual Pipeline | 0/4 | Not started | - |
 | 10. Writing Tools and Voice | 0/4 | Not started | - |
