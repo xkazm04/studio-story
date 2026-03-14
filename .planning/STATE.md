@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-14T12:59:10Z"
-last_activity: 2026-03-14 -- Completed 05-01-PLAN.md (Intent types, director, bus, and handlers)
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-14T13:09:52Z"
+last_activity: 2026-03-14 -- Completed 05-02-PLAN.md (Resize math, intent queue, and React hooks)
 progress:
   total_phases: 12
   completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 14
+  completed_plans: 14
 ---
 
 # Project State
@@ -20,23 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 5 - Jinn Intent and Director (Plan 1 of 3 complete)
+**Current focus:** Phase 5 - Jinn Intent and Director (Plan 2 of 3 complete)
 
 ## Current Position
 
 Phase: 5 of 12 (Jinn Intent and Director) -- IN PROGRESS
-Plan: 1 of 3 in current phase (05-01-PLAN.md complete)
+Plan: 2 of 3 in current phase (05-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 05-01-PLAN.md (Intent types, director, bus, and handlers)
+Last activity: 2026-03-14 -- Completed 05-02-PLAN.md (Resize math, intent queue, and React hooks)
 
-Progress: [█████████░] 13/39 plans
+Progress: [█████████░] 14/39 plans
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 4 min
-- Total execution time: 0.88 hours
+- Total execution time: 0.97 hours
 
 **By Phase:**
 
@@ -46,10 +46,10 @@ Progress: [█████████░] 13/39 plans
 | 02 | 3 | 11 min | 4 min |
 | 03 | 3 | 10 min | 3 min |
 | 04 | 2 | 11 min | 6 min |
-| 05 | 1 | 6 min | 6 min |
+| 05 | 2 | 11 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (2 min), 03-03 (3 min), 04-01 (3 min), 04-02 (8 min), 05-01 (6 min)
+- Last 5 plans: 03-03 (3 min), 04-01 (3 min), 04-02 (8 min), 05-01 (6 min), 05-02 (5 min)
 - Trend: steady
 
 *Updated after each plan completion*
@@ -62,6 +62,7 @@ Progress: [█████████░] 13/39 plans
 | Phase 04 P01 | 3 | 2 tasks | 9 files |
 | Phase 04 P02 | 8 | 3 tasks | 11 files |
 | Phase 05 P01 | 6 | 2 tasks | 13 files |
+| Phase 05 P02 | 5 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,10 @@ Recent decisions affecting current work:
 - [05-01]: Bus special-cases undo/redo descriptions to call stateEngine.undo()/redo() instead of dispatch()
 - [05-01]: Manipulate handler uses inline FALLBACK_THRESHOLDS to avoid PanelDefinition dependency
 - [05-01]: Compose handler accepts registryHas function rather than full PanelRegistry for minimal coupling
+- [05-02]: hooks.tsx uses .tsx extension because JSX in IntentProvider requires esbuild JSX transform
+- [05-02]: computeResize works in pixel space during drag, converts to fractions once per call to avoid cumulative drift
+- [05-02]: Density hysteresis tracks densityChangePx and requires 20px buffer before allowing another density change
+- [05-02]: IntentQueue.startBuffering captures optional initial state snapshot for conflict detection on drain
 
 ### Pending Todos
 
@@ -126,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T12:59:10Z
-Stopped at: Completed 05-01-PLAN.md
-Resume file: .planning/phases/05-jinn-intent-and-director/05-02-PLAN.md
+Last session: 2026-03-14T13:09:52Z
+Stopped at: Completed 05-02-PLAN.md
+Resume file: .planning/phases/05-jinn-intent-and-director/05-03-PLAN.md

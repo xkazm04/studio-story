@@ -28,7 +28,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **JINT-03**: Claude Code CLI integration via MCP/stdio as primary reasoning and orchestration engine
 - [ ] **JINT-04**: Gemini API bridge for multimodal tasks (vision, image generation, audio) called as tools by Claude
 - [ ] **JINT-05**: Ambient observation mode — LLM watches user context and proactively adapts UI, surfaces relevant data, suggests next steps
-- [ ] **JINT-06**: Direct manipulation alongside LLM composition — user can drag, resize, rearrange panels while LLM also composes them
+- [x] **JINT-06**: Direct manipulation alongside LLM composition — user can drag, resize, rearrange panels while LLM also composes them
 
 ### Jinn Multimodal
 
@@ -122,7 +122,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JINT-03 | Phase 6 | Pending |
 | JINT-04 | Phase 6 | Pending |
 | JINT-05 | Phase 6 | Pending |
-| JINT-06 | Phase 5 | Pending |
+| JINT-06 | Phase 5 | Complete |
 | JMULTI-01 | Phase 11 | Pending |
 | JMULTI-02 | Phase 11 | Pending |
 | STORY-01 | Phase 7 | Pending |

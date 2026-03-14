@@ -100,7 +100,7 @@ Plans:
   2. Common intents (open panel, navigate, filter) resolve locally via workflow hints without any LLM call, in under 50ms
   3. Complex or ambiguous intents are routed to the LLM for resolution, with the user seeing a brief loading indicator
   4. User can directly manipulate panels (drag, resize, rearrange) while the LLM is simultaneously composing other panels -- both paths coexist without conflict
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [x] 05-01-PLAN.md -- Intent types, bus, director, and built-in handlers (compose/manipulate/navigate/system)
@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
-| 5. Jinn Intent and Director | 1/3 | In progress | - |
+| 5. Jinn Intent and Director | 2/3 | In Progress|  |
 | 6. Jinn LLM Integration | 0/4 | Not started | - |
 | 7. Story Data and Authoring | 0/5 | Not started | - |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |
