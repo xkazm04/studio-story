@@ -198,12 +198,11 @@ Plans:
   1. User can speak "show me the castle scene with Elena" and Jinn composes the correct workspace view -- voice input produces the same result as typing the same request
   2. User can start a request by voice, refine it by typing, and finish by clicking -- all within the same interaction flow without losing context
   3. Voice input is continuously available (not a separate mode that must be activated) and works alongside panel manipulation
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 11-01: TBD
-- [ ] 11-02: TBD
-- [ ] 11-03: TBD
+- [ ] 11-01-PLAN.md -- Voice transcription infrastructure (GeminiLiveClient inputTranscription, live-token update, useMultimodalInput hook)
+- [ ] 11-02-PLAN.md -- Push-to-talk, auto-connect, idle disconnect, AdvisorOverlay always-available mic and unified input surface
 
 ### Phase 12: Export and Package Boundary
 **Goal**: Users can export their complete stories as publishable packages, and Jinn's code is cleanly separated with automated enforcement preventing domain leakage
@@ -240,6 +239,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 7. Story Data and Authoring | 3/4 | In Progress|  |
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 1/3 | In Progress|  |
-| 10. Writing Tools and Voice | 4/4 | Complete   | 2026-03-14 |
-| 11. Multimodal Input | 0/3 | Not started | - |
+| 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
+| 11. Multimodal Input | 0/2 | Not started | - |
 | 12. Export and Package Boundary | 0/4 | Not started | - |
