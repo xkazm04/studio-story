@@ -87,10 +87,20 @@ export type {
 } from './layout';
 
 // State engine
-export { createStateEngine } from './state/engine';
-export { createUndoStack } from './state/undo';
-export { createTaggedPatch, captureUserChange } from './state/patches';
-export { serializeSnapshot } from './state/snapshot';
+export {
+  createStateEngine,
+  createUndoStack,
+  createStreamController,
+  createTaggedPatch,
+  captureUserChange,
+  serializeSnapshot,
+  useWorkspaceState,
+  useUndoRedoKeyboard,
+  applyLLMPatchWithConflictCheck,
+  acquireUserLock,
+  releaseUserLock,
+  getUserLockedPaths,
+} from './state';
 export type {
   PatchOrigin,
   TaggedOperation,
@@ -101,4 +111,5 @@ export type {
   UndoStack,
   StateEngine,
   StateSubscriber,
-} from './state/types';
+  StreamController,
+} from './state';
