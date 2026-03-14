@@ -1,6 +1,3 @@
-// @dzin/core public API
-
-// Types
 export type {
   PanelDensity,
   PanelRole,
@@ -11,4 +8,4 @@ export type {
   PanelOutput,
   PanelDataSlice,
   PanelFrameProps,
-} from './types';
+} from './panel';
