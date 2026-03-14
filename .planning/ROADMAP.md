@@ -133,14 +133,13 @@ Plans:
   3. An interactive relationship map visualizes character connections and faction dynamics, updating as relationships are added or modified
   4. User can edit scene content and dialogue in a rich text editor that appears as a Jinn panel, with formatting toolbar and character dialogue markup
   5. Asking Jinn "show me the castle scene with Elena" opens the scene editor focused on that scene with Elena's character panel alongside it
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
-- [ ] 07-03: TBD
-- [ ] 07-04: TBD
-- [ ] 07-05: TBD
+- [ ] 07-01-PLAN.md -- Schema extensions (Project premise/genre/setting), missing MCP tools (create_project, update_project, create_relationship), relationship-map panel registration
+- [ ] 07-02-PLAN.md -- Relationship map enhancement with faction cluster visualization, sentiment-based edge styling, enriched character nodes
+- [ ] 07-03-PLAN.md -- TipTap screenplay extensions (5 node types), combined prose+screenplay toolbar, distraction-free mode
+- [ ] 07-04-PLAN.md -- LLM composition wiring (compose_workspace story patterns, advisor tool declarations for story authoring)
 
 ### Phase 8: Story Intelligence and Branching
 **Goal**: The LLM analyzes story structure and relationships to suggest plot developments, and users can create branching choose-your-own-adventure narratives with visual scene graph
@@ -239,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
 | 5. Jinn Intent and Director | 3/3 | Complete | 2026-03-14 |
 | 6. Jinn LLM Integration | 0/3 | Not started | - |
-| 7. Story Data and Authoring | 0/5 | Not started | - |
+| 7. Story Data and Authoring | 0/4 | Not started | - |
 | 8. Story Intelligence and Branching | 0/3 | Not started | - |
 | 9. Visual Pipeline | 0/4 | Not started | - |
 | 10. Writing Tools and Voice | 0/4 | Not started | - |
