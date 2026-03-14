@@ -2,6 +2,15 @@
  * SceneNode Component
  * Custom React Flow node for story scenes
  * Design: Clean Manuscript style with monospace accents
+ *
+ * Visual indicators (per STORY-06 requirements):
+ * - Dead-end scenes: red border (border-red-500) + DEAD END badge with AlertCircle icon
+ * - Orphaned scenes: orange/amber border (border-amber-500) + ORPHAN badge with AlertTriangle icon
+ * - Start scene: cyan border (border-cyan-500) + START badge with Play icon
+ * - Complete scenes: emerald border (border-emerald-500) + LEVEL badge
+ *
+ * Data flows from SceneNodeData.isOrphaned and SceneNodeData.isDeadEnd flags,
+ * computed by useSceneGraphData hook from scene choices analysis.
  */
 
 'use client';
@@ -148,7 +157,7 @@ const SceneNode = memo(function SceneNode({ data, selected, id }: NodeProps<Scen
         {status.icon}
         <span
           className={cn(
-            'text-[9px] font-mono font-bold uppercase tracking-wider',
+            'text-sm font-mono font-bold uppercase tracking-wider',
             data.isFirst ? 'text-cyan-400' :
             data.isOrphaned ? 'text-amber-500' :
             data.isDeadEnd ? 'text-red-500' : 'text-slate-400'
@@ -160,7 +169,7 @@ const SceneNode = memo(function SceneNode({ data, selected, id }: NodeProps<Scen
 
       {/* Title */}
       <div className="px-2 pb-1.5">
-        <p className="text-xs font-semibold leading-tight line-clamp-2 text-slate-100 min-h-8">
+        <p className="text-sm font-semibold leading-tight line-clamp-2 text-slate-100 min-h-8">
           {label}
         </p>
       </div>
@@ -168,15 +177,15 @@ const SceneNode = memo(function SceneNode({ data, selected, id }: NodeProps<Scen
       {/* Footer with indicators */}
       <div className="flex items-center justify-between px-2 pb-2 pt-1 border-t border-slate-700/50">
         <div className="flex items-center gap-1">
-          <Type className={cn('w-3 h-3', hasTitle ? 'text-emerald-400' : 'text-slate-600')} />
-          <FileText className={cn('w-3 h-3', hasContent ? 'text-emerald-400' : 'text-slate-600')} />
-          <Image className={cn('w-3 h-3', hasImage ? 'text-emerald-400' : 'text-slate-600')} />
+          <Type className={cn('w-3 h-3', hasTitle ? 'text-emerald-400' : 'text-slate-400')} />
+          <FileText className={cn('w-3 h-3', hasContent ? 'text-emerald-400' : 'text-slate-400')} />
+          <Image className={cn('w-3 h-3', hasImage ? 'text-emerald-400' : 'text-slate-400')} />
         </div>
 
         {choiceCount > 0 && (
           <div
             className={cn(
-              'flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-mono font-medium',
+              'flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-sm font-mono font-medium',
               choiceCount === 1 ? 'bg-slate-700 text-slate-300' :
               choiceCount === 2 ? 'bg-cyan-900/50 text-cyan-400' :
               'bg-purple-900/50 text-purple-400'

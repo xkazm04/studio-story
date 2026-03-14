@@ -91,6 +91,95 @@ export function registerSceneTools(server: McpServer, config: McpConfig) {
     }
   );
 
+  // ---- Choice & Branch Creation ----
+
+  server.tool(
+    'create_choice',
+    `Create a narrative choice linking one scene to another. The choice appears as a clickable option for the reader.`,
+    {
+      sceneId: z.string().describe('Source scene UUID.'),
+      targetSceneId: z.string().optional().describe('Target scene UUID. Null if unconnected.'),
+      label: z.string().describe('Choice text shown to reader.'),
+      orderIndex: z.number().optional().describe('Position in choice list (0-based).'),
+    },
+    async ({ sceneId, targetSceneId, label, orderIndex }) => {
+      const row: Record<string, unknown> = {
+        scene_id: sceneId,
+        target_scene_id: targetSceneId || null,
+        label,
+        order_index: orderIndex ?? 0,
+      };
+
+      const result = await dbInsert('scene_choices', row);
+      if (!result.success) return errorContent(`Failed to create choice: ${result.error}`);
+
+      return textContent(JSON.stringify(result.data, null, 2));
+    }
+  );
+
+  server.tool(
+    'create_branch',
+    `Create a branching choice point with multiple options. Creates target scenes and linking choices in one operation. Use when user says things like "add a choice where Elena can fight or flee".`,
+    {
+      sceneId: z.string().describe('Source scene UUID to branch from.'),
+      choices: z.array(z.object({
+        label: z.string().describe('Choice text shown to reader.'),
+        sceneName: z.string().describe('Name for the new target scene.'),
+        sceneDescription: z.string().optional().describe('Description for the new scene.'),
+      })).describe('Branches to create. Each entry creates a target scene + linking choice.'),
+    },
+    async ({ sceneId, choices }) => {
+      // Look up source scene to get project_id and act_id
+      const sourceResult = await dbSelectOne('scenes', sceneId);
+      if (!sourceResult.success) return errorContent(`Failed to find source scene: ${sourceResult.error}`);
+
+      const sourceScene = sourceResult.data as Record<string, unknown>;
+      const project_id = sourceScene.project_id;
+      const act_id = sourceScene.act_id;
+
+      const branches: Array<{ sceneId: string; sceneName: string; choiceId: string; label: string }> = [];
+
+      for (let idx = 0; idx < choices.length; idx++) {
+        const choice = choices[idx];
+
+        // Create target scene
+        const sceneRow: Record<string, unknown> = {
+          project_id,
+          act_id,
+          name: choice.sceneName,
+        };
+        if (choice.sceneDescription) sceneRow.description = choice.sceneDescription;
+
+        const sceneResult = await dbInsert('scenes', sceneRow);
+        if (!sceneResult.success) return errorContent(`Failed to create scene "${choice.sceneName}": ${sceneResult.error}`);
+
+        const newScene = sceneResult.data as Record<string, unknown>;
+
+        // Create linking choice
+        const choiceRow: Record<string, unknown> = {
+          scene_id: sceneId,
+          target_scene_id: newScene.id,
+          label: choice.label,
+          order_index: idx,
+        };
+
+        const choiceResult = await dbInsert('scene_choices', choiceRow);
+        if (!choiceResult.success) return errorContent(`Failed to create choice "${choice.label}": ${choiceResult.error}`);
+
+        const newChoice = choiceResult.data as Record<string, unknown>;
+
+        branches.push({
+          sceneId: newScene.id as string,
+          sceneName: choice.sceneName,
+          choiceId: newChoice.id as string,
+          label: choice.label,
+        });
+      }
+
+      return textContent(JSON.stringify({ sourceScene: sceneId, branches }, null, 2));
+    }
+  );
+
   // ---- Relationships ----
 
   server.tool(

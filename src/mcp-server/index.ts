@@ -10,7 +10,7 @@
  *   create_relationship, list_relationships
  *   get_faction, list_factions, update_faction
  *   list_acts, list_beats, get_beat, update_beat, create_beat
- *   get_scene, list_scenes, update_scene
+ *   get_scene, list_scenes, update_scene, create_choice, create_branch
  *   list_traits, create_trait, update_trait
  *
  * Image Tools:
