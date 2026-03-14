@@ -2,16 +2,16 @@
  * Agents — Public API
  */
 
+export { AdvisorClient } from './AdvisorClient';
 export { GeminiLiveClient } from './GeminiLiveClient';
-export { WorkspaceObserver } from './WorkspaceObserver';
-export { ADVISOR_TOOLS, ADVISOR_SYSTEM_INSTRUCTION } from './advisorTools';
+export { AudioIOManager } from './AudioIOManager';
 export { useAdvisor } from './useAdvisor';
+export { useAdvisorVoice } from './useAdvisorVoice';
+export { useMultimodalInput } from './useMultimodalInput';
+export type { InteractionContext, InteractionFragment } from './useMultimodalInput';
 export { useAgentStore } from './store/agentStore';
 export type {
   ConnectionState,
-  AgentConfig,
   AgentMessage,
   AgentSuggestion,
-  WorkspaceStateSnapshot,
-  GeminiFunctionCall,
 } from './types';
