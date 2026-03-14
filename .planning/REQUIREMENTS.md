@@ -12,10 +12,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **JCORE-01**: Component registry where LLM selects from pre-registered panel types with metadata (size, role, complexity, domains)
 - [x] **JCORE-02**: Machine-readable panel manifests declaring capabilities, inputs, outputs, density modes, and data slice schemas
 - [x] **JCORE-03**: Layout composition engine that resolves LLM panel directives into CSS Grid layouts with viewport-aware responsive breakpoints
-- [ ] **JCORE-04**: Bidirectional state synchronization between LLM context and UI state using JSON Patch (RFC 6902) deltas
+- [x] **JCORE-04**: Bidirectional state synchronization between LLM context and UI state using JSON Patch (RFC 6902) deltas
 - [ ] **JCORE-05**: Streaming response rendering — partial LLM results visible immediately, progressive panel population
 - [ ] **JCORE-06**: Chat/conversation interface as always-available fallback when panel composition is insufficient
-- [ ] **JCORE-07**: Undo/redo system for AI-initiated actions — user can revert any LLM-driven UI or content change
+- [x] **JCORE-07**: Undo/redo system for AI-initiated actions — user can revert any LLM-driven UI or content change
 - [x] **JCORE-08**: Multi-density panel system — each panel renders at micro, compact, or full density based on viewport and focus
 - [x] **JCORE-09**: Spatial budget protocol — LLM receives exact pixel dimensions of available slots and reasons about what fits
 - [ ] **JCORE-10**: Tool call visualization — user can see what the LLM is doing, why, and what tools it invoked
@@ -109,10 +109,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JCORE-01 | Phase 1 | Complete |
 | JCORE-02 | Phase 1 | Complete |
 | JCORE-03 | Phase 2 | Complete |
-| JCORE-04 | Phase 3 | Pending |
+| JCORE-04 | Phase 3 | Complete |
 | JCORE-05 | Phase 3 | Pending |
 | JCORE-06 | Phase 4 | Pending |
-| JCORE-07 | Phase 3 | Pending |
+| JCORE-07 | Phase 3 | Complete |
 | JCORE-08 | Phase 1 | Complete |
 | JCORE-09 | Phase 2 | Complete |
 | JCORE-10 | Phase 4 | Pending |

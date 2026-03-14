@@ -85,3 +85,20 @@ export type {
   SlotProps,
   DzinLayoutProps,
 } from './layout';
+
+// State engine
+export { createStateEngine } from './state/engine';
+export { createUndoStack } from './state/undo';
+export { createTaggedPatch, captureUserChange } from './state/patches';
+export { serializeSnapshot } from './state/snapshot';
+export type {
+  PatchOrigin,
+  TaggedOperation,
+  PatchGroup,
+  PanelInstance,
+  StreamingState,
+  WorkspaceState,
+  UndoStack,
+  StateEngine,
+  StateSubscriber,
+} from './state/types';
