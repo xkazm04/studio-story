@@ -5,62 +5,65 @@ import type { StoryHttpClient } from '../http-client.js';
 
 const PANEL_TYPES = [
   'scene-editor', 'scene-metadata', 'dialogue-view', 'scene-list', 'scene-gallery',
-  'character-cards', 'character-detail', 'character-creator',
+  'character-cards', 'character-detail', 'character-creator', 'relationship-map',
   'story-map', 'beats-manager', 'story-evaluator', 'story-graph', 'script-editor', 'theme-manager', 'beats-sidebar',
-  'image-canvas', 'image-generator', 'art-style',
+  'image-canvas', 'image-generator', 'art-style', 'storyboard',
   'voice-manager', 'voice-casting', 'script-dialog', 'narration', 'voice-performance',
   'writing-desk', 'cast-sidebar', 'audio-toolbar', 'advisor',
 ] as const;
 
 const LAYOUT_TYPES = [
-  'single', 'split-2', 'split-3', 'grid-4', 'primary-sidebar', 'triptych', 'studio',
+  'stack', 'single', 'split-2', 'split-3', 'grid-4', 'primary-sidebar', 'triptych', 'studio',
 ] as const;
 
 const ROLE_TYPES = ['primary', 'secondary', 'tertiary', 'sidebar'] as const;
+const DENSITY_TYPES = ['micro', 'compact', 'full'] as const;
 
 // Compact panel manifest descriptions for LLM context
 const PANEL_MANIFESTS = `WORKSPACE PANELS (use compose_workspace to arrange these):
 
 ## SCENE
-- **scene-editor** [primary/wide]: Block-based editor for composing scenes with screenplay formatting. Use when: User wants to write or edit a scene; User wants to compose dialogue. Pairs with: scene-metadata, scene-list, character-cards
-- **scene-metadata** [sidebar/compact]: Displays and edits scene metadata (name, location, mood). Use when: User wants to see scene properties. Pairs with: scene-editor
-- **dialogue-view** [secondary/standard]: Focused dialogue view with character avatars. Use when: User wants to review conversation flow. Pairs with: scene-editor, character-cards
-- **scene-list** [sidebar/compact]: Sidebar list of all scenes with selection and reordering. Use when: User needs to navigate between scenes. Pairs with: scene-editor
-- **scene-gallery** [secondary/compact]: Visual gallery of scene images. Use when: User wants visual overview of scenes.
+- **scene-editor** [primary/wide/high]: Block-based editor for composing scenes with screenplay formatting. Use when: User wants to write or edit a scene; User wants to compose dialogue. Pairs with: scene-metadata, scene-list, character-cards
+- **scene-metadata** [sidebar/compact/low]: Displays and edits scene metadata (name, location, mood). Use when: User wants to see scene properties. Pairs with: scene-editor
+- **dialogue-view** [secondary/standard/medium]: Focused dialogue view with character avatars. Use when: User wants to review conversation flow. Pairs with: scene-editor, character-cards
+- **scene-list** [sidebar/compact/low]: Sidebar list of all scenes with selection and reordering. Use when: User needs to navigate between scenes. Pairs with: scene-editor
+- **scene-gallery** [secondary/compact/low]: Visual gallery of scene images. Use when: User wants visual overview of scenes.
 
 ## CHARACTER
-- **character-cards** [secondary/compact]: Grid of all project characters with avatars. Use when: User wants to browse characters. Pairs with: character-detail
-- **character-detail** [primary/wide]: Full character profile editor (backstory, traits, appearance). Use when: User wants to create or edit a character in depth. Pairs with: character-cards
-- **character-creator** [primary/wide]: Visual character design tool with category-based options. Use when: User wants to visually design a character. Pairs with: character-cards, image-generator
+- **character-cards** [secondary/compact/low]: Grid of all project characters with avatars. Use when: User wants to browse characters. Pairs with: character-detail
+- **character-detail** [primary/wide/high]: Full character profile editor (backstory, traits, appearance). Use when: User wants to create or edit a character in depth. Pairs with: character-cards
+- **character-creator** [primary/wide/high]: Visual character design tool with category-based options. Use when: User wants to visually design a character. Pairs with: character-cards, image-generator
+- **relationship-map** [primary/wide/medium]: Interactive character relationship graph showing connections, factions, and alliances. Use when: User wants to visualize character relationships, factions, or power dynamics. Pairs with: character-detail, character-cards, cast-sidebar
 
 ## STORY
-- **story-map** [secondary/standard]: Visual overview of story structure (acts/scenes). Use when: User wants to see overall story structure. Pairs with: beats-manager
-- **beats-manager** [primary/wide]: Full beat management with creation, editing, ordering. Use when: User wants to plan or edit story beats. Pairs with: story-map, story-evaluator
-- **story-evaluator** [secondary/standard]: Story quality analysis (pacing, themes, arcs). Use when: User wants to evaluate story quality.
-- **story-graph** [primary/wide]: Interactive node graph of story elements via ReactFlow. Use when: User wants to visualize story connections.
-- **script-editor** [primary/wide]: Rich text script editor with TipTap. Use when: User wants to write formatted screenplay content.
-- **theme-manager** [secondary/compact]: Manage story themes and motifs. Use when: User wants to manage story themes.
-- **beats-sidebar** [sidebar/compact]: Compact beat list for quick navigation. Use when: Sidebar companion for scene editing.
+- **story-map** [secondary/standard/medium]: Visual overview of story structure (acts/scenes). Use when: User wants to see overall story structure. Pairs with: beats-manager
+- **beats-manager** [primary/wide/high]: Full beat management with creation, editing, ordering. Use when: User wants to plan or edit story beats. Pairs with: story-map, story-evaluator
+- **story-evaluator** [secondary/standard/medium]: Story quality analysis (pacing, themes, arcs). Use when: User wants to evaluate story quality.
+- **story-graph** [primary/wide/high]: Interactive node graph of story elements via ReactFlow. Use when: User wants to visualize story connections.
+- **script-editor** [primary/wide/high]: Rich text script editor with TipTap. Use when: User wants to write formatted screenplay content.
+- **theme-manager** [secondary/compact/medium]: Manage story themes and motifs. Use when: User wants to manage story themes.
+- **beats-sidebar** [sidebar/compact/low]: Compact beat list for quick navigation. Use when: Sidebar companion for scene editing.
 
 ## IMAGE
-- **art-style** [secondary/standard]: Art style reference panel. Use when: User is setting up visual direction.
-- **image-canvas** [secondary/standard]: Image viewing and comparison canvas. Use when: User wants to review generated images.
-- **image-generator** [primary/wide]: AI image generation interface. Use when: User wants to generate images.
+- **art-style** [secondary/standard/medium]: Art style reference panel. Use when: User is setting up visual direction.
+- **image-canvas** [secondary/standard/medium]: Image viewing and comparison canvas. Use when: User wants to review generated images.
+- **image-generator** [primary/wide/high]: AI image generation interface. Use when: User wants to generate images.
+- **storyboard** [secondary/standard/medium]: Scene-to-canvas storyboard pipeline. Auto-generates image prompts from story scenes with beat-type mood/lighting. Use when: User wants to create a visual storyboard from their story. Pairs with: image-generator, scene-list, art-style
 
 ## VOICE
-- **voice-manager** [primary/standard]: Voice profile management. Use when: User wants to define character voices.
-- **voice-casting** [secondary/standard]: Match characters to voice profiles. Use when: User is assigning voices.
-- **script-dialog** [primary/wide]: Script with voice direction annotations. Use when: User is preparing script for voice recording.
-- **narration** [primary/wide]: Narration editor and player. Use when: User is writing narration.
-- **voice-performance** [sidebar/compact]: Voice delivery parameter controls. Use when: User is fine-tuning voice delivery.
+- **voice-manager** [primary/standard/medium]: Voice profile management. Use when: User wants to define character voices.
+- **voice-casting** [secondary/standard/medium]: Match characters to voice profiles. Use when: User is assigning voices.
+- **script-dialog** [primary/wide/high]: Script with voice direction annotations. Use when: User is preparing script for voice recording.
+- **narration** [primary/wide/high]: Narration editor and player. Use when: User is writing narration.
+- **voice-performance** [sidebar/compact/low]: Voice delivery parameter controls. Use when: User is fine-tuning voice delivery.
 
 ## COMPOSITE
-- **writing-desk** [primary/wide]: Multi-tab workspace (Content, Blocks, Image). Use when: User wants a comprehensive writing environment.
-- **cast-sidebar** [sidebar/compact]: Compact character list for current scene. Use when: Sidebar companion during scene writing.
-- **audio-toolbar** [tertiary/compact]: Audio control toolbar. Use when: Audio production workflow.
+- **writing-desk** [primary/wide/high]: Multi-tab workspace (Content, Blocks, Image). Use when: User wants a comprehensive writing environment.
+- **cast-sidebar** [sidebar/compact/low]: Compact character list for current scene. Use when: Sidebar companion during scene writing.
+- **audio-toolbar** [tertiary/compact/low]: Audio control toolbar. Use when: Audio production workflow.
 
 ## AGENT
-- **advisor** [sidebar/compact]: AI advisor panel with Gemini Live chat, proactive suggestions, and workspace observation. Use when: User wants AI guidance or creative suggestions.
+- **advisor** [sidebar/compact/low]: AI advisor panel with Gemini Live chat, proactive suggestions, and workspace observation. Use when: User wants AI guidance or creative suggestions.
 
 ## LAYOUTS
 Available: single, split-2, split-3, grid-4, primary-sidebar, triptych, studio
@@ -79,9 +82,68 @@ Available: single, split-2, split-3, grid-4, primary-sidebar, triptych, studio
 - Prefer action=show/hide for incremental updates; use replace when user clearly changes task context.
 - Omit layout by default and let runtime auto-resolve; set layout only when specific structure is required.
 - If uncertain between two panels, choose the one explicitly requested by user language.
+- High-complexity panels need wide slots; low-complexity panels are ideal for sidebars.
+
+## DENSITY MODES
+Every panel supports up to 3 density levels: full, compact, micro.
+- **full** (default) — all features visible, needs full slot space
+- **compact** — key info only, reduced chrome, good for sidebars and secondary panels
+- **micro** — badge/chip view (~48px), shows one summary metric, minimal space
+Set density per panel in the panels array. Use compact for sidebars. Use micro for reference-only panels.
+
+## DATA SLICES
+Pass dataSlice per panel to control what data it shows:
+- entityId: specific entity to display (scene ID, character ID)
+- filter: filter expression ("faction:villain", "scene-participants", "incomplete")
+- view: which tab/view to show ("traits", "relationships", "dialogue", "image")
+- highlight: entity IDs to visually highlight
+- sort: sort order ("type", "name", "order")
 
 ## ROLES
-primary (main focus), secondary (supporting), tertiary (minor), sidebar (narrow navigation)`;
+primary (main focus), secondary (supporting), tertiary (minor), sidebar (narrow navigation)
+
+## STORY AUTHORING COMPOSITION PATTERNS
+
+When the user describes a story idea:
+1. First call create_project (or update_project) with premise, genre, setting extracted from their description.
+2. Then compose_workspace with action 'replace', layout 'split-2', panels: [story-map (primary), character-cards (secondary)].
+
+When the user asks about a character (e.g., "show me Elena"):
+- Use action 'show' (smart merge — keeps existing panels, adds new ones alongside).
+- Primary: character-detail with dataSlice { entityId: '<character-id>' }.
+- If the character has many relationships: add relationship-map as secondary.
+- If the character appears in scenes: add scene-list as sidebar.
+
+When the user asks about a scene (e.g., "show the castle scene"):
+- Use action 'replace', layout 'primary-sidebar'.
+- Primary: scene-editor with dataSlice { entityId: '<scene-id>' }.
+- Sidebar: choose contextually — scene-metadata for editing details, character-cards if multiple characters, beats-sidebar for structuring beats.
+
+When the user asks about story structure:
+- Use action 'replace', layout 'split-2' or 'triptych'.
+- Include: story-map (primary), beats-manager (secondary).
+- If evaluating quality: add story-evaluator as a third panel in triptych layout.
+
+When the user asks about relationships or factions:
+- Use action 'show' or 'replace' with relationship-map as primary.
+- If a specific character is the focus, include character-detail as secondary with their entityId.
+
+COMPOSITION ACTIONS:
+- 'show': ADD panels alongside existing ones. Preferred for "also show me X" requests. Keeps user context.
+- 'replace': FULL context switch. Use when user clearly changes topic (e.g., from characters to story structure).
+- 'hide': Remove specific panels by type.
+- 'clear': Remove all panels.
+
+LAYOUT SELECTION:
+- 'primary-sidebar': Scene editing (editor ~70% + contextual sidebar ~30%).
+- 'split-2': Two panels (story-map + beats, or character-detail + relationship-map).
+- 'triptych': Three panels (e.g., story-map + beats-manager + story-evaluator).
+- 'single': Focused distraction-free work (writing or reading).
+- 'grid-4': Overview mode (story-map + character-cards + scene-list + beats-manager).
+
+DENSITY: More panels = more compact. Set density 'compact' for secondary/sidebar panels when 3+ panels are visible. Use 'full' for the primary panel. Use 'micro' for reference-only panels in studio layout.
+
+DATA SLICES: Always pass entityId in dataSlice when opening a specific entity. Example: { entityId: 'scene-uuid' } for scene-editor, { entityId: 'char-uuid' } for character-detail.`;
 
 function textContent(text: string) {
   return { content: [{ type: 'text' as const, text }] };
@@ -101,7 +163,7 @@ export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _c
   // ─── compose_workspace ───────────────────────────
   server.tool(
     'compose_workspace',
-    'Compose workspace panels for the user task. Keep layouts focused, choose role-appropriate panels from manifests, and set layout only when explicit structure is needed.',
+    'Compose workspace panels for the user task. Keep layouts focused, choose role-appropriate panels from manifests, and set layout only when explicit structure is needed. For story authoring: use primary-sidebar for scene editing, split-2 for story structure, show action for smart merge when adding context. See STORY AUTHORING COMPOSITION PATTERNS in get_panel_manifests output.',
     {
       action: z.enum(['show', 'hide', 'replace', 'clear']).describe('show: add panels, hide: remove panels, replace: clear and set new panels, clear: remove all'),
       layout: z.enum(LAYOUT_TYPES).optional().describe('Optional explicit layout. Omit unless a specific arrangement is required.'),
@@ -109,6 +171,14 @@ export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _c
         type: z.enum(PANEL_TYPES).describe('Panel type from manifests'),
         role: z.enum(ROLE_TYPES).optional().describe('Panel role. Use sidebar only for compact/context panels; use one primary panel maximum.'),
         props: z.record(z.string(), z.unknown()).optional().describe('Props to pass to the panel'),
+        density: z.enum(DENSITY_TYPES).optional().describe('Rendering density: full (default), compact (reduced UI), micro (badge only)'),
+        dataSlice: z.object({
+          entityId: z.string().optional().describe('Specific entity ID to display'),
+          filter: z.string().optional().describe('Filter expression (e.g. "faction:villain", "incomplete")'),
+          view: z.string().optional().describe('Tab/view to show (e.g. "traits", "dialogue")'),
+          highlight: z.array(z.string()).optional().describe('Entity IDs to highlight'),
+          sort: z.string().optional().describe('Sort order'),
+        }).optional().describe('Data slice to control what the panel displays'),
       })).max(5).optional().describe('Panels to show/hide (recommended 1-3, hard limit 5)'),
       reasoning: z.string().optional().describe('Brief explanation of why these panels were chosen'),
     },
