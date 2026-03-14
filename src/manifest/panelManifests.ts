@@ -39,8 +39,18 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'CLI generated scene content that needs manual editing',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'FileText',
     suggestedCompanions: ['scene-metadata', 'scene-list', 'character-cards'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full block editor with toolbar, context menu, and all formatting options' },
+      compact: { minWidth: 280, minHeight: 200, description: 'Simplified editor with basic formatting, collapsed toolbar' },
+      micro: { minWidth: 120, minHeight: 48, description: 'Scene name badge with word count indicator' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Edit a specific scene', dataSlice: { entityId: 'scene-123' } },
+      { scenario: 'Edit scene and highlight dialogue', dataSlice: { entityId: 'scene-123', view: 'dialogue' } },
+    ],
   },
   {
     type: 'scene-metadata',
@@ -68,8 +78,18 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Companion panel alongside scene editor for context',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 240 },
+    complexity: 'low',
     icon: 'Info',
     suggestedCompanions: ['scene-editor'],
+    entityHint: { entity: 'scene', defaultView: 'detail-view' },
+    densityModes: {
+      full: { minWidth: 240, minHeight: 200, description: 'All metadata fields editable with labels' },
+      compact: { minWidth: 180, minHeight: 120, description: 'Key fields only: name, location, mood' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Location + mood as inline badges' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show metadata for specific scene', dataSlice: { entityId: 'scene-123' } },
+    ],
   },
   {
     type: 'dialogue-view',
@@ -95,8 +115,19 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants to see character interactions',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 300 },
+    complexity: 'medium',
     icon: 'MessageCircle',
     suggestedCompanions: ['scene-editor', 'character-cards'],
+    entityHint: { entity: 'scene', defaultView: 'conversation-view' },
+    densityModes: {
+      full: { minWidth: 300, minHeight: 250, description: 'Full chat view with avatars, filters, and export' },
+      compact: { minWidth: 200, minHeight: 150, description: 'Condensed dialogue lines without avatars' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Line count badge with last speaker name' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show dialogue for specific scene', dataSlice: { entityId: 'scene-123' } },
+      { scenario: 'Filter to one character dialogue', dataSlice: { entityId: 'scene-123', filter: 'character:char-456' } },
+    ],
   },
   {
     type: 'scene-list',
@@ -125,8 +156,19 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Sidebar companion for scene editor',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 220 },
+    complexity: 'low',
     icon: 'FileText',
     suggestedCompanions: ['scene-editor', 'scene-metadata'],
+    entityHint: { entity: 'scene', defaultView: 'data-list' },
+    densityModes: {
+      full: { minWidth: 220, minHeight: 200, description: 'Full scene list with drag handles, status dots, and add button' },
+      compact: { minWidth: 160, minHeight: 120, description: 'Scene names only with selection highlight' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Scene count badge (e.g. "8 scenes")' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show scenes for specific act', dataSlice: { filter: 'act:act-123' } },
+      { scenario: 'Highlight a specific scene', dataSlice: { highlight: ['scene-456'] } },
+    ],
   },
   {
     type: 'scene-gallery',
@@ -149,8 +191,15 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Companion panel in studio layout',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'compact', minWidth: 400 },
+    complexity: 'low',
     icon: 'Film',
     suggestedCompanions: ['scene-editor', 'image-generator'],
+    entityHint: { entity: 'scene', defaultView: 'card-grid' },
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Image grid with thumbnails, names, and prompts' },
+      compact: { minWidth: 200, minHeight: 150, description: 'Smaller thumbnail grid, no text' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Image count badge with tiny preview' },
+    },
   },
 
   // ─── Character Domain ───────────────────────────────────
@@ -182,8 +231,20 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User is managing the cast of characters',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'compact', minWidth: 280 },
+    complexity: 'low',
     icon: 'Users',
     suggestedCompanions: ['character-detail'],
+    entityHint: { entity: 'character', defaultView: 'card-grid' },
+    densityModes: {
+      full: { minWidth: 280, minHeight: 250, description: 'Character cards with avatars, type badges, faction info, and filters' },
+      compact: { minWidth: 180, minHeight: 120, description: 'Avatar + name list with selection' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Character count badge (e.g. "12 characters")' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show all characters', dataSlice: {} },
+      { scenario: 'Filter by faction', dataSlice: { filter: 'faction:faction-123' } },
+      { scenario: 'Highlight scene participants', dataSlice: { filter: 'scene-participants', highlight: ['char-1', 'char-2'] } },
+    ],
   },
   {
     type: 'character-detail',
@@ -212,8 +273,20 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User is developing character personality',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'User',
     suggestedCompanions: ['character-cards'],
+    entityHint: { entity: 'character', defaultView: 'lazy-container' },
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Complete character profile with all tabs: backstory, traits, appearance, voice, relationships' },
+      compact: { minWidth: 250, minHeight: 180, description: 'Avatar + name + key stats (type, faction) with single active tab' },
+      micro: { minWidth: 120, minHeight: 48, description: 'Avatar thumbnail + character name badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show specific character', dataSlice: { entityId: 'char-123' } },
+      { scenario: 'Show character traits tab', dataSlice: { entityId: 'char-123', view: 'traits' } },
+      { scenario: 'Show character relationships', dataSlice: { entityId: 'char-123', view: 'relationships' } },
+    ],
   },
   {
     type: 'character-creator',
@@ -241,8 +314,52 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants to explore visual options for a character',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 560 },
+    complexity: 'high',
     icon: 'Paintbrush',
     suggestedCompanions: ['character-cards', 'image-generator'],
+    densityModes: {
+      full: { minWidth: 560, minHeight: 400, description: 'Full visual builder with category panels, preview, and generation' },
+      compact: { minWidth: 300, minHeight: 200, description: 'Simplified options with small preview' },
+    },
+  },
+
+  {
+    type: 'relationship-map',
+    label: 'Relationship Map',
+    description: 'Interactive visual graph of character relationships and faction dynamics using ReactFlow. Shows character nodes grouped by faction with colored edges for relationship types. Read-only -- relationships are created via chat.',
+    capabilities: [
+      'Visualize character connections',
+      'Show faction clusters',
+      'Filter by relationship type',
+      'Pan and zoom navigation',
+      'Click to focus character',
+    ],
+    domains: ['character'],
+    inputSchema: {
+      required: [],
+      optional: [
+        { name: 'projectId', type: 'string', description: 'Project to show relationships for.', source: 'store:projectSlice.selectedProject' },
+      ],
+    },
+    outputs: [],
+    useCases: [
+      'User wants to see character connections',
+      'User asks about faction dynamics',
+      'User wants to understand relationship networks',
+    ],
+    layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
+    icon: 'Network',
+    suggestedCompanions: ['character-detail', 'character-cards'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full interactive map with filters, zoom, pan, and stats' },
+      compact: { minWidth: 250, minHeight: 180, description: 'Map without filter bar' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Relationship count badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show project relationships', dataSlice: {} },
+      { scenario: 'Highlight specific character', dataSlice: { entityId: 'char-123' } },
+    ],
   },
 
   // ─── Story Domain ───────────────────────────────────────
@@ -268,8 +385,19 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User needs a high-level overview of their project',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 300 },
+    complexity: 'medium',
     icon: 'Map',
     suggestedCompanions: ['beats-manager', 'story-evaluator'],
+    entityHint: { entity: 'act', defaultView: 'tree-view' },
+    densityModes: {
+      full: { minWidth: 300, minHeight: 250, description: 'Full tree view with act/scene hierarchy, expandable nodes' },
+      compact: { minWidth: 180, minHeight: 120, description: 'Collapsed tree showing acts as rows with scene counts' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Act count + total scene count badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Highlight current act', dataSlice: { highlight: ['act-123'] } },
+      { scenario: 'Show specific act expanded', dataSlice: { entityId: 'act-123' } },
+    ],
   },
   {
     type: 'beats-manager',
@@ -300,8 +428,19 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'CLI generated beats that need organization',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'ListChecks',
     suggestedCompanions: ['story-map', 'story-evaluator'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full beat table with drag-reorder, type badges, descriptions, and completion toggles' },
+      compact: { minWidth: 250, minHeight: 150, description: 'Beat list with type color dots and names only' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Beat progress bar (e.g. "5/12 complete")' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show beats for specific act', dataSlice: { filter: 'act:act-123' } },
+      { scenario: 'Show only incomplete beats', dataSlice: { filter: 'incomplete' } },
+      { scenario: 'Sort by type', dataSlice: { sort: 'type' } },
+    ],
   },
   {
     type: 'story-evaluator',
@@ -326,8 +465,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants AI analysis of their narrative',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 350 },
+    complexity: 'medium',
     icon: 'BarChart3',
     suggestedCompanions: ['story-map', 'beats-manager'],
+    densityModes: {
+      full: { minWidth: 350, minHeight: 250, description: 'Full evaluation dashboard with pacing graph, scores, and suggestions' },
+      compact: { minWidth: 200, minHeight: 120, description: 'Summary scores with color-coded ratings' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Overall score badge (e.g. "B+")' },
+    },
   },
   {
     type: 'story-graph',
@@ -352,8 +497,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants a visual story architecture view',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'GitBranch',
     suggestedCompanions: ['beats-manager', 'story-map'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full interactive ReactFlow graph with zoom, pan, and clickable nodes' },
+      compact: { minWidth: 250, minHeight: 180, description: 'Static minimap view of the graph, no interaction' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Node count badge (e.g. "24 nodes, 38 edges")' },
+    },
   },
   {
     type: 'script-editor',
@@ -380,8 +531,17 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User is writing stage directions and dialogue',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'FileText',
     suggestedCompanions: ['scene-metadata', 'character-cards'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full TipTap editor with formatting toolbar and speaker selection' },
+      compact: { minWidth: 280, minHeight: 180, description: 'Editor with minimal toolbar, no speaker panel' },
+      micro: { minWidth: 120, minHeight: 48, description: 'Word count + scene name badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Edit script for specific scene', dataSlice: { entityId: 'scene-123' } },
+    ],
   },
   {
     type: 'theme-manager',
@@ -405,8 +565,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants thematic consistency analysis',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'compact', minWidth: 280 },
+    complexity: 'medium',
     icon: 'Sparkles',
     suggestedCompanions: ['story-evaluator', 'story-map'],
+    densityModes: {
+      full: { minWidth: 280, minHeight: 200, description: 'Theme list with coverage charts and scene links' },
+      compact: { minWidth: 180, minHeight: 120, description: 'Theme names with color-coded coverage dots' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Theme count badge' },
+    },
   },
   {
     type: 'beats-sidebar',
@@ -431,8 +597,15 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Studio layout beat reference',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 200 },
+    complexity: 'low',
     icon: 'ListChecks',
     suggestedCompanions: ['scene-editor', 'script-editor'],
+    entityHint: { entity: 'beat', defaultView: 'data-list' },
+    densityModes: {
+      full: { minWidth: 200, minHeight: 150, description: 'Scrollable beat list with type badges and selection' },
+      compact: { minWidth: 140, minHeight: 100, description: 'Beat names only, single-line rows' },
+      micro: { minWidth: 60, minHeight: 48, description: 'Beat progress chip (e.g. "3/8")' },
+    },
   },
 
   // ─── Image Domain ───────────────────────────────────────
@@ -457,8 +630,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Companion for image generation workflow',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 300 },
+    complexity: 'medium',
     icon: 'Palette',
     suggestedCompanions: ['image-generator', 'image-canvas'],
+    densityModes: {
+      full: { minWidth: 300, minHeight: 250, description: 'Full style editor with color palette, reference images, and settings' },
+      compact: { minWidth: 180, minHeight: 120, description: 'Style preview thumbnail with palette strip' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Style name badge with color dot' },
+    },
   },
   {
     type: 'image-canvas',
@@ -484,8 +663,18 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Image display alongside generator',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 300 },
+    complexity: 'medium',
     icon: 'Image',
     suggestedCompanions: ['image-generator', 'art-style'],
+    entityHint: { entity: 'scene', defaultView: 'media-viewer' },
+    densityModes: {
+      full: { minWidth: 300, minHeight: 250, description: 'Full image viewer with zoom, pan, comparison mode' },
+      compact: { minWidth: 180, minHeight: 150, description: 'Single image display with basic zoom' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Tiny image thumbnail' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Display specific image', dataSlice: { entityId: 'image-url-here' } },
+    ],
   },
   {
     type: 'image-generator',
@@ -515,8 +704,17 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants to visualize a scene or character',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'high',
     icon: 'ImagePlus',
     suggestedCompanions: ['image-canvas', 'art-style'],
+    densityModes: {
+      full: { minWidth: 400, minHeight: 300, description: 'Full generator with prompt editor, settings, history, and preview' },
+      compact: { minWidth: 250, minHeight: 180, description: 'Prompt input + generate button with small preview' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Generate button badge with last image thumbnail' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Pre-fill prompt for character', dataSlice: { entityId: 'char-123', view: 'character-portrait' } },
+    ],
   },
 
   // ─── Voice Domain ───────────────────────────────────────
@@ -542,8 +740,15 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants to manage audio casting',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'standard', minWidth: 300 },
+    complexity: 'medium',
     icon: 'Mic',
     suggestedCompanions: ['voice-casting', 'character-cards'],
+    entityHint: { entity: 'voice', defaultView: 'lazy-container' },
+    densityModes: {
+      full: { minWidth: 300, minHeight: 250, description: 'Full voice profile list with settings, samples, and TTS config' },
+      compact: { minWidth: 200, minHeight: 120, description: 'Voice name list with character assignment' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Voice count badge' },
+    },
   },
   {
     type: 'voice-casting',
@@ -567,8 +772,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Voice production casting workflow',
     ],
     layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 350 },
+    complexity: 'medium',
     icon: 'Users',
     suggestedCompanions: ['voice-manager', 'character-cards'],
+    densityModes: {
+      full: { minWidth: 350, minHeight: 250, description: 'Casting grid with character-voice pairings, audition buttons' },
+      compact: { minWidth: 220, minHeight: 120, description: 'Simple assignment list: character → voice' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Cast progress badge (e.g. "6/10 cast")' },
+    },
   },
   {
     type: 'script-dialog',
@@ -594,8 +805,17 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Voice production script review',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 450 },
+    complexity: 'high',
     icon: 'BookOpen',
     suggestedCompanions: ['voice-manager', 'voice-performance'],
+    densityModes: {
+      full: { minWidth: 450, minHeight: 300, description: 'Full script view with direction annotations and speaker markers' },
+      compact: { minWidth: 280, minHeight: 180, description: 'Script lines with speaker names, no direction UI' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Line count badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show script for specific scene', dataSlice: { entityId: 'scene-123' } },
+    ],
   },
   {
     type: 'narration',
@@ -619,8 +839,14 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Audio production narration workflow',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 500 },
+    complexity: 'high',
     icon: 'AudioLines',
     suggestedCompanions: ['voice-manager', 'scene-editor'],
+    densityModes: {
+      full: { minWidth: 500, minHeight: 300, description: 'Full narration editor with timing controls, audio preview, beat links' },
+      compact: { minWidth: 300, minHeight: 180, description: 'Text editor with basic playback controls' },
+      micro: { minWidth: 100, minHeight: 48, description: 'Narration status badge with duration' },
+    },
   },
   {
     type: 'voice-performance',
@@ -644,8 +870,15 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Sidebar for voice production refinement',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 260 },
+    complexity: 'low',
     icon: 'SlidersHorizontal',
     suggestedCompanions: ['narration', 'voice-manager'],
+    entityHint: { entity: 'voice', defaultView: 'lazy-container' },
+    densityModes: {
+      full: { minWidth: 260, minHeight: 200, description: 'Full slider controls for pace, emotion, emphasis, and preview' },
+      compact: { minWidth: 160, minHeight: 100, description: 'Key sliders (pace, emotion) only' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Current emotion badge' },
+    },
   },
 
   // ─── Composite/Studio ───────────────────────────────────
@@ -673,8 +906,18 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'All-in-one scene creation workflow',
     ],
     layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 500 },
+    complexity: 'high',
     icon: 'FileText',
     suggestedCompanions: ['scene-list', 'character-cards'],
+    densityModes: {
+      full: { minWidth: 500, minHeight: 300, description: 'Full tabbed workspace with all three tabs and editing tools' },
+      compact: { minWidth: 300, minHeight: 200, description: 'Single active tab with minimal toolbar' },
+      micro: { minWidth: 120, minHeight: 48, description: 'Scene name + word count badge' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Open writing desk for specific scene', dataSlice: { entityId: 'scene-123' } },
+      { scenario: 'Open to image tab', dataSlice: { entityId: 'scene-123', view: 'image' } },
+    ],
   },
   {
     type: 'cast-sidebar',
@@ -699,8 +942,19 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Character selection for dialogue',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 200 },
+    complexity: 'low',
     icon: 'Users',
     suggestedCompanions: ['scene-editor', 'script-dialog'],
+    entityHint: { entity: 'character', defaultView: 'data-list' },
+    densityModes: {
+      full: { minWidth: 200, minHeight: 150, description: 'Character list with avatars, roles, and selection' },
+      compact: { minWidth: 140, minHeight: 100, description: 'Avatar + name rows, compact spacing' },
+      micro: { minWidth: 60, minHeight: 48, description: 'Cast count chip (e.g. "4 cast")' },
+    },
+    dataSliceExamples: [
+      { scenario: 'Show cast for specific scene', dataSlice: { filter: 'scene-participants' } },
+      { scenario: 'Highlight active speaker', dataSlice: { highlight: ['char-123'] } },
+    ],
   },
   {
     type: 'audio-toolbar',
@@ -724,8 +978,47 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'Music and sound management',
     ],
     layout: { defaultRole: 'tertiary', sizeClass: 'compact', minWidth: 400 },
+    complexity: 'low',
     icon: 'AudioLines',
     suggestedCompanions: ['narration', 'voice-manager'],
+    entityHint: { entity: 'voice', defaultView: 'lazy-container' },
+    densityModes: {
+      full: { minWidth: 400, minHeight: 80, description: 'Full transport bar with play/pause/stop, timeline, and volume' },
+      compact: { minWidth: 200, minHeight: 48, description: 'Play/pause + timeline, no volume' },
+      micro: { minWidth: 60, minHeight: 36, description: 'Play/pause button only' },
+    },
+  },
+
+  // ─── Storyboard ─────────────────────────────────────
+  {
+    type: 'storyboard',
+    label: 'Storyboard',
+    description: 'Visual storyboard showing scene images in sequence for visual narrative planning.',
+    capabilities: [
+      'Display scene images in narrative sequence',
+      'Visual story flow overview',
+      'Navigate to scenes from thumbnails',
+    ],
+    domains: ['image', 'scene'],
+    inputSchema: {
+      required: [],
+      optional: [],
+    },
+    outputs: [],
+    useCases: [
+      'User wants a visual narrative overview',
+      'User is planning visual story flow',
+      'Companion for scene editing with visual reference',
+    ],
+    layout: { defaultRole: 'secondary', sizeClass: 'standard', minWidth: 320 },
+    complexity: 'medium',
+    icon: 'Film',
+    suggestedCompanions: ['scene-editor', 'image-generator'],
+    densityModes: {
+      full: { minWidth: 320, minHeight: 250, description: 'Sequential storyboard with thumbnails and scene labels' },
+      compact: { minWidth: 200, minHeight: 120, description: 'Filmstrip view with small thumbnails' },
+      micro: { minWidth: 80, minHeight: 48, description: 'Frame count badge' },
+    },
   },
 
   // ─── Agent ────────────────────────────────────────────
@@ -751,7 +1044,13 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
       'User wants a persistent AI assistant in the sidebar',
     ],
     layout: { defaultRole: 'sidebar', sizeClass: 'compact', minWidth: 280 },
+    complexity: 'low',
     icon: 'Bot',
     suggestedCompanions: ['scene-editor', 'character-detail', 'story-map'],
+    densityModes: {
+      full: { minWidth: 280, minHeight: 200, description: 'Full chat interface with message history and observation toggle' },
+      compact: { minWidth: 180, minHeight: 100, description: 'Last message + input field only' },
+      micro: { minWidth: 60, minHeight: 48, description: 'AI status indicator dot (connected/disconnected)' },
+    },
   },
 ];

@@ -27,8 +27,9 @@ import {
   SlidersHorizontal,
   Film,
   Bot,
+  Network,
 } from 'lucide-react';
-import type { WorkspacePanelType, PanelRole, PanelSizeClass, SkillDomain } from '../types';
+import type { WorkspacePanelType, PanelRole, PanelSizeClass, PanelComplexity, SkillDomain } from '../types';
 import type { PanelManifest } from '@/manifest/types';
 import { getManifest } from '@/manifest';
 
@@ -41,6 +42,7 @@ export interface PanelRegistryEntry {
   sizeClass: PanelSizeClass;
   minWidth?: number;
   domains: SkillDomain[];
+  complexity: PanelComplexity;
   /** Linked manifest for LLM-driven composition */
   manifest?: PanelManifest;
 }
@@ -56,28 +58,31 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['scene'],
+    complexity: 'high',
     manifest: getManifest('scene-editor'),
   },
   'scene-metadata': {
     type: 'scene-metadata',
     label: 'Scene Details',
     icon: Info,
-    importFn: () => import('../panels/scene/SceneMetadataPanel'),
+    importFn: () => import('../panels/primitives/adapters/SceneMetadataAdapter'),
     defaultRole: 'sidebar',
     sizeClass: 'compact',
     minWidth: 240,
     domains: ['scene'],
+    complexity: 'low',
     manifest: getManifest('scene-metadata'),
   },
   'dialogue-view': {
     type: 'dialogue-view',
     label: 'Dialogue',
     icon: MessageCircle,
-    importFn: () => import('../panels/scene/DialogueViewPanel'),
+    importFn: () => import('../panels/primitives/adapters/DialogueViewAdapter'),
     defaultRole: 'secondary',
     sizeClass: 'standard',
     minWidth: 300,
     domains: ['scene'],
+    complexity: 'medium',
     manifest: getManifest('dialogue-view'),
   },
 
@@ -86,22 +91,24 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     type: 'character-cards',
     label: 'Characters',
     icon: Users,
-    importFn: () => import('../panels/character/CharacterCardsPanel'),
+    importFn: () => import('../panels/primitives/adapters/CharacterCardsAdapter'),
     defaultRole: 'secondary',
     sizeClass: 'compact',
     minWidth: 280,
     domains: ['character'],
+    complexity: 'low',
     manifest: getManifest('character-cards'),
   },
   'character-detail': {
     type: 'character-detail',
     label: 'Character Detail',
     icon: User,
-    importFn: () => import('../panels/character/CharacterDetailPanel'),
+    importFn: () => import('../panels/primitives/adapters/CharacterDetailAdapter'),
     defaultRole: 'primary',
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['character'],
+    complexity: 'high',
     manifest: getManifest('character-detail'),
   },
 
@@ -110,11 +117,12 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     type: 'story-map',
     label: 'Story Map',
     icon: Map,
-    importFn: () => import('../panels/story/StoryMapPanel'),
+    importFn: () => import('../panels/primitives/adapters/StoryMapAdapter'),
     defaultRole: 'secondary',
     sizeClass: 'standard',
     minWidth: 300,
     domains: ['story'],
+    complexity: 'medium',
     manifest: getManifest('story-map'),
   },
   'beats-manager': {
@@ -126,6 +134,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['story'],
+    complexity: 'high',
     manifest: getManifest('beats-manager'),
   },
   'story-evaluator': {
@@ -137,6 +146,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'standard',
     minWidth: 350,
     domains: ['story'],
+    complexity: 'medium',
     manifest: getManifest('story-evaluator'),
   },
   'story-graph': {
@@ -148,6 +158,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['story'],
+    complexity: 'high',
     manifest: getManifest('story-graph'),
   },
   'script-editor': {
@@ -159,6 +170,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['scene', 'story'],
+    complexity: 'high',
     manifest: getManifest('script-editor'),
   },
   'theme-manager': {
@@ -170,6 +182,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'compact',
     minWidth: 280,
     domains: ['story'],
+    complexity: 'medium',
     manifest: getManifest('theme-manager'),
   },
 
@@ -183,17 +196,19 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'standard',
     minWidth: 300,
     domains: ['image'],
+    complexity: 'medium',
     manifest: getManifest('art-style'),
   },
   'image-canvas': {
     type: 'image-canvas',
     label: 'Image Canvas',
     icon: Image,
-    importFn: () => import('../panels/image/ImageCanvasPanel'),
+    importFn: () => import('../panels/primitives/adapters/ImageCanvasAdapter'),
     defaultRole: 'secondary',
     sizeClass: 'standard',
     minWidth: 300,
     domains: ['image'],
+    complexity: 'medium',
     manifest: getManifest('image-canvas'),
   },
   'image-generator': {
@@ -205,7 +220,19 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 400,
     domains: ['image'],
+    complexity: 'high',
     manifest: getManifest('image-generator'),
+  },
+  'storyboard': {
+    type: 'storyboard',
+    label: 'Storyboard',
+    icon: Film,
+    importFn: () => import('../panels/image/StoryboardPanel'),
+    defaultRole: 'secondary',
+    sizeClass: 'standard',
+    minWidth: 320,
+    domains: ['image', 'scene'],
+    complexity: 'medium',
   },
 
   // ─── Voice ───────────────────────────────────────
@@ -213,11 +240,12 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     type: 'voice-manager',
     label: 'Voices',
     icon: Mic,
-    importFn: () => import('../panels/audio/VoiceManagerPanel'),
+    importFn: () => import('../panels/primitives/adapters/VoiceManagerAdapter'),
     defaultRole: 'primary',
     sizeClass: 'standard',
     minWidth: 300,
     domains: ['utility'],
+    complexity: 'medium',
     manifest: getManifest('voice-manager'),
   },
   'voice-casting': {
@@ -229,6 +257,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'standard',
     minWidth: 350,
     domains: ['utility'],
+    complexity: 'medium',
     manifest: getManifest('voice-casting'),
   },
   'script-dialog': {
@@ -240,6 +269,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 450,
     domains: ['utility', 'scene'],
+    complexity: 'high',
     manifest: getManifest('script-dialog'),
   },
   'narration': {
@@ -251,17 +281,19 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 500,
     domains: ['utility'],
+    complexity: 'high',
     manifest: getManifest('narration'),
   },
   'voice-performance': {
     type: 'voice-performance',
     label: 'Voice Performance',
     icon: SlidersHorizontal,
-    importFn: () => import('../panels/audio/VoicePerformancePanel'),
+    importFn: () => import('../panels/primitives/adapters/VoicePerformanceAdapter'),
     defaultRole: 'sidebar',
     sizeClass: 'compact',
     minWidth: 260,
     domains: ['utility'],
+    complexity: 'low',
     manifest: getManifest('voice-performance'),
   },
 
@@ -270,11 +302,12 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     type: 'scene-list',
     label: 'Scene List',
     icon: FileText,
-    importFn: () => import('../panels/scene/SceneListPanel'),
+    importFn: () => import('../panels/primitives/adapters/SceneListAdapter'),
     defaultRole: 'sidebar',
     sizeClass: 'compact',
     minWidth: 220,
     domains: ['scene'],
+    complexity: 'low',
     manifest: getManifest('scene-list'),
   },
   'writing-desk': {
@@ -286,6 +319,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 500,
     domains: ['scene', 'story'],
+    complexity: 'high',
     manifest: getManifest('writing-desk'),
   },
   'character-creator': {
@@ -297,6 +331,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'wide',
     minWidth: 560,
     domains: ['character'],
+    complexity: 'high',
     manifest: getManifest('character-creator'),
   },
 
@@ -305,44 +340,60 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     type: 'beats-sidebar',
     label: 'Beats',
     icon: ListChecks,
-    importFn: () => import('../panels/story/BeatsSidebarPanel'),
+    importFn: () => import('../panels/primitives/adapters/BeatsSidebarAdapter'),
     defaultRole: 'sidebar',
     sizeClass: 'compact',
     minWidth: 200,
     domains: ['story', 'scene'],
+    complexity: 'low',
     manifest: getManifest('beats-sidebar'),
   },
   'cast-sidebar': {
     type: 'cast-sidebar',
     label: 'Cast',
     icon: Users,
-    importFn: () => import('../panels/character/CastSidebarPanel'),
+    importFn: () => import('../panels/primitives/adapters/CastSidebarAdapter'),
     defaultRole: 'sidebar',
     sizeClass: 'compact',
     minWidth: 200,
     domains: ['character', 'scene'],
+    complexity: 'low',
     manifest: getManifest('cast-sidebar'),
+  },
+  'relationship-map': {
+    type: 'relationship-map',
+    label: 'Relationship Map',
+    icon: Network,
+    importFn: () => import('../panels/character/RelationshipMapPanel'),
+    defaultRole: 'primary',
+    sizeClass: 'wide',
+    minWidth: 400,
+    domains: ['character'],
+    complexity: 'high',
+    manifest: getManifest('relationship-map'),
   },
   'scene-gallery': {
     type: 'scene-gallery',
     label: 'Scene Gallery',
     icon: Film,
-    importFn: () => import('../panels/scene/SceneGalleryPanel'),
+    importFn: () => import('../panels/primitives/adapters/SceneGalleryAdapter'),
     defaultRole: 'secondary',
     sizeClass: 'compact',
     minWidth: 400,
     domains: ['scene'],
+    complexity: 'low',
     manifest: getManifest('scene-gallery'),
   },
   'audio-toolbar': {
     type: 'audio-toolbar',
     label: 'Audio',
     icon: AudioLines,
-    importFn: () => import('../panels/audio/AudioToolbarPanel'),
+    importFn: () => import('../panels/primitives/adapters/AudioToolbarAdapter'),
     defaultRole: 'tertiary',
     sizeClass: 'compact',
     minWidth: 400,
     domains: ['sound'],
+    complexity: 'low',
     manifest: getManifest('audio-toolbar'),
   },
 
@@ -356,6 +407,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     sizeClass: 'compact',
     minWidth: 280,
     domains: [],
+    complexity: 'low',
     manifest: getManifest('advisor'),
   },
 
@@ -368,6 +420,7 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     defaultRole: 'primary',
     sizeClass: 'wide',
     domains: [],
+    complexity: 'low',
   },
 };
 
