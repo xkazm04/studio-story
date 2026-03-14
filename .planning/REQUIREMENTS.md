@@ -16,7 +16,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **JCORE-05**: Streaming response rendering — partial LLM results visible immediately, progressive panel population
 - [ ] **JCORE-06**: Chat/conversation interface as always-available fallback when panel composition is insufficient
 - [ ] **JCORE-07**: Undo/redo system for AI-initiated actions — user can revert any LLM-driven UI or content change
-- [ ] **JCORE-08**: Multi-density panel system — each panel renders at micro, compact, or full density based on viewport and focus
+- [x] **JCORE-08**: Multi-density panel system — each panel renders at micro, compact, or full density based on viewport and focus
 - [ ] **JCORE-09**: Spatial budget protocol — LLM receives exact pixel dimensions of available slots and reasons about what fits
 - [ ] **JCORE-10**: Tool call visualization — user can see what the LLM is doing, why, and what tools it invoked
 - [x] **JCORE-11**: Jinn type system and protocol definitions separated from any domain-specific code (enforced import boundaries)
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JCORE-05 | Phase 3 | Pending |
 | JCORE-06 | Phase 4 | Pending |
 | JCORE-07 | Phase 3 | Pending |
-| JCORE-08 | Phase 1 | Pending |
+| JCORE-08 | Phase 1 | Complete |
 | JCORE-09 | Phase 2 | Pending |
 | JCORE-10 | Phase 4 | Pending |
 | JCORE-11 | Phase 1 | Complete |
