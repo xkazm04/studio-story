@@ -31,3 +31,10 @@ export type {
   SerializedPanel,
   SerializedRegistry,
 } from './registry';
+
+// Demo panels
+export { DataListPanel, DetailPanel, MediaGridPanel } from './demo';
+export { dataListDefinition, detailDefinition, mediaGridDefinition } from './demo';
+export { MOCK_LIST_ITEMS, MOCK_DETAIL, MOCK_MEDIA_ITEMS } from './demo';
+export type { DataListPanelProps, DetailPanelProps, MediaGridPanelProps } from './demo';
+export type { ListItem, DetailEntity, DetailSection, MediaItem } from './demo';
