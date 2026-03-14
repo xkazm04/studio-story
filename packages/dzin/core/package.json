@@ -17,5 +17,8 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "lint": "echo 'no lint configured yet'"
+  },
+  "dependencies": {
+    "fast-json-patch": "^3.1.1"
   }
 }
