@@ -179,13 +179,13 @@ Plans:
 **Requirements**: WRITE-01, WRITE-02, VOICE-01, VOICE-02
 **Success Criteria** (what must be TRUE):
   1. User can highlight text and ask the AI to continue, rewrite, or expand it while maintaining the narrative voice established in the story
-  2. Fiction-specific writing tools are available: show-don't-tell conversion, sensory rewrite, emotion amplification, cliche detection -- each transforming selected text
+  2. Fiction-specific writing tools are available: show-don't-tell conversion and sensory rewrite -- each transforming selected text with one-click inline diff
   3. User can generate voice narration for any scene, with different character-appropriate voices for each speaking character
   4. User can write dialogue, assign character voices, and generate a complete multi-voice audio drama with narration for a scene or act
-**Plans**: 4 plans
+**Plans**: 1/4 plans complete
 
 Plans:
-- [ ] 10-01-PLAN.md -- AI writing API route, story context assembly, writing prompts (WRITE-01, WRITE-02)
+- [x] 10-01-PLAN.md -- AI writing API route, story context assembly, writing prompts (WRITE-01, WRITE-02)
 - [ ] 10-02-PLAN.md -- ElevenLabs TTS/clone/voices API routes, screenplay parser, audio stitcher (VOICE-01, VOICE-02)
 - [ ] 10-03-PLAN.md -- TipTap inline diff extension, AI writing toolbar, SceneEditor integration (WRITE-01, WRITE-02)
 - [ ] 10-04-PLAN.md -- Multi-voice narration pipeline wiring, MP3 export, MCP voice tools (VOICE-01, VOICE-02)
@@ -240,6 +240,6 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 7. Story Data and Authoring | 3/4 | In Progress|  |
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 1/3 | In Progress|  |
-| 10. Writing Tools and Voice | 0/4 | Not started | - |
+| 10. Writing Tools and Voice | 1/4 | In Progress | - |
 | 11. Multimodal Input | 0/3 | Not started | - |
 | 12. Export and Package Boundary | 0/4 | Not started | - |

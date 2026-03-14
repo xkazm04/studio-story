@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-03-14T20:57:38.320Z"
-last_activity: 2026-03-14 -- Completed 08-02-PLAN.md (Reader view, MCP branch tools, graph validation)
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-14T22:25:04Z"
+last_activity: 2026-03-14 -- Completed 10-01-PLAN.md (AI writing tools backend)
 progress:
   total_phases: 12
   completed_phases: 9
-  total_plans: 28
-  completed_plans: 28
-  percent: 100
+  total_plans: 32
+  completed_plans: 29
+  percent: 91
 ---
 
 ---
@@ -52,16 +52,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 8 - Story Intelligence & Branching (2 of 3 plans complete)
+**Current focus:** Phase 10 - Writing Tools and Voice (1 of 4 plans complete)
 
 ## Current Position
 
-Phase: 8 of 12 (Story Intelligence & Branching)
-Plan: 2 of 3 in current phase (08-02-PLAN.md complete)
+Phase: 10 of 12 (Writing Tools and Voice)
+Plan: 1 of 4 in current phase (10-01-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 08-02-PLAN.md (Reader view, MCP branch tools, graph validation)
+Last activity: 2026-03-14 -- Completed 10-01-PLAN.md (AI writing tools backend)
 
-Progress: [████████████████████████] 24/25 plans
+Progress: [████████████████████████████] 29/32 plans
 
 ## Performance Metrics
 
@@ -111,6 +111,7 @@ Progress: [███████████████████████
 | Phase 09 P01 | 4 | 2 tasks | 6 files |
 | Phase 09 P02 | 4 | 2 tasks | 5 files |
 | Phase 09 P03 | 3 | 2 tasks | 4 files |
+| Phase 10 P01 | 8 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -210,6 +211,11 @@ Recent decisions affecting current work:
 - [Phase 09]: MCP tool trio pattern (generate/check/save) for async generation workflows
 - [Phase 09]: Visual pipeline composition patterns follow same appendix pattern established in 07-04 and 08-03
 - [Phase 09]: Character reference setup guidance teaches advisor to check avatar_url and troubleshoot visual consistency
+- [10-01]: Anthropic SDK via @anthropic-ai/sdk with cached client pattern (same as Gemini cached client)
+- [10-01]: Validation before client creation so 400s return without API key requirement
+- [10-01]: Token budget at 80K tokens, truncating oldest prior scenes first while preserving characters/premise/current scene
+- [10-01]: vi.hoisted() for mock functions referenced in vi.mock factories (Vitest 4 hoisting)
+- [10-01]: Vitest config updated with @/ path alias for proper module resolution in tests
 
 ### Pending Todos
 
@@ -222,6 +228,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T20:57:38.317Z
-Stopped at: Completed 09-03-PLAN.md
-Resume file: None
+Last session: 2026-03-14T22:25:04Z
+Stopped at: Completed 10-01-PLAN.md
+Resume file: .planning/phases/10-writing-tools-and-voice/10-02-PLAN.md

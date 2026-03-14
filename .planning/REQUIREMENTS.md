@@ -52,8 +52,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Story Writing
 
-- [ ] **WRITE-01**: AI text generation — user can continue, rewrite, and expand story text with Claude maintaining narrative voice
-- [ ] **WRITE-02**: Fiction-specific writing tools — show-don't-tell conversion, sensory rewrite, emotion amplification, cliche detection
+- [x] **WRITE-01**: AI text generation — user can continue, rewrite, and expand story text with Claude maintaining narrative voice
+- [x] **WRITE-02**: Fiction-specific writing tools — show-don't-tell conversion, sensory rewrite (emotion amplification and cliche detection deferred to future iteration per user decision)
 
 ### Story Voice
 
@@ -134,8 +134,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VISUAL-01 | Phase 9 | Complete |
 | VISUAL-02 | Phase 9 | Complete |
 | VISUAL-03 | Phase 9 | Complete |
-| WRITE-01 | Phase 10 | Pending |
-| WRITE-02 | Phase 10 | Pending |
+| WRITE-01 | Phase 10 | Complete |
+| WRITE-02 | Phase 10 | Complete |
 | VOICE-01 | Phase 10 | Pending |
 | VOICE-02 | Phase 10 | Pending |
 | EXPORT-01 | Phase 12 | Pending |
