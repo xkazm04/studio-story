@@ -150,7 +150,7 @@ Plans:
   2. User can create branching story paths where scenes lead to multiple possible next scenes based on reader choices
   3. A scene graph visualization shows all story paths, branches, and convergence points, with unreachable or dead-end paths highlighted
   4. User can simulate walking through a branching story to verify all paths make narrative sense
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 08-01-PLAN.md -- Scene choices API routes, SceneChoice condition field, StoryAnalyzer relationship-tension rules, narrative-suggestions panel registration
@@ -239,7 +239,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 5. Jinn Intent and Director | 3/3 | Complete | 2026-03-14 |
 | 6. Jinn LLM Integration | 0/3 | Not started | - |
 | 7. Story Data and Authoring | 3/4 | In Progress|  |
-| 8. Story Intelligence and Branching | 0/3 | Not started | - |
+| 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 0/4 | Not started | - |
 | 10. Writing Tools and Voice | 0/4 | Not started | - |
 | 11. Multimodal Input | 0/3 | Not started | - |

@@ -36,16 +36,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 7 - Story Data & Authoring (4 of 4 plans complete)
+**Current focus:** Phase 8 - Story Intelligence & Branching (2 of 3 plans complete)
 
 ## Current Position
 
-Phase: 7 of 12 (Story Data & Authoring) -- COMPLETE
-Plan: 4 of 4 in current phase (07-04-PLAN.md complete)
+Phase: 8 of 12 (Story Intelligence & Branching)
+Plan: 2 of 3 in current phase (08-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 07-04-PLAN.md (LLM composition wiring for story authoring)
+Last activity: 2026-03-14 -- Completed 08-02-PLAN.md (Reader view, MCP branch tools, graph validation)
 
-Progress: [██████████] 22/22 plans
+Progress: [████████████████████████] 24/25 plans
 
 ## Performance Metrics
 
@@ -90,6 +90,7 @@ Progress: [██████████] 22/22 plans
 | Phase 07 P03 | 5 | 2 tasks | 5 files |
 | Phase 07 P04 | 4 | 2 tasks | 3 files |
 | Phase 08 P01 | 5 | 2 tasks | 11 files |
+| Phase 08 P02 | 6 | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -176,6 +177,9 @@ Recent decisions affecting current work:
 - [07-04]: relationship-map added to PANEL_TYPES (was missing despite existing in panel registry)
 - [07-04]: Advisor route system instruction updated alongside advisorTools.ts for consistent dual-layer awareness
 - [Phase 08]: TENSION_TYPES set for relationship analysis; triptych layout for confrontation insights
+- [08-02]: PanelFrame uses component ref (BookOpen) not JSX element for icon prop
+- [08-02]: Variable persistence via raw localStorage keyed by project ID for simplicity
+- [08-02]: create_branch reads source scene to inherit project_id and act_id
 
 ### Pending Todos
 
@@ -188,6 +192,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T19:30:05.161Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-03-14T19:37:50Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
