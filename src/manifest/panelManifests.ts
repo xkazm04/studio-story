@@ -1054,6 +1054,46 @@ export const PANEL_MANIFESTS: PanelManifest[] = [
     },
   },
 
+  // ─── Reader View ─────────────────────────────────
+  {
+    type: 'reader-view',
+    label: 'Reader View',
+    description: 'Interactive story simulation panel for walking through branching narratives as a reader. Shows scene text with clickable choices, evaluates conditions, tracks variables with localStorage persistence, and supports full path rewind.',
+    capabilities: [
+      'Branching story simulation from reader perspective',
+      'Clickable choice buttons with condition evaluation',
+      'Variable state tracking with localStorage persistence',
+      'Path history with rewind to any previous choice point',
+      'Dead-end and ending detection',
+    ],
+    domains: ['story'],
+    inputSchema: {
+      required: [],
+      optional: [
+        { name: 'projectId', type: 'string', description: 'Project to simulate. Falls back to store selection.', source: 'store:projectSlice.selectedProject' },
+      ],
+    },
+    outputs: [
+      { name: 'currentSceneId', type: 'string', description: 'Currently displayed scene in simulation' },
+      { name: 'pathHistory', type: 'PathStep[]', description: 'Full path history of the simulation run' },
+    ],
+    useCases: [
+      'User wants to experience their branching story as a reader',
+      'User wants to test all story paths and choices',
+      'User wants to verify branching logic and conditions work correctly',
+      'User wants to playtest story pacing and flow',
+    ],
+    layout: { defaultRole: 'primary', sizeClass: 'wide', minWidth: 400 },
+    complexity: 'medium',
+    icon: 'BookOpen',
+    suggestedCompanions: ['story-graph', 'beats-sidebar'],
+    densityModes: {
+      full: { minWidth: 500, minHeight: 400, description: 'Full reading experience with scene text, choices, variable sidebar, and path history' },
+      compact: { minWidth: 300, minHeight: 250, description: 'Scene text with choice buttons, no variable sidebar' },
+      micro: { minWidth: 80, minHeight: 40, description: 'Current scene name badge' },
+    },
+  },
+
   // ─── Narrative Intelligence ─────────────────────
   {
     type: 'narrative-suggestions',

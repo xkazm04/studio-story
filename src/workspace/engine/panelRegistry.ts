@@ -235,6 +235,20 @@ export const PANEL_REGISTRY: Record<WorkspacePanelType, PanelRegistryEntry> = {
     complexity: 'medium',
   },
 
+  // ─── Reader ─────────────────────────────────────
+  'reader-view': {
+    type: 'reader-view',
+    label: 'Reader View',
+    icon: BookOpen,
+    importFn: () => import('../panels/story/ReaderViewPanel'),
+    defaultRole: 'primary',
+    sizeClass: 'wide',
+    minWidth: 400,
+    domains: ['story'],
+    complexity: 'medium',
+    manifest: getManifest('reader-view'),
+  },
+
   // ─── Narrative Intelligence ─────────────────────
   'narrative-suggestions': {
     type: 'narrative-suggestions',
