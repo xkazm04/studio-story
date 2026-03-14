@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 10-03-PLAN.md
-last_updated: "2026-03-14T22:46:53Z"
-last_activity: 2026-03-14 -- Completed 10-03-PLAN.md (AI writing editor UI with inline diff)
+stopped_at: Completed 10-04-PLAN.md
+last_updated: "2026-03-15T00:00:30Z"
+last_activity: 2026-03-15 -- Completed 10-04-PLAN.md (Voice/narration pipeline wiring)
 progress:
   total_phases: 12
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 32
-  completed_plans: 31
-  percent: 97
+  completed_plans: 32
+  percent: 100
 ---
 
 ---
@@ -52,16 +52,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 10 - Writing Tools and Voice (2 of 4 plans complete)
+**Current focus:** Phase 10 - Writing Tools and Voice (4 of 4 plans complete)
 
 ## Current Position
 
-Phase: 10 of 12 (Writing Tools and Voice)
-Plan: 3 of 4 in current phase (10-03-PLAN.md complete)
+Phase: 10 of 12 (Writing Tools and Voice) -- COMPLETE
+Plan: 4 of 4 in current phase (10-04-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-14 -- Completed 10-03-PLAN.md (AI writing editor UI with inline diff)
+Last activity: 2026-03-15 -- Completed 10-04-PLAN.md (Voice/narration pipeline wiring)
 
-Progress: [██████████████████████████████] 31/32 plans
+Progress: [██████████████████████████████] 32/32 plans
 
 ## Performance Metrics
 
@@ -114,6 +114,7 @@ Progress: [███████████████████████
 | Phase 10 P01 | 8 | 2 tasks | 7 files |
 | Phase 10 P02 | 6 | 2 tasks | 10 files |
 | Phase 10 P03 | 8 | 2 tasks | 6 files |
+| Phase 10 P04 | 9 | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -225,6 +226,9 @@ Recent decisions affecting current work:
 - [10-03]: Widget decorations for deletions (zero-width position with strikethrough span), inline decorations for additions
 - [10-03]: BubbleMenu from @tiptap/react/menus with Floating UI options (TipTap v3 replaced Tippy with Floating UI)
 - [10-03]: Integration into SceneEditorPanel.tsx (workspace panel with TipTap) rather than SceneEditor.tsx (textarea-based feature component)
+- [10-04]: takesCount=2 as default for narration generation (2 takes per segment for audition)
+- [10-04]: getDb() added to db.ts for direct Supabase access in voice tools (complex queries need raw client)
+- [10-04]: NARRATION_COMPOSITION_PATTERNS as separate export for voice workflow layouts
 
 ### Pending Todos
 
@@ -237,6 +241,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:46:53Z
-Stopped at: Completed 10-03-PLAN.md
-Resume file: .planning/phases/10-writing-tools-and-voice/10-04-PLAN.md
+Last session: 2026-03-15T00:00:30Z
+Stopped at: Completed 10-04-PLAN.md
+Resume file: Phase 10 complete. Ready for Phase 11.
