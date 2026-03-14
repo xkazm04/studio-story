@@ -13,7 +13,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **JCORE-02**: Machine-readable panel manifests declaring capabilities, inputs, outputs, density modes, and data slice schemas
 - [x] **JCORE-03**: Layout composition engine that resolves LLM panel directives into CSS Grid layouts with viewport-aware responsive breakpoints
 - [x] **JCORE-04**: Bidirectional state synchronization between LLM context and UI state using JSON Patch (RFC 6902) deltas
-- [ ] **JCORE-05**: Streaming response rendering — partial LLM results visible immediately, progressive panel population
+- [x] **JCORE-05**: Streaming response rendering — partial LLM results visible immediately, progressive panel population
 - [ ] **JCORE-06**: Chat/conversation interface as always-available fallback when panel composition is insufficient
 - [x] **JCORE-07**: Undo/redo system for AI-initiated actions — user can revert any LLM-driven UI or content change
 - [x] **JCORE-08**: Multi-density panel system — each panel renders at micro, compact, or full density based on viewport and focus
@@ -110,7 +110,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JCORE-02 | Phase 1 | Complete |
 | JCORE-03 | Phase 2 | Complete |
 | JCORE-04 | Phase 3 | Complete |
-| JCORE-05 | Phase 3 | Pending |
+| JCORE-05 | Phase 3 | Complete |
 | JCORE-06 | Phase 4 | Pending |
 | JCORE-07 | Phase 3 | Complete |
 | JCORE-08 | Phase 1 | Complete |
