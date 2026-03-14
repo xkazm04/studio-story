@@ -49,6 +49,9 @@ export interface Database {
           user_id: string
           name: string
           description: string | null
+          premise: string | null
+          genre: string | null
+          setting: string | null
           created_at: string
           updated_at: string
         }
@@ -57,6 +60,9 @@ export interface Database {
           user_id: string
           name: string
           description?: string | null
+          premise?: string | null
+          genre?: string | null
+          setting?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -65,6 +71,9 @@ export interface Database {
           user_id?: string
           name?: string
           description?: string | null
+          premise?: string | null
+          genre?: string | null
+          setting?: string | null
           created_at?: string
           updated_at?: string
         }
