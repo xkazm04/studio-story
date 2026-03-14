@@ -48,7 +48,7 @@ const PANEL_MANIFESTS = `WORKSPACE PANELS (use compose_workspace to arrange thes
 ## IMAGE
 - **art-style** [secondary/standard/medium]: Art style reference panel. Use when: User is setting up visual direction.
 - **image-canvas** [secondary/standard/medium]: Image viewing and comparison canvas. Use when: User wants to review generated images.
-- **image-generator** [primary/wide/high]: AI image generation interface. Use when: User wants to generate images.
+- **image-generator** [primary/wide/high]: AI image generation interface. Supports scene illustration mode: auto-drafts prompts from scene context, generates 4 alternatives with character and style consistency, select and confirm flow. Use when: User wants to generate images or illustrate a scene.
 - **storyboard** [secondary/standard/medium]: Scene-to-canvas storyboard pipeline. Auto-generates image prompts from story scenes with beat-type mood/lighting. Use when: User wants to create a visual storyboard from their story. Pairs with: image-generator, scene-list, art-style
 
 ## VOICE
@@ -174,7 +174,38 @@ When user wants to review story structure with suggestions:
 Layout selection rules:
 - narrative-suggestions is always sidebar role (sizeClass sm)
 - reader-view is always primary role (sizeClass lg)
-- story-graph pairs well with both narrative-suggestions and reader-view`;
+- story-graph pairs well with both narrative-suggestions and reader-view
+
+## VISUAL PIPELINE COMPOSITION PATTERNS
+
+### Scene Illustration
+When user wants to illustrate a scene or generate scene images:
+- Layout: split-2 (scene-editor | image-generator)
+- image-generator: role primary, pass sceneId in dataSlice
+- scene-editor: role secondary, shows the scene being illustrated
+- Example: "illustrate this scene", "generate an image for the castle scene"
+
+### Art Style Definition
+When user wants to define or adjust the project's visual style:
+- Layout: primary-sidebar (art-style | scene-gallery)
+- art-style: role primary, shows style editor with reference upload
+- scene-gallery: role sidebar, shows existing scene images for comparison
+- Example: "set up the art style", "change the visual style"
+
+### Visual Review
+When user wants to review all scene illustrations:
+- Layout: split-2 (scene-gallery | image-canvas)
+- scene-gallery: role primary, shows all illustrated scenes
+- image-canvas: role secondary, shows selected image detail
+- Example: "show me all scene illustrations", "review the images"
+
+### Illustration with Character Reference
+When illustrating scenes with specific characters:
+- Layout: triptych (scene-editor | image-generator | character-detail)
+- image-generator: role primary with sceneId
+- scene-editor: role secondary
+- character-detail: role sidebar, shows character whose reference is being used
+- Example: "illustrate the scene with Elena's reference", "generate with character consistency"`;
 
 function textContent(text: string) {
   return { content: [{ type: 'text' as const, text }] };
