@@ -13,7 +13,7 @@ This roadmap builds the Jinn engine from the ground up as a separable LLM-orches
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Jinn Package Scaffold and Component Catalog** - Separable package structure with component registry, panel manifests, and multi-density system (completed 2026-03-14)
-- [ ] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts
+- [x] **Phase 2: Jinn Layout Engine** - Viewport-aware CSS Grid composition that resolves panel directives into responsive layouts (completed 2026-03-14)
 - [ ] **Phase 3: Jinn State and Streaming** - Bidirectional LLM-UI state synchronization with undo/redo and streaming response rendering
 - [ ] **Phase 4: Jinn Conversation Shell** - Chat interface and tool call visualization as the user-facing LLM interaction layer
 - [ ] **Phase 5: Jinn Intent and Director** - Intent bus normalizing all inputs into typed objects with tiered local/LLM resolution
@@ -54,7 +54,7 @@ Plans:
   2. The engine computes pixel-level spatial budgets for each slot and assigns panel density based on available space
   3. Layouts adapt to viewport resize -- panels reflow or change density without losing content
   4. At least 5 layout templates (single, split-2, split-3, grid-4, primary-sidebar) are available and the engine selects the best fit for the requested panel count and roles
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 02-01-PLAN.md -- Layout types, 8 CSS Grid templates, Hungarian algorithm, template scoring, panel-to-slot assignment
@@ -238,7 +238,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Jinn Package Scaffold and Component Catalog | 4/4 | Complete   | 2026-03-14 |
-| 2. Jinn Layout Engine | 2/3 | In Progress|  |
+| 2. Jinn Layout Engine | 3/3 | Complete   | 2026-03-14 |
 | 3. Jinn State and Streaming | 0/4 | Not started | - |
 | 4. Jinn Conversation Shell | 0/3 | Not started | - |
 | 5. Jinn Intent and Director | 0/4 | Not started | - |
