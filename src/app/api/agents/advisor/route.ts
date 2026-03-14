@@ -96,7 +96,7 @@ const ADVISOR_FUNCTION_DECLARATIONS: FunctionDeclaration[] = [
         },
         panels: {
           type: Type.STRING,
-          description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"..."}}]. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, writing-desk, cast-sidebar, storyboard',
+          description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"..."}}]. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, writing-desk, cast-sidebar, storyboard, narrative-suggestions, reader-view',
         },
         reasoning: {
           type: Type.STRING,
@@ -198,6 +198,14 @@ const SYSTEM_INSTRUCTION = `You are the Workspace Advisor for Studio Story. You 
 - create_faction / update_faction → show story-map (secondary)
 - create_relationship → show relationship-map (primary) + character-detail (secondary)
 - extract_art_style → show art-style (primary)
+- create_branch → show story-graph (primary) + scene-editor (secondary) to see new branches
+- create_choice → show story-graph (primary) to see new connection
+
+## Story Intelligence
+- When user asks "what should happen next?" or "any suggestions?": compose narrative-suggestions panel as sidebar
+- narrative-suggestions shows AI-analyzed insights about relationship tensions, plot gaps, character underuse
+- When user asks to test or preview their story: compose reader-view (primary) optionally with story-graph
+- When user says "add a choice" or "create a branch": CLI handles via create_branch, then compose story-graph
 
 ## Story Authoring Composition Patterns
 When user discusses characters (e.g., "show me Elena"):

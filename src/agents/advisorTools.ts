@@ -28,7 +28,7 @@ export const ADVISOR_TOOLS: GeminiToolDeclaration[] = [
             },
             panels: {
               type: 'string',
-              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"...","filter":"...","view":"...","highlight":["..."],"sort":"..."}}]. Recommended 1-3 panels (max 5) with one primary panel. Sidebar role only for compact/context panels. density defaults to "full" — use "compact" for sidebars, "micro" for badge-only reference. dataSlice tells the panel what specific data to show. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor, storyboard',
+              description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|tertiary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"...","filter":"...","view":"...","highlight":["..."],"sort":"..."}}]. Recommended 1-3 panels (max 5) with one primary panel. Sidebar role only for compact/context panels. density defaults to "full" — use "compact" for sidebars, "micro" for badge-only reference. dataSlice tells the panel what specific data to show. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, script-dialog, narration, voice-performance, writing-desk, cast-sidebar, audio-toolbar, advisor, storyboard, narrative-suggestions, reader-view. Story intelligence examples: Show suggestions alongside editing: { panels: [{ type: "scene-editor" }, { type: "narrative-suggestions" }], layout: "primary-sidebar" }. Test branching story: { panels: [{ type: "reader-view" }, { type: "story-graph" }], layout: "split-2" }',
             },
             reasoning: {
               type: 'string',
@@ -94,6 +94,10 @@ You will receive [CLI Tool Activity] messages when the user runs tools through t
 ### Art Style Events
 - **extract_art_style**: Show art-style (primary)
 
+### Story Intelligence Events
+- **create_branch**: Suggest composing story-graph to see new branches: layout split-2 with [story-graph, scene-editor]
+- **create_choice**: Suggest composing story-graph to see new connection
+
 ## Response Policy for CLI Events
 - When you see CLI tool activity, call compose_workspace DIRECTLY (not suggest_action) — the user expects the UI to update automatically in response to CLI work
 - Use "show" action for additive changes (don't disrupt existing layout unless the context shift is major)
@@ -135,6 +139,10 @@ You will receive [CLI Tool Activity] messages when the user runs tools through t
 - script-dialog [primary/wide]: Script with voice direction
 - narration [primary/wide]: Narration editor
 - voice-performance [sidebar/compact]: Voice delivery controls
+
+### Story Intelligence
+- narrative-suggestions [sidebar/compact]: AI-driven narrative suggestions showing relationship tensions, plot gaps, pacing issues. Best as sidebar alongside editing panels.
+- reader-view [primary/wide]: Interactive branching story reader simulation with choices, variable state, and path history. Use for testing/previewing branching narratives.
 
 ### Composite
 - writing-desk [primary/wide]: Multi-tab writing environment
@@ -205,6 +213,13 @@ When user discusses relationships or factions (e.g., "show relationships", "fact
 Composition actions:
 - 'show': Smart merge — add panels alongside existing ones. Use for "also show me X" requests.
 - 'replace': Full context switch — use when topic changes clearly (e.g., from characters to story structure).
+
+## Story Intelligence
+- When user asks "what should happen next?" or "any suggestions?": compose narrative-suggestions panel
+- The narrative-suggestions panel shows AI-analyzed insights about relationship tensions, plot gaps, character underuse
+- Each suggestion card has an "Apply" action that composes the right panels for addressing that insight
+- When user asks to test or preview their story: compose reader-view panel (optionally with story-graph for position tracking)
+- When user says "add a choice" or "create a branch": the CLI handles this via create_branch tool, then compose story-graph to show the result
 
 ## Guidelines
 - Be proactive — the user expects the workspace to react to CLI activity automatically
