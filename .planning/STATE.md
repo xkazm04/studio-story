@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-03-14T19:43:12.525Z"
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-14T20:44:19.291Z"
 last_activity: 2026-03-14 -- Completed 08-02-PLAN.md (Reader view, MCP branch tools, graph validation)
 progress:
   total_phases: 12
   completed_phases: 8
-  total_plans: 25
-  completed_plans: 25
+  total_plans: 28
+  completed_plans: 26
   percent: 100
 ---
 
@@ -108,6 +108,7 @@ Progress: [███████████████████████
 | Phase 08 P01 | 5 | 2 tasks | 11 files |
 | Phase 08 P02 | 6 | 3 tasks | 11 files |
 | Phase 08 P03 | 2 | 2 tasks | 3 files |
+| Phase 09 P01 | 4 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -199,6 +200,9 @@ Recent decisions affecting current work:
 - [08-02]: create_branch reads source scene to inherit project_id and act_id
 - [Phase 08-03]: Story intelligence composition patterns follow same appendix pattern established in 07-04
 - [Phase 08-03]: narrative-suggestions always sidebar role; reader-view always primary role
+- [Phase 09]: generateSceneIllustration as new public method avoids modifying existing AIProvider interface
+- [Phase 09]: controlnets and styleUUID mutually exclusive per Leonardo docs -- omit styleUUID when controlnets present
+- [Phase 09]: Character ref upload failures are non-blocking (warn and continue)
 
 ### Pending Todos
 
@@ -211,6 +215,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T19:43:12.523Z
-Stopped at: Completed 08-03-PLAN.md
+Last session: 2026-03-14T20:44:19.288Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None

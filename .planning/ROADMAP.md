@@ -166,7 +166,7 @@ Plans:
   2. The same character is visually recognizable across all generated images -- consistent face, build, clothing style, and distinguishing features
   3. A defined art style (palette, lighting, mood, rendering approach) persists across all generated images for the entire story, not just per-scene
   4. User can define or adjust the story's art style and regenerate images to match the updated style
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 09-01-PLAN.md -- Prompt assembly pipeline, Leonardo controlnet extension (character ref ID 133, style ref ID 67), Supabase Storage utility, scene illustration API endpoint
@@ -239,7 +239,7 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 6. Jinn LLM Integration | 0/3 | Not started | - |
 | 7. Story Data and Authoring | 3/4 | In Progress|  |
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
-| 9. Visual Pipeline | 0/3 | Not started | - |
+| 9. Visual Pipeline | 1/3 | In Progress|  |
 | 10. Writing Tools and Voice | 0/4 | Not started | - |
 | 11. Multimodal Input | 0/3 | Not started | - |
 | 12. Export and Package Boundary | 0/4 | Not started | - |

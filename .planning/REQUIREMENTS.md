@@ -46,9 +46,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Story Visual
 
-- [ ] **VISUAL-01**: AI-generated scene illustrations matching story context (characters present, location, mood, action)
-- [ ] **VISUAL-02**: Character visual consistency — same character looks the same across all generated images using reference-image based pipeline (IPAdapter/cref-style)
-- [ ] **VISUAL-03**: Art style consistency engine — defined art style (palette, lighting, mood) persists across all generated images for the entire story
+- [x] **VISUAL-01**: AI-generated scene illustrations matching story context (characters present, location, mood, action)
+- [x] **VISUAL-02**: Character visual consistency — same character looks the same across all generated images using reference-image based pipeline (IPAdapter/cref-style)
+- [x] **VISUAL-03**: Art style consistency engine — defined art style (palette, lighting, mood) persists across all generated images for the entire story
 
 ### Story Writing
 
@@ -131,9 +131,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STORY-04 | Phase 7 | Complete |
 | STORY-05 | Phase 8 | Complete |
 | STORY-06 | Phase 8 | Complete |
-| VISUAL-01 | Phase 9 | Pending |
-| VISUAL-02 | Phase 9 | Pending |
-| VISUAL-03 | Phase 9 | Pending |
+| VISUAL-01 | Phase 9 | Complete |
+| VISUAL-02 | Phase 9 | Complete |
+| VISUAL-03 | Phase 9 | Complete |
 | WRITE-01 | Phase 10 | Pending |
 | WRITE-02 | Phase 10 | Pending |
 | VOICE-01 | Phase 10 | Pending |
