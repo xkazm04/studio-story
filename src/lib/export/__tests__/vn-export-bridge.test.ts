@@ -76,10 +76,11 @@ describe('findReachableScenes', () => {
   });
 
   it('excludes orphan scenes not reachable from start', () => {
-    // A->B via implicit, D is disconnected
+    // A has explicit choice to B, B has explicit choice back to A. D is disconnected.
     const ordered = ['A', 'B', 'D'];
     const choices: SceneChoice[] = [
-      choice('A', 'B', 'Go'),
+      choice('A', 'B', 'Go to B'),
+      choice('B', 'A', 'Go back'),
     ];
     const result = findReachableScenes('A', choices, ordered);
     expect(result.has('A')).toBe(true);
