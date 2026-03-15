@@ -34,6 +34,12 @@ export {
   type EPUBGeneratorResult,
 } from './EPUBBuilder';
 
+// Story PDF Generator
+export { StoryPDFGenerator } from './StoryPDFGenerator';
+
+// Shared Story Export Types
+export { type StoryExportData, type StoryExportScene, slugify } from './types';
+
 // Fountain Exporter
 export {
   FountainExporter,
@@ -54,7 +60,7 @@ export {
 // Unified Export Types
 // ============================================================================
 
-export type ExportFormat = 'pdf' | 'epub' | 'fountain' | 'rtf' | 'docx' | 'txt';
+export type ExportFormat = 'pdf' | 'epub' | 'fountain' | 'rtf' | 'docx' | 'txt' | 'story-pdf' | 'html5' | 'visual-novel';
 
 export interface ExportOptions {
   format: ExportFormat;
@@ -89,6 +95,8 @@ export interface ExportResult {
 import { PDFGenerator, convertToScriptElements, type TitlePageInfo } from './PDFGenerator';
 import { EPUBBuilder, convertToEPUBChapters, type EPUBMetadata } from './EPUBBuilder';
 import { FountainExporter, convertToFountainElements, type FountainTitlePage } from './FountainExporter';
+import { StoryPDFGenerator as _StoryPDFGenerator } from './StoryPDFGenerator';
+import type { StoryExportData } from './types';
 
 export interface ScriptData {
   title: string;
@@ -136,6 +144,12 @@ export async function exportScript(
       return exportToFountain(data, options);
     case 'txt':
       return exportToPlainText(data, options);
+    case 'story-pdf':
+      return exportToStoryPDF(data);
+    case 'html5':
+      throw new Error('HTML5 bundle export is not yet implemented');
+    case 'visual-novel':
+      throw new Error('Visual novel export is not yet implemented');
     default:
       throw new Error(`Unsupported export format: ${format}`);
   }
@@ -324,6 +338,41 @@ async function exportToPlainText(
       wordCount: content.split(/\s+/).length,
     },
   };
+}
+
+/**
+ * Convert ScriptData to StoryExportData for story-pdf export.
+ * Maps screenplay blocks to prose scenes with basic content concatenation.
+ */
+async function exportToStoryPDF(data: ScriptData): Promise<ExportResult> {
+  const sceneMap = new Map<string, string[]>();
+  for (const block of data.blocks) {
+    const existing = sceneMap.get(block.sceneId) || [];
+    existing.push(block.content);
+    sceneMap.set(block.sceneId, existing);
+  }
+
+  const scenes = data.scenes || Array.from(sceneMap.keys()).map((id, i) => ({
+    id,
+    name: `Scene ${i + 1}`,
+  }));
+
+  const storyData: StoryExportData = {
+    title: data.title,
+    author: data.author,
+    scenes: scenes.map((s) => ({
+      id: s.id,
+      name: s.name,
+      content: (sceneMap.get(s.id) || []).join('\n\n'),
+    })),
+    metadata: data.metadata ? {
+      description: data.metadata.description,
+      genre: data.metadata.genre,
+    } : undefined,
+  };
+
+  const generator = new _StoryPDFGenerator();
+  return generator.generate(storyData);
 }
 
 /**
