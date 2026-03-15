@@ -157,7 +157,7 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
       <div className="flex items-center gap-3 p-3">
         {/* Severity badge */}
         <span className={cn(
-          'flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border',
+          'flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
           severityConfig.color
         )}>
           {severityConfig.icon}
@@ -167,14 +167,14 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
         {/* Name */}
         <h4 className={cn(
           'flex-1 font-mono text-sm truncate',
-          conflict.isResolved ? 'text-slate-500 line-through' : 'text-slate-200'
+          conflict.isResolved ? 'text-slate-400 line-through' : 'text-slate-200'
         )}>
           {conflict.name}
         </h4>
 
         {/* Resolved indicator */}
         {conflict.isResolved && (
-          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-green-500/20 border border-green-500/30 rounded text-[10px] font-mono text-green-400">
+          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-green-500/20 border border-green-500/30 rounded text-sm font-mono text-green-400">
             <Check size={10} />
             <span>Resolved</span>
           </span>
@@ -183,7 +183,7 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
         {/* Expand toggle */}
         <button
           onClick={onToggleExpand}
-          className="p-1 rounded hover:bg-slate-700/50 text-slate-500 transition-colors"
+          className="p-1 rounded hover:bg-slate-700/50 text-slate-400 transition-colors"
         >
           {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
@@ -191,12 +191,12 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
 
       {/* Motivation link */}
       <div className="flex items-center gap-2 px-3 pb-2">
-        <Link size={10} className="text-slate-600" />
-        <span className="font-mono text-[10px] text-cyan-400/70">
+        <Link size={10} className="text-slate-400" />
+        <span className="font-mono text-sm text-cyan-400/70">
           {motivationA?.label || 'Unknown'}
         </span>
-        <ArrowRight size={10} className="text-slate-600" />
-        <span className="font-mono text-[10px] text-purple-400/70">
+        <ArrowRight size={10} className="text-slate-400" />
+        <span className="font-mono text-sm text-purple-400/70">
           {motivationB?.label || 'Unknown'}
         </span>
       </div>
@@ -214,10 +214,10 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
             <div className="p-3 space-y-3">
               {/* Description */}
               <div>
-                <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   description
                 </span>
-                <p className="font-mono text-xs text-slate-400">
+                <p className="font-mono text-sm text-slate-400">
                   {conflict.description}
                 </p>
               </div>
@@ -225,14 +225,14 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
               {/* Manifestations */}
               {conflict.manifestations.length > 0 && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     manifestations
                   </span>
                   <div className="flex flex-wrap gap-1">
                     {conflict.manifestations.map((m, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-slate-700/50 rounded text-[10px] font-mono text-slate-400"
+                        className="px-2 py-0.5 bg-slate-700/50 rounded text-sm font-mono text-slate-400"
                       >
                         {m}
                       </span>
@@ -244,10 +244,10 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
               {/* Story impact */}
               {conflict.storyImpact && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     story_impact
                   </span>
-                  <p className="font-mono text-xs text-slate-500 italic">
+                  <p className="font-mono text-sm text-slate-400 italic">
                     {conflict.storyImpact}
                   </p>
                 </div>
@@ -256,10 +256,10 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
               {/* Resolution path */}
               {conflict.resolutionPath && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     resolution_path
                   </span>
-                  <p className="font-mono text-xs text-green-400/70">
+                  <p className="font-mono text-sm text-green-400/70">
                     {conflict.resolutionPath}
                   </p>
                 </div>
@@ -268,8 +268,8 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
               {/* Resolved in scene */}
               {conflict.resolvedInScene && (
                 <div className="flex items-center gap-2">
-                  <MapPin size={10} className="text-slate-500" />
-                  <span className="font-mono text-[10px] text-slate-500">
+                  <MapPin size={10} className="text-slate-400" />
+                  <span className="font-mono text-sm text-slate-400">
                     Resolved in: {conflict.resolvedInScene}
                   </span>
                 </div>
@@ -283,7 +283,7 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
                       onClick={() => onResolve(conflict.id)}
                       className="flex items-center gap-1 px-2 py-1 rounded
                                  bg-green-500/10 hover:bg-green-500/20 text-green-400
-                                 font-mono text-[10px] transition-colors"
+                                 font-mono text-sm transition-colors"
                     >
                       <Check size={12} />
                       <span>Mark Resolved</span>
@@ -293,7 +293,7 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
                     onClick={() => onEdit(conflict)}
                     className="flex items-center gap-1 px-2 py-1 rounded
                                bg-slate-700/40 hover:bg-slate-700/60 text-slate-400
-                               font-mono text-[10px] transition-colors"
+                               font-mono text-sm transition-colors"
                   >
                     <Edit3 size={12} />
                     <span>Edit</span>
@@ -302,7 +302,7 @@ const ConflictCard: React.FC<ConflictCardProps> = ({
                     onClick={() => onDelete(conflict.id)}
                     className="flex items-center gap-1 px-2 py-1 rounded
                                bg-red-500/10 hover:bg-red-500/20 text-red-400
-                               font-mono text-[10px] transition-colors"
+                               font-mono text-sm transition-colors"
                   >
                     <Trash2 size={12} />
                     <span>Delete</span>
@@ -354,12 +354,12 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
   return (
     <div className="p-4 bg-slate-800/60 rounded-lg border border-slate-700/50 space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+        <h4 className="font-mono text-sm uppercase tracking-wide text-slate-300">
           {conflict ? 'edit_conflict' : 'new_conflict'}
         </h4>
         <button
           onClick={onCancel}
-          className="p-1 rounded hover:bg-slate-700/50 text-slate-500"
+          className="p-1 rounded hover:bg-slate-700/50 text-slate-400"
         >
           <X size={14} />
         </button>
@@ -367,7 +367,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
 
       {/* Name */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Conflict Name *
         </label>
         <input
@@ -376,14 +376,14 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g., Duty vs. Desire"
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-sm text-slate-200 placeholder:text-slate-600
+                     font-mono text-sm text-slate-200 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Description
         </label>
         <textarea
@@ -392,7 +392,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           placeholder="Describe the nature of this internal conflict..."
           rows={2}
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
         />
       </div>
@@ -400,14 +400,14 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
       {/* Linked motivations */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Motivation A *
           </label>
           <select
             value={motivationA}
             onChange={(e) => setMotivationA(e.target.value)}
             className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           >
             <option value="">Select motivation...</option>
@@ -419,14 +419,14 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           </select>
         </div>
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Motivation B *
           </label>
           <select
             value={motivationB}
             onChange={(e) => setMotivationB(e.target.value)}
             className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           >
             <option value="">Select motivation...</option>
@@ -441,7 +441,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
 
       {/* Severity */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Severity
         </label>
         <div className="grid grid-cols-4 gap-2">
@@ -458,7 +458,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
               title={config.description}
             >
               {config.icon}
-              <span className="font-mono text-[10px]">{config.label}</span>
+              <span className="font-mono text-sm">{config.label}</span>
             </button>
           ))}
         </div>
@@ -466,7 +466,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
 
       {/* Manifestations */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Manifestations (comma-separated)
         </label>
         <input
@@ -475,14 +475,14 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           onChange={(e) => setManifestations(e.target.value)}
           placeholder="Hesitation, internal arguments, mood swings"
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         />
       </div>
 
       {/* Story impact */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Story Impact
         </label>
         <textarea
@@ -491,14 +491,14 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           placeholder="How does this conflict drive the story forward?"
           rows={2}
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
         />
       </div>
 
       {/* Resolution path */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Resolution Path (optional)
         </label>
         <textarea
@@ -507,7 +507,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           placeholder="How might this conflict be resolved?"
           rows={2}
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
         />
       </div>
@@ -517,7 +517,7 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
         <button
           onClick={onCancel}
           className="px-3 py-1.5 rounded-lg bg-slate-800/40 text-slate-400
-                     hover:bg-slate-700/60 font-mono text-xs transition-colors"
+                     hover:bg-slate-700/60 font-mono text-sm transition-colors"
         >
           Cancel
         </button>
@@ -525,10 +525,10 @@ const ConflictEditor: React.FC<ConflictEditorProps> = ({
           onClick={handleSave}
           disabled={!name.trim() || !motivationA || !motivationB}
           className={cn(
-            'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-xs transition-colors',
+            'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-sm transition-colors',
             name.trim() && motivationA && motivationB
               ? 'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400'
-              : 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
           )}
         >
           <Save size={12} />
@@ -646,10 +646,10 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               internal_conflicts
             </h3>
-            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {stats.total} ({stats.resolved} resolved)
             </span>
           </div>
@@ -664,7 +664,7 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
               <span className={cn('flex items-center', config.color.split(' ')[0])}>
                 {config.icon}
               </span>
-              <span className="font-mono text-[10px] text-slate-400">
+              <span className="font-mono text-sm text-slate-400">
                 {config.label}: {stats.bySeverity[severity as ConflictSeverity]}
               </span>
             </div>
@@ -684,7 +684,7 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
             <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               internal_conflicts
             </h3>
-            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-500">
+            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {filteredConflicts.length} / {stats.total}
             </span>
           </div>
@@ -697,7 +697,7 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
               }}
               className="flex items-center gap-1 px-2 py-1 rounded
                          bg-orange-500/20 hover:bg-orange-500/30 text-orange-400
-                         font-mono text-xs transition-colors"
+                         font-mono text-sm transition-colors"
             >
               <Plus size={12} />
               <span>add_conflict</span>
@@ -709,12 +709,12 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
         <div className="flex flex-wrap items-center gap-3">
           {/* Severity filter */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-slate-500">Severity:</span>
+            <span className="font-mono text-sm text-slate-400">Severity:</span>
             <select
               value={filterSeverity}
               onChange={(e) => setFilterSeverity(e.target.value as ConflictSeverity | 'all')}
               className="px-2 py-1 bg-slate-800/40 border border-slate-700/50 rounded
-                         font-mono text-xs text-slate-300
+                         font-mono text-sm text-slate-300
                          focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
             >
               <option value="all">All</option>
@@ -728,10 +728,10 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
           <button
             onClick={() => setShowResolved(!showResolved)}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded font-mono text-[10px] transition-colors',
+              'flex items-center gap-1 px-2 py-1 rounded font-mono text-sm transition-colors',
               showResolved
                 ? 'bg-green-500/20 text-green-400'
-                : 'bg-slate-800/40 text-slate-500'
+                : 'bg-slate-800/40 text-slate-400'
             )}
           >
             <Check size={10} />
@@ -745,7 +745,7 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
                 <span className={cn('flex items-center', config.color.split(' ')[0])}>
                   {config.icon}
                 </span>
-                <span className="font-mono text-[10px] text-slate-500">
+                <span className="font-mono text-sm text-slate-400">
                   {stats.bySeverity[severity as ConflictSeverity]}
                 </span>
               </div>
@@ -797,9 +797,9 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
           ))
         ) : (
           <div className="p-8 bg-slate-900/60 rounded-lg border border-slate-800/50 text-center">
-            <Zap size={32} className="mx-auto mb-3 text-slate-600 opacity-50" />
-            <p className="font-mono text-sm text-slate-500 mb-1">No conflicts found</p>
-            <p className="font-mono text-xs text-slate-600">
+            <Zap size={32} className="mx-auto mb-3 text-slate-400 opacity-50" />
+            <p className="font-mono text-sm text-slate-400 mb-1">No conflicts found</p>
+            <p className="font-mono text-sm text-slate-400">
               {conflicts.length > 0
                 ? 'Try adjusting your filters'
                 : 'Add internal conflicts to create tension in your character'}
@@ -812,7 +812,7 @@ const ConflictMapper: React.FC<ConflictMapperProps> = ({
                 }}
                 className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg mx-auto
                            bg-orange-500/20 hover:bg-orange-500/30 text-orange-400
-                           font-mono text-xs transition-colors"
+                           font-mono text-sm transition-colors"
               >
                 <Plus size={14} />
                 <span>Add First Conflict</span>

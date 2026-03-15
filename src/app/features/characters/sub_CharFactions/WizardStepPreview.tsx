@@ -43,7 +43,7 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
           <CheckCircle className="text-green-400 flex-shrink-0 mt-0.5" size={20} />
           <div>
             <p className="text-sm font-medium text-green-200">Faction Generated Successfully!</p>
-            <p className="text-xs text-green-300/70 mt-1">
+            <p className="text-sm text-green-300/70 mt-1">
               Review the details below. You can go back to regenerate or proceed to create the faction.
             </p>
           </div>
@@ -51,7 +51,7 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
       </div>
 
       {/* Faction Preview Card */}
-      <div className="p-5 bg-gray-800 rounded-lg border border-gray-700">
+      <div className="p-5 bg-slate-800 rounded-lg border border-slate-700">
         <div className="flex items-start gap-4">
           {/* Faction Emblem Preview */}
           <div
@@ -68,18 +68,18 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
           {/* Faction Info */}
           <div className="flex-1">
             <h4 className="text-xl font-bold text-white mb-1">{faction.name}</h4>
-            <div className="inline-block px-2 py-1 bg-gray-700 rounded text-xs text-gray-300 mb-2">
+            <div className="inline-block px-2 py-1 bg-slate-700 rounded text-sm text-slate-300 mb-2">
               {faction.type.charAt(0).toUpperCase() + faction.type.slice(1)}
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed">{faction.description}</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{faction.description}</p>
           </div>
         </div>
       </div>
 
       {/* Branding Colors */}
-      <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+      <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
         <div className="flex items-center gap-2 mb-3">
-          <Palette size={16} className="text-gray-400" />
+          <Palette size={16} className="text-slate-400" />
           <h5 className="text-sm font-semibold text-white">Faction Branding</h5>
         </div>
         <div className="flex gap-3">
@@ -88,30 +88,30 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
               className="w-full h-12 rounded-lg mb-2"
               style={{ backgroundColor: faction.branding.primary_color }}
             />
-            <p className="text-xs text-gray-400 text-center">Primary</p>
-            <p className="text-xs text-gray-500 text-center font-mono">{faction.branding.primary_color}</p>
+            <p className="text-sm text-slate-400 text-center">Primary</p>
+            <p className="text-sm text-slate-400 text-center font-mono">{faction.branding.primary_color}</p>
           </div>
           <div className="flex-1">
             <div
               className="w-full h-12 rounded-lg mb-2"
               style={{ backgroundColor: faction.branding.secondary_color }}
             />
-            <p className="text-xs text-gray-400 text-center">Secondary</p>
-            <p className="text-xs text-gray-500 text-center font-mono">{faction.branding.secondary_color}</p>
+            <p className="text-sm text-slate-400 text-center">Secondary</p>
+            <p className="text-sm text-slate-400 text-center font-mono">{faction.branding.secondary_color}</p>
           </div>
           <div className="flex-1">
             <div
               className="w-full h-12 rounded-lg mb-2"
               style={{ backgroundColor: faction.branding.accent_color }}
             />
-            <p className="text-xs text-gray-400 text-center">Accent</p>
-            <p className="text-xs text-gray-500 text-center font-mono">{faction.branding.accent_color}</p>
+            <p className="text-sm text-slate-400 text-center">Accent</p>
+            <p className="text-sm text-slate-400 text-center font-mono">{faction.branding.accent_color}</p>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-700">
+      <div className="flex gap-2 border-b border-slate-700">
         {[
           { id: 'overview', label: 'Overview', icon: BookOpen },
           { id: 'lore', label: 'Lore', icon: BookOpen },
@@ -124,7 +124,7 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
             className={cn('flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors',
               activeTab === tab.id
                 ? 'text-purple-400 border-b-2 border-purple-400'
-                : 'text-gray-400 hover:text-gray-300'
+                : 'text-slate-400 hover:text-slate-300'
             )}
             data-testid={`preview-tab-${tab.id}`}
           >
@@ -142,24 +142,24 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
             animate={{ opacity: 1 }}
             className="space-y-4"
           >
-            <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
               <div className="flex items-center gap-2 mb-3">
-                <Users size={16} className="text-gray-400" />
+                <Users size={16} className="text-slate-400" />
                 <h5 className="text-sm font-semibold text-white">Member Archetypes</h5>
               </div>
               <div className="space-y-3">
                 {faction.member_archetypes.map((archetype, idx) => (
-                  <div key={idx} className="p-3 bg-gray-900/50 rounded-lg">
+                  <div key={idx} className="p-3 bg-slate-900/50 rounded-lg">
                     <p className="text-sm font-medium text-white mb-1">{archetype.role}</p>
-                    <p className="text-xs text-gray-400">{archetype.description}</p>
+                    <p className="text-sm text-slate-400">{archetype.description}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
               <h5 className="text-sm font-semibold text-white mb-2">Emblem Design Prompt</h5>
-              <p className="text-xs text-gray-400 italic leading-relaxed">
+              <p className="text-sm text-slate-400 italic leading-relaxed">
                 "{faction.emblem_design_prompt}"
               </p>
             </div>
@@ -173,14 +173,14 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
             className="space-y-3"
           >
             {faction.lore.map((entry, idx) => (
-              <div key={idx} className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div key={idx} className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="px-2 py-1 bg-gray-700 rounded text-xs text-gray-300">
+                  <div className="px-2 py-1 bg-slate-700 rounded text-sm text-slate-300">
                     {entry.category}
                   </div>
                   <h5 className="text-sm font-semibold text-white">{entry.title}</h5>
                 </div>
-                <p className="text-sm text-gray-400 leading-relaxed">{entry.content}</p>
+                <p className="text-sm text-slate-400 leading-relaxed">{entry.content}</p>
               </div>
             ))}
           </motion.div>
@@ -195,23 +195,23 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
             {faction.timeline_events.map((event, idx) => (
               <div key={idx} className="flex gap-3">
                 <div className="flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white">
+                  <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold text-white">
                     {idx + 1}
                   </div>
                   {idx < faction.timeline_events.length - 1 && (
-                    <div className="w-0.5 h-full bg-gray-700 mt-2" />
+                    <div className="w-0.5 h-full bg-slate-700 mt-2" />
                   )}
                 </div>
                 <div className="flex-1 pb-6">
-                  <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+                  <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                     <div className="flex items-center gap-2 mb-2">
-                      <p className="text-xs text-gray-500">{event.date}</p>
-                      <div className="px-2 py-0.5 bg-gray-700 rounded text-xs text-gray-300">
+                      <p className="text-sm text-slate-400">{event.date}</p>
+                      <div className="px-2 py-0.5 bg-slate-700 rounded text-sm text-slate-300">
                         {event.event_type}
                       </div>
                     </div>
                     <h5 className="text-sm font-semibold text-white mb-1">{event.title}</h5>
-                    <p className="text-sm text-gray-400">{event.description}</p>
+                    <p className="text-sm text-slate-400">{event.description}</p>
                   </div>
                 </div>
               </div>
@@ -226,7 +226,7 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
             className="space-y-3"
           >
             {faction.achievements.map((achievement, idx) => (
-              <div key={idx} className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div key={idx} className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-lg bg-yellow-600/20 flex items-center justify-center flex-shrink-0">
                     <Award className="text-yellow-500" size={20} />
@@ -234,9 +234,9 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h5 className="text-sm font-semibold text-white">{achievement.title}</h5>
-                      <p className="text-xs text-gray-500">{achievement.earned_date}</p>
+                      <p className="text-sm text-slate-400">{achievement.earned_date}</p>
                     </div>
-                    <p className="text-sm text-gray-400">{achievement.description}</p>
+                    <p className="text-sm text-slate-400">{achievement.description}</p>
                   </div>
                 </div>
               </div>
@@ -247,8 +247,8 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
 
       {/* Metadata */}
       {metadata && (
-        <div className="p-3 bg-gray-800/50 rounded-lg border border-gray-700">
-          <p className="text-xs text-gray-500">
+        <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+          <p className="text-sm text-slate-400">
             Generated using {metadata.model_used} at {new Date(metadata.generated_at).toLocaleString()}
           </p>
         </div>
@@ -259,7 +259,7 @@ const WizardStepPreview: React.FC<WizardStepPreviewProps> = ({
         <button
           type="button"
           onClick={onEdit}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors flex items-center gap-2"
           data-testid="edit-prompt-btn"
         >
           <Edit size={16} />

@@ -49,47 +49,47 @@ export function RateLimiterMonitor() {
 
   const queueStatus = getQueueStatus();
   const statusColors = {
-    idle: 'bg-gray-100 text-gray-800',
-    low: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    high: 'bg-red-100 text-red-800',
+    idle: 'bg-slate-800 text-slate-200',
+    low: 'bg-green-500/20 text-green-400',
+    medium: 'bg-yellow-500/20 text-yellow-400',
+    high: 'bg-red-500/20 text-red-400',
   };
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-80 z-50">
+    <div className="fixed bottom-4 right-4 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 text-slate-200 rounded-lg shadow-lg p-4 w-80 z-50">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-sm">Rate Limiter Monitor</h3>
-        <span className="text-xs text-gray-500">DEV ONLY</span>
+        <span className="text-xs text-slate-400">DEV ONLY</span>
       </div>
 
       {/* Status Display */}
       <div className="space-y-2 mb-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">Queue Length:</span>
+          <span className="text-xs text-slate-400">Queue Length:</span>
           <span className={`text-xs font-mono px-2 py-1 rounded ${statusColors[queueStatus]}`}>
             {queueLength} requests
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">Rate Limit:</span>
-          <span className="text-xs font-mono text-gray-800">
+          <span className="text-xs text-slate-400">Rate Limit:</span>
+          <span className="text-xs font-mono text-slate-200">
             {config.maxRequestsPerSecond} req/s
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">Warning Threshold:</span>
-          <span className="text-xs font-mono text-gray-800">
+          <span className="text-xs text-slate-400">Warning Threshold:</span>
+          <span className="text-xs font-mono text-slate-200">
             {config.queueWarningThreshold} queued
           </span>
         </div>
       </div>
 
       {/* Configuration Controls */}
-      <div className="border-t border-gray-200 pt-3 space-y-3">
+      <div className="border-t border-slate-700/50 pt-3 space-y-3">
         <div>
-          <label className="block text-xs text-gray-600 mb-1">
+          <label className="block text-xs text-slate-400 mb-1">
             Max Requests/Second:
           </label>
           <div className="flex gap-2">
@@ -99,11 +99,11 @@ export function RateLimiterMonitor() {
               max="100"
               value={maxRequests}
               onChange={(e) => setMaxRequests(parseInt(e.target.value))}
-              className="flex-1 text-xs border border-gray-300 rounded px-2 py-1"
+              className="flex-1 text-xs bg-slate-800 text-slate-200 border border-slate-700/50 rounded px-2 py-1 outline-none focus:border-[var(--ms-accent)]"
             />
             <button
               onClick={handleUpdateMaxRequests}
-              className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              className="text-xs text-white px-3 py-1 rounded hover:brightness-110 transition-all bg-[var(--ms-accent)]"
             >
               Set
             </button>
@@ -111,7 +111,7 @@ export function RateLimiterMonitor() {
         </div>
 
         <div>
-          <label className="block text-xs text-gray-600 mb-1">
+          <label className="block text-xs text-slate-400 mb-1">
             Warning Threshold:
           </label>
           <div className="flex gap-2">
@@ -121,11 +121,11 @@ export function RateLimiterMonitor() {
               max="100"
               value={warningThreshold}
               onChange={(e) => setWarningThreshold(parseInt(e.target.value))}
-              className="flex-1 text-xs border border-gray-300 rounded px-2 py-1"
+              className="flex-1 text-xs bg-slate-800 text-slate-200 border border-slate-700/50 rounded px-2 py-1 outline-none focus:border-[var(--ms-accent)]"
             />
             <button
               onClick={handleUpdateWarningThreshold}
-              className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+              className="text-xs text-white px-3 py-1 rounded hover:brightness-110 transition-all bg-[var(--ms-accent)]"
             >
               Set
             </button>
@@ -135,10 +135,10 @@ export function RateLimiterMonitor() {
 
       {/* Status Indicator */}
       {queueLength > 0 && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
+        <div className="mt-3 pt-3 border-t border-slate-700/50">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-            <span className="text-xs text-gray-600">
+            <div className="w-2 h-2 rounded-full bg-[var(--ms-accent)] animate-pulse"></div>
+            <span className="text-xs text-slate-400">
               Processing queue...
             </span>
           </div>
@@ -147,8 +147,8 @@ export function RateLimiterMonitor() {
 
       {/* Warning */}
       {queueLength >= config.queueWarningThreshold && (
-        <div className="mt-2 bg-red-50 border border-red-200 rounded p-2">
-          <p className="text-xs text-red-800">
+        <div className="mt-2 bg-red-500/10 border border-red-500/30 rounded p-2">
+          <p className="text-xs text-red-400">
             Queue capacity warning! Consider reducing API call frequency.
           </p>
         </div>

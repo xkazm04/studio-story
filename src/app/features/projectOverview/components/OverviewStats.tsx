@@ -21,7 +21,7 @@ const OverviewStats: React.FC = () => {
 
   if (!selectedProject) {
     return (
-      <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
+      <div className="flex items-center justify-center h-32 text-slate-400 text-sm">
         No project selected
       </div>
     );
@@ -33,10 +33,10 @@ const OverviewStats: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-gradient-to-br from-gray-800/40 via-gray-800/30 to-gray-900/40 rounded-lg border border-gray-700/50 p-6 space-y-6"
+        className="bg-gradient-to-br from-slate-800/40 via-slate-800/30 to-slate-900/40 rounded-lg border border-slate-700/50 p-6 space-y-6"
         data-testid="project-overview-stats-loading"
       >
-        <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
+        <div className="flex items-center justify-center h-32 text-slate-400 text-sm">
           Loading statistics...
         </div>
       </motion.div>
@@ -48,15 +48,15 @@ const OverviewStats: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-gradient-to-br from-gray-800/40 via-gray-800/30 to-gray-900/40 rounded-lg border border-gray-700/50 p-6 space-y-6"
+      className="bg-gradient-to-br from-slate-800/40 via-slate-800/30 to-slate-900/40 rounded-lg border border-slate-700/50 p-6 space-y-6"
       data-testid="project-overview-stats"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-white" data-testid="overview-title">
+        <h3 className="ms-h3" data-testid="overview-title">
           Project Overview
         </h3>
-        <div className="text-xs text-gray-500 font-mono" data-testid="overview-project-name">
+        <div className="text-sm text-slate-400 font-mono" data-testid="overview-project-name">
           {selectedProject.name}
         </div>
       </div>
@@ -89,7 +89,7 @@ const OverviewStats: React.FC = () => {
       </ProgressCardGrid>
 
       {/* Summary */}
-      <div className="pt-4 border-t border-gray-700/50">
+      <div className="pt-4 border-t border-slate-700/50">
         <ProgressSummaryGrid data-testid="overview-summary-cards">
           <ProgressSummaryCard
             value={stats.acts.count}

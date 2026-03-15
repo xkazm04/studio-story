@@ -50,7 +50,7 @@ Return ONLY the negative prompt text — a comma-separated list of things to avo
             flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
             transition-colors duration-200
             ${cli.isRunning || !mainPrompt.trim()
-              ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
               : 'bg-purple-600 hover:bg-purple-700 text-white'
             }
           `}
@@ -68,7 +68,7 @@ Return ONLY the negative prompt text — a comma-separated list of things to avo
           )}
         </motion.button>
 
-        <span className="text-xs text-gray-500">
+        <span className="text-sm text-slate-400">
           AI will suggest things to avoid
         </span>
       </div>

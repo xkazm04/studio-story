@@ -153,7 +153,7 @@ const TimelineEntryCard: React.FC<TimelineEntryCardProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-600">
+            <div className="w-full h-full flex items-center justify-center text-slate-400">
               <Image size={20} />
             </div>
           )}
@@ -193,7 +193,7 @@ const TimelineEntryCard: React.FC<TimelineEntryCardProps> = ({
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={32} />
           </div>
         )}
@@ -210,7 +210,7 @@ const TimelineEntryCard: React.FC<TimelineEntryCardProps> = ({
       <div className="p-3">
         {/* Type badge */}
         <div className={cn(
-          'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border mb-2',
+          'inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm font-mono border mb-2',
           config.color
         )}>
           {config.icon}
@@ -219,14 +219,14 @@ const TimelineEntryCard: React.FC<TimelineEntryCardProps> = ({
 
         {/* Trigger/Title */}
         {entry.transformation_trigger && (
-          <p className="font-mono text-xs text-slate-300 line-clamp-1 mb-1">
+          <p className="font-mono text-sm text-slate-300 line-clamp-1 mb-1">
             {entry.transformation_trigger}
           </p>
         )}
 
         {/* Age stage */}
         {ageConfig && (
-          <p className="font-mono text-[10px] text-slate-500">
+          <p className="font-mono text-sm text-slate-400">
             {ageConfig.label}
             {entry.estimated_age && ` (${entry.estimated_age}y)`}
           </p>
@@ -234,7 +234,7 @@ const TimelineEntryCard: React.FC<TimelineEntryCardProps> = ({
 
         {/* Scene reference */}
         {entry.scene && (
-          <p className="font-mono text-[10px] text-cyan-500/70 mt-1">
+          <p className="font-mono text-sm text-cyan-500/70 mt-1">
             Scene {entry.scene.scene_number}: {entry.scene.title}
           </p>
         )}
@@ -304,10 +304,10 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               timeline
             </h3>
-            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {entries.length}
             </span>
           </div>
@@ -332,8 +332,8 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
             />
           ))}
           {filteredEntries.length === 0 && (
-            <div className="flex-1 flex items-center justify-center py-4 text-slate-600">
-              <span className="font-mono text-xs">No timeline entries</span>
+            <div className="flex-1 flex items-center justify-center py-4 text-slate-400">
+              <span className="font-mono text-sm">No timeline entries</span>
             </div>
           )}
         </div>
@@ -350,7 +350,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
           <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             avatar_timeline
           </h3>
-          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-500">
+          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
             {filteredEntries.length} / {entries.length}
           </span>
         </div>
@@ -363,10 +363,10 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                 key={mode}
                 onClick={() => setViewMode(mode)}
                 className={cn(
-                  'px-2 py-1 rounded font-mono text-[10px] uppercase transition-colors',
+                  'px-2 py-1 rounded font-mono text-sm uppercase transition-colors',
                   viewMode === mode
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
               >
                 {mode}
@@ -378,7 +378,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
             <button
               onClick={onAddEntry}
               className="flex items-center gap-1 px-2 py-1 rounded bg-cyan-500/20
-                         hover:bg-cyan-500/30 text-cyan-400 text-xs font-mono transition-colors"
+                         hover:bg-cyan-500/30 text-cyan-400 text-sm font-mono transition-colors"
             >
               <Plus size={12} />
               <span>add</span>
@@ -392,14 +392,14 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
         <div className="flex flex-wrap items-center gap-2 mb-4">
           {/* Search */}
           <div className="relative flex-1 min-w-48">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search timeline..."
               className="w-full pl-8 pr-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                         font-mono text-xs text-slate-300 placeholder:text-slate-600
+                         font-mono text-sm text-slate-300 placeholder:text-slate-400
                          focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
             />
           </div>
@@ -409,7 +409,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as TransformationType | 'all')}
             className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           >
             <option value="all">All Types</option>
@@ -422,7 +422,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
           <button
             onClick={() => setFilterMilestones(!filterMilestones)}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-2 rounded-lg border font-mono text-xs transition-colors',
+              'flex items-center gap-1.5 px-3 py-2 rounded-lg border font-mono text-sm transition-colors',
               filterMilestones
                 ? 'bg-yellow-500/20 border-yellow-500/40 text-yellow-400'
                 : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600'
@@ -495,7 +495,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-600">
+                          <div className="w-full h-full flex items-center justify-center text-slate-400">
                             <Image size={20} />
                           </div>
                         )}
@@ -505,26 +505,26 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={cn(
-                            'px-1.5 py-0.5 rounded text-[10px] font-mono border',
+                            'px-1.5 py-0.5 rounded text-sm font-mono border',
                             config.color
                           )}>
                             {config.label}
                           </span>
                           {entry.age_stage && (
-                            <span className="px-1.5 py-0.5 bg-slate-700/50 rounded text-[10px] font-mono text-slate-400">
+                            <span className="px-1.5 py-0.5 bg-slate-700/50 rounded text-sm font-mono text-slate-400">
                               {AGE_STAGE_CONFIG[entry.age_stage].label}
                             </span>
                           )}
                         </div>
 
                         {entry.transformation_trigger && (
-                          <p className="font-mono text-xs text-slate-300 line-clamp-1">
+                          <p className="font-mono text-sm text-slate-300 line-clamp-1">
                             {entry.transformation_trigger}
                           </p>
                         )}
 
                         {entry.scene && (
-                          <p className="font-mono text-[10px] text-cyan-500/70 mt-1">
+                          <p className="font-mono text-sm text-cyan-500/70 mt-1">
                             Scene {entry.scene.scene_number}: {entry.scene.title}
                           </p>
                         )}
@@ -569,10 +569,10 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
 
       {/* Empty state */}
       {!isLoading && filteredEntries.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <Clock size={32} className="mb-3 opacity-50" />
           <p className="font-mono text-sm mb-1">No timeline entries</p>
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             {entries.length > 0 ? 'Try adjusting your filters' : 'Add an entry to start tracking evolution'}
           </p>
           {entries.length === 0 && onAddEntry && (
@@ -580,7 +580,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
               onClick={onAddEntry}
               className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg
                          bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400
-                         font-mono text-xs transition-colors"
+                         font-mono text-sm transition-colors"
             >
               <Plus size={14} />
               <span>Add First Entry</span>
@@ -608,7 +608,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={32} />
                   </div>
                 )}
@@ -617,12 +617,12 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
               {/* Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-xs text-slate-400 uppercase">
+                  <span className="font-mono text-sm text-slate-400 uppercase">
                     selected_entry
                   </span>
                   <button
                     onClick={() => onSelectEntry?.(null)}
-                    className="p-1 rounded hover:bg-slate-700/50 text-slate-500 transition-colors"
+                    className="p-1 rounded hover:bg-slate-700/50 text-slate-400 transition-colors"
                   >
                     <X size={14} />
                   </button>
@@ -635,7 +635,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                 )}
 
                 {selectedEntry.notes && (
-                  <p className="font-mono text-xs text-slate-500 mb-3">
+                  <p className="font-mono text-sm text-slate-400 mb-3">
                     {selectedEntry.notes}
                   </p>
                 )}
@@ -643,14 +643,14 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                 {/* Visual changes */}
                 {selectedEntry.visual_changes && selectedEntry.visual_changes.length > 0 && (
                   <div className="mb-3">
-                    <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                    <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                       visual_changes
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {selectedEntry.visual_changes.map((change, i) => (
                         <span
                           key={i}
-                          className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-400"
+                          className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400"
                         >
                           {change.attribute}: {change.to}
                         </span>
@@ -664,7 +664,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                   <button
                     className="flex items-center gap-1 px-2 py-1 rounded
                                bg-slate-800/40 hover:bg-slate-700/60 text-slate-400
-                               font-mono text-[10px] transition-colors"
+                               font-mono text-sm transition-colors"
                   >
                     <Eye size={12} />
                     <span>View Full</span>
@@ -674,7 +674,7 @@ const AvatarTimeline: React.FC<AvatarTimelineProps> = ({
                       onClick={() => onDeleteEntry(selectedEntry.id)}
                       className="flex items-center gap-1 px-2 py-1 rounded
                                  bg-red-500/10 hover:bg-red-500/20 text-red-400
-                                 font-mono text-[10px] transition-colors"
+                                 font-mono text-sm transition-colors"
                     >
                       <X size={12} />
                       <span>Delete</span>

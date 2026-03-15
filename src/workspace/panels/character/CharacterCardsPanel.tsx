@@ -9,6 +9,7 @@ import { cn } from '@/app/lib/utils';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState } from '../shared/PanelPrimitives';
+import type { PanelDensity } from '@/workspace/types';
 
 interface CharacterCardsPanelProps {
   sceneId?: string;
@@ -16,12 +17,14 @@ interface CharacterCardsPanelProps {
   compact?: boolean;
   onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 export default function CharacterCardsPanel({
   projectId: propProjectId,
   onTriggerSkill,
   onClose,
+  density,
 }: CharacterCardsPanelProps) {
   const { selectedProject } = useProjectStore();
   const resolvedProjectId = propProjectId || selectedProject?.id || '';
@@ -54,18 +57,19 @@ export default function CharacterCardsPanel({
       icon={Users}
       onClose={onClose}
       headerAccent="cyan"
+      density={density}
     >
       <div className="flex flex-col h-full">
         {/* Search */}
         <div className="border-b border-slate-800/50 px-3 py-2">
           <div className="flex items-center gap-2 px-2 py-1 rounded bg-slate-900/60 border border-slate-800/50">
-            <Search className="w-3 h-3 text-slate-500" />
+            <Search className="w-3 h-3 text-slate-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search characters..."
-              className="flex-1 bg-transparent text-xs text-slate-200 outline-none placeholder-slate-600"
+              className="flex-1 bg-transparent text-sm text-slate-200 outline-none placeholder-slate-600"
             />
           </div>
         </div>
@@ -79,7 +83,7 @@ export default function CharacterCardsPanel({
               description={characters.length === 0 ? 'Create or import characters to populate this panel.' : 'Try a different search query.'}
             />
           ) : (
-            <div className="grid gap-2.5">
+            <div className="grid @md:grid-cols-2 gap-2.5">
               <AnimatePresence mode="popLayout">
                 {filtered.map((char) => (
                   <motion.button
@@ -104,13 +108,13 @@ export default function CharacterCardsPanel({
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700/50 flex items-center justify-center">
-                        <User className="w-4 h-4 text-slate-500" />
+                        <User className="w-4 h-4 text-slate-400" />
                       </div>
                     )}
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-200 truncate">{char.name}</p>
+                      <p className="text-sm font-medium text-slate-200 truncate">{char.name}</p>
                       {char.type && (
-                        <p className="text-[10px] text-slate-500 truncate">{char.type}</p>
+                        <p className="text-sm text-slate-400 truncate">{char.type}</p>
                       )}
                     </div>
                   </motion.button>

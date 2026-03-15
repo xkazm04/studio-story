@@ -154,7 +154,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-gray-900 rounded-lg border border-gray-800 max-w-2xl w-full"
+        className="bg-slate-900 rounded-lg border border-slate-800 max-w-2xl w-full"
       >
         <div className="relative p-6">
           <ColoredBorder color="purple" />
@@ -167,7 +167,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors"
               disabled={isUploading}
             >
               <X size={24} />
@@ -207,7 +207,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* File Upload Area */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 File
               </label>
               <div
@@ -220,7 +220,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
                     ? 'border-purple-500 bg-purple-500/10'
                     : selectedFile
                     ? 'border-green-500 bg-green-500/10'
-                    : 'border-gray-700 hover:border-gray-600 bg-gray-800/50'
+                    : 'border-slate-700 hover:border-slate-600 bg-slate-800/50'
                 )}
               >
                 <input
@@ -236,18 +236,18 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
                     <>
                       <FileImage size={48} className="mx-auto mb-4 text-green-400" />
                       <p className="text-white font-medium mb-1">{selectedFile.name}</p>
-                      <p className="text-gray-400 text-sm">{formatFileSize(selectedFile.size)}</p>
+                      <p className="text-slate-400 text-sm">{formatFileSize(selectedFile.size)}</p>
                     </>
                   ) : (
                     <>
-                      <Upload size={48} className="mx-auto mb-4 text-gray-500" />
+                      <Upload size={48} className="mx-auto mb-4 text-slate-400" />
                       <p className="text-white font-medium mb-1">
                         Click to upload or drag and drop
                       </p>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-slate-400 text-sm">
                         Images (JPEG, PNG, GIF, WebP) or Documents (PDF, TXT, MD)
                       </p>
-                      <p className="text-gray-500 text-xs mt-1">Maximum file size: 5MB</p>
+                      <p className="text-slate-400 text-sm mt-1">Maximum file size: 5MB</p>
                     </>
                   )}
                 </div>
@@ -256,7 +256,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
 
             {/* Media Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Media Type
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -269,7 +269,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
                     className={cn('px-4 py-3 rounded-lg transition-all',
                       mediaType === type.value
                         ? 'bg-purple-600 text-white'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                     )}
                   >
                     {type.label}
@@ -280,7 +280,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Description (optional)
               </label>
               <textarea
@@ -288,18 +288,18 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={isUploading}
                 placeholder="Add a description for this media..."
-                className="w-full min-h-[100px] px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full min-h-[100px] px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
               />
             </div>
 
             {/* Upload Progress */}
             {isUploading && (
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm text-gray-400">
+                <div className="flex items-center justify-between text-sm text-slate-400">
                   <span>Uploading...</span>
                   <span>{uploadProgress}%</span>
                 </div>
-                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${uploadProgress}%` }}
@@ -314,7 +314,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
               <button
                 type="submit"
                 disabled={!selectedFile || isUploading}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
               >
                 <Upload size={18} />
                 {isUploading ? 'Uploading...' : 'Upload Media'}
@@ -323,7 +323,7 @@ const MediaUploadForm: React.FC<MediaUploadFormProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isUploading}
-                className="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 text-white rounded-lg transition-colors"
+                className="px-6 py-3 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 text-white rounded-lg transition-colors"
               >
                 Cancel
               </button>

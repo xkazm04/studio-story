@@ -92,7 +92,7 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
 
   return (
     <div className="space-y-4">
-      <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+      <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
         <ColoredBorder color="blue" />
 
         <div className="flex items-center justify-between mb-4">
@@ -102,7 +102,7 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
             </div>
             <div>
               <h3 className="text-lg font-semibold text-white">Semantic Knowledge Search</h3>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-slate-400">
                 Search across lore, media, events, and achievements using natural language
               </p>
             </div>
@@ -111,14 +111,14 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={cn('flex items-center gap-2 px-3 py-2 rounded-lg transition-colors',
-              showFilters ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'
+              showFilters ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
             )}
             data-testid="toggle-filters-btn"
           >
             <Filter size={16} />
             Filters
             {selectedTypes.length > 0 && (
-              <span className="px-2 py-0.5 bg-indigo-500 text-white text-xs rounded-full">
+              <span className="px-2 py-0.5 bg-indigo-500 text-white text-sm rounded-full">
                 {selectedTypes.length}
               </span>
             )}
@@ -135,13 +135,13 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
               transition={{ duration: 0.2 }}
               className="overflow-hidden mb-4"
             >
-              <div className="bg-gray-800 rounded-lg p-4 space-y-3">
+              <div className="bg-slate-800 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-300">Filter by Content Type</span>
+                  <span className="text-sm font-medium text-slate-300">Filter by Content Type</span>
                   {selectedTypes.length > 0 && (
                     <button
                       onClick={clearFilters}
-                      className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                      className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
                       data-testid="clear-filters-btn"
                     >
                       <X size={12} />
@@ -161,8 +161,8 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
                         onClick={() => toggleTypeFilter(type)}
                         className={cn('flex items-center gap-2 px-3 py-2 rounded-lg transition-all',
                           isSelected
-                            ? `${typeBgColors[type]} ${typeColors[type]} ring-2 ring-offset-2 ring-offset-gray-800`
-                            : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                            ? `${typeBgColors[type]} ${typeColors[type]} ring-2 ring-offset-2 ring-offset-slate-800`
+                            : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
                         )}
                         data-testid={`filter-${type}-btn`}
                       >
@@ -185,20 +185,20 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g., 'battles in the northern territories' or 'founding members'"
-              className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 pr-12 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               data-testid="search-input"
             />
             <button
               type="submit"
               disabled={isSearching || !query.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
               data-testid="search-btn"
             >
               {isSearching ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
             </button>
           </div>
 
-          <div className="text-xs text-gray-500">
+          <div className="text-sm text-slate-400">
             Searching in: {factionName}
             {selectedTypes.length > 0 && (
               <> • Filtered to: {selectedTypes.join(', ')}</>
@@ -209,18 +209,18 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
 
       {/* Results */}
       {hasSearched && (
-        <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+        <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
           <ColoredBorder color="blue" />
 
           {isSearching ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <Loader2 className="animate-spin text-indigo-400" size={32} />
-              <p className="text-gray-400">Searching knowledge base...</p>
+              <p className="text-slate-400">Searching knowledge base...</p>
             </div>
           ) : results.length > 0 ? (
             <>
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-400">
+                <h4 className="text-sm font-medium text-slate-400">
                   Found {results.length} result{results.length !== 1 ? 's' : ''}
                 </h4>
               </div>
@@ -236,7 +236,7 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
                       key={result.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="relative bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-indigo-500/50 transition-all"
+                      className="relative bg-slate-800 rounded-lg p-4 border border-slate-700 hover:border-indigo-500/50 transition-all"
                       data-testid={`search-result-${result.type}`}
                     >
                       <div className="flex items-start gap-3">
@@ -248,33 +248,33 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
                           <div className="flex items-start justify-between gap-2 mb-2">
                             <div className="flex-1">
                               <h5 className="font-medium text-white mb-1">{result.title}</h5>
-                              <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <div className="flex items-center gap-2 text-sm text-slate-400">
                                 <span className={cn('px-2 py-0.5 rounded-full capitalize', typeBgColor, typeColor)}>
                                   {result.type}
                                 </span>
                                 {result.category && (
-                                  <span className="px-2 py-0.5 bg-gray-700 text-gray-400 rounded-full capitalize">
+                                  <span className="px-2 py-0.5 bg-slate-700 text-slate-400 rounded-full capitalize">
                                     {result.category.replace('-', ' ')}
                                   </span>
                                 )}
                                 {result.metadata.created_at && (
-                                  <span className="text-gray-500">
+                                  <span className="text-slate-400">
                                     {formatDate(result.metadata.created_at)}
                                   </span>
                                 )}
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-xs text-gray-500 flex-shrink-0">
+                            <div className="flex items-center gap-1.5 text-sm text-slate-400 flex-shrink-0">
                               <div
-                                className="h-1.5 rounded-full bg-gradient-to-r from-gray-700 to-indigo-500"
+                                className="h-1.5 rounded-full bg-gradient-to-r from-slate-700 to-indigo-500"
                                 style={{ width: `${result.similarity_score * 50}px` }}
                               />
                               <span>{Math.round(result.similarity_score * 100)}%</span>
                             </div>
                           </div>
 
-                          <p className="text-sm text-gray-300 line-clamp-3">{result.content}</p>
+                          <p className="text-sm text-slate-300 line-clamp-3">{result.content}</p>
 
                           {result.metadata.url && (
                             <div className="mt-2">
@@ -282,7 +282,7 @@ const SemanticSearchPanel: React.FC<SemanticSearchPanelProps> = ({ factionId, fa
                                 href={result.metadata.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
                               >
                                 View Media
                               </a>

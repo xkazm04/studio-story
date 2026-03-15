@@ -60,7 +60,7 @@ export function Tooltip({
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             className={cn(
-              'absolute z-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-200 bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-md shadow-lg whitespace-nowrap pointer-events-none',
+              'absolute z-50 px-2.5 py-1.5 text-xs font-medium text-slate-200 bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-md shadow-lg whitespace-nowrap pointer-events-none',
               positionStyles[position]
             )}
             role="tooltip"

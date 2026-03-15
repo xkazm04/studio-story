@@ -82,7 +82,7 @@ export default function AssetLeftPanel() {
           className={`p-2 rounded-lg transition-colors ${
             !assetType
               ? 'bg-cyan-500/20 text-cyan-400'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
           }`}
           title="All Assets"
         >
@@ -98,7 +98,7 @@ export default function AssetLeftPanel() {
               className={`p-2 rounded-lg transition-colors ${
                 isActive
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+                  : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
               }`}
               title={group.label}
             >
@@ -145,7 +145,7 @@ export default function AssetLeftPanel() {
               <div className="flex items-center">
                 <button
                   onClick={() => toggleGroup(group.id)}
-                  className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-slate-300 transition-colors"
                 >
                   {isExpanded ? (
                     <ChevronDown className="w-3.5 h-3.5" />
@@ -184,10 +184,10 @@ export default function AssetLeftPanel() {
                         <button
                           key={type.id}
                           onClick={() => handleTypeSelect(type.id)}
-                          className={`w-full flex items-center gap-2 pl-10 pr-4 py-1.5 text-left text-xs transition-all duration-150 ${
+                          className={`w-full flex items-center gap-2 pl-10 pr-4 py-1.5 text-left text-sm transition-all duration-150 ${
                             isTypeActive
                               ? 'bg-cyan-500/10 text-cyan-400 border-l-2 border-cyan-500'
-                              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/30 border-l-2 border-transparent'
+                              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/30 border-l-2 border-transparent'
                           }`}
                         >
                           <TypeIcon className="w-3.5 h-3.5" />
@@ -205,7 +205,7 @@ export default function AssetLeftPanel() {
 
       {/* Footer Stats */}
       <div className="px-4 py-3 border-t border-slate-800/70 bg-slate-900/30">
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-sm text-slate-400">
           <span>MongoDB Connected</span>
           <span className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

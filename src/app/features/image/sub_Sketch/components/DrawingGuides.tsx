@@ -21,6 +21,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { RangeSlider } from '@/app/components/UI/RangeSlider';
 
 // ============================================================================
 // Types
@@ -172,7 +173,7 @@ const RulerBar: React.FC<RulerProps> = ({
             {isMajor && (
               <span
                 className={cn(
-                  'absolute text-[8px] text-slate-500',
+                  'absolute text-xs text-slate-400',
                   orientation === 'horizontal'
                     ? 'bottom-2.5 left-0.5'
                     : 'right-2.5 top-0.5'
@@ -222,9 +223,9 @@ const GuideItem: React.FC<GuideItemProps> = ({
       {/* Guide info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-slate-300 capitalize">{guide.type}</span>
+          <span className="text-sm text-slate-300 capitalize">{guide.type}</span>
         </div>
-        <div className="text-[9px] text-slate-500">
+        <div className="text-sm text-slate-400">
           {guide.type === 'horizontal'
             ? `Y: ${Math.round(guide.position.y)}px`
             : guide.type === 'vertical'
@@ -239,30 +240,33 @@ const GuideItem: React.FC<GuideItemProps> = ({
       <div className="flex items-center gap-0.5">
         <button
           onClick={() => onUpdate({ visible: !guide.visible })}
-          className="p-1 text-slate-400 hover:text-slate-200 rounded transition-colors"
+          aria-label={guide.visible ? 'Hide guide' : 'Show guide'}
+          className="p-2.5 text-slate-400 hover:text-slate-200 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
         >
-          {guide.visible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+          {guide.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
         </button>
         <button
           onClick={() => onUpdate({ locked: !guide.locked })}
+          aria-label={guide.locked ? 'Unlock guide' : 'Lock guide'}
           className={cn(
-            'p-1 rounded transition-colors',
+            'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
             guide.locked ? 'text-yellow-500' : 'text-slate-400 hover:text-slate-200'
           )}
         >
-          {guide.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+          {guide.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
         </button>
         <button
           onClick={onDelete}
           disabled={guide.locked}
+          aria-label="Delete guide"
           className={cn(
-            'p-1 rounded transition-colors',
+            'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
             guide.locked
-              ? 'text-slate-600 cursor-not-allowed'
+              ? 'text-slate-400 cursor-not-allowed'
               : 'text-slate-400 hover:text-red-400'
           )}
         >
-          <Trash2 className="w-3 h-3" />
+          <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -360,13 +364,13 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
   }, []);
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <RulerIcon className="w-4 h-4 text-green-400" />
-          <span className="text-xs font-medium text-slate-200">Drawing Guides</span>
-          <span className="text-[10px] px-1.5 py-0.5 bg-slate-700 rounded-full text-slate-400">
+          <span className="text-sm font-medium text-slate-200">Drawing Guides</span>
+          <span className="text-sm px-1.5 py-0.5 bg-slate-700 rounded-full text-slate-400">
             {guides.length}
           </span>
         </div>
@@ -374,19 +378,20 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
           <button
             onClick={() => setShowRulers(!showRulers)}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
               showRulers
                 ? 'bg-slate-700 text-slate-200'
                 : 'text-slate-400 hover:text-slate-200'
             )}
             title={showRulers ? 'Hide rulers' : 'Show rulers'}
+            aria-label={showRulers ? 'Hide rulers' : 'Show rulers'}
           >
             <RulerIcon className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setShowSettings(!showSettings)}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-2.5 rounded transition-colors',
               showSettings
                 ? 'bg-slate-700 text-slate-200'
                 : 'text-slate-400 hover:text-slate-200'
@@ -409,7 +414,7 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
           >
             <div className="space-y-2 p-2 bg-slate-800/30 rounded-lg">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-slate-400">Snap to Grid</span>
+                <span className="text-sm text-slate-400">Snap to Grid</span>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -421,7 +426,7 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-slate-400">Snap to Guides</span>
+                <span className="text-sm text-slate-400">Snap to Guides</span>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -433,33 +438,13 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-400 flex-1">Grid Size</span>
-                <input
-                  type="range"
-                  min={5}
-                  max={100}
-                  value={snapSettings.gridSize}
-                  onChange={(e) => updateSnapSettings({ gridSize: parseInt(e.target.value) })}
-                  className="w-20 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                />
-                <span className="text-[10px] text-slate-300 w-8 text-right">
-                  {snapSettings.gridSize}px
-                </span>
+                <span className="text-sm text-slate-400 flex-shrink-0">Grid Size</span>
+                <RangeSlider aria-label="Grid size" value={snapSettings.gridSize} min={5} max={100} onChange={(v) => updateSnapSettings({ gridSize: v })} unit="px" className="flex-1" />
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-400 flex-1">Snap Radius</span>
-                <input
-                  type="range"
-                  min={2}
-                  max={30}
-                  value={snapSettings.snapRadius}
-                  onChange={(e) => updateSnapSettings({ snapRadius: parseInt(e.target.value) })}
-                  className="w-20 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                />
-                <span className="text-[10px] text-slate-300 w-8 text-right">
-                  {snapSettings.snapRadius}px
-                </span>
+                <span className="text-sm text-slate-400 flex-shrink-0">Snap Radius</span>
+                <RangeSlider aria-label="Snap radius" value={snapSettings.snapRadius} min={2} max={30} onChange={(v) => updateSnapSettings({ snapRadius: v })} unit="px" className="flex-1" />
               </div>
             </div>
           </motion.div>
@@ -468,39 +453,39 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
 
       {/* Quick Add Guides */}
       <div className="space-y-1.5">
-        <span className="text-[10px] text-slate-500 uppercase tracking-wider">Quick Add</span>
+        <span className="text-sm text-slate-400 uppercase tracking-wider">Quick Add</span>
         <div className="grid grid-cols-4 gap-1">
           <button
             onClick={() => createGuide('horizontal')}
-            className="flex flex-col items-center gap-1 p-2 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+            className="flex flex-col items-center gap-1 p-3 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
             title="Add horizontal guide"
           >
             <MoreHorizontal className="w-4 h-4" />
-            <span className="text-[9px]">H Line</span>
+            <span className="text-sm">H Line</span>
           </button>
           <button
             onClick={() => createGuide('vertical')}
-            className="flex flex-col items-center gap-1 p-2 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+            className="flex flex-col items-center gap-1 p-3 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
             title="Add vertical guide"
           >
             <MoreHorizontal className="w-4 h-4 rotate-90" />
-            <span className="text-[9px]">V Line</span>
+            <span className="text-sm">V Line</span>
           </button>
           <button
             onClick={() => createGuide('circle')}
-            className="flex flex-col items-center gap-1 p-2 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+            className="flex flex-col items-center gap-1 p-3 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
             title="Add circle guide"
           >
             <Circle className="w-4 h-4" />
-            <span className="text-[9px]">Circle</span>
+            <span className="text-sm">Circle</span>
           </button>
           <button
             onClick={() => createGuide('perspective')}
-            className="flex flex-col items-center gap-1 p-2 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+            className="flex flex-col items-center gap-1 p-3 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
             title="Add perspective guide"
           >
             <Triangle className="w-4 h-4" />
-            <span className="text-[9px]">Persp</span>
+            <span className="text-sm">Persp</span>
           </button>
         </div>
       </div>
@@ -511,7 +496,7 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
           onClick={() =>
             createGuide('horizontal', { x: canvasWidth / 2, y: canvasHeight / 2 })
           }
-          className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-800/50 rounded text-[10px] text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-800/50 rounded text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
         >
           <Plus className="w-3 h-3" />
           Center H
@@ -520,7 +505,7 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
           onClick={() =>
             createGuide('vertical', { x: canvasWidth / 2, y: canvasHeight / 2 })
           }
-          className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-800/50 rounded text-[10px] text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-slate-800/50 rounded text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
         >
           <Plus className="w-3 h-3" />
           Center V
@@ -551,8 +536,8 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-6 text-center">
-          <RulerIcon className="w-8 h-8 text-slate-700 mb-2" />
-          <p className="text-[10px] text-slate-500">
+          <RulerIcon className="w-8 h-8 text-slate-400 mb-2" />
+          <p className="text-sm text-slate-400">
             No guides added yet.
             <br />
             Click buttons above to add guides.
@@ -565,12 +550,12 @@ export const DrawingGuides: React.FC<DrawingGuidesProps> = ({
         <div className="flex items-center justify-between pt-2 border-t border-slate-800">
           <button
             onClick={clearAllGuides}
-            className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-red-400 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-red-400 transition-colors"
           >
             <Trash2 className="w-3 h-3" />
             Clear All
           </button>
-          <span className="text-[9px] text-slate-600">
+          <span className="text-sm text-slate-400">
             Drag from rulers to add
           </span>
         </div>

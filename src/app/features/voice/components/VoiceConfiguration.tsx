@@ -106,8 +106,8 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
   if (isLoading) {
     return (
       <div className="p-6 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-        <span className="ml-2 text-gray-400">Loading configuration...</span>
+        <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+        <span className="ml-2 text-slate-400">Loading configuration...</span>
       </div>
     );
   }
@@ -121,7 +121,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
   }
 
   return (
-    <div className="bg-gray-950/50 p-6 space-y-6">
+    <div className="bg-slate-950/50 p-6 space-y-6">
       {sliderConfigs.map((slider, index) => {
         const value = localConfig[slider.field] as number;
 
@@ -134,7 +134,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
             className="space-y-2"
           >
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-200">{slider.label}</label>
+              <label className="text-sm font-medium text-slate-200">{slider.label}</label>
               <span className="text-sm font-mono text-emerald-400">{value.toFixed(2)}</span>
             </div>
 
@@ -145,7 +145,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
               step={slider.step}
               value={value}
               onChange={(e) => handleSliderChange(slider.field, parseFloat(e.target.value))}
-              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer
+              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer
                 [&::-webkit-slider-thumb]:appearance-none
                 [&::-webkit-slider-thumb]:w-4
                 [&::-webkit-slider-thumb]:h-4
@@ -164,7 +164,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
                 [&::-moz-range-thumb]:shadow-emerald-500/50"
             />
 
-            <p className="text-xs text-gray-500">{slider.description}</p>
+            <p className="text-sm text-slate-400">{slider.description}</p>
           </motion.div>
         );
       })}
@@ -174,12 +174,12 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 pt-4 border-t border-gray-700/50"
+          className="flex items-center gap-3 pt-4 border-t border-slate-700/50"
         >
           <button
             onClick={handleReset}
             disabled={isSaving}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50"
           >
             <RotateCcw className="w-4 h-4" />
             Reset

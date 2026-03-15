@@ -11,6 +11,7 @@ import { useSceneEditor } from '@/contexts/SceneEditorContext';
 import { useSceneGraphStore } from '@/app/store/sceneGraphStore';
 import { OutlineItem } from './components/OutlineItem';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
@@ -181,8 +182,8 @@ export default function OutlineSidebar() {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2 text-slate-300">
             <FileText className="w-4 h-4 text-cyan-400" />
-            <h2 className="font-mono font-medium text-xs uppercase tracking-wide">// scenes</h2>
-            <span className="text-[10px] text-slate-500 bg-slate-800/80 px-1.5 py-0.5 rounded-md font-mono border border-slate-700/50">
+            <h2 className={cn(TYPOGRAPHY.h3, 'font-mono uppercase tracking-wide')}>// scenes</h2>
+            <span className="text-sm text-slate-400 bg-slate-800/80 px-1.5 py-0.5 rounded-md font-mono border border-slate-700/50">
               {filteredScenes.length}/{scenes.length}
             </span>
           </div>
@@ -202,14 +203,14 @@ export default function OutlineSidebar() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="search_scenes..."
             className={cn(
-              'w-full pl-8 pr-3 py-1.5 text-xs rounded-md font-mono',
+              'w-full pl-8 pr-3 py-1.5 text-sm rounded-md font-mono',
               'bg-slate-800/80 border border-slate-700/50',
               'text-slate-200 placeholder:text-slate-500',
               'focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30'
@@ -222,7 +223,7 @@ export default function OutlineSidebar() {
           <button
             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
             className={cn(
-              'w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md font-mono',
+              'w-full flex items-center justify-between px-2.5 py-1.5 text-sm rounded-md font-mono',
               'bg-slate-800/80 border border-slate-700/50',
               'text-slate-300 hover:border-slate-600 transition-colors',
               filterMode !== 'all' && 'border-cyan-500/50 text-cyan-400'
@@ -230,7 +231,7 @@ export default function OutlineSidebar() {
           >
             <div className="flex items-center gap-2">
               <Filter className="w-3 h-3" />
-              <span className="uppercase tracking-wide">{selectedFilter.label}</span>
+              <span className={cn(TYPOGRAPHY.caption, 'uppercase tracking-wide')}>{selectedFilter.label}</span>
             </div>
             <ChevronDown className={cn('w-3 h-3 transition-transform', showFilterDropdown && 'rotate-180')} />
           </button>
@@ -251,20 +252,20 @@ export default function OutlineSidebar() {
                       setShowFilterDropdown(false);
                     }}
                     className={cn(
-                      'w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left font-mono',
+                      'w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left font-mono',
                       'hover:bg-slate-700/80 transition-colors',
                       filterMode === option.value ? 'text-cyan-400' : 'text-slate-300'
                     )}
                   >
                     {option.icon}
-                    <span className="uppercase tracking-wide">{option.label}</span>
+                    <span className={cn(TYPOGRAPHY.caption, 'uppercase tracking-wide')}>{option.label}</span>
                     {option.value === 'orphaned' && sceneAnalysis.orphanedSceneIds.size > 0 && (
-                      <span className="ml-auto text-amber-400 text-[10px] font-mono">
+                      <span className="ml-auto text-amber-400 text-sm font-mono">
                         {sceneAnalysis.orphanedSceneIds.size}
                       </span>
                     )}
                     {option.value === 'deadends' && sceneAnalysis.deadEndSceneIds.size > 0 && (
-                      <span className="ml-auto text-red-400 text-[10px] font-mono">
+                      <span className="ml-auto text-red-400 text-sm font-mono">
                         {sceneAnalysis.deadEndSceneIds.size}
                       </span>
                     )}
@@ -302,15 +303,15 @@ export default function OutlineSidebar() {
         </AnimatePresence>
 
         {filteredScenes.length === 0 && scenes.length > 0 && (
-          <div className="py-8 text-center text-slate-500">
-            <Filter className="w-8 h-8 mx-auto mb-2 text-slate-600" />
+          <div className="py-8 text-center text-slate-400">
+            <Filter className="w-8 h-8 mx-auto mb-2 text-slate-400" />
             <p className="text-sm">No scenes match filters</p>
             <button
               onClick={() => {
                 setFilterMode('all');
                 setSearchQuery('');
               }}
-              className="mt-2 text-xs text-cyan-400 hover:underline"
+              className="mt-2 text-sm text-cyan-400 hover:underline"
             >
               Clear filters
             </button>
@@ -318,12 +319,12 @@ export default function OutlineSidebar() {
         )}
 
         {scenes.length === 0 && (
-          <div className="py-8 text-center text-slate-500">
-            <FileText className="w-8 h-8 mx-auto mb-2 text-slate-600" />
+          <div className="py-8 text-center text-slate-400">
+            <FileText className="w-8 h-8 mx-auto mb-2 text-slate-400" />
             <p className="text-sm">No scenes yet</p>
             <button
               onClick={handleAddScene}
-              className="mt-2 text-xs text-cyan-400 hover:underline"
+              className="mt-2 text-sm text-cyan-400 hover:underline"
             >
               Create your first scene
             </button>
@@ -333,7 +334,7 @@ export default function OutlineSidebar() {
 
       {/* Footer Stats */}
       {scenes.length > 0 && (
-        <div className="shrink-0 p-3 border-t border-slate-800/70 text-[10px] text-slate-500 font-mono">
+        <div className="shrink-0 p-3 border-t border-slate-800/70 text-sm text-slate-400 font-mono">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 uppercase tracking-wide">
               <span>{scenes.length} scenes</span>

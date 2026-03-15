@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fadeIn, scaleIn, staggerDelay } from '@/lib/animations';
 import { useDatasetImages, useAddImageToDataset, useRemoveImageFromDataset } from '@/app/hooks/useDatasets';
 import { Upload, Loader2, Trash2, Tag, Sparkles, X, Wand2 } from 'lucide-react';
 import Image from 'next/image';
@@ -100,7 +101,7 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+        <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
       </div>
     );
   }
@@ -110,8 +111,8 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-200">{dataset.name}</h3>
-          <p className="text-sm text-gray-400 mt-1">
+          <h3 className="ms-h3">{dataset.name}</h3>
+          <p className="ms-caption mt-1">
             {images?.length || 0} image(s) in dataset
           </p>
         </div>
@@ -121,7 +122,7 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
           {onOpenSketchWizard && (
             <button
               onClick={onOpenSketchWizard}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors"
             >
               <Wand2 className="w-4 h-4" />
               Generate Images
@@ -137,7 +138,7 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
           />
           <label
             htmlFor={`image-upload-${dataset.id}`}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors cursor-pointer"
           >
             {isUploading ? (
               <>
@@ -160,10 +161,11 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
           {images.map((image, index) => (
             <motion.div
               key={image.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              className="group relative aspect-square rounded-lg overflow-hidden bg-gray-900 border border-gray-700 hover:border-gray-600 transition-colors"
+              variants={scaleIn}
+              initial="initial"
+              animate="animate"
+              transition={staggerDelay(index)}
+              className="group relative aspect-square rounded-lg overflow-hidden bg-slate-900 border border-slate-700 hover:border-slate-600 transition-colors"
               onClick={() => setSelectedImage(image.id)}
             >
               <Image
@@ -182,8 +184,8 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
                     handleGenerateTags(image.id, image.image_url);
                   }}
                   disabled={isGeneratingTags}
-                  className="p-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
-                  title="Generate Tags with AI"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                  aria-label="Generate Tags with AI"
                 >
                   <Sparkles className="w-4 h-4" />
                 </button>
@@ -193,8 +195,8 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
                     e.stopPropagation();
                     handleRemoveImage(image.id);
                   }}
-                  className="p-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
-                  title="Remove from Dataset"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                  aria-label="Remove from Dataset"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -204,17 +206,17 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
               {image.tags && image.tags.length > 0 && (
                 <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
                   <div className="flex items-center gap-1 flex-wrap">
-                    <Tag className="w-3 h-3 text-gray-400" />
+                    <Tag className="w-3 h-3 text-slate-400" />
                     {image.tags.slice(0, 2).map((tag, i) => (
                       <span
                         key={i}
-                        className="text-xs text-gray-300 bg-gray-900/60 px-1.5 py-0.5 rounded"
+                        className="text-sm text-slate-300 bg-slate-900/60 px-1.5 py-0.5 rounded"
                       >
                         {tag}
                       </span>
                     ))}
                     {image.tags.length > 2 && (
-                      <span className="text-xs text-gray-400">+{image.tags.length - 2}</span>
+                      <span className="text-sm text-slate-400">+{image.tags.length - 2}</span>
                     )}
                   </div>
                 </div>
@@ -223,10 +225,10 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 border-2 border-dashed border-gray-700 rounded-lg">
-          <Upload className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <p className="text-gray-400">No images in this dataset</p>
-          <p className="text-sm text-gray-500 mt-1">Click "Upload Images" to add some</p>
+        <div className="text-center py-12 border-2 border-dashed border-slate-700 rounded-lg">
+          <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+          <p className="text-slate-400">No images in this dataset</p>
+          <p className="text-sm text-slate-400 mt-1">Click "Upload Images" to add some</p>
         </div>
       )}
 
@@ -242,22 +244,25 @@ const ImageDatasetGallery = ({ dataset, onOpenSketchWizard }: ImageDatasetGaller
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            variants={fadeIn}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
             onClick={() => setSelectedImage(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative max-w-4xl max-h-[90vh] bg-gray-900 rounded-xl overflow-hidden"
+              variants={scaleIn}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="relative max-w-4xl max-h-[90vh] bg-slate-900 rounded-xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedImage(null)}
-                className="absolute top-4 right-4 p-2 rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors z-10"
+                className="absolute top-4 right-4 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors z-10"
+                aria-label="Close image preview"
               >
                 <X className="w-5 h-5" />
               </button>

@@ -54,7 +54,7 @@ interface StatsBarProps {
 
 function StatsBar({ totalScenes, orphanCount, deadEndCount, currentDepth, maxDepth }: StatsBarProps) {
   return (
-    <div className="flex items-center gap-3 px-3 py-2 bg-slate-900/90 backdrop-blur-sm rounded-lg border border-slate-700/70 text-xs font-mono">
+    <div className="flex items-center gap-3 px-3 py-2 bg-slate-900/90 backdrop-blur-sm rounded-lg border border-slate-700/70 text-sm font-mono">
       <div className="flex items-center gap-1.5 text-slate-300">
         <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
         <span className="uppercase tracking-wide">{totalScenes} scenes</span>
@@ -108,7 +108,7 @@ function DiagnosticsPanel({
   sceneName,
 }: DiagnosticsPanelProps) {
   return (
-    <div className="w-64 max-h-80 overflow-y-auto bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700/70 shadow-xl text-xs">
+    <div className="w-64 max-h-80 overflow-y-auto bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700/70 shadow-xl text-sm">
       <div className="px-3 py-2 border-b border-slate-700/70 sticky top-0 bg-slate-900/95">
         <h3 className="font-mono font-medium text-slate-200 flex items-center gap-1.5 uppercase tracking-wide">
           <Info className="w-3.5 h-3.5 text-cyan-400" />
@@ -121,11 +121,11 @@ function DiagnosticsPanel({
         <div className="grid grid-cols-2 gap-2">
           <div className="px-2 py-1.5 rounded-md bg-slate-800/80 text-center border border-slate-700/50">
             <div className="text-lg font-mono font-bold text-cyan-400">{totalChoices}</div>
-            <div className="text-[10px] font-mono uppercase tracking-wide text-slate-500">Choices</div>
+            <div className="text-sm font-mono uppercase tracking-wide text-slate-400">Choices</div>
           </div>
           <div className="px-2 py-1.5 rounded-md bg-slate-800/80 text-center border border-slate-700/50">
             <div className="text-lg font-mono font-bold text-purple-400">{maxBranchingFactor}</div>
-            <div className="text-[10px] font-mono uppercase tracking-wide text-slate-500">Max Branch</div>
+            <div className="text-sm font-mono uppercase tracking-wide text-slate-400">Max Branch</div>
           </div>
         </div>
 
@@ -147,7 +147,7 @@ function DiagnosticsPanel({
                 </button>
               ))}
               {orphanedSceneIds.length > 5 && (
-                <span className="text-slate-500">+{orphanedSceneIds.length - 5} more</span>
+                <span className="text-slate-400">+{orphanedSceneIds.length - 5} more</span>
               )}
             </div>
           </div>
@@ -171,7 +171,7 @@ function DiagnosticsPanel({
                 </button>
               ))}
               {deadEndSceneIds.length > 5 && (
-                <span className="text-slate-500">+{deadEndSceneIds.length - 5} more</span>
+                <span className="text-slate-400">+{deadEndSceneIds.length - 5} more</span>
               )}
             </div>
           </div>
@@ -200,7 +200,7 @@ function QuickNavPanel({
     <div className="flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm rounded-lg border border-slate-700/70 p-1">
       <button
         onClick={onGoToStart}
-        className="flex items-center gap-1.5 px-2 py-1.5 text-xs font-mono font-medium text-slate-300 hover:text-cyan-400 hover:bg-slate-800 rounded-md transition-colors uppercase tracking-wide"
+        className="flex items-center gap-1.5 px-2 py-1.5 text-sm font-mono font-medium text-slate-300 hover:text-cyan-400 hover:bg-slate-800 rounded-md transition-colors uppercase tracking-wide"
         title="Go to first scene"
       >
         <Play className="w-3 h-3" />
@@ -209,7 +209,7 @@ function QuickNavPanel({
       <div className="w-px h-4 bg-slate-700/70" />
       <button
         onClick={onShowKeyboardShortcuts}
-        className="flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium text-slate-300 hover:text-cyan-400 hover:bg-slate-800 rounded-md transition-colors"
+        className="flex items-center gap-1.5 px-2 py-1.5 text-sm font-medium text-slate-300 hover:text-cyan-400 hover:bg-slate-800 rounded-md transition-colors"
         title="Keyboard shortcuts"
       >
         <Keyboard className="w-3 h-3" />
@@ -245,9 +245,9 @@ function KeyboardShortcutsModal({ onClose }: { onClose: () => void }) {
         </h3>
         <div className="space-y-2">
           {shortcuts.map(({ key, action }) => (
-            <div key={key} className="flex items-center justify-between text-xs">
+            <div key={key} className="flex items-center justify-between text-sm">
               <span className="text-slate-400">{action}</span>
-              <kbd className="px-1.5 py-0.5 bg-slate-800/80 border border-slate-700/50 rounded-md text-cyan-400 font-mono text-[10px]">
+              <kbd className="px-1.5 py-0.5 bg-slate-800/80 border border-slate-700/50 rounded-md text-cyan-400 font-mono text-sm">
                 {key}
               </kbd>
             </div>
@@ -255,7 +255,7 @@ function KeyboardShortcutsModal({ onClose }: { onClose: () => void }) {
         </div>
         <button
           onClick={onClose}
-          className="mt-4 w-full py-1.5 text-xs font-mono font-medium text-slate-400 hover:text-cyan-400 bg-slate-800/80 hover:bg-slate-700 rounded-md border border-slate-700/50 transition-colors"
+          className="mt-4 w-full py-1.5 text-sm font-mono font-medium text-slate-400 hover:text-cyan-400 bg-slate-800/80 hover:bg-slate-700 rounded-md border border-slate-700/50 transition-colors"
         >
           Close
         </button>
@@ -401,7 +401,7 @@ function SceneGraphInner() {
                 <button
                   onClick={toggleDiagnostics}
                   className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                     'bg-slate-900/90 border border-slate-700',
                     showDiagnostics ? 'text-cyan-400 border-cyan-500/50' : 'text-slate-400 hover:text-cyan-400'
                   )}
@@ -417,7 +417,7 @@ function SceneGraphInner() {
                 <button
                   onClick={toggleAnalytics}
                   className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                     'bg-slate-900/90 border border-slate-700',
                     showAnalytics ? 'text-emerald-400 border-emerald-500/50' : 'text-slate-400 hover:text-emerald-400'
                   )}
@@ -433,7 +433,7 @@ function SceneGraphInner() {
                 <button
                   onClick={toggleDebugger}
                   className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                     'bg-slate-900/90 border border-slate-700',
                     showDebugger ? 'text-amber-400 border-amber-500/50' : 'text-slate-400 hover:text-amber-400'
                   )}
@@ -449,7 +449,7 @@ function SceneGraphInner() {
                 <button
                   onClick={() => setShowPathSimulator(!showPathSimulator)}
                   className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                     'bg-slate-900/90 border border-slate-700',
                     showPathSimulator ? 'text-cyan-400 border-cyan-500/50' : 'text-slate-400 hover:text-cyan-400'
                   )}
@@ -572,7 +572,7 @@ function SceneGraphInner() {
                       style={{ width: `${branchDepth.progressPercent}%` }}
                     />
                   </div>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-sm text-slate-400">
                     {branchDepth.progressPercent}%
                   </span>
                 </div>
@@ -582,7 +582,7 @@ function SceneGraphInner() {
               <button
                 onClick={toggleAIPanel}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                   'bg-slate-900/90 border',
                   showAIPanel
                     ? 'text-purple-400 border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]'

@@ -32,11 +32,11 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ achievements, cha
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 text-gray-300">
+      <div className="flex items-center gap-3 text-slate-300">
         <Trophy size={24} className="text-yellow-500" />
         <div>
           <h3 className="text-lg font-semibold text-white">Faction Achievements</h3>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-400">
             {achievements.length} achievement{achievements.length !== 1 ? 's' : ''} earned
           </p>
         </div>
@@ -59,7 +59,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ achievements, cha
               className="relative"
             >
               <motion.div
-                className="bg-gray-900 rounded-lg border border-gray-800 p-6 h-full cursor-pointer overflow-hidden"
+                className="bg-slate-900 rounded-lg border border-slate-800 p-6 h-full cursor-pointer overflow-hidden"
                 whileHover={{ scale: 1.05, borderColor: '#fbbf24' }}
                 transition={{ duration: 0.3 }}
               >
@@ -127,12 +127,12 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ achievements, cha
                   </h4>
 
                   {/* Description */}
-                  <p className="text-gray-400 text-sm text-center mb-4 line-clamp-3">
+                  <p className="text-slate-400 text-sm text-center mb-4 line-clamp-3">
                     {achievement.description}
                   </p>
 
                   {/* Date earned */}
-                  <div className="flex items-center justify-center gap-2 text-gray-500 text-xs mb-3">
+                  <div className="flex items-center justify-center gap-2 text-slate-400 text-sm mb-3">
                     <Calendar size={12} />
                     <span>Earned {formatDate(achievement.earned_date)}</span>
                   </div>
@@ -144,13 +144,13 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ achievements, cha
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-gray-800 pt-3 mt-3"
+                        className="border-t border-slate-800 pt-3 mt-3"
                       >
-                        <div className="flex items-start gap-2 text-xs">
+                        <div className="flex items-start gap-2 text-sm">
                           <Users size={14} className="text-blue-400 flex-shrink-0 mt-0.5" />
                           <div className="flex-1">
-                            <div className="text-gray-500 mb-1">Earned by:</div>
-                            <div className="text-gray-300 space-y-1">
+                            <div className="text-slate-400 mb-1">Earned by:</div>
+                            <div className="text-slate-300 space-y-1">
                               {memberNames.map((name, i) => (
                                 <motion.div
                                   key={i}
@@ -187,9 +187,9 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({ achievements, cha
       {/* Empty state */}
       {achievements.length === 0 && (
         <div className="text-center py-12">
-          <Trophy size={48} className="mx-auto mb-4 text-gray-600 opacity-50" />
-          <p className="text-gray-500">No achievements earned yet</p>
-          <p className="text-gray-600 text-sm mt-2">
+          <Trophy size={48} className="mx-auto mb-4 text-slate-400 opacity-50" />
+          <p className="text-slate-400">No achievements earned yet</p>
+          <p className="text-slate-400 text-sm mt-2">
             Complete challenges to unlock faction achievements
           </p>
         </div>

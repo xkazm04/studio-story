@@ -26,7 +26,7 @@ const StorySettingArea = ({ column }: Props) => {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <MapPin size={18} className="text-green-500" />
-          <label htmlFor="setting" className="text-sm font-medium text-gray-100">
+          <label htmlFor="setting" className="text-sm font-medium text-slate-100">
             Setting
           </label>
         </div>

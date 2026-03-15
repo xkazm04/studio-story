@@ -126,7 +126,7 @@ function TreeNode({
                 if (e.key === 'Enter') handleSaveEdit();
                 if (e.key === 'Escape') handleCancelEdit();
               }}
-              className="flex-1 px-1 py-0.5 bg-slate-700/50 border border-slate-600 rounded text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+              className="flex-1 px-1 py-0.5 bg-slate-700/50 border border-slate-600 rounded text-sm text-slate-100 focus:outline-none focus:border-cyan-500"
               autoFocus
             />
             <IconButton
@@ -179,7 +179,7 @@ function TreeNode({
                         setIsEditing(true);
                         setShowContextMenu(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-700/50"
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-slate-200 hover:bg-slate-700/50"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                       Rename
@@ -189,7 +189,7 @@ function TreeNode({
                         onCreateSubfolder(folder.id);
                         setShowContextMenu(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-700/50"
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-slate-200 hover:bg-slate-700/50"
                     >
                       <FolderPlus className="w-3.5 h-3.5" />
                       New Subfolder
@@ -200,7 +200,7 @@ function TreeNode({
                         onDelete(folder.id);
                         setShowContextMenu(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-slate-700/50"
+                      className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 hover:bg-slate-700/50"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       Delete
@@ -266,7 +266,7 @@ function TreeNode({
                   )}
                 />
                 <span className="text-sm truncate">{collection.name}</span>
-                <span className="text-xs opacity-50 ml-auto">
+                <span className="text-sm opacity-50 ml-auto">
                   {collection.assetIds.length}
                 </span>
               </button>
@@ -339,7 +339,7 @@ export function FolderTree({
     <div className={clsx('flex flex-col', className)}>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800/50">
-        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+        <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">
           Folders
         </span>
         <IconButton
@@ -372,7 +372,7 @@ export function FolderTree({
                 }
               }}
               placeholder="New folder..."
-              className="flex-1 px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+              className="flex-1 px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
               autoFocus
             />
             <IconButton
@@ -416,7 +416,7 @@ export function FolderTree({
         {/* Root collections */}
         {rootCollections.length > 0 && (
           <div className="mt-2 pt-2 border-t border-slate-800/50">
-            <span className="px-3 text-xs text-slate-500">Uncategorized</span>
+            <span className="px-3 text-sm text-slate-400">Uncategorized</span>
             {rootCollections.map(collection => (
               <button
                 key={collection.id}
@@ -442,7 +442,7 @@ export function FolderTree({
                   )}
                 />
                 <span className="text-sm truncate">{collection.name}</span>
-                <span className="text-xs opacity-50 ml-auto">
+                <span className="text-sm opacity-50 ml-auto">
                   {collection.assetIds.length}
                 </span>
               </button>
@@ -452,9 +452,9 @@ export function FolderTree({
 
         {/* Empty state */}
         {folderTree.length === 0 && rootCollections.length === 0 && !isCreating && (
-          <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+          <div className="flex flex-col items-center justify-center py-8 text-slate-400">
             <Folder className="w-8 h-8 mb-2 opacity-40" />
-            <p className="text-xs">No folders yet</p>
+            <p className="text-sm">No folders yet</p>
           </div>
         )}
       </div>

@@ -63,7 +63,7 @@ export function AppearancePropagationIndicator({
   if (pendingCount === 0 && !lastUpdate) {
     return (
       <div
-        className="flex items-center gap-2 text-xs text-green-400"
+        className="flex items-center gap-2 text-sm text-green-400"
         data-testid="propagation-status-ok"
       >
         <CheckCircle className="h-4 w-4" />
@@ -76,7 +76,7 @@ export function AppearancePropagationIndicator({
     <div className="flex items-center gap-3">
       {pendingCount > 0 && (
         <div
-          className="flex items-center gap-2 text-xs text-yellow-400"
+          className="flex items-center gap-2 text-sm text-yellow-400"
           data-testid="propagation-status-pending"
         >
           <AlertCircle className="h-4 w-4" />
@@ -85,7 +85,7 @@ export function AppearancePropagationIndicator({
       )}
 
       {lastUpdate && (
-        <div className="text-xs text-gray-400" data-testid="last-update-time">
+        <div className="text-sm text-slate-400" data-testid="last-update-time">
           Last synced: {lastUpdate.toLocaleTimeString()}
         </div>
       )}
@@ -105,7 +105,7 @@ export function AppearancePropagationIndicator({
             ) : (
               <RefreshCw className="h-4 w-4" />
             )}
-            <span className="text-xs">Sync Now</span>
+            <span className="text-sm">Sync Now</span>
           </Button>
         )}
 
@@ -114,7 +114,7 @@ export function AppearancePropagationIndicator({
             variant="ghost"
             size="sm"
             onClick={onViewDetails}
-            className="text-xs"
+            className="text-sm"
             data-testid="view-details-btn"
           >
             View Details

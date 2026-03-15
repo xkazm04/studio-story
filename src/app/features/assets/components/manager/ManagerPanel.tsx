@@ -124,7 +124,7 @@ export default function ManagerPanel({ className = '' }: ManagerPanelProps) {
             <Package className="w-5 h-5 text-cyan-400" />
             <h2 className="text-lg font-medium text-slate-100">Asset Manager</h2>
             {totalCount > 0 && (
-              <span className="text-xs text-slate-500 bg-slate-800/60 px-2 py-0.5 rounded-full">
+              <span className="text-sm text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded-full">
                 {totalCount} assets
               </span>
             )}
@@ -197,7 +197,7 @@ export default function ManagerPanel({ className = '' }: ManagerPanelProps) {
             <AlertTriangle className="w-4 h-4" />
             Orphans
             {orphanCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-amber-500 text-white text-xs font-bold rounded-full">
+              <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-amber-500 text-white text-sm font-bold rounded-full">
                 {orphanCount > 9 ? '9+' : orphanCount}
               </span>
             )}
@@ -247,7 +247,7 @@ export default function ManagerPanel({ className = '' }: ManagerPanelProps) {
             {isError && (
               <div className="flex flex-col items-center justify-center h-64 text-red-400">
                 <p className="text-sm mb-2">Failed to load assets</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-sm text-slate-400">
                   {error instanceof Error ? error.message : 'Unknown error'}
                 </p>
               </div>

@@ -94,26 +94,26 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
     <AnimatePresence mode="wait">
       {activeTab === 'info' && (
         <motion.div key="info" {...tabMotionProps}>
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color="blue" />
             <h3 className="text-lg font-semibold text-white mb-4">
               Faction Information
             </h3>
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-slate-300">
               <div>
-                <span className="font-medium text-gray-400">Name:</span> {faction.name}
+                <span className="font-medium text-slate-400">Name:</span> {faction.name}
               </div>
               {faction.description && (
                 <div>
-                  <span className="font-medium text-gray-400">Description:</span>
+                  <span className="font-medium text-slate-400">Description:</span>
                   <p className="mt-1">{faction.description}</p>
                 </div>
               )}
               <div>
-                <span className="font-medium text-gray-400">Members:</span> {factionMembers.length}
+                <span className="font-medium text-slate-400">Members:</span> {factionMembers.length}
               </div>
               <div>
-                <span className="font-medium text-gray-400">Media:</span> {factionMedia.length} items
+                <span className="font-medium text-slate-400">Media:</span> {factionMedia.length} items
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
 
       {activeTab === 'media' && (
         <motion.div key="media" {...tabMotionProps}>
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color="purple" />
             <FactionMediaGallery
               media={factionMedia}
@@ -145,7 +145,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
 
       {activeTab === 'branding' && isLeader && (
         <motion.div key="branding" {...tabMotionProps}>
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color="orange" />
             <FactionBrandingPanel
               faction={faction}
@@ -157,7 +157,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
 
       {activeTab === 'history' && (
         <motion.div key="history" {...tabMotionProps}>
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color="purple" />
             <FactionLoreGallery
               faction={faction}
@@ -170,7 +170,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
 
       {activeTab === 'politics' && politicsMap && influencesMap && (
         <motion.div key="politics" {...tabMotionProps}>
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color="blue" />
             <AllianceNetworkGraph
               factions={allFactions.length > 0 ? allFactions : [faction]}

@@ -17,13 +17,13 @@ export function SectionWrapper({
   padding = 'md',
 }: SectionWrapperProps) {
   const paddingClasses = {
-    sm: 'p-2',
-    md: 'p-4',
-    lg: 'p-6',
+    sm: 'p-1.5',
+    md: 'p-3',
+    lg: 'p-4',
   };
 
   return (
-    <div className={`relative group bg-gray-850/50 backdrop-blur-sm transition-all duration-300 rounded-lg ${paddingClasses[padding]} ${className}`}>
+    <div className={`relative group bg-slate-850/50 backdrop-blur-sm transition-all duration-300 rounded-lg ${paddingClasses[padding]} ${className}`}>
       <ColoredBorder color={borderColor} />
       {children}
     </div>

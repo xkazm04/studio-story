@@ -161,11 +161,11 @@ const TraitPromptSection: React.FC<TraitPromptSectionProps> = ({
         <div>
           <div className="flex items-start justify-between mb-2">
             <div>
-              <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-1">
+              <h3 className="ms-h3 flex items-center gap-2 mb-1">
                 {section.icon}
                 {section.title}
               </h3>
-              <p className="text-sm text-gray-400">{section.description}</p>
+              <p className="text-sm text-slate-400">{section.description}</p>
             </div>
 
             {/* Action Buttons */}
@@ -208,7 +208,7 @@ const TraitPromptSection: React.FC<TraitPromptSectionProps> = ({
         <span
           className={cn(
             'text-sm',
-            isOverLimit ? 'text-red-500 font-semibold' : 'text-gray-400'
+            isOverLimit ? 'text-red-500 font-semibold' : 'text-slate-400'
           )}
         >
           {value.length} / {maxLength} characters
@@ -226,7 +226,7 @@ const TraitPromptSection: React.FC<TraitPromptSectionProps> = ({
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={handleSave}
               disabled={isSaving || isOverLimit}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-colors"
             >
               <Save size={16} />
               {isSaving ? 'Saving...' : 'Save'}

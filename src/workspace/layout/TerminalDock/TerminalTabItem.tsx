@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, Pin, Loader2 } from 'lucide-react';
+import { X, Pin, Loader2, Bot } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import type { TerminalTab } from '../../types';
 import { DOMAIN_COLORS } from '../../types';
@@ -35,11 +35,13 @@ export default function TerminalTabItem({
   const dotColor = DOMAIN_DOT_COLORS[colorName] ?? 'bg-slate-500';
 
   return (
-    <button
-      type="button"
+    <div
+      role="tab"
+      tabIndex={0}
       onClick={onSelect}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(); } }}
       className={cn(
-        'group flex items-center gap-1.5 whitespace-nowrap rounded-t-md px-2.5 py-1 text-xs transition-colors',
+        'group flex items-center gap-1.5 whitespace-nowrap rounded-t-md px-2.5 py-1 text-sm transition-colors cursor-pointer',
         'border border-b-0',
         isActive
           ? 'bg-slate-950 text-slate-50 border-slate-700/70'
@@ -50,6 +52,13 @@ export default function TerminalTabItem({
       {/* Domain color dot */}
       <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', dotColor)} />
 
+      {/* Agent badge */}
+      {tab.isAgentSpawned && (
+        <span className="shrink-0" aria-label="Agent-spawned session">
+          <Bot className="w-3 h-3 text-emerald-400" />
+        </span>
+      )}
+
       {/* Running spinner */}
       {isRunning && <Loader2 className="w-3 h-3 text-blue-400 animate-spin shrink-0" />}
 
@@ -58,7 +67,7 @@ export default function TerminalTabItem({
 
       {/* Pin indicator */}
       {tab.isPinned && (
-        <Pin className="w-2.5 h-2.5 text-slate-500 shrink-0" />
+        <Pin className="w-2.5 h-2.5 text-slate-400 shrink-0" />
       )}
 
       {/* Close button */}
@@ -69,12 +78,12 @@ export default function TerminalTabItem({
             e.stopPropagation();
             onClose();
           }}
-          className="ml-0.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
+          className="ml-0.5 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-500/40"
           title="Close terminal tab"
         >
           <X className="w-3 h-3" />
         </button>
       )}
-    </button>
+    </div>
   );
 }

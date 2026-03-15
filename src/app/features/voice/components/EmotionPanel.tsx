@@ -144,7 +144,7 @@ export default function EmotionPanel({
           <h4 className="text-sm font-medium text-slate-200">Primary Emotion</h4>
           <button
             onClick={toggleBlend}
-            className={`text-xs px-2 py-1 rounded transition-colors ${
+            className={`text-sm px-2 py-1 rounded transition-colors ${
               showBlend
                 ? 'bg-purple-500/20 text-purple-400'
                 : 'bg-slate-800 text-slate-400 hover:text-slate-200'
@@ -177,7 +177,7 @@ export default function EmotionPanel({
                   style={{ color: isSelected ? color : undefined }}
                 />
                 <span
-                  className={`text-[10px] ${
+                  className={`text-sm ${
                     isSelected ? 'text-slate-200' : 'text-slate-400'
                   }`}
                 >
@@ -193,7 +193,7 @@ export default function EmotionPanel({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-sm text-slate-300">Intensity</label>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {getIntensityLabel(emotion.intensity)} ({Math.round(emotion.intensity * 100)}%)
           </span>
         </div>
@@ -207,7 +207,7 @@ export default function EmotionPanel({
             className="flex-1"
           />
         </div>
-        <div className="flex justify-between text-[10px] text-slate-500">
+        <div className="flex justify-between text-sm text-slate-400">
           <span>Subtle</span>
           <span>Intense</span>
         </div>
@@ -223,7 +223,7 @@ export default function EmotionPanel({
         >
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-slate-200">Blend Emotion</h4>
-            <p className="text-xs text-slate-500">
+            <p className="text-sm text-slate-400">
               Mix a secondary emotion for more nuanced delivery
             </p>
           </div>
@@ -253,7 +253,7 @@ export default function EmotionPanel({
                       style={{ color: isSelected ? color : undefined }}
                     />
                     <span
-                      className={`text-[9px] ${
+                      className={`text-sm ${
                         isSelected ? 'text-slate-200' : 'text-slate-400'
                       }`}
                     >
@@ -269,7 +269,7 @@ export default function EmotionPanel({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm text-slate-300">Blend Ratio</label>
-                <span className="text-xs text-slate-500">
+                <span className="text-sm text-slate-400">
                   {Math.round((emotion.blendRatio || 0) * 100)}% {EMOTION_LABELS[emotion.blend]}
                 </span>
               </div>
@@ -281,7 +281,7 @@ export default function EmotionPanel({
                 onChange={handleBlendRatioChange}
                 className="flex-1"
               />
-              <div className="flex justify-between text-[10px] text-slate-500">
+              <div className="flex justify-between text-sm text-slate-400">
                 <span>More {EMOTION_LABELS[emotion.type]}</span>
                 <span>More {EMOTION_LABELS[emotion.blend]}</span>
               </div>
@@ -313,7 +313,7 @@ export default function EmotionPanel({
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-sm text-slate-400">
                     {getIntensityLabel(emotion.intensity)} intensity
                     {emotion.blend && emotion.blendRatio && (
                       <span> • {Math.round(emotion.blendRatio * 100)}% blend</span>

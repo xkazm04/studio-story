@@ -4,6 +4,7 @@ import { Draggable } from '@hello-pangea/dnd';
 import BeatsTableRow from './BeatsTableRow';
 import { BeatTableItem } from './BeatsOverview';
 import { GripVertical } from 'lucide-react';
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 
 type Props = {
     beat: BeatTableItem;
@@ -19,18 +20,23 @@ const DraggableBeatRow = ({ beat, index, setBeats }: Props) => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     className={`
-                        flex py-2 px-3 border-b border-gray-800 text-sm
-                        ${snapshot.isDragging ? 'bg-gray-800 shadow-lg shadow-blue-500/20 border-blue-500/50' : 'hover:bg-gray-900/50'}
-                        transition-colors duration-200
+                        flex py-2 px-3 border-b border-slate-800 text-sm transition-all duration-200
+                        ${snapshot.isDragging ? INTERACTIVE.dragActive : INTERACTIVE.row}
                     `}
+                    style={{
+                        ...provided.draggableProps.style,
+                        opacity: snapshot.isDragging ? 1 : snapshot.isDropAnimating ? 1 : undefined,
+                    }}
                     data-testid={`beat-row-${beat.id}`}
                 >
                     {/* Drag Handle */}
                     <div
                         {...provided.dragHandleProps}
+                        role="button"
+                        aria-label={`Drag beat ${beat.name}`}
                         className={`
                             flex items-center justify-center pr-2 cursor-grab active:cursor-grabbing
-                            ${snapshot.isDragging ? 'text-blue-400' : 'text-gray-600 hover:text-gray-400'}
+                            ${snapshot.isDragging ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}
                         `}
                         data-testid={`beat-drag-handle-${beat.id}`}
                     >

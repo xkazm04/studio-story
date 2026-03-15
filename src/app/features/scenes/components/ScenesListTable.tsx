@@ -27,7 +27,7 @@ export default function ScenesListTable({ scenes, refetch }: ScenesListTableProp
         header: 'Order',
         width: 'w-16',
         editable: false,
-        className: 'text-gray-400',
+        className: 'text-slate-400',
       },
       {
         key: 'name',
@@ -137,7 +137,7 @@ export default function ScenesListTable({ scenes, refetch }: ScenesListTableProp
         rowClassName={(scene) =>
           scene.id === selectedSceneId
             ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
-            : 'bg-gray-800 text-gray-200 hover:bg-gray-700'
+            : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
         }
         data-testid="scenes-list-table"
       />

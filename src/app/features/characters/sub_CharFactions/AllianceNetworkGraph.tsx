@@ -248,7 +248,7 @@ const RelationshipLegend: React.FC<{
 }> = ({ filter, onFilterChange }) => {
   return (
     <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-sm rounded-lg border border-slate-700 p-3">
-      <p className="text-xs text-slate-400 mb-2">Relationship Types</p>
+      <p className="text-sm text-slate-400 mb-2">Relationship Types</p>
       <div className="flex flex-wrap gap-1">
         {RELATIONSHIP_FILTERS.map(({ type, label }) => {
           const config = type === 'all' ? null : RELATIONSHIP_TYPE_CONFIG[type];
@@ -257,7 +257,7 @@ const RelationshipLegend: React.FC<{
               key={type}
               onClick={() => onFilterChange(type)}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
+                'flex items-center gap-1 px-2 py-1 text-sm rounded transition-colors',
                 filter === type
                   ? 'bg-slate-700 text-white'
                   : 'bg-slate-800/50 text-slate-400 hover:text-white'
@@ -308,7 +308,7 @@ const FactionInfoPanel: React.FC<{
             <h3 className="font-medium text-white">{node.name}</h3>
             {stanceConfig && (
               <span
-                className="text-xs px-1.5 py-0.5 rounded"
+                className="text-sm px-1.5 py-0.5 rounded"
                 style={{ backgroundColor: `${stanceConfig.color}20`, color: stanceConfig.color }}
               >
                 {stanceConfig.label}
@@ -323,14 +323,14 @@ const FactionInfoPanel: React.FC<{
 
       <div className="p-3 space-y-3">
         {/* Power Stats */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="bg-slate-800/50 rounded p-2">
-            <p className="text-slate-500">Total Power</p>
+            <p className="text-slate-400">Total Power</p>
             <p className="text-white font-bold text-lg">{node.power}</p>
           </div>
           {node.influence && (
             <div className="bg-slate-800/50 rounded p-2">
-              <p className="text-slate-500">Power Rank</p>
+              <p className="text-slate-400">Power Rank</p>
               <p className="text-amber-400 font-bold text-lg">#{node.influence.power_rank || '—'}</p>
             </div>
           )}
@@ -339,7 +339,7 @@ const FactionInfoPanel: React.FC<{
         {/* Politics Stats */}
         {politics && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-sm">
               <span className="text-slate-400">Reputation</span>
               <div className="flex items-center gap-1">
                 <div className="w-24 h-1.5 bg-slate-700 rounded-full overflow-hidden">
@@ -351,7 +351,7 @@ const FactionInfoPanel: React.FC<{
                 <span className="text-white">{politics.diplomatic_reputation}</span>
               </div>
             </div>
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-sm">
               <span className="text-slate-400">Aggression</span>
               <div className="flex items-center gap-1">
                 <div className="w-24 h-1.5 bg-slate-700 rounded-full overflow-hidden">
@@ -363,7 +363,7 @@ const FactionInfoPanel: React.FC<{
                 <span className="text-white">{politics.aggression_level}</span>
               </div>
             </div>
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-sm">
               <span className="text-slate-400">Trustworthiness</span>
               <div className="flex items-center gap-1">
                 <div className="w-24 h-1.5 bg-slate-700 rounded-full overflow-hidden">
@@ -381,13 +381,13 @@ const FactionInfoPanel: React.FC<{
         {/* Allies & Enemies */}
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-green-500/10 rounded p-2">
-            <p className="text-xs text-green-400 flex items-center gap-1">
+            <p className="text-sm text-green-400 flex items-center gap-1">
               <Handshake size={12} />
               Allies ({allies.length})
             </p>
           </div>
           <div className="bg-red-500/10 rounded p-2">
-            <p className="text-xs text-red-400 flex items-center gap-1">
+            <p className="text-sm text-red-400 flex items-center gap-1">
               <Swords size={12} />
               Enemies ({enemies.length})
             </p>
@@ -397,14 +397,14 @@ const FactionInfoPanel: React.FC<{
         {/* Active Treaties */}
         {connectedRelationships.some(r => r.treaties.some(t => t.is_active)) && (
           <div>
-            <p className="text-xs text-slate-400 mb-1">Active Treaties</p>
+            <p className="text-sm text-slate-400 mb-1">Active Treaties</p>
             <div className="space-y-1">
               {connectedRelationships.flatMap(r =>
                 r.treaties.filter(t => t.is_active).map(t => (
-                  <div key={t.id} className="text-xs bg-slate-800/50 rounded px-2 py-1 flex items-center gap-1">
+                  <div key={t.id} className="text-sm bg-slate-800/50 rounded px-2 py-1 flex items-center gap-1">
                     <Shield size={10} className="text-cyan-400" />
                     <span className="text-white">{t.name}</span>
-                    <span className="text-slate-500 capitalize">({t.type.replace('_', ' ')})</span>
+                    <span className="text-slate-400 capitalize">({t.type.replace('_', ' ')})</span>
                   </div>
                 ))
               )}
@@ -608,7 +608,7 @@ const AllianceNetworkGraph: React.FC<AllianceNetworkGraphProps> = ({
             <Network size={16} className="text-purple-400" />
             Alliance Network
           </span>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {factions.length} factions · {relationships.length} relationships
           </span>
 
@@ -624,7 +624,7 @@ const AllianceNetworkGraph: React.FC<AllianceNetworkGraphProps> = ({
                 style={{ width: `${globalTension}%` }}
               />
             </div>
-            <span className="text-[10px] text-slate-500">Tension</span>
+            <span className="text-sm text-slate-400">Tension</span>
           </div>
         </div>
 
@@ -649,7 +649,7 @@ const AllianceNetworkGraph: React.FC<AllianceNetworkGraphProps> = ({
           >
             <ZoomOut size={14} />
           </button>
-          <span className="text-xs text-slate-500 w-12 text-center">
+          <span className="text-sm text-slate-400 w-12 text-center">
             {Math.round(zoom * 100)}%
           </span>
           <button
@@ -756,8 +756,8 @@ const AllianceNetworkGraph: React.FC<AllianceNetworkGraphProps> = ({
         {factions.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <Network className="mx-auto mb-3 text-slate-600" size={48} />
-              <p className="text-slate-500">No factions to display</p>
+              <Network className="mx-auto mb-3 text-slate-400" size={48} />
+              <p className="text-slate-400">No factions to display</p>
             </div>
           </div>
         )}

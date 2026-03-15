@@ -112,7 +112,7 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
       <Card className="p-6">
         <div className="flex items-center justify-center" data-testid="loading-indicator">
           <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
-          <span className="ml-2 text-sm text-gray-400">Loading propagation status...</span>
+          <span className="ml-2 text-sm text-slate-400">Loading propagation status...</span>
         </div>
       </Card>
     );
@@ -121,7 +121,7 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
   if (pendingChanges.length === 0 && targets.length === 0) {
     return (
       <Card className="p-6">
-        <div className="text-center text-sm text-gray-400" data-testid="no-changes-message">
+        <div className="text-center text-sm text-slate-400" data-testid="no-changes-message">
           No pending appearance changes to propagate.
         </div>
       </Card>
@@ -149,11 +149,11 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
         {/* Pending Changes Summary */}
         {pendingChanges.length > 0 && (
           <div className="space-y-2" data-testid="pending-changes-summary">
-            <h4 className="text-sm font-medium text-gray-300">Pending Changes</h4>
+            <h4 className="text-sm font-medium text-slate-300">Pending Changes</h4>
             {pendingChanges.map((change) => (
               <div
                 key={change.id}
-                className="flex items-center justify-between rounded-lg bg-gray-800/50 p-3"
+                className="flex items-center justify-between rounded-lg bg-slate-800/50 p-3"
                 data-testid={`change-${change.id}`}
               >
                 <div className="flex items-center gap-3">
@@ -162,12 +162,12 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
                     <p className="text-sm text-white">
                       {change.changed_fields?.length || 0} fields changed
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-slate-400">
                       {new Date(change.created_at).toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <span className="text-xs font-medium text-gray-400 uppercase">
+                <span className="text-sm font-medium text-slate-400 uppercase">
                   {change.propagation_status}
                 </span>
               </div>
@@ -178,11 +178,11 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
         {/* Propagation Targets */}
         {targets.length > 0 && (
           <div className="space-y-3" data-testid="propagation-targets">
-            <h4 className="text-sm font-medium text-gray-300">Story Elements to Update</h4>
+            <h4 className="text-sm font-medium text-slate-300">Story Elements to Update</h4>
             {targets.map((target) => (
               <div
                 key={target.id}
-                className="rounded-lg border border-gray-700 bg-gray-800/30 p-4 space-y-3"
+                className="rounded-lg border border-slate-700 bg-slate-800/30 p-4 space-y-3"
                 data-testid={`target-${target.id}`}
               >
                 <div className="flex items-center justify-between">
@@ -191,7 +191,7 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
                       type="checkbox"
                       checked={selectedTargets.has(target.id)}
                       onChange={() => handleToggleTarget(target.id)}
-                      className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500"
+                      className="h-4 w-4 rounded border-slate-600 bg-slate-700 text-blue-500"
                       data-testid={`target-checkbox-${target.id}`}
                     />
                     <div>
@@ -199,7 +199,7 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
                         {getTargetTypeLabel(target.target_type)}
                       </p>
                       {target.applied && (
-                        <span className="text-xs text-green-400">Applied</span>
+                        <span className="text-sm text-green-400">Applied</span>
                       )}
                     </div>
                   </div>
@@ -229,16 +229,16 @@ export function AppearancePropagationPanel({ characterId }: AppearancePropagatio
 
                 {/* Details Panel */}
                 {showDetails === target.id && (
-                  <div className="mt-3 space-y-3 border-t border-gray-700 pt-3">
+                  <div className="mt-3 space-y-3 border-t border-slate-700 pt-3">
                     <div>
-                      <p className="text-xs font-medium text-gray-400 mb-1">Original:</p>
-                      <p className="text-sm text-gray-300 bg-gray-900/50 rounded p-2">
+                      <p className="text-sm font-medium text-slate-400 mb-1">Original:</p>
+                      <p className="text-sm text-slate-300 bg-slate-900/50 rounded p-2">
                         {target.original_content}
                       </p>
                     </div>
                     {target.updated_content && (
                       <div>
-                        <p className="text-xs font-medium text-gray-400 mb-1">Updated:</p>
+                        <p className="text-sm font-medium text-slate-400 mb-1">Updated:</p>
                         <p className="text-sm text-white bg-blue-900/20 rounded p-2">
                           {target.updated_content}
                         </p>

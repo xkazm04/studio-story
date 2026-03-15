@@ -67,7 +67,7 @@ export function StatusDot({
           ring && ringClasses[color]
         )}
       />
-      {label && <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">{label}</span>}
+      {label && <span className="font-mono text-xs uppercase tracking-wider text-slate-400">{label}</span>}
     </span>
   );
 }

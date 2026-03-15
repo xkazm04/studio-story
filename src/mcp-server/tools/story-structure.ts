@@ -1,16 +1,16 @@
 /**
- * Story Structure Tools — Acts, Beats, and narrative structure
+ * Story Structure Tools — Acts, Beats, and narrative structure (direct Supabase)
  */
 
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { StoryHttpClient } from '../http-client.js';
 import type { McpConfig } from '../config.js';
+import { dbSelect, dbSelectOne, dbInsert, dbUpdate } from '../db.js';
 
 const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
 const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
 
-export function registerStoryStructureTools(server: McpServer, config: McpConfig, client: StoryHttpClient) {
+export function registerStoryStructureTools(server: McpServer, config: McpConfig) {
   // ---- Acts ----
 
   server.tool(
@@ -23,7 +23,10 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const result = await client.get('/api/acts', { projectId: pid });
+      const result = await dbSelect('acts', {
+        eq: { project_id: pid },
+        order: { column: 'order', ascending: true },
+      });
       if (!result.success) return errorContent(`Failed to list acts: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -43,11 +46,11 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
-      const body: Record<string, unknown> = { name, project_id: pid };
-      if (description) body.description = description;
-      if (order !== undefined) body.order = order;
+      const row: Record<string, unknown> = { name, project_id: pid };
+      if (description) row.description = description;
+      if (order !== undefined) row.order = order;
 
-      const result = await client.post('/api/acts', body);
+      const result = await dbInsert('acts', row);
       if (!result.success) return errorContent(`Failed to create act: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -65,12 +68,15 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
     },
     async ({ projectId, actId }) => {
       const pid = projectId || config.projectId;
-      const params: Record<string, string> = {};
-      if (actId) params.actId = actId;
-      else if (pid) params.projectId = pid;
+      const eq: Record<string, string> = {};
+      if (actId) eq.act_id = actId;
+      else if (pid) eq.project_id = pid;
       else return errorContent('No projectId or actId available.');
 
-      const result = await client.get('/api/beats', params);
+      const result = await dbSelect('beats', {
+        eq,
+        order: { column: 'order', ascending: true },
+      });
       if (!result.success) return errorContent(`Failed to list beats: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -84,7 +90,7 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
       beatId: z.string().describe('Beat UUID.'),
     },
     async ({ beatId }) => {
-      const result = await client.get(`/api/beats/${beatId}`);
+      const result = await dbSelectOne('beats', beatId);
       if (!result.success) return errorContent(`Failed to get beat: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -104,12 +110,12 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
     },
     async ({ actId, projectId, name, type, description, order }) => {
       const pid = projectId || config.projectId;
-      const body: Record<string, unknown> = { name, type, act_id: actId };
-      if (pid) body.project_id = pid;
-      if (description) body.description = description;
-      if (order !== undefined) body.order = order;
+      const row: Record<string, unknown> = { name, type, act_id: actId };
+      if (pid) row.project_id = pid;
+      if (description) row.description = description;
+      if (order !== undefined) row.order = order;
 
-      const result = await client.post('/api/beats', body);
+      const result = await dbInsert('beats', row);
       if (!result.success) return errorContent(`Failed to create beat: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));
@@ -126,7 +132,7 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
     async ({ beatId, updates }) => {
       let parsed: Record<string, unknown>;
       try { parsed = JSON.parse(updates); } catch { return errorContent('Invalid JSON in updates.'); }
-      const result = await client.put(`/api/beats/${beatId}`, parsed);
+      const result = await dbUpdate('beats', beatId, parsed);
       if (!result.success) return errorContent(`Failed to update beat: ${result.error}`);
 
       return textContent(JSON.stringify(result.data, null, 2));

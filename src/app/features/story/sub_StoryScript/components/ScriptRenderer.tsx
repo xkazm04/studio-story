@@ -218,7 +218,7 @@ function RenderBlock({
     narration: 'text-slate-300',
     dialogue: 'text-purple-300 italic',
     description: 'text-blue-300',
-    direction: 'text-slate-500 uppercase text-[10px] tracking-wide',
+    direction: 'text-slate-400 uppercase text-sm tracking-wide',
   };
 
   return (
@@ -233,7 +233,7 @@ function RenderBlock({
     >
       {/* Speaker label for dialogue */}
       {block.speaker && block.speakerType === 'character' && (
-        <div className="text-[10px] font-semibold text-purple-400 mb-1 uppercase tracking-wide">
+        <div className="text-sm font-semibold text-purple-400 mb-1 uppercase tracking-wide">
           {block.speaker}
         </div>
       )}
@@ -248,7 +248,7 @@ function RenderBlock({
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="absolute right-2 top-2 px-1.5 py-0.5 rounded bg-cyan-600/20 text-[9px] text-cyan-400"
+          className="absolute right-2 top-2 px-1.5 py-0.5 rounded bg-cyan-600/20 text-sm text-cyan-400"
         >
           {currentMarker.type}
         </motion.div>
@@ -330,7 +330,7 @@ export function ScriptRenderer({
           <div className="sticky top-0 z-10 px-4 py-2 bg-slate-900/95 backdrop-blur border-b border-slate-800">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
                 Scene {groupIndex + 1}
               </span>
             </div>
@@ -364,7 +364,7 @@ export function ScriptRenderer({
               <span className="text-2xl">📜</span>
             </div>
             <p className="text-sm text-slate-400">No script content</p>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               Generate or import script blocks to see them here
             </p>
           </div>

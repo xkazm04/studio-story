@@ -19,6 +19,7 @@ import ReferenceSheetExporter from './ReferenceSheetExporter';
 import { defaultAppearance, Appearance } from '@/app/types/Character';
 import { useAvatarTimeline } from '@/app/hooks/integration/useAvatarTimeline';
 import { MilestoneManager } from '@/lib/evolution/MilestoneManager';
+import { usePanelSize } from '@/workspace/panels/shared/PanelSizeContext';
 
 interface CharacterDetailsProps {
   characterId: string;
@@ -28,6 +29,7 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
   const { data: character, isLoading } = characterApi.useGetCharacter(characterId);
   const [activeTab, setActiveTab] = useState<'info' | 'about' | 'appearance' | 'relationships' | 'consistency' | 'image_gen' | 'avatar_gen' | 'timeline'>('info');
   const [showExporter, setShowExporter] = useState(false);
+  const { isCompact } = usePanelSize();
 
   // Fetch avatar timeline for the exporter
   const { timeline } = useAvatarTimeline(characterId);
@@ -59,14 +61,14 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-gray-400">Loading...</div>
+        <div className="animate-pulse text-slate-400">Loading...</div>
       </div>
     );
   }
 
   if (!character) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex items-center justify-center h-64 text-slate-400">
         Character not found
       </div>
     );
@@ -92,7 +94,7 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-xs transition-all duration-200',
+              'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-sm transition-all duration-200',
               activeTab === tab.id
                 ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                 : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'
@@ -100,7 +102,7 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
             data-testid={`character-detail-tab-${tab.id}`}
           >
             {tab.icon}
-            <span className="uppercase tracking-wide">{tab.label}</span>
+            <span className="uppercase tracking-wide hidden @sm:inline">{tab.label}</span>
           </button>
         ))}
       </div>
@@ -118,18 +120,18 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
             <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300 mb-4">// character_information</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="font-mono text-xs text-slate-500">name:</span>
+                <span className="font-mono text-sm text-slate-400">name:</span>
                 <span className="text-slate-200">{character.name}</span>
               </div>
               {character.type && (
                 <div className="flex justify-between">
-                  <span className="font-mono text-xs text-slate-500">type:</span>
+                  <span className="font-mono text-sm text-slate-400">type:</span>
                   <span className="text-slate-200">{character.type}</span>
                 </div>
               )}
               {character.voice && (
                 <div className="flex justify-between">
-                  <span className="font-mono text-xs text-slate-500">voice:</span>
+                  <span className="font-mono text-sm text-slate-400">voice:</span>
                   <span className="text-slate-200">{character.voice}</span>
                 </div>
               )}

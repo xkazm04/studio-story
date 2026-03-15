@@ -131,7 +131,7 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
       case 'character':
         return <Users size={16} className="text-purple-400" />;
       default:
-        return <Database size={16} className="text-gray-400" />;
+        return <Database size={16} className="text-slate-400" />;
     }
   };
 
@@ -145,19 +145,19 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
     const keyCount = Object.keys(storeState).filter((k) => typeof storeState[k] !== 'function').length;
 
     return (
-      <div className="bg-gray-800/50 rounded-lg overflow-hidden">
+      <div className="bg-slate-800/50 rounded-lg overflow-hidden">
         <button
           onClick={() => toggleStore(storeName)}
-          className="w-full flex items-center gap-2 p-3 hover:bg-gray-800 transition-colors"
+          className="w-full flex items-center gap-2 p-3 hover:bg-slate-800 transition-colors"
         >
           {expandedStores.has(storeName) ? (
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={14} className="text-slate-400" />
           ) : (
-            <ChevronRight size={14} className="text-gray-400" />
+            <ChevronRight size={14} className="text-slate-400" />
           )}
           {getStoreIcon(storeName)}
           <span className="text-sm font-medium text-white">{storeDisplayName}</span>
-          <span className="text-xs text-gray-500 ml-auto">{keyCount} keys</span>
+          <span className="text-xs text-slate-400 ml-auto">{keyCount} keys</span>
         </button>
         <AnimatePresence>
           {expandedStores.has(storeName) && (
@@ -172,7 +172,7 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
                 .map(([key, value]) => (
                   <div key={key} className="flex items-start gap-2 text-xs">
                     <span className={`${colorClass} font-mono`}>{key}:</span>
-                    <span className="text-gray-300 flex-1 break-all font-mono">
+                    <span className="text-slate-300 flex-1 break-all font-mono">
                       {renderValue(value as StoreValue)}
                     </span>
                   </div>
@@ -191,19 +191,19 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
       initial={{ opacity: 0, x: 300 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 300 }}
-      className="fixed right-4 top-20 w-96 max-h-[80vh] bg-gray-900/95 backdrop-blur-lg border border-gray-700 rounded-lg shadow-2xl z-50 flex flex-col"
+      className="fixed right-4 top-20 w-96 max-h-[80vh] bg-slate-900/95 backdrop-blur-lg border border-slate-700 rounded-lg shadow-2xl z-50 flex flex-col"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-slate-700">
         <div className="flex items-center gap-2">
           <Database size={20} className="text-blue-400" />
           <h3 className="text-sm font-semibold text-white">Store Devtools</h3>
-          <span className="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded">DEV</span>
+          <span className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">DEV</span>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors"
           >
             <X size={18} />
           </button>
@@ -212,7 +212,7 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
 
       {/* Current State */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
           Current State
         </div>
 
@@ -231,8 +231,8 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
         />
 
         {/* Change History */}
-        <div className="pt-3 border-t border-gray-700">
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+        <div className="pt-3 border-t border-slate-700">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
             Recent Changes ({changeHistory.length})
           </div>
           <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -243,23 +243,23 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="bg-gray-800/30 rounded p-2 text-xs"
+                  className="bg-slate-800/30 rounded p-2 text-xs"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     {getStoreIcon(change.store)}
                     <span className="font-medium text-white">{change.key}</span>
-                    <span className="text-gray-500 ml-auto">
+                    <span className="text-slate-400 ml-auto">
                       {new Date(change.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
                   <div className="space-y-0.5 pl-6">
                     <div className="flex gap-2">
                       <span className="text-red-400">-</span>
-                      <span className="text-gray-400 font-mono">{renderValue(change.oldValue)}</span>
+                      <span className="text-slate-400 font-mono">{renderValue(change.oldValue)}</span>
                     </div>
                     <div className="flex gap-2">
                       <span className="text-green-400">+</span>
-                      <span className="text-gray-200 font-mono">{renderValue(change.newValue)}</span>
+                      <span className="text-slate-200 font-mono">{renderValue(change.newValue)}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -270,8 +270,8 @@ const StoreDevtools: React.FC<StoreDevtoolsProps> = ({ isOpen = false, onClose }
       </div>
 
       {/* Footer Stats */}
-      <div className="border-t border-gray-700 p-3 bg-gray-800/50">
-        <div className="flex items-center justify-between text-xs text-gray-400">
+      <div className="border-t border-slate-700 p-3 bg-slate-800/50">
+        <div className="flex items-center justify-between text-xs text-slate-400">
           <span>Total Changes: {changeHistory.length}</span>
           <button
             onClick={() => setChangeHistory([])}

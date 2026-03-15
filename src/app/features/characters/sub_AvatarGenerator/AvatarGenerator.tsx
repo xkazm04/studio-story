@@ -230,7 +230,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
           <h2 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             // avatar_generator
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             create stylized avatars for {characterName}
           </p>
         </div>
@@ -239,7 +239,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
           {isLoading && (
             <button
               onClick={cancel}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                          bg-red-600/80 hover:bg-red-600 text-white transition-all"
             >
               <XCircle className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
           <button
             onClick={reset}
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                        bg-slate-700 hover:bg-slate-600 text-slate-200 transition-all
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -266,7 +266,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wide transition-all',
+              'flex items-center gap-1.5 px-3 py-2 rounded-md font-mono text-sm uppercase tracking-wide transition-all',
               activeTab === tab.id
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
@@ -288,7 +288,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
             className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg"
           >
             <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <span className="font-mono text-xs text-red-400">{error}</span>
+            <span className="font-mono text-sm text-red-400">{error}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -346,11 +346,11 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
                       className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/30"
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-mono text-[10px] text-slate-500 uppercase">
+                        <span className="font-mono text-sm text-slate-400 uppercase">
                           composed_prompt
                         </span>
                       </div>
-                      <p className="font-mono text-[10px] text-slate-400 line-clamp-3">
+                      <p className="font-mono text-sm text-slate-400 line-clamp-3">
                         {composedPrompt}
                       </p>
                     </motion.div>
@@ -414,7 +414,7 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
 
                   {/* Compact Outfit Selector */}
                   <div className="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/30">
-                    <span className="font-mono text-[10px] text-slate-500 uppercase">outfit:</span>
+                    <span className="font-mono text-sm text-slate-400 uppercase">outfit:</span>
                     <OutfitSelector
                       characterId={characterId}
                       selectedOutfit={currentOutfit}
@@ -427,10 +427,10 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
                   {/* Enhanced Prompt Preview */}
                   {(selectedExpression || selectedPose) && (
                     <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/30">
-                      <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                      <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                         enhanced_prompt_modifiers
                       </span>
-                      <p className="font-mono text-[10px] text-slate-400">
+                      <p className="font-mono text-sm text-slate-400">
                         {enhancedPromptModifiers}
                       </p>
                     </div>
@@ -493,11 +493,11 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
                     <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/30">
                       <div className="flex items-center gap-2 mb-2">
                         <Shirt className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="font-mono text-[10px] text-slate-500 uppercase">
+                        <span className="font-mono text-sm text-slate-400 uppercase">
                           outfit_description
                         </span>
                       </div>
-                      <p className="font-mono text-[10px] text-slate-400 italic">
+                      <p className="font-mono text-sm text-slate-400 italic">
                         "{currentOutfit.promptFragment}"
                       </p>
                     </div>
@@ -557,13 +557,13 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
               {allAvatars.length > 0 ? (
                 <>
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-slate-400">
+                    <span className="font-mono text-sm text-slate-400">
                       {allAvatars.length} avatars available for export
                     </span>
                     <button
                       onClick={clearAllAvatars}
                       className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800/40
-                                 text-slate-500 hover:text-red-400 font-mono text-xs transition-colors"
+                                 text-slate-400 hover:text-red-400 font-mono text-sm transition-colors"
                     >
                       <XCircle size={12} />
                       clear all
@@ -576,10 +576,10 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
                   />
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
                   <Layers size={48} className="mb-4 opacity-50" />
                   <p className="font-mono text-sm mb-2">No avatars to export</p>
-                  <p className="font-mono text-xs text-center max-w-md">
+                  <p className="font-mono text-sm text-center max-w-md">
                     Generate avatars in the Single or Batch tabs first, then come back here to export them as a sprite sheet.
                   </p>
                 </div>
@@ -593,10 +593,10 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
       {artStyle && (
         <div className="flex items-center gap-2 p-3 bg-amber-500/5 rounded-lg border border-amber-500/20">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span className="font-mono text-[10px] text-amber-400/80 uppercase">
+          <span className="font-mono text-sm text-amber-400/80 uppercase">
             project_art_style:
           </span>
-          <span className="font-mono text-xs text-slate-300">
+          <span className="font-mono text-sm text-slate-300">
             {artStyle.length > 80 ? artStyle.substring(0, 80) + '...' : artStyle}
           </span>
         </div>

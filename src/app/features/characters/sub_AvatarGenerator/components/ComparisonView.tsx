@@ -118,7 +118,7 @@ const SliderComparison: React.FC<SliderComparisonProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={48} />
           </div>
         )}
@@ -136,7 +136,7 @@ const SliderComparison: React.FC<SliderComparisonProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={48} />
           </div>
         )}
@@ -156,10 +156,10 @@ const SliderComparison: React.FC<SliderComparisonProps> = ({
       </div>
 
       {/* Labels */}
-      <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded text-[10px] font-mono text-white">
+      <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded text-sm font-mono text-white">
         Before
       </div>
-      <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 rounded text-[10px] font-mono text-white">
+      <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 rounded text-sm font-mono text-white">
         After
       </div>
     </div>
@@ -196,7 +196,7 @@ const ImagePanel: React.FC<ImagePanelProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={32} />
           </div>
         )}
@@ -204,7 +204,7 @@ const ImagePanel: React.FC<ImagePanelProps> = ({
 
       {/* Label */}
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-        <span className="font-mono text-[10px] text-white">{label}</span>
+        <span className="font-mono text-sm text-white">{label}</span>
         {entry.transformation_trigger && (
           <p className="font-mono text-[8px] text-slate-300 truncate">
             {entry.transformation_trigger}
@@ -296,11 +296,11 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
         <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800/50">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               compare
             </h3>
           </div>
-          <p className="font-mono text-[10px] text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Need at least 2 entries to compare
           </p>
         </div>
@@ -312,7 +312,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               compare
             </h3>
           </div>
@@ -343,7 +343,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-600">
+              <div className="w-full h-full flex items-center justify-center text-slate-400">
                 <Image size={20} />
               </div>
             )}
@@ -356,7 +356,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-600">
+              <div className="w-full h-full flex items-center justify-center text-slate-400">
                 <Image size={20} />
               </div>
             )}
@@ -390,7 +390,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                     'p-1.5 rounded transition-colors',
                     mode === option.mode
                       ? 'bg-cyan-500/20 text-cyan-400'
-                      : 'text-slate-500 hover:text-slate-300'
+                      : 'text-slate-400 hover:text-slate-300'
                   )}
                   title={option.label}
                 >
@@ -410,7 +410,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
               >
                 <ZoomOut size={14} />
               </button>
-              <span className="font-mono text-[10px] text-slate-500 w-10 text-center">
+              <span className="font-mono text-sm text-slate-400 w-10 text-center">
                 {Math.round(zoom * 100)}%
               </span>
               <button
@@ -439,7 +439,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
       {/* Entry Selection (when no pair) */}
       {entries.length >= 2 && !currentPair && (
         <div className="mb-4">
-          <p className="font-mono text-xs text-slate-500 mb-2">
+          <p className="font-mono text-sm text-slate-400 mb-2">
             Select two entries to compare
           </p>
           <div className="grid grid-cols-4 gap-2">
@@ -470,7 +470,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400">
                     <Image size={16} />
                   </div>
                 )}
@@ -482,10 +482,10 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
 
       {/* No entries */}
       {entries.length < 2 && (
-        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <Columns size={32} className="mb-3 opacity-50" />
           <p className="font-mono text-sm mb-1">Not enough entries</p>
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Add at least 2 timeline entries to compare
           </p>
         </div>
@@ -520,7 +520,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
               <ImagePanel entry={currentPair.before} label="Before" />
               <div className="flex justify-center">
                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                  <ArrowLeftRight size={16} className="text-slate-500 rotate-90" />
+                  <ArrowLeftRight size={16} className="text-slate-400 rotate-90" />
                 </div>
               </div>
               <ImagePanel entry={currentPair.after} label="After" />
@@ -581,14 +581,14 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
           <div className="grid grid-cols-2 gap-4">
             {/* Before Details */}
             <div>
-              <span className="font-mono text-[10px] text-blue-400 uppercase block mb-1">
+              <span className="font-mono text-sm text-blue-400 uppercase block mb-1">
                 before
               </span>
-              <p className="font-mono text-xs text-slate-400">
+              <p className="font-mono text-sm text-slate-400">
                 {currentPair.before.transformation_type}
               </p>
               {currentPair.before.transformation_trigger && (
-                <p className="font-mono text-[10px] text-slate-500 mt-0.5">
+                <p className="font-mono text-sm text-slate-400 mt-0.5">
                   {currentPair.before.transformation_trigger}
                 </p>
               )}
@@ -596,14 +596,14 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
 
             {/* After Details */}
             <div>
-              <span className="font-mono text-[10px] text-green-400 uppercase block mb-1">
+              <span className="font-mono text-sm text-green-400 uppercase block mb-1">
                 after
               </span>
-              <p className="font-mono text-xs text-slate-400">
+              <p className="font-mono text-sm text-slate-400">
                 {currentPair.after.transformation_type}
               </p>
               {currentPair.after.transformation_trigger && (
-                <p className="font-mono text-[10px] text-slate-500 mt-0.5">
+                <p className="font-mono text-sm text-slate-400 mt-0.5">
                   {currentPair.after.transformation_trigger}
                 </p>
               )}
@@ -613,14 +613,14 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
           {/* Visual changes in after */}
           {currentPair.after.visual_changes && currentPair.after.visual_changes.length > 0 && (
             <div className="mt-3">
-              <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+              <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                 changes_recorded
               </span>
               <div className="flex flex-wrap gap-1">
                 {currentPair.after.visual_changes.map((change, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-400"
+                    className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400"
                   >
                     {change.attribute}: {change.from ? `${change.from} → ` : ''}{change.to}
                   </span>

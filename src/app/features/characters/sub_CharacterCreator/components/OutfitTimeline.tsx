@@ -97,7 +97,7 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
       <div className="flex flex-col items-center">
         {/* Top line */}
         {!isFirst && (
-          <div className="w-0.5 h-4 bg-gray-700" />
+          <div className="w-0.5 h-4 bg-slate-700" />
         )}
 
         {/* Node dot */}
@@ -106,23 +106,23 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
             'w-4 h-4 rounded-full border-2 flex-shrink-0',
             isCurrent
               ? 'bg-green-500 border-green-400 animate-pulse'
-              : 'bg-gray-700 border-gray-600'
+              : 'bg-slate-700 border-slate-600'
           )}
         />
 
         {/* Bottom line */}
         {!isLast && (
-          <div className="w-0.5 flex-1 min-h-[60px] bg-gray-700" />
+          <div className="w-0.5 flex-1 min-h-[60px] bg-slate-700" />
         )}
       </div>
 
       {/* Content Card */}
       <div
         className={cn(
-          'flex-1 p-4 bg-gray-800/50 border rounded-lg mb-4',
+          'flex-1 p-4 bg-slate-800/50 border rounded-lg mb-4',
           isCurrent
             ? 'border-green-500/50 bg-green-900/10'
-            : 'border-gray-700'
+            : 'border-slate-700'
         )}
       >
         {/* Header */}
@@ -136,21 +136,21 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
                 {entry.outfit.name}
               </button>
             ) : (
-              <span className="font-medium text-gray-400">Unknown Outfit</span>
+              <span className="font-medium text-slate-400">Unknown Outfit</span>
             )}
             {isCurrent && (
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-green-600/20 text-green-400 rounded text-xs">
+              <span className="flex items-center gap-1 px-2 py-0.5 bg-green-600/20 text-green-400 rounded text-sm">
                 <Play size={10} />
                 Current
               </span>
             )}
           </div>
 
-          <span className="text-xs text-gray-500">{duration}</span>
+          <span className="text-sm text-slate-400">{duration}</span>
         </div>
 
         {/* Time Range */}
-        <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+        <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
           <Clock size={12} />
           <span>{formatDate(entry.start_time)}</span>
           {entry.end_time && (
@@ -176,14 +176,14 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
 
         {/* Narrative Reason */}
         {entry.narrative_reason && (
-          <p className="text-sm text-gray-400 mt-2 italic">
+          <p className="text-sm text-slate-400 mt-2 italic">
             "{entry.narrative_reason}"
           </p>
         )}
 
         {/* Modifications */}
         {entry.modifications && Object.keys(entry.modifications).length > 0 && (
-          <div className="mt-2 p-2 bg-yellow-900/20 border border-yellow-700/30 rounded text-xs text-yellow-300">
+          <div className="mt-2 p-2 bg-yellow-900/20 border border-yellow-700/30 rounded text-sm text-yellow-300">
             <span className="font-medium">Modifications: </span>
             {JSON.stringify(entry.modifications)}
           </div>
@@ -224,34 +224,34 @@ const TimelineSummary: React.FC<TimelineSummaryProps> = ({ entries, outfits }) =
   if (entries.length === 0) return null;
 
   return (
-    <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg mb-4">
-      <h4 className="text-sm font-medium text-gray-300 mb-3">Timeline Summary</h4>
+    <div className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg mb-4">
+      <h4 className="text-sm font-medium text-slate-300 mb-3">Timeline Summary</h4>
 
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="text-center">
           <div className="text-2xl font-bold text-white">{stats.totalChanges}</div>
-          <div className="text-xs text-gray-400">Total Changes</div>
+          <div className="text-sm text-slate-400">Total Changes</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-white">{stats.uniqueOutfits}</div>
-          <div className="text-xs text-gray-400">Unique Outfits</div>
+          <div className="text-sm text-slate-400">Unique Outfits</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-white">{outfits.length}</div>
-          <div className="text-xs text-gray-400">Total Available</div>
+          <div className="text-sm text-slate-400">Total Available</div>
         </div>
       </div>
 
       {stats.mostUsed.length > 0 && (
         <div>
-          <div className="text-xs text-gray-400 mb-2">Most Used:</div>
+          <div className="text-sm text-slate-400 mb-2">Most Used:</div>
           <div className="space-y-1">
             {stats.mostUsed.map(({ outfit, count }, i) => (
               <div key={outfit?.id || i} className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">
+                <span className="text-sm text-slate-300">
                   {outfit?.name || 'Unknown'}
                 </span>
-                <span className="text-xs text-gray-500">{count}x</span>
+                <span className="text-sm text-slate-400">{count}x</span>
               </div>
             ))}
           </div>
@@ -288,14 +288,14 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
   return (
     <div className={cn('flex flex-col h-full', className)}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-slate-700">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-600/20 rounded-lg">
             <Clock size={20} className="text-blue-400" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-white">Outfit Timeline</h2>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-slate-400">
               {characterName ? `${characterName}'s ` : ''}wardrobe history
             </p>
           </div>
@@ -309,7 +309,7 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
           </div>
         ) : timelineEntries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
             <Calendar size={48} className="mb-4 opacity-50" />
             <p className="text-lg">No outfit history yet</p>
             <p className="text-sm">
@@ -330,7 +330,7 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
                   <span className="text-sm font-medium text-green-300">Currently Wearing</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center">
                     {currentEntry.outfit.thumbnail_url ? (
                       <img
                         src={currentEntry.outfit.thumbnail_url}
@@ -338,7 +338,7 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
                         className="w-full h-full object-cover rounded-lg"
                       />
                     ) : (
-                      <Shirt size={20} className="text-gray-500" />
+                      <Shirt size={20} className="text-slate-400" />
                     )}
                   </div>
                   <div>
@@ -348,7 +348,7 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
                     >
                       {currentEntry.outfit.name}
                     </button>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-slate-400">
                       Since {formatDate(currentEntry.start_time)}
                     </p>
                   </div>
@@ -361,7 +361,7 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
 
             {/* Timeline */}
             <div className="space-y-0">
-              <h4 className="text-sm font-medium text-gray-300 mb-4 flex items-center gap-2">
+              <h4 className="text-sm font-medium text-slate-300 mb-4 flex items-center gap-2">
                 <Clock size={14} />
                 Full History
               </h4>
@@ -386,8 +386,8 @@ const OutfitTimeline: React.FC<OutfitTimelineProps> = ({
       </div>
 
       {/* Info Footer */}
-      <div className="p-4 border-t border-gray-700">
-        <div className="flex items-start gap-2 text-xs text-gray-500">
+      <div className="p-4 border-t border-slate-700">
+        <div className="flex items-start gap-2 text-sm text-slate-400">
           <Info size={14} className="flex-shrink-0 mt-0.5" />
           <p>
             Outfit changes are automatically tracked when you assign outfits to scenes.

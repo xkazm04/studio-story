@@ -8,10 +8,12 @@
 
 import { useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FAST } from '@/lib/animations';
 import { useSceneEditor } from '@/contexts/SceneEditorContext';
 import { SceneChoice } from '@/app/types/SceneChoice';
 import { Scene } from '@/app/types/Scene';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
 import { ArrowRight, Trash2, GripVertical, Link, Unlink } from 'lucide-react';
 
 interface ChoiceListProps {
@@ -22,7 +24,7 @@ interface ChoiceListProps {
 const item = {
   hidden: { opacity: 0, x: -10 },
   show: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 10, transition: { duration: 0.15 } },
+  exit: { opacity: 0, x: 10, transition: FAST },
 };
 
 export function ChoiceList({ choices, scenes }: ChoiceListProps) {
@@ -76,14 +78,14 @@ export function ChoiceList({ choices, scenes }: ChoiceListProps) {
               )}
             >
               {/* Drag Handle */}
-              <div className="text-slate-600 cursor-grab hover:text-slate-400 transition-colors">
+              <div className="text-slate-400 cursor-grab hover:text-slate-400 transition-colors">
                 <GripVertical className="w-4 h-4" />
               </div>
 
               {/* Index Badge */}
               <div
                 className={cn(
-                  'w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-mono font-bold',
+                  'w-5 h-5 rounded-md flex items-center justify-center text-sm font-mono font-bold',
                   'bg-slate-700/50 text-slate-400 border border-slate-600/50'
                 )}
               >
@@ -92,7 +94,7 @@ export function ChoiceList({ choices, scenes }: ChoiceListProps) {
 
               {/* Choice Label */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-200 truncate">
+                <p className={cn(TYPOGRAPHY.h3, 'truncate')}>
                   {choice.label || 'Untitled choice'}
                 </p>
               </div>
@@ -111,10 +113,10 @@ export function ChoiceList({ choices, scenes }: ChoiceListProps) {
                 ) : (
                   <Unlink className="w-3 h-3 text-amber-400" />
                 )}
-                <ArrowRight className="w-3 h-3 text-slate-500" />
+                <ArrowRight className="w-3 h-3 text-slate-400" />
                 <span
                   className={cn(
-                    'text-xs font-mono font-medium truncate max-w-[120px]',
+                    'text-sm font-mono font-medium truncate max-w-[120px]',
                     hasTarget ? 'text-cyan-400' : 'text-amber-400'
                   )}
                 >

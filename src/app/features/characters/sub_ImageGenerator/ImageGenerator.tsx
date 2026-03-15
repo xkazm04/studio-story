@@ -123,7 +123,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({
           <h2 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             // image_generator
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             generate character illustrations for {characterName}
           </p>
         </div>
@@ -132,7 +132,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({
           {isLoading && (
             <button
               onClick={cancel}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                          bg-red-600/80 hover:bg-red-600 text-white transition-all"
             >
               <XCircle className="w-3.5 h-3.5" />
@@ -142,7 +142,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({
           <button
             onClick={reset}
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                        bg-slate-700 hover:bg-slate-600 text-slate-200 transition-all
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -162,7 +162,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({
             className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg"
           >
             <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <span className="font-mono text-xs text-red-400">{error}</span>
+            <span className="font-mono text-sm text-red-400">{error}</span>
           </motion.div>
         )}
       </AnimatePresence>

@@ -188,7 +188,7 @@ export function CollectionPanel({
             </div>
             <div>
               <h2 className="text-lg font-medium text-slate-100">Collections</h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-sm text-slate-400">
                 {collections.length} collection{collections.length !== 1 ? 's' : ''}
               </p>
             </div>
@@ -236,7 +236,7 @@ export function CollectionPanel({
           <button
             onClick={() => setActiveView('collections')}
             className={clsx(
-              'flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+              'flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
               activeView === 'collections'
                 ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                 : 'text-slate-400 hover:text-slate-200'
@@ -247,7 +247,7 @@ export function CollectionPanel({
           <button
             onClick={() => setActiveView('smart')}
             className={clsx(
-              'flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+              'flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
               activeView === 'smart'
                 ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                 : 'text-slate-400 hover:text-slate-200'
@@ -328,7 +328,7 @@ export function CollectionPanel({
                           <p className="text-sm font-medium text-slate-100 truncate">
                             {collection.name}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-sm text-slate-400">
                             {collection.assetIds.length} asset
                             {collection.assetIds.length !== 1 ? 's' : ''}
                           </p>
@@ -428,7 +428,7 @@ export function CollectionPanel({
                       <p className="text-sm font-medium text-slate-100 truncate">
                         {group.name}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm text-slate-400">
                         {group.assetCount} asset{group.assetCount !== 1 ? 's' : ''} •
                         Auto-grouped
                       </p>
@@ -571,7 +571,7 @@ export function CollectionPanel({
                       </div>
                       <div className="flex-1">
                         <p className="font-medium">{template.name}</p>
-                        <p className="text-xs opacity-70">{template.description}</p>
+                        <p className="text-sm opacity-70">{template.description}</p>
                       </div>
                       <ChevronRight className="w-4 h-4 opacity-50" />
                     </button>

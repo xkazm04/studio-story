@@ -103,7 +103,7 @@ function VoiceCard({ voice, isSelected, isPlaying, onSelect, onPreview }: VoiceC
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Mic className={cn('w-3.5 h-3.5', isSelected ? 'text-cyan-400' : 'text-slate-500')} />
+            <Mic className={cn('w-3.5 h-3.5', isSelected ? 'text-cyan-400' : 'text-slate-400')} />
             <span className={cn('text-sm font-medium', isSelected ? 'text-cyan-300' : 'text-slate-200')}>
               {voice.name}
             </span>
@@ -112,17 +112,17 @@ function VoiceCard({ voice, isSelected, isPlaying, onSelect, onPreview }: VoiceC
           {voice.metadata && (
             <div className="flex items-center gap-2 mt-1">
               {voice.metadata.gender && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
+                <span className="text-sm px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
                   {voice.metadata.gender}
                 </span>
               )}
               {voice.metadata.age && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
+                <span className="text-sm px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
                   {voice.metadata.age}
                 </span>
               )}
               {voice.metadata.style?.slice(0, 2).map(style => (
-                <span key={style} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">
+                <span key={style} className="text-sm px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">
                   {style}
                 </span>
               ))}
@@ -196,13 +196,13 @@ function CharacterRow({
             {character.imageUrl ? (
               <img src={character.imageUrl} alt={character.name} className="w-full h-full object-cover" />
             ) : (
-              <User className="w-4 h-4 text-slate-500" />
+              <User className="w-4 h-4 text-slate-400" />
             )}
           </div>
           <div className="text-left">
             <div className="text-sm font-medium text-slate-200">{character.name}</div>
             {character.role && (
-              <div className="text-[10px] text-slate-500">{character.role}</div>
+              <div className="text-sm text-slate-400">{character.role}</div>
             )}
           </div>
         </div>
@@ -211,15 +211,15 @@ function CharacterRow({
           {assignment ? (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-cyan-600/20">
               <Mic className="w-3 h-3 text-cyan-400" />
-              <span className="text-xs text-cyan-300">{assignment.voiceConfig.name}</span>
+              <span className="text-sm text-cyan-300">{assignment.voiceConfig.name}</span>
             </div>
           ) : (
-            <span className="text-xs text-slate-500">No voice assigned</span>
+            <span className="text-sm text-slate-400">No voice assigned</span>
           )}
           {isExpanded ? (
-            <ChevronDown className="w-4 h-4 text-slate-500" />
+            <ChevronDown className="w-4 h-4 text-slate-400" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400" />
           )}
         </div>
       </button>
@@ -236,13 +236,13 @@ function CharacterRow({
             <div className="p-3 space-y-3 bg-slate-900/50 border-t border-slate-700">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search voices..."
-                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="w-full pl-8 pr-3 py-1.5 text-sm bg-slate-800 border border-slate-700 rounded-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
                 />
               </div>
 
@@ -267,7 +267,7 @@ function CharacterRow({
                     variant="ghost"
                     size="sm"
                     onClick={onUnassign}
-                    className="text-xs text-red-400 hover:text-red-300"
+                    className="text-sm text-red-400 hover:text-red-300"
                   >
                     Remove Voice
                   </Button>
@@ -295,8 +295,8 @@ function VoiceSettingsEditor({ settings, onChange }: VoiceSettingsEditorProps) {
     <div className="space-y-3">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-400">Stability</span>
-          <span className="text-[10px] text-slate-500">{Math.round(settings.stability * 100)}%</span>
+          <span className="text-sm text-slate-400">Stability</span>
+          <span className="text-sm text-slate-400">{Math.round(settings.stability * 100)}%</span>
         </div>
         <input
           type="range"
@@ -310,8 +310,8 @@ function VoiceSettingsEditor({ settings, onChange }: VoiceSettingsEditorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-400">Clarity</span>
-          <span className="text-[10px] text-slate-500">{Math.round(settings.similarityBoost * 100)}%</span>
+          <span className="text-sm text-slate-400">Clarity</span>
+          <span className="text-sm text-slate-400">{Math.round(settings.similarityBoost * 100)}%</span>
         </div>
         <input
           type="range"
@@ -325,8 +325,8 @@ function VoiceSettingsEditor({ settings, onChange }: VoiceSettingsEditorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-400">Style</span>
-          <span className="text-[10px] text-slate-500">{Math.round(settings.style * 100)}%</span>
+          <span className="text-sm text-slate-400">Style</span>
+          <span className="text-sm text-slate-400">{Math.round(settings.style * 100)}%</span>
         </div>
         <input
           type="range"
@@ -340,8 +340,8 @@ function VoiceSettingsEditor({ settings, onChange }: VoiceSettingsEditorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-400">Speed</span>
-          <span className="text-[10px] text-slate-500">{settings.speed.toFixed(1)}x</span>
+          <span className="text-sm text-slate-400">Speed</span>
+          <span className="text-sm text-slate-400">{settings.speed.toFixed(1)}x</span>
         </div>
         <input
           type="range"
@@ -444,7 +444,7 @@ export function VoiceAssigner({
             </div>
             <div>
               <h2 className="text-sm font-semibold text-slate-100">Voice Assignment</h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-400">
                 {assignedCount} of {totalCount} characters assigned
               </p>
             </div>
@@ -455,7 +455,7 @@ export function VoiceAssigner({
               variant="ghost"
               size="sm"
               onClick={handleAutoAssign}
-              className="h-7 px-2 text-xs"
+              className="h-7 px-2 text-sm"
               disabled={isLoading}
             >
               <Wand2 className="w-3.5 h-3.5 mr-1" />
@@ -477,15 +477,15 @@ export function VoiceAssigner({
             </div>
             <div className="text-left">
               <div className="text-sm font-medium text-slate-200">Narrator Voice</div>
-              <div className="text-[10px] text-slate-500">
+              <div className="text-sm text-slate-400">
                 {narratorConfig ? narratorConfig.voiceConfig.name : 'Not configured'}
               </div>
             </div>
           </div>
           {showNarratorSettings ? (
-            <ChevronDown className="w-4 h-4 text-slate-500" />
+            <ChevronDown className="w-4 h-4 text-slate-400" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400" />
           )}
         </button>
 
@@ -500,7 +500,7 @@ export function VoiceAssigner({
               <div className="pt-3 space-y-3">
                 {/* Narrator Style */}
                 <div className="space-y-2">
-                  <span className="text-xs text-slate-400">Narration Style</span>
+                  <span className="text-sm text-slate-400">Narration Style</span>
                   <div className="grid grid-cols-5 gap-1">
                     {NARRATOR_STYLES.map(style => (
                       <button
@@ -513,10 +513,10 @@ export function VoiceAssigner({
                         }}
                         title={style.description}
                         className={cn(
-                          'py-1.5 text-[9px] font-medium rounded transition-colors',
+                          'py-1.5 text-sm font-medium rounded transition-colors',
                           selectedNarratorStyle === style.value
                             ? 'bg-amber-600 text-white'
-                            : 'bg-slate-800 text-slate-500 hover:bg-slate-700'
+                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                         )}
                       >
                         {style.label}
@@ -551,9 +551,9 @@ export function VoiceAssigner({
         {characters.length === 0 ? (
           <div className="h-full flex items-center justify-center text-center">
             <div>
-              <Users className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-              <p className="text-sm text-slate-500">No characters found</p>
-              <p className="text-xs text-slate-600 mt-1">
+              <Users className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <p className="text-sm text-slate-400">No characters found</p>
+              <p className="text-sm text-slate-400 mt-1">
                 Add characters to your project to assign voices
               </p>
             </div>
@@ -580,7 +580,7 @@ export function VoiceAssigner({
 
       {/* Footer Stats */}
       <div className="shrink-0 px-4 py-2 border-t border-slate-800 bg-slate-900/50">
-        <div className="flex items-center justify-between text-[10px] text-slate-500">
+        <div className="flex items-center justify-between text-sm text-slate-400">
           <div className="flex items-center gap-4">
             <span>{availableVoices.length} voices available</span>
             <span>{assignedCount} assigned</span>

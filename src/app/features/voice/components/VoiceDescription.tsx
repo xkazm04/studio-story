@@ -59,9 +59,9 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
   };
 
   return (
-    <div className="bg-gray-950/50 p-6 space-y-4">
+    <div className="bg-slate-950/50 p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-200 flex items-center gap-2">
+        <h4 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-purple-400" />
           Voice Description
         </h4>
@@ -89,7 +89,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
 
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors text-sm"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors text-sm"
               >
                 <Edit3 className="w-3 h-3" />
                 Edit
@@ -102,7 +102,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
               <button
                 onClick={handleCancel}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors text-sm disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors text-sm disabled:opacity-50"
               >
                 <X className="w-3 h-3" />
                 Cancel
@@ -136,16 +136,16 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe the voice characteristics, tone, and ideal use cases..."
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             rows={6}
           />
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           {description ? (
-            <p className="text-sm text-gray-300 leading-relaxed">{description}</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{description}</p>
           ) : (
-            <p className="text-sm text-gray-500 italic">
+            <p className="text-sm text-slate-400 italic">
               No description yet. Use AI Enhance to generate one or add your own.
             </p>
           )}

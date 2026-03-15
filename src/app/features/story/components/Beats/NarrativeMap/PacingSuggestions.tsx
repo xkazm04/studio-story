@@ -5,6 +5,7 @@ import { BeatTableItem } from '../BeatsOverview';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/app/components/UI/Button';
 import { Sparkles, X, CheckCircle, Clock, ArrowRight, Merge, Split } from 'lucide-react';
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 
 interface PacingSuggestionsProps {
   suggestions: BeatPacingSuggestion[];
@@ -51,15 +52,15 @@ const PacingSuggestions = ({
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="absolute top-4 left-4 w-80 max-h-[calc(100%-2rem)] overflow-y-auto bg-gray-900/95 backdrop-blur-md border border-gray-800 rounded-lg shadow-2xl"
+      className="absolute top-4 left-4 w-80 max-h-[calc(100%-2rem)] overflow-y-auto bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-lg shadow-2xl"
       data-testid="pacing-suggestions-panel"
     >
-      <div className="sticky top-0 bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between z-10">
+      <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-purple-400" />
-          <h3 className="text-sm font-semibold text-gray-200">AI Pacing Suggestions</h3>
+          <h3 className="text-sm font-semibold text-slate-200">AI Pacing Suggestions</h3>
         </div>
-        <div className="text-xs text-gray-400 bg-purple-500/10 px-2 py-1 rounded border border-purple-500/20">
+        <div className="text-sm text-slate-400 bg-purple-500/10 px-2 py-1 rounded border border-purple-500/20">
           {suggestions.length}
         </div>
       </div>
@@ -76,7 +77,7 @@ const PacingSuggestions = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-gray-950/50 rounded-lg border border-gray-800 p-3 hover:border-purple-500/30 transition-colors"
+                className={`bg-slate-950/50 rounded-lg border border-slate-800 p-3 ${INTERACTIVE.transition} hover:border-purple-500/30`}
                 data-testid={`pacing-suggestion-${suggestion.id}`}
               >
                 {/* Header */}
@@ -86,10 +87,10 @@ const PacingSuggestions = ({
                       {getSuggestionIcon(suggestion.suggestion_type)}
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-gray-200 capitalize">
+                      <div className="text-sm font-medium text-slate-200 capitalize">
                         {suggestion.suggestion_type.replace('_', ' ')}
                       </div>
-                      <div className="text-[10px] text-gray-500">
+                      <div className="text-sm text-slate-400">
                         Beat: {beat.name}
                       </div>
                     </div>
@@ -97,9 +98,9 @@ const PacingSuggestions = ({
 
                   {/* Confidence Badge */}
                   <div
-                    className={`text-[10px] font-medium px-2 py-0.5 rounded ${getConfidenceColor(
+                    className={`text-sm font-medium px-2 py-0.5 rounded ${getConfidenceColor(
                       suggestion.confidence
-                    )} bg-gray-900/50 border border-current/20`}
+                    )} bg-slate-900/50 border border-current/20`}
                   >
                     {getConfidenceLabel(suggestion.confidence)} ({Math.round(suggestion.confidence * 100)}%)
                   </div>
@@ -107,11 +108,11 @@ const PacingSuggestions = ({
 
                 {/* Suggestion Details */}
                 {suggestion.suggestion_type === 'reorder' && suggestion.suggested_order !== undefined && (
-                  <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-                    <span className="text-gray-500">Current:</span>
-                    <span className="bg-gray-800 px-2 py-0.5 rounded">{(beat.order || 0) + 1}</span>
+                  <div className="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                    <span className="text-slate-400">Current:</span>
+                    <span className="bg-slate-800 px-2 py-0.5 rounded">{(beat.order || 0) + 1}</span>
                     <ArrowRight className="h-3 w-3 text-purple-400" />
-                    <span className="text-gray-500">Suggested:</span>
+                    <span className="text-slate-400">Suggested:</span>
                     <span className="bg-purple-500/20 px-2 py-0.5 rounded text-purple-300 border border-purple-500/30">
                       {suggestion.suggested_order + 1}
                     </span>
@@ -120,13 +121,13 @@ const PacingSuggestions = ({
 
                 {suggestion.suggestion_type === 'adjust_duration' &&
                   suggestion.suggested_duration !== undefined && (
-                    <div className="text-xs text-gray-400 mb-2 flex items-center gap-2">
-                      <span className="text-gray-500">Current:</span>
-                      <span className="bg-gray-800 px-2 py-0.5 rounded">
+                    <div className="text-sm text-slate-400 mb-2 flex items-center gap-2">
+                      <span className="text-slate-400">Current:</span>
+                      <span className="bg-slate-800 px-2 py-0.5 rounded">
                         {beat.estimated_duration || 10}m
                       </span>
                       <ArrowRight className="h-3 w-3 text-purple-400" />
-                      <span className="text-gray-500">Suggested:</span>
+                      <span className="text-slate-400">Suggested:</span>
                       <span className="bg-purple-500/20 px-2 py-0.5 rounded text-purple-300 border border-purple-500/30">
                         {suggestion.suggested_duration}m
                       </span>
@@ -134,7 +135,7 @@ const PacingSuggestions = ({
                   )}
 
                 {/* Reasoning */}
-                <div className="text-xs text-gray-400 mb-3 leading-relaxed bg-gray-900/30 rounded p-2 border border-gray-800/50">
+                <div className="text-sm text-slate-400 mb-3 leading-relaxed bg-slate-900/30 rounded p-2 border border-slate-800/50">
                   {suggestion.reasoning}
                 </div>
 
@@ -165,10 +166,10 @@ const PacingSuggestions = ({
         </AnimatePresence>
 
         {suggestions.length === 0 && (
-          <div className="py-8 text-center text-gray-500 text-xs">
+          <div className="py-8 text-center text-slate-400 text-sm">
             <Sparkles className="h-8 w-8 mx-auto mb-2 opacity-30" />
             <p>No pacing suggestions available</p>
-            <p className="text-[10px] mt-1">AI will analyze your beats for optimization opportunities</p>
+            <p className="text-sm mt-1">AI will analyze your beats for optimization opportunities</p>
           </div>
         )}
       </div>

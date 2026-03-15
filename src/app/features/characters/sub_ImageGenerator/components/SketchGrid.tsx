@@ -42,7 +42,7 @@ const SketchGrid: React.FC<SketchGridProps> = ({
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-5 h-5 border-2 border-cyan-500/50 border-t-transparent rounded-full animate-spin" />
-                <span className="font-mono text-[10px] text-slate-500">
+                <span className="font-mono text-sm text-slate-400">
                   sketch_{i + 1}...
                 </span>
               </div>
@@ -58,14 +58,14 @@ const SketchGrid: React.FC<SketchGridProps> = ({
     return (
       <div className="p-4 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-4">
-          <ImageIcon className="w-4 h-4 text-slate-500" />
+          <ImageIcon className="w-4 h-4 text-slate-400" />
           <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             sketches
           </h3>
         </div>
         <div className="py-8 text-center">
-          <ImageIcon className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-          <span className="font-mono text-xs text-slate-500">
+          <ImageIcon className="w-10 h-10 text-slate-400 mx-auto mb-2" />
+          <span className="font-mono text-sm text-slate-400">
             // generate_sketches_to_preview
           </span>
         </div>
@@ -82,7 +82,7 @@ const SketchGrid: React.FC<SketchGridProps> = ({
             select_sketch
           </h3>
         </div>
-        <span className="font-mono text-[10px] text-slate-500 uppercase">
+        <span className="font-mono text-sm text-slate-400 uppercase">
           click to select
         </span>
       </div>
@@ -128,7 +128,7 @@ const SketchGrid: React.FC<SketchGridProps> = ({
 
                 {/* Label */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                  <span className="font-mono text-[10px] text-white uppercase tracking-wide">
+                  <span className="font-mono text-sm text-white uppercase tracking-wide">
                     sketch_{index + 1}
                   </span>
                 </div>

@@ -5,6 +5,8 @@ import { BeatSceneSuggestion } from '@/app/types/Beat';
 import { Scene } from '@/app/types/Scene';
 import { Sparkles, Check, X, Edit2, ExternalLink, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { INTERACTIVE, BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
+import { useToast } from '@/app/components/UI/ToastContainer';
 
 interface BeatSceneSuggestionsProps {
   beatId: string;
@@ -29,6 +31,7 @@ export default function BeatSceneSuggestions({
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const generateSuggestions = async () => {
     setIsLoading(true);
@@ -55,6 +58,7 @@ export default function BeatSceneSuggestions({
       setIsVisible(true);
     } catch (error) {
       console.error('Error generating suggestions:', error);
+      showToast('Scene suggestions failed. Try Again.', 'error', 5000);
     } finally {
       setIsLoading(false);
     }
@@ -71,14 +75,15 @@ export default function BeatSceneSuggestions({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" aria-live="polite">
       {/* Trigger Button */}
       {!isVisible && (
         <button
           onClick={generateSuggestions}
           disabled={isLoading}
+          aria-label="Generate AI scene suggestions"
           data-testid="generate-scene-suggestions-btn"
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 rounded hover:bg-cyan-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 rounded hover:bg-cyan-500/20 ${INTERACTIVE.transition} disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           {isLoading ? (
             <>
@@ -101,25 +106,26 @@ export default function BeatSceneSuggestions({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={BEAT_ANIMATIONS.standard}
             className="mt-3 space-y-2"
             data-testid="scene-suggestions-panel"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded-t">
+            <div className="flex items-center justify-between px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-t">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-cyan-400" />
                 <h4 className="text-sm font-semibold text-white">
                   AI Scene Suggestions
                 </h4>
-                <span className="text-xs text-gray-400">
+                <span className="text-sm text-slate-400">
                   ({suggestions.length} suggestion{suggestions.length !== 1 ? 's' : ''})
                 </span>
               </div>
               <button
                 onClick={() => setIsVisible(false)}
+                aria-label="Close scene suggestions"
                 data-testid="close-suggestions-btn"
-                className="text-gray-400 hover:text-white transition-colors"
+                className={`text-slate-400 hover:text-white ${INTERACTIVE.transition}`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -132,8 +138,8 @@ export default function BeatSceneSuggestions({
                   key={index}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="p-3 bg-gray-800/30 border border-gray-700/50 rounded hover:border-cyan-500/30 transition-colors"
+                  transition={{ ...BEAT_ANIMATIONS.quick, delay: BEAT_ANIMATIONS.stagger(index) }}
+                  className={`p-3 bg-slate-800/30 border border-slate-700/50 rounded ${INTERACTIVE.transition} hover:border-cyan-500/30`}
                   data-testid={`scene-suggestion-${index}`}
                 >
                   {/* Suggestion Header */}
@@ -144,18 +150,18 @@ export default function BeatSceneSuggestions({
                           {suggestion.scene_name}
                         </h5>
                         {suggestion.is_new_scene && (
-                          <span className="px-1.5 py-0.5 text-xs font-medium text-green-400 bg-green-500/10 border border-green-500/30 rounded">
+                          <span className="px-1.5 py-0.5 text-sm font-medium text-green-400 bg-green-500/10 border border-green-500/30 rounded">
                             New
                           </span>
                         )}
                         {!suggestion.is_new_scene && (
-                          <span className="px-1.5 py-0.5 text-xs font-medium text-blue-400 bg-blue-500/10 border border-blue-500/30 rounded">
+                          <span className="px-1.5 py-0.5 text-sm font-medium text-blue-400 bg-blue-500/10 border border-blue-500/30 rounded">
                             Existing
                           </span>
                         )}
                       </div>
                       {suggestion.location && (
-                        <p className="text-xs text-gray-400 mb-1">
+                        <p className="text-sm text-slate-400 mb-1">
                           Location: {suggestion.location}
                         </p>
                       )}
@@ -164,14 +170,14 @@ export default function BeatSceneSuggestions({
                     {/* Scores */}
                     <div className="flex flex-col items-end gap-1 flex-shrink-0">
                       <div className="flex items-center gap-1">
-                        <span className="text-xs text-gray-500">Confidence:</span>
-                        <span className="text-xs font-semibold text-cyan-400">
+                        <span className="text-sm text-slate-400">Confidence:</span>
+                        <span className="text-sm font-semibold text-cyan-400">
                           {Math.round(suggestion.confidence_score * 100)}%
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="text-xs text-gray-500">Match:</span>
-                        <span className="text-xs font-semibold text-blue-400">
+                        <span className="text-sm text-slate-400">Match:</span>
+                        <span className="text-sm font-semibold text-blue-400">
                           {Math.round(suggestion.similarity_score * 100)}%
                         </span>
                       </div>
@@ -179,13 +185,13 @@ export default function BeatSceneSuggestions({
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-gray-300 mb-2 line-clamp-2">
+                  <p className="text-sm text-slate-300 mb-2 line-clamp-2">
                     {suggestion.scene_description}
                   </p>
 
                   {/* Reasoning */}
-                  <div className="p-2 bg-gray-900/50 rounded mb-3">
-                    <p className="text-xs text-gray-400 italic">
+                  <div className="p-2 bg-slate-900/50 rounded mb-3">
+                    <p className="text-sm text-slate-400 italic">
                       {suggestion.reasoning}
                     </p>
                   </div>
@@ -195,7 +201,7 @@ export default function BeatSceneSuggestions({
                     <button
                       onClick={() => handleAccept(suggestion)}
                       data-testid={`accept-suggestion-${index}-btn`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-500 rounded transition-colors"
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-500 rounded ${INTERACTIVE.transition}`}
                     >
                       <Check className="w-3.5 h-3.5" />
                       Accept
@@ -203,7 +209,7 @@ export default function BeatSceneSuggestions({
                     <button
                       onClick={() => onModifySuggestion(suggestion)}
                       data-testid={`modify-suggestion-${index}-btn`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 rounded transition-colors"
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 rounded ${INTERACTIVE.transition}`}
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                       Modify
@@ -211,7 +217,7 @@ export default function BeatSceneSuggestions({
                     <button
                       onClick={() => handleReject(suggestion)}
                       data-testid={`reject-suggestion-${index}-btn`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-400 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 rounded transition-colors"
+                      className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 rounded ${INTERACTIVE.transition}`}
                     >
                       <X className="w-3.5 h-3.5" />
                       Reject

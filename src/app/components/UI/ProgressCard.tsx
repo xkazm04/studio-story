@@ -71,16 +71,16 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
   const labelFormatter = formatLabel || defaultFormatLabel;
 
   return (
-    <div className={clsx('space-y-2', className)} data-testid={testId}>
+    <div className={clsx('space-y-1.5', className)} data-testid={testId}>
       {/* Header with title and progress label */}
       <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-300 font-medium" data-testid={`${testId}-title`}>
+        <span className="text-slate-300 font-medium" data-testid={`${testId}-title`}>
           {title}
         </span>
         <span
           className={clsx(
             'text-xs font-mono',
-            isComplete ? 'text-green-400' : 'text-gray-400'
+            isComplete ? 'text-green-400' : 'text-slate-400'
           )}
           data-testid={`${testId}-label`}
         >
@@ -89,7 +89,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
       </div>
 
       {/* Progress bar container */}
-      <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+      <div className="relative h-2 bg-slate-800 rounded-full overflow-hidden">
         {/* Main progress bar */}
         <motion.div
           initial={{ width: 0 }}
@@ -131,7 +131,7 @@ export const ProgressCardGrid: React.FC<{
   'data-testid'?: string;
 }> = ({ children, className, 'data-testid': testId }) => {
   return (
-    <div className={clsx('space-y-5', className)} data-testid={testId}>
+    <div className={clsx('space-y-3', className)} data-testid={testId}>
       {children}
     </div>
   );
@@ -166,10 +166,10 @@ export const ProgressSummaryCard: React.FC<ProgressSummaryCardProps> = ({
 }) => {
   return (
     <div className={clsx('text-center', className)} data-testid={testId}>
-      <div className={clsx('text-2xl font-bold', color)} data-testid={`${testId}-value`}>
+      <div className={clsx('text-xl font-bold', color)} data-testid={`${testId}-value`}>
         {value}
       </div>
-      <div className="text-xs text-gray-500 mt-1" data-testid={`${testId}-label`}>
+      <div className="text-xs text-slate-400 mt-0.5" data-testid={`${testId}-label`}>
         {label}
       </div>
     </div>
@@ -201,7 +201,7 @@ export const ProgressSummaryGrid: React.FC<{
 
   return (
     <div
-      className={clsx('grid gap-4', gridClasses[columns], className)}
+      className={clsx('grid gap-3', gridClasses[columns], className)}
       data-testid={testId}
     >
       {children}

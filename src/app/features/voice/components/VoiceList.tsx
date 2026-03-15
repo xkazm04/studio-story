@@ -17,7 +17,7 @@ const VoiceList = ({ projectId }: VoiceListProps) => {
     return (
       <div className="flex flex-col space-y-4 p-6">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 bg-gray-800/50 rounded-xl animate-pulse" />
+          <div key={i} className="h-24 bg-slate-800/50 rounded-xl animate-pulse" />
         ))}
       </div>
     );
@@ -28,7 +28,7 @@ const VoiceList = ({ projectId }: VoiceListProps) => {
       <div className="flex flex-col items-center justify-center p-8 text-red-400">
         <MicOff className="h-12 w-12 mb-4 opacity-70" />
         <p className="text-lg font-medium mb-2">Failed to load voices</p>
-        <p className="text-sm text-gray-500 mb-4">{error.message}</p>
+        <p className="text-sm text-slate-400 mb-4">{error.message}</p>
         <button
           onClick={() => refetch()}
           className="px-4 py-2 bg-red-900/30 hover:bg-red-900/50 transition-colors rounded-lg text-sm flex items-center gap-2"
@@ -56,7 +56,7 @@ const VoiceList = ({ projectId }: VoiceListProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="inline-block h-2 w-2 rounded-full animate-pulse bg-emerald-500" />
-          <h2 className="text-xl font-semibold text-gray-200">
+          <h2 className="ms-h2">
             Project Voices ({voices.length})
           </h2>
         </div>

@@ -6,6 +6,8 @@
  * workspace composition instead of relying on hardcoded intent detection or static configs.
  */
 
+import type { PanelDensity } from '@/workspace/types';
+
 export interface PanelManifest {
   /** Panel type identifier — matches WorkspacePanelType */
   type: string;
@@ -38,11 +40,39 @@ export interface PanelManifest {
     minWidth: number;
   };
 
+  /** Panel complexity for layout scoring */
+  complexity: 'low' | 'medium' | 'high';
+
   /** Lucide icon name for UI rendering */
   icon: string;
 
   /** Panels that pair well with this one */
   suggestedCompanions?: string[];
+
+  /** Schema hint for primitives-based panels */
+  entityHint?: { entity: string; defaultView: string };
+
+  /** Density modes — what the panel looks like at each fidelity level */
+  densityModes?: {
+    [K in PanelDensity]?: {
+      minWidth: number;
+      minHeight: number;
+      /** Natural language description of what's shown at this density */
+      description: string;
+    };
+  };
+
+  /** Data slice examples — helps LLM understand what dataSlice props to pass */
+  dataSliceExamples?: Array<{
+    scenario: string;
+    dataSlice: {
+      entityId?: string;
+      filter?: string;
+      view?: string;
+      highlight?: string[];
+      sort?: string;
+    };
+  }>;
 }
 
 export interface PanelInputSchema {

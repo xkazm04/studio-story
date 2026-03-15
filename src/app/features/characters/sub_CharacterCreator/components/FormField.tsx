@@ -16,7 +16,7 @@ interface FormFieldProps {
  * Renders text input, textarea, gender selector, or special features based on field config
  */
 export function FormField({ field, value, onChange }: FormFieldProps) {
-  const baseClasses = "w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const baseClasses = "w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   // Gender selector
   if (field.type === 'gender') {
@@ -36,10 +36,10 @@ export function FormField({ field, value, onChange }: FormFieldProps) {
     return (
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-300">
+          <label className="block text-sm font-medium text-slate-300">
             {field.label}
           </label>
-          <span className={cn('text-xs', isOverLimit ? 'text-red-400' : 'text-gray-500')}>
+          <span className={cn('text-sm', isOverLimit ? 'text-red-400' : 'text-slate-400')}>
             {wordCount}/10 words
           </span>
         </div>
@@ -53,7 +53,7 @@ export function FormField({ field, value, onChange }: FormFieldProps) {
           data-testid="special-features-input"
         />
         {isOverLimit && (
-          <p className="text-xs text-red-400 mt-1">Please keep it to 10 words or less</p>
+          <p className="text-sm text-red-400 mt-1">Please keep it to 10 words or less</p>
         )}
       </div>
     );
@@ -62,7 +62,7 @@ export function FormField({ field, value, onChange }: FormFieldProps) {
   if (field.type === 'textarea') {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-slate-300 mb-2">
           {field.label}
         </label>
         <textarea
@@ -78,7 +78,7 @@ export function FormField({ field, value, onChange }: FormFieldProps) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-300 mb-2">
+      <label className="block text-sm font-medium text-slate-300 mb-2">
         {field.label}
       </label>
       <input

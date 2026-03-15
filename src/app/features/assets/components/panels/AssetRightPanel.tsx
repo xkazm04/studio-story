@@ -80,7 +80,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
           </span>
           {/* Reference count badge */}
           <span
-            className={`px-1.5 py-0.5 text-[10px] font-medium rounded-full ${
+            className={`px-1.5 py-0.5 text-sm font-medium rounded-full ${
               referenceCount > 0
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                 : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
@@ -102,7 +102,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 rounded-lg transition-colors"
+          className="p-1.5 text-slate-400 hover:text-slate-300 hover:bg-slate-800/50 rounded-lg transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -122,13 +122,13 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <ImageIcon className="w-16 h-16 text-slate-700" />
+                <ImageIcon className="w-16 h-16 text-slate-400" />
               </div>
             )}
 
             {/* Type Badge */}
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 text-[10px] font-medium rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+              <span className="px-2 py-1 text-sm font-medium rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                 {asset.type}
               </span>
             </div>
@@ -139,7 +139,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
         <div className="px-4 pb-4 space-y-4">
           {/* Basic Info */}
           <section className="space-y-2">
-            <h3 className="flex items-center gap-2 text-xs font-medium text-slate-400 uppercase tracking-wide">
+            <h3 className="flex items-center gap-2 text-sm font-medium text-slate-400 uppercase tracking-wide">
               <Info className="w-3.5 h-3.5" />
               Basic Info
             </h3>
@@ -147,12 +147,12 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
               {/* Name */}
               <div className="group flex items-center justify-between p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wide">Name</span>
+                  <span className="text-sm text-slate-400 uppercase tracking-wide">Name</span>
                   <p className="text-sm text-slate-200 truncate">{asset.name}</p>
                 </div>
                 <button
                   onClick={() => handleCopy(asset.name, 'name')}
-                  className="p-1 text-slate-600 hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-1 text-slate-400 hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   {copiedField === 'name' ? (
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -165,7 +165,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
               {/* Type & Subcategory */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wide">Type</span>
+                  <span className="text-sm text-slate-400 uppercase tracking-wide">Type</span>
                   <p className="text-sm text-slate-200 flex items-center gap-1.5">
                     <Tag className="w-3 h-3 text-cyan-400" />
                     {asset.type}
@@ -173,7 +173,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
                 </div>
                 {asset.subcategory && (
                   <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-                    <span className="text-[10px] text-slate-500 uppercase tracking-wide">Subcategory</span>
+                    <span className="text-sm text-slate-400 uppercase tracking-wide">Subcategory</span>
                     <p className="text-sm text-slate-200 flex items-center gap-1.5">
                       <Layers className="w-3 h-3 text-violet-400" />
                       {asset.subcategory}
@@ -185,7 +185,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
               {/* Gen/Model */}
               {asset.gen && (
                 <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wide">Generation</span>
+                  <span className="text-sm text-slate-400 uppercase tracking-wide">Generation</span>
                   <p className="text-sm text-slate-200 flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-amber-400" />
                     {asset.gen}
@@ -198,7 +198,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
           {/* Description */}
           {asset.description && (
             <section className="space-y-2">
-              <h3 className="flex items-center gap-2 text-xs font-medium text-slate-400 uppercase tracking-wide">
+              <h3 className="flex items-center gap-2 text-sm font-medium text-slate-400 uppercase tracking-wide">
                 <FileText className="w-3.5 h-3.5" />
                 Description
               </h3>
@@ -212,7 +212,7 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
           <section className="space-y-2">
             <button
               onClick={() => setShowUsagePanel(!showUsagePanel)}
-              className="w-full flex items-center justify-between text-xs font-medium text-slate-400 uppercase tracking-wide hover:text-slate-300 transition-colors"
+              className="w-full flex items-center justify-between text-sm font-medium text-slate-400 uppercase tracking-wide hover:text-slate-300 transition-colors"
             >
               <span className="flex items-center gap-2">
                 <Link2 className="w-3.5 h-3.5" />
@@ -247,20 +247,20 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
 
           {/* Timestamps */}
           <section className="space-y-2">
-            <h3 className="flex items-center gap-2 text-xs font-medium text-slate-400 uppercase tracking-wide">
+            <h3 className="flex items-center gap-2 text-sm font-medium text-slate-400 uppercase tracking-wide">
               <Calendar className="w-3.5 h-3.5" />
               Timestamps
             </h3>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-2 text-sm">
               {asset.created_at && (
                 <div className="p-2 rounded-lg bg-slate-900/30 border border-slate-800/50">
-                  <span className="text-slate-500">Created</span>
+                  <span className="text-slate-400">Created</span>
                   <p className="text-slate-300">{formatDate(asset.created_at)}</p>
                 </div>
               )}
               {asset.updated_at && (
                 <div className="p-2 rounded-lg bg-slate-900/30 border border-slate-800/50">
-                  <span className="text-slate-500">Updated</span>
+                  <span className="text-slate-400">Updated</span>
                   <p className="text-slate-300">{formatDate(asset.updated_at)}</p>
                 </div>
               )}
@@ -270,17 +270,17 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
           {/* Image URL */}
           {asset.image_url && (
             <section className="space-y-2">
-              <h3 className="flex items-center gap-2 text-xs font-medium text-slate-400 uppercase tracking-wide">
+              <h3 className="flex items-center gap-2 text-sm font-medium text-slate-400 uppercase tracking-wide">
                 <ExternalLink className="w-3.5 h-3.5" />
                 Image URL
               </h3>
               <div className="group flex items-center gap-2 p-2 rounded-lg bg-slate-900/30 border border-slate-800/50">
-                <p className="flex-1 text-xs text-slate-400 truncate font-mono">
+                <p className="flex-1 text-sm text-slate-400 truncate font-mono">
                   {asset.image_url}
                 </p>
                 <button
                   onClick={() => handleCopy(asset.image_url || '', 'url')}
-                  className="p-1 text-slate-600 hover:text-slate-400 transition-colors"
+                  className="p-1 text-slate-400 hover:text-slate-400 transition-colors"
                 >
                   {copiedField === 'url' ? (
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -300,14 +300,14 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="flex-1 text-xs"
+            className="flex-1 text-sm"
             onClick={() => asset.image_url && window.open(asset.image_url, '_blank')}
             disabled={!asset.image_url}
           >
             <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
             Open Image
           </Button>
-          <Button variant="primary" size="sm" className="flex-1 text-xs">
+          <Button variant="primary" size="sm" className="flex-1 text-sm">
             Use in Project
           </Button>
         </div>
@@ -316,13 +316,13 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
         <Button
           variant={deleteSafety.canDelete ? 'secondary' : 'ghost'}
           size="sm"
-          className="w-full text-xs"
+          className="w-full text-sm"
           onClick={() => setShowDeleteConfirm(true)}
         >
           <Trash2 className="w-3.5 h-3.5 mr-1.5" />
           Delete Asset
           {!deleteSafety.canDelete && (
-            <span className="ml-1.5 px-1.5 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 rounded">
+            <span className="ml-1.5 px-1.5 py-0.5 text-sm bg-amber-500/20 text-amber-400 rounded">
               {deleteSafety.referenceCount} refs
             </span>
           )}
@@ -372,14 +372,14 @@ function AssetDetail({ asset, onClose }: AssetDetailProps) {
                   <p className="text-sm text-amber-300">{deleteSafety.warning}</p>
                   {deleteSafety.locations.length > 0 && (
                     <div className="mt-2 max-h-32 overflow-auto">
-                      <p className="text-xs text-amber-400/70 mb-1">Used in:</p>
+                      <p className="text-sm text-amber-400/70 mb-1">Used in:</p>
                       {deleteSafety.locations.slice(0, 5).map((loc) => (
-                        <p key={loc.id} className="text-xs text-slate-400 pl-2">
+                        <p key={loc.id} className="text-sm text-slate-400 pl-2">
                           • {loc.entityName} ({loc.entityType})
                         </p>
                       ))}
                       {deleteSafety.locations.length > 5 && (
-                        <p className="text-xs text-slate-500 pl-2">
+                        <p className="text-sm text-slate-400 pl-2">
                           ...and {deleteSafety.locations.length - 5} more
                         </p>
                       )}

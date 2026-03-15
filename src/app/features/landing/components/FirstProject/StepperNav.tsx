@@ -59,13 +59,13 @@ const StepperNav = ({
         <div className="flex justify-between fixed bottom-0 w-full max-w-[1200px] py-5">
             <button
                 onClick={handleBack}
-                className="px-6 py-2 rounded-lg font-medium transition-all bg-gray-700 text-gray-200 hover:bg-gray-600"
+                className="px-6 py-2 rounded-lg font-medium transition-all bg-slate-700 text-slate-200 hover:bg-slate-600"
             >
                 Back
             </button>
 
             <div className="mx-6 grow relative">
-                <div className="h-0.5 w-full bg-gray-700 rounded-full"></div>
+                <div className="h-0.5 w-full bg-slate-700 rounded-full"></div>
                 <motion.div
                     className="h-0.5 absolute top-0 left-0 rounded-full bg-blue-500"
                     initial={{ width: '0%' }}
@@ -89,15 +89,15 @@ const StepperNav = ({
                                 className={`h-2 w-2 rounded-full mx-auto mb-1 transition-all
                                     ${step.id <= currentStep
                                         ? 'bg-blue-500'
-                                        : 'bg-gray-700'}`}
+                                        : 'bg-slate-700'}`}
                             />
                             <span
                                 className={`text-xs font-medium transition-all
                                     ${step.id === currentStep
                                         ? 'text-blue-400'
                                         : step.id < currentStep
-                                            ? 'text-gray-400'
-                                            : 'text-gray-600'}`}
+                                            ? 'text-slate-400'
+                                            : 'text-slate-400'}`}
                             >
                                 {step.title}
                             </span>
@@ -111,7 +111,7 @@ const StepperNav = ({
                 className={`px-6 py-2 rounded-lg font-medium transition-all
                         ${isStepComplete()
                         ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/50'
-                        : 'opacity-50 cursor-not-allowed bg-gray-700 text-gray-400'}`}
+                        : 'opacity-50 cursor-not-allowed bg-slate-700 text-slate-400'}`}
             >
                 {currentStep !== steps.length && "Next"}
                 {currentStep === steps.length && "Finish"}

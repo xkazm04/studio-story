@@ -32,6 +32,7 @@ import {
   CONFLICT_TYPES,
   ThemeTracker,
 } from '@/lib/themes/ThemeTracker';
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 
 interface PremiseBuilderProps {
   projectId: string;
@@ -109,10 +110,10 @@ function PremiseField({
 
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-2 text-xs font-medium text-slate-300">
+      <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
         <Icon className="w-3.5 h-3.5 text-cyan-400" />
         {config.label}
-        {isOptional && <span className="text-slate-500">(optional)</span>}
+        {isOptional && <span className="text-slate-400">(optional)</span>}
         {isFilled && <CheckCircle className="w-3 h-3 text-green-400" />}
       </label>
 
@@ -138,13 +139,13 @@ function PremiseField({
         />
 
         {/* Helper text */}
-        <p className="text-[10px] text-slate-500 mt-1">{config.description}</p>
+        <p className="text-sm text-slate-400 mt-1">{config.description}</p>
 
         {/* Examples button */}
         {showExamples && !value && (
           <button
             onClick={() => setShowSuggestions(!showSuggestions)}
-            className="absolute right-2 top-2 p-1 rounded text-slate-400 hover:text-cyan-400 transition-colors"
+            className={cn('absolute right-2 top-2 p-1 rounded text-slate-400 hover:text-cyan-400', INTERACTIVE.transition)}
             title="Show examples"
           >
             <Lightbulb className="w-3.5 h-3.5" />
@@ -160,7 +161,7 @@ function PremiseField({
               exit={{ opacity: 0, y: -5 }}
               className="absolute z-10 top-full left-0 right-0 mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden"
             >
-              <div className="p-2 text-xs text-slate-400 border-b border-slate-700">
+              <div className="p-2 text-sm text-slate-400 border-b border-slate-700">
                 Example ideas:
               </div>
               {config.examples.map((example, i) => (
@@ -170,7 +171,7 @@ function PremiseField({
                     onChange(example);
                     setShowSuggestions(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs text-slate-300 hover:bg-slate-700/50 transition-colors"
+                  className={cn('w-full px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-700/50', INTERACTIVE.transition)}
                 >
                   {example}
                 </button>
@@ -195,10 +196,10 @@ function ConflictSelector({
 
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-2 text-xs font-medium text-slate-300">
+      <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
         <Swords className="w-3.5 h-3.5 text-cyan-400" />
         Conflict Type
-        <span className="text-slate-500">(optional)</span>
+        <span className="text-slate-400">(optional)</span>
       </label>
 
       <button
@@ -235,14 +236,14 @@ function ConflictSelector({
                     setExpanded(false);
                   }}
                   className={cn(
-                    'px-2 py-1.5 rounded text-xs text-left transition-colors',
+                    'px-2 py-1.5 rounded text-sm text-left', INTERACTIVE.transition,
                     value === type
                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                       : 'bg-slate-800/50 text-slate-300 border border-transparent hover:bg-slate-700/50'
                   )}
                 >
                   <div className="font-medium">{info.label}</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">{info.description}</div>
+                  <div className="text-sm text-slate-400 mt-0.5">{info.description}</div>
                 </button>
               ))}
             </div>
@@ -284,14 +285,14 @@ function PremiseStatement({
         <div className="flex items-center gap-2">
           <Sparkles className={cn(
             'w-4 h-4',
-            isComplete ? 'text-cyan-400' : 'text-slate-500'
+            isComplete ? 'text-cyan-400' : 'text-slate-400'
           )} />
-          <span className="text-xs font-medium text-slate-300">Premise Statement</span>
+          <span className="text-sm font-medium text-slate-300">Premise Statement</span>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={copyToClipboard}
-            className="p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 transition-colors"
+            className={cn('p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200', INTERACTIVE.transition)}
             title="Copy to clipboard"
           >
             <Copy className="w-3.5 h-3.5" />
@@ -299,7 +300,7 @@ function PremiseStatement({
           {onEdit && (
             <button
               onClick={onEdit}
-              className="p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 transition-colors"
+              className={cn('p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200', INTERACTIVE.transition)}
               title="Edit premise"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -318,7 +319,7 @@ function PremiseStatement({
       {isComplete && (
         <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-700/50">
           <CheckCircle className="w-3.5 h-3.5 text-green-400" />
-          <span className="text-xs text-green-400">Premise complete</span>
+          <span className="text-sm text-green-400">Premise complete</span>
         </div>
       )}
     </div>
@@ -420,7 +421,7 @@ export default function PremiseBuilder({
           onEdit={() => setMode('edit')}
         />
         {mode === 'edit' && (
-          <div className="text-xs text-slate-500 text-center">
+          <div className="text-sm text-slate-400 text-center">
             Click to expand and edit premise
           </div>
         )}
@@ -441,7 +442,7 @@ export default function PremiseBuilder({
                 style={{ width: `${completionStatus.percentage}%` }}
               />
             </div>
-            <span className="text-xs text-slate-400">
+            <span className="text-sm text-slate-400">
               {completionStatus.filledCount}/{completionStatus.requiredCount}
             </span>
           </div>
@@ -451,7 +452,7 @@ export default function PremiseBuilder({
           <button
             onClick={() => setMode(mode === 'edit' ? 'preview' : 'edit')}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-1.5 rounded', INTERACTIVE.transition,
               mode === 'preview'
                 ? 'bg-cyan-500/20 text-cyan-400'
                 : 'hover:bg-slate-700/50 text-slate-400 hover:text-slate-200'
@@ -464,7 +465,7 @@ export default function PremiseBuilder({
           {hasChanges && (
             <button
               onClick={handleReset}
-              className="p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 transition-colors"
+              className={cn('p-1.5 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-200', INTERACTIVE.transition)}
               title="Reset changes"
             >
               <RefreshCw className="w-4 h-4" />
@@ -476,10 +477,10 @@ export default function PremiseBuilder({
               onClick={handleSave}
               disabled={!completionStatus.isComplete || !hasChanges}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                 completionStatus.isComplete && hasChanges
                   ? 'bg-cyan-600 text-white hover:bg-cyan-500'
-                  : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                  : 'bg-slate-700 text-slate-400 cursor-not-allowed'
               )}
             >
               <Save className="w-3.5 h-3.5" />
@@ -529,7 +530,7 @@ export default function PremiseBuilder({
           {/* Advanced/Optional fields toggle */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+            className={cn('flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200', INTERACTIVE.transition)}
           >
             <ChevronRight className={cn(
               'w-3.5 h-3.5 transition-transform',
@@ -592,7 +593,7 @@ export function PremiseDisplay({
     <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/50">
       <div className="flex items-center gap-2 mb-2">
         <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-        <span className="text-xs font-medium text-slate-300">Premise</span>
+        <span className="text-sm font-medium text-slate-300">Premise</span>
       </div>
       <p className="text-sm text-slate-200 leading-relaxed">{statement}</p>
     </div>

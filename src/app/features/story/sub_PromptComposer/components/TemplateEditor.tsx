@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
+import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import {
   templateManager,
   type PromptTemplate,
@@ -218,7 +219,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
       {/* Header */}
       <div className="shrink-0 p-3 border-b border-slate-800 bg-slate-900/50">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-200">
+          <h3 className={TYPOGRAPHY.h1}>
             {isNew ? 'Create Template' : 'Edit Template'}
           </h3>
           <div className="flex items-center gap-2">
@@ -227,14 +228,14 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowHistory(!showHistory)}
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-sm"
               >
                 <History className="w-3.5 h-3.5 mr-1" />
                 v{template.currentVersion}
               </Button>
             )}
             {onCancel && (
-              <Button variant="ghost" size="sm" onClick={onCancel} className="h-7 px-2 text-xs">
+              <Button variant="ghost" size="sm" onClick={onCancel} className="h-7 px-2 text-sm">
                 <X className="w-3.5 h-3.5" />
               </Button>
             )}
@@ -246,13 +247,12 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
       <AnimatePresence>
         {showHistory && template && template.versions.length > 0 && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            {...FM_VARIANTS.collapse}
+            transition={FM_TRANSITION.slow}
             className="overflow-hidden border-b border-slate-800"
           >
             <div className="p-3 bg-slate-900/80 max-h-40 overflow-y-auto">
-              <div className="text-[10px] font-medium text-slate-400 mb-2">Version History</div>
+              <div className="text-sm font-medium text-slate-400 mb-2">Version History</div>
               <div className="space-y-1">
                 {template.versions.slice().reverse().map((version) => (
                   <div
@@ -260,13 +260,13 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                     className="flex items-center justify-between py-1.5 px-2 bg-slate-800/50 rounded"
                   >
                     <div>
-                      <span className="text-xs text-slate-300">v{version.version}</span>
+                      <span className="text-sm text-slate-300">v{version.version}</span>
                       {version.changeNote && (
-                        <span className="text-[10px] text-slate-500 ml-2">{version.changeNote}</span>
+                        <span className="text-sm text-slate-400 ml-2">{version.changeNote}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-sm text-slate-400">
                         {new Date(version.createdAt).toLocaleDateString()}
                       </span>
                       {version.version !== template.currentVersion && (
@@ -274,7 +274,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => handleRollback(version.version)}
-                          className="h-5 px-1.5 text-[10px]"
+                          className="h-5 px-1.5 text-sm"
                         >
                           Restore
                         </Button>
@@ -289,11 +289,11 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
       </AnimatePresence>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {/* Basic Info */}
         <div className="space-y-3">
           <div>
-            <label className="text-[10px] font-medium text-slate-400 mb-1 block">
+            <label className="text-sm font-medium text-slate-400 mb-1 block">
               Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -301,28 +301,28 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Template name"
-              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-medium text-slate-400 mb-1 block">Description</label>
+            <label className="text-sm font-medium text-slate-400 mb-1 block">Description</label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief description of what this template does"
-              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-medium text-slate-400 mb-1 block">Category</label>
+              <label className="text-sm font-medium text-slate-400 mb-1 block">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as TemplateCategory)}
-                className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
               >
                 {CATEGORY_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -333,7 +333,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
             </div>
 
             <div>
-              <label className="text-[10px] font-medium text-slate-400 mb-1 block">Tags</label>
+              <label className="text-sm font-medium text-slate-400 mb-1 block">Tags</label>
               <div className="flex gap-1">
                 <input
                   type="text"
@@ -341,7 +341,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                   placeholder="Add tag"
-                  className="flex-1 px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                  className="flex-1 px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                 />
                 <Button size="sm" variant="secondary" onClick={addTag} className="h-[34px] px-2">
                   <Plus className="w-3 h-3" />
@@ -352,7 +352,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-800 text-slate-400 text-sm rounded"
                     >
                       {tag}
                       <button onClick={() => removeTag(tag)} className="hover:text-red-400">
@@ -370,16 +370,16 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         <div className="border border-slate-800 rounded-lg overflow-hidden">
           <button
             onClick={() => setShowVariables(!showVariables)}
-            className="w-full flex items-center justify-between p-2.5 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
+            className="w-full flex items-center justify-between p-3 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
               {showVariables ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               )}
               <Variable className="w-4 h-4 text-purple-400" />
-              <span className="text-xs font-medium text-slate-300">
+              <span className={cn(TYPOGRAPHY.h3, 'text-slate-300')}>
                 Variables ({variables.length})
               </span>
             </div>
@@ -390,7 +390,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                 e.stopPropagation();
                 addVariable();
               }}
-              className="h-6 px-2 text-[10px]"
+              className="h-6 px-2 text-sm"
             >
               <Plus className="w-3 h-3 mr-1" />
               Add
@@ -400,14 +400,13 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
           <AnimatePresence>
             {showVariables && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
-                <div className="p-2.5 space-y-2 max-h-48 overflow-y-auto">
+                <div className="p-3 space-y-3 max-h-48 overflow-y-auto">
                   {variables.length === 0 ? (
-                    <p className="text-[10px] text-slate-500 text-center py-2">
+                    <p className="text-sm text-slate-400 text-center py-2">
                       No variables defined. Add variables to make your template dynamic.
                     </p>
                   ) : (
@@ -425,14 +424,14 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                                 updateVariable(index, { name: e.target.value.replace(/\s/g, '_') })
                               }
                               placeholder="name"
-                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
                             />
                             <select
                               value={variable.type}
                               onChange={(e) =>
                                 updateVariable(index, { type: e.target.value as TemplateVariable['type'] })
                               }
-                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
                             >
                               {VARIABLE_TYPES.map((t) => (
                                 <option key={t.value} value={t.value}>
@@ -441,7 +440,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                               ))}
                             </select>
                             <div className="flex items-center gap-2">
-                              <label className="flex items-center gap-1 text-[10px] text-slate-400">
+                              <label className="flex items-center gap-1 text-sm text-slate-400">
                                 <input
                                   type="checkbox"
                                   checked={variable.required}
@@ -477,7 +476,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                           value={variable.description}
                           onChange={(e) => updateVariable(index, { description: e.target.value })}
                           placeholder="Description (optional)"
-                          className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
+                          className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
                         />
                         {variable.type === 'select' && (
                           <input
@@ -489,7 +488,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                               })
                             }
                             placeholder="Options (comma-separated)"
-                            className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
+                            className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
                           />
                         )}
                       </div>
@@ -504,7 +503,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         {/* Template Content */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-[10px] font-medium text-slate-400">
+            <label className={cn(TYPOGRAPHY.h3, 'text-slate-400')}>
               Content <span className="text-red-400">*</span>
             </label>
             <div className="flex items-center gap-2">
@@ -512,7 +511,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="h-6 px-2 text-[10px]"
+                className="h-6 px-2 text-sm"
               >
                 {showPreview ? (
                   <>
@@ -526,7 +525,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                   </>
                 )}
               </Button>
-              <Button variant="ghost" size="sm" onClick={handleCopy} className="h-6 px-2 text-[10px]">
+              <Button variant="ghost" size="sm" onClick={handleCopy} className="h-6 px-2 text-sm">
                 {copied ? (
                   <>
                     <Check className="w-3 h-3 mr-1 text-green-400" />
@@ -543,9 +542,9 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
           </div>
 
           {showPreview ? (
-            <div className="w-full min-h-[200px] px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 whitespace-pre-wrap overflow-y-auto">
+            <div className="w-full min-h-[200px] px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 whitespace-pre-wrap overflow-y-auto">
               {previewContent || (
-                <span className="text-slate-500">Fill in variables to see preview...</span>
+                <span className="text-slate-400">Fill in variables to see preview...</span>
               )}
             </div>
           ) : (
@@ -554,25 +553,25 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your prompt template here. Use {{variableName}} for placeholders."
               rows={10}
-              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 font-mono resize-none"
+              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 font-mono resize-none"
             />
           )}
 
           {/* Preview Variables */}
           {showPreview && variables.length > 0 && (
             <div className="mt-2 p-2 bg-slate-800/30 rounded-lg">
-              <div className="text-[10px] font-medium text-slate-400 mb-1.5">Preview Values</div>
+              <div className={cn(TYPOGRAPHY.h3, 'text-slate-400 mb-1.5')}>Preview Values</div>
               <div className="grid grid-cols-2 gap-2">
                 {variables.map((variable) => (
                   <div key={variable.name}>
-                    <label className="text-[10px] text-slate-500">{variable.name}</label>
+                    <label className="text-sm text-slate-400">{variable.name}</label>
                     {variable.type === 'select' && variable.options ? (
                       <select
                         value={String(previewValues[variable.name] || '')}
                         onChange={(e) =>
                           setPreviewValues((prev) => ({ ...prev, [variable.name]: e.target.value }))
                         }
-                        className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200"
+                        className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200"
                       >
                         <option value="">Select...</option>
                         {variable.options.map((opt) => (
@@ -589,7 +588,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                           setPreviewValues((prev) => ({ ...prev, [variable.name]: e.target.value }))
                         }
                         placeholder={String(variable.defaultValue || '')}
-                        className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-[10px] text-slate-200"
+                        className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200"
                       />
                     )}
                   </div>
@@ -602,7 +601,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         {/* Change Note (for updates) */}
         {!isNew && (
           <div>
-            <label className="text-[10px] font-medium text-slate-400 mb-1 block">
+            <label className="text-sm font-medium text-slate-400 mb-1 block">
               Change Note (optional)
             </label>
             <input
@@ -610,19 +609,19 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               value={changeNote}
               onChange={(e) => setChangeNote(e.target.value)}
               placeholder="Describe what you changed"
-              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
         )}
 
         {/* Validation Errors */}
         {!validation.valid && (
-          <div className="p-2.5 bg-red-500/10 border border-red-500/30 rounded-lg">
-            <div className="flex items-center gap-1.5 text-red-400 text-xs mb-1">
+          <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <div className="flex items-center gap-1.5 text-red-400 text-sm mb-1">
               <AlertCircle className="w-3.5 h-3.5" />
               Please fix the following:
             </div>
-            <ul className="text-[10px] text-red-300 space-y-0.5 ml-5 list-disc">
+            <ul className="text-sm text-red-300 space-y-0.5 ml-5 list-disc">
               {validation.errors.map((error, i) => (
                 <li key={i}>{error}</li>
               ))}
@@ -635,7 +634,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
       <div className="shrink-0 p-3 border-t border-slate-800 bg-slate-900/50">
         <div className="flex gap-2">
           {onCancel && (
-            <Button variant="secondary" size="sm" onClick={onCancel} className="flex-1 h-8 text-xs">
+            <Button variant="secondary" size="sm" onClick={onCancel} className="flex-1 h-8 text-sm">
               Cancel
             </Button>
           )}
@@ -643,7 +642,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
             size="sm"
             onClick={handleSave}
             disabled={!validation.valid}
-            className="flex-1 h-8 text-xs"
+            className="flex-1 h-8 text-sm"
           >
             <Save className="w-3.5 h-3.5 mr-1" />
             {isNew ? 'Create Template' : 'Save Changes'}

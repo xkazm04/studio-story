@@ -29,7 +29,7 @@ const FactionsList: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-2">
         <div className="w-6 h-6 border-2 border-cyan-500/50 border-t-transparent rounded-full animate-spin" />
-        <span className="font-mono text-xs text-slate-500">loading_factions...</span>
+        <span className="font-mono text-sm text-slate-400">loading_factions...</span>
       </div>
     );
   }
@@ -55,13 +55,13 @@ const FactionsList: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="font-mono text-sm uppercase tracking-wide text-slate-300">// factions</h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             organize characters into groups and allegiances
           </p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm
                      bg-cyan-600 hover:bg-cyan-500 text-white
                      transition-all duration-200 shadow-sm hover:shadow-md"
         >
@@ -73,14 +73,14 @@ const FactionsList: React.FC = () => {
       {/* Factions Grid */}
       {factions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <Shield className="w-10 h-10 text-slate-600" />
-          <span className="font-mono text-xs text-slate-500">// no_factions_yet</span>
-          <p className="text-xs text-slate-500 text-center max-w-md">
+          <Shield className="w-10 h-10 text-slate-400" />
+          <span className="font-mono text-sm text-slate-400">// no_factions_yet</span>
+          <p className="text-sm text-slate-400 text-center max-w-md">
             create factions to organize characters into groups
           </p>
           <button
             onClick={() => setShowCreateForm(true)}
-            className="mt-2 text-xs text-cyan-400 hover:text-cyan-300 font-mono hover:underline"
+            className="mt-2 text-sm text-cyan-400 hover:text-cyan-300 font-mono hover:underline"
           >
             create_first_faction
           </button>

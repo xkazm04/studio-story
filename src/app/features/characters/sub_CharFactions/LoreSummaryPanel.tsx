@@ -88,7 +88,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
             <Sparkles size={18} className="text-purple-400" />
             <h4 className="text-sm font-semibold text-white">AI Summary</h4>
             {lore.ai_generated_at && (
-              <div className="flex items-center gap-1 text-xs text-gray-400">
+              <div className="flex items-center gap-1 text-sm text-slate-400">
                 <Clock size={12} />
                 <span>{formatGeneratedDate(lore.ai_generated_at)}</span>
               </div>
@@ -98,7 +98,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
             <button
               onClick={handleGenerateSummary}
               disabled={isGenerating}
-              className="flex items-center gap-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded text-xs font-medium transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded text-sm font-medium transition-colors"
               data-testid="generate-summary-btn"
             >
               <RefreshCw size={12} className={isGenerating ? 'animate-spin' : ''} />
@@ -106,7 +106,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
             </button>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1 hover:bg-purple-600/30 rounded transition-colors text-gray-400 hover:text-white"
+              className="p-1 hover:bg-purple-600/30 rounded transition-colors text-slate-400 hover:text-white"
               data-testid="toggle-summary-panel-btn"
             >
               {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -141,9 +141,9 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
               {/* Summary section */}
               {hasSummary ? (
                 <div className="space-y-2">
-                  <div className="text-sm font-medium text-gray-300">Summary:</div>
+                  <div className="text-sm font-medium text-slate-300">Summary:</div>
                   <div
-                    className="text-sm text-gray-400 leading-relaxed whitespace-pre-line bg-gray-900/50 rounded-lg p-3"
+                    className="text-sm text-slate-400 leading-relaxed whitespace-pre-line bg-slate-900/50 rounded-lg p-3"
                     data-testid="lore-summary-content"
                   >
                     {lore.summary}
@@ -152,10 +152,10 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
               ) : (
                 <div className="text-center py-6">
                   <Sparkles size={32} className="mx-auto mb-2 text-purple-400/50" />
-                  <p className="text-sm text-gray-500 mb-3">
+                  <p className="text-sm text-slate-400 mb-3">
                     No summary generated yet
                   </p>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-sm text-slate-400">
                     Click "Generate" to create an AI-powered summary
                   </p>
                 </div>
@@ -164,7 +164,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
               {/* Tags section */}
               {hasTags && (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                  <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
                     <Tag size={14} />
                     <span>Tags:</span>
                   </div>
@@ -175,7 +175,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.05 }}
-                        className="px-3 py-1 bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-500/40 rounded-full text-xs font-medium text-purple-200 hover:from-purple-600/40 hover:to-blue-600/40 transition-all cursor-pointer"
+                        className="px-3 py-1 bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-500/40 rounded-full text-sm font-medium text-purple-200 hover:from-purple-600/40 hover:to-blue-600/40 transition-all cursor-pointer"
                         data-testid={`lore-tag-${tag}`}
                       >
                         {tag}
@@ -187,7 +187,7 @@ const LoreSummaryPanel: React.FC<LoreSummaryPanelProps> = ({ lore, onUpdateLore 
 
               {/* Info text */}
               {!hasSummary && !hasTags && !isGenerating && (
-                <div className="text-xs text-gray-600 text-center">
+                <div className="text-sm text-slate-400 text-center">
                   AI will analyze the lore content to extract key themes and create a concise summary
                 </div>
               )}

@@ -181,7 +181,9 @@ export type FeedbackAction =
   | 'accepted'
   | 'dismissed'
   | 'ignored'
-  | 'expanded';
+  | 'expanded'
+  | 'thumbs_up'
+  | 'thumbs_down';
 
 export interface UserPreferences {
   userId: string;

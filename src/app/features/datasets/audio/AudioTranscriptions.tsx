@@ -131,12 +131,12 @@ Provide:
       {transcriptions.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-gray-300">
+            <h4 className="text-sm font-semibold text-slate-300">
               Transcriptions ({transcriptions.length})
             </h4>
             <button
               onClick={handleTranscribe}
-              className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
             >
               Re-transcribe
             </button>
@@ -153,39 +153,39 @@ Provide:
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-900 border border-gray-700 rounded-lg overflow-hidden hover:border-gray-600 transition-colors"
+                  className="bg-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-slate-600 transition-colors"
                 >
                   {/* Header */}
                   <div
                     onClick={() => toggleExpansion(transcription.filename)}
-                    className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
+                    className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-800/50 transition-colors"
                   >
                     <div className="flex items-center gap-3 flex-1">
                       {isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-200 font-medium truncate">
+                        <p className="text-sm text-slate-200 font-medium truncate">
                           {transcription.filename}
                         </p>
                         <div className="flex items-center gap-3 mt-1">
-                          <p className="text-xs text-gray-500">
+                          <p className="text-sm text-slate-400">
                             {transcription.word_count} words
                           </p>
                           {transcription.duration && (
                             <>
-                              <span className="text-xs text-gray-600">•</span>
-                              <p className="text-xs text-gray-500">
+                              <span className="text-sm text-slate-400">•</span>
+                              <p className="text-sm text-slate-400">
                                 {Math.floor(transcription.duration / 60)}:{(transcription.duration % 60).toString().padStart(2, '0')}
                               </p>
                             </>
                           )}
                           {transcription.enhanced_text && (
                             <>
-                              <span className="text-xs text-gray-600">•</span>
-                              <span className="text-xs text-purple-400 flex items-center gap-1">
+                              <span className="text-sm text-slate-400">•</span>
+                              <span className="text-sm text-purple-400 flex items-center gap-1">
                                 <Sparkles className="w-3 h-3" />
                                 AI Enhanced
                               </span>
@@ -200,7 +200,7 @@ Provide:
                         <button
                           onClick={() => handleEnhanceWithAI(index)}
                           disabled={cli.isRunning}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-900 text-purple-200 hover:bg-purple-800 transition-colors text-xs disabled:opacity-50"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-900 text-purple-200 hover:bg-purple-800 transition-colors text-sm disabled:opacity-50"
                         >
                           {enhancingIndex === index ? (
                             <>
@@ -226,21 +226,21 @@ Provide:
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="border-t border-gray-700"
+                        className="border-t border-slate-700"
                       >
                         <div className="p-4 space-y-3">
                           <div className="relative">
-                            <div className="p-4 bg-gray-950/50 rounded-lg text-sm text-gray-300 leading-relaxed max-h-64 overflow-y-auto">
+                            <div className="p-4 bg-slate-950/50 rounded-lg text-sm text-slate-300 leading-relaxed max-h-64 overflow-y-auto">
                               {textToShow}
                             </div>
                             <button
                               onClick={() => copyToClipboard(textToShow, index)}
-                              className="absolute top-2 right-2 p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                              className="absolute top-2 right-2 p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
                             >
                               {copiedIndex === index ? (
                                 <Check className="w-4 h-4 text-emerald-400" />
                               ) : (
-                                <Copy className="w-4 h-4 text-gray-400" />
+                                <Copy className="w-4 h-4 text-slate-400" />
                               )}
                             </button>
                           </div>

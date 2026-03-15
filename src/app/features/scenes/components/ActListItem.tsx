@@ -62,7 +62,7 @@ const ActListItem: React.FC<ActListItemProps> = ({ act, onSelect, onRefetch }) =
         'group flex items-center justify-between p-3 rounded-lg mb-1 cursor-pointer transition-all',
         isSelected
           ? 'bg-blue-600 text-white'
-          : 'bg-gray-800/50 text-gray-300 hover:bg-gray-800',
+          : 'bg-slate-800/50 text-slate-300 hover:bg-slate-800',
         isDeleting && 'opacity-50'
       )}
       onClick={() => !isEditing && onSelect(act)}
@@ -80,12 +80,12 @@ const ActListItem: React.FC<ActListItemProps> = ({ act, onSelect, onRefetch }) =
                 setName(act.name);
               }
             }}
-            className="flex-1 px-2 py-1 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             autoFocus
           />
           <button
             onClick={handleRename}
-            className="p-1 hover:bg-gray-700 rounded text-green-500"
+            className="p-1 hover:bg-slate-700 rounded text-green-500"
           >
             <Check size={14} />
           </button>
@@ -94,7 +94,7 @@ const ActListItem: React.FC<ActListItemProps> = ({ act, onSelect, onRefetch }) =
               setIsEditing(false);
               setName(act.name);
             }}
-            className="p-1 hover:bg-gray-700 rounded text-red-500"
+            className="p-1 hover:bg-slate-700 rounded text-red-500"
           >
             <X size={14} />
           </button>
@@ -109,8 +109,8 @@ const ActListItem: React.FC<ActListItemProps> = ({ act, onSelect, onRefetch }) =
                 setIsEditing(true);
               }}
               className={cn(
-                'p-1.5 rounded hover:bg-gray-700 transition-colors',
-                isSelected ? 'text-white' : 'text-gray-400'
+                'p-1.5 rounded hover:bg-slate-700 transition-colors',
+                isSelected ? 'text-white' : 'text-slate-400'
               )}
               title="Rename"
             >
@@ -124,7 +124,7 @@ const ActListItem: React.FC<ActListItemProps> = ({ act, onSelect, onRefetch }) =
               disabled={isDeleting}
               className={cn(
                 'p-1.5 rounded hover:bg-red-600 transition-colors',
-                isSelected ? 'text-white' : 'text-gray-400'
+                isSelected ? 'text-white' : 'text-slate-400'
               )}
               title="Delete"
             >

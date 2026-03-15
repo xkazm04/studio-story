@@ -13,6 +13,7 @@ import { useCharacters } from "@/app/hooks/useCharacters";
 import { SmartNameInput } from "@/app/components/UI/SmartNameInput";
 import { NameSuggestion } from "@/app/types/NameSuggestion";
 import InlineTerminal from "@/cli/InlineTerminal";
+import { useToast } from '@/app/components/UI/ToastContainer';
 
 type Props = {
     refetch: () => void;
@@ -27,6 +28,7 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
     const [beatType, setBeatType] = useState<"act" | "story">('story');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const { generateRecommendations, isGenerating, handleInsertResult, terminalProps } = useActRecommendations(selectedProject?.id || '');
 
     // Fetch all acts and scenes for context
@@ -137,6 +139,10 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
                                 description: s.description,
                                 act_id: s.act_id
                             }))
+                        }, (response) => {
+                            if (onRecommendationsReceived) {
+                                onRecommendationsReceived(response);
+                            }
                         });
                     }
                 }
@@ -155,6 +161,7 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
         } catch (err) {
             setError("Failed to create beat");
             console.error('Error creating beat:', err);
+            showToast('Failed to create beat. Try Again.', 'error', 5000);
         } finally {
             setLoading(false);
         }
@@ -184,7 +191,7 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
             <AnimatePresence>
                 {isAddingNew && (
                     <motion.div
-                        className="flex flex-col bg-gray-900 rounded-lg p-3 mt-2 gap-2 border border-gray-800"
+                        className="flex flex-col bg-slate-900 rounded-lg p-3 mt-2 gap-2 border border-slate-800"
                         initial={{ opacity: 0, y: -10, height: 0 }}
                         animate={{ opacity: 1, y: 0, height: "auto" }}
                         exit={{ opacity: 0, y: -10, height: 0 }}
@@ -208,7 +215,7 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
                             <select
                                 value={beatType}
                                 onChange={(e) => setBeatType(e.target.value as "act" | "story")}
-                                className="px-3 py-1 bg-gray-800 border border-gray-700 rounded text-white text-sm"
+                                className="px-3 py-1 bg-slate-800 border border-slate-700 rounded text-white text-sm"
                                 data-testid="beat-type-select"
                                 disabled={loading}
                             >
@@ -220,7 +227,7 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
                                 disabled={!beatName || loading}
                                 className={`px-3 py-1 rounded transition ${
                                     !beatName || loading
-                                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
                                         : 'bg-green-600 text-white hover:bg-green-700'
                                 }`}
                                 data-testid="save-beat-btn"
@@ -232,12 +239,12 @@ const BeatsTableAdd = ({ refetch, onRecommendationsReceived }: Props) => {
                             value={beatDescription}
                             onChange={(e) => setBeatDescription(e.target.value)}
                             placeholder="Description (optional)"
-                            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded text-white text-sm resize-none"
+                            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white text-sm resize-none"
                             rows={2}
                             data-testid="beat-description-input"
                             disabled={loading}
                         />
-                        {error && <p className="text-red-400 text-xs">{error}</p>}
+                        {error && <p className="text-red-400 text-sm">{error}</p>}
                         <InlineTerminal
                             {...terminalProps}
                             height={120}

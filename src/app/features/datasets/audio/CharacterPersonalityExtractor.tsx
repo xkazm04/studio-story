@@ -134,14 +134,14 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
         <div className="p-2 bg-purple-900/50 rounded-lg">
           <User className="w-5 h-5 text-purple-200" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-200">Character Personality Extractor</h3>
+        <h3 className="text-lg font-semibold text-slate-200">Character Personality Extractor</h3>
       </div>
 
       {/* Input Section */}
       {!analysis && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Character Name
             </label>
             <input
@@ -149,7 +149,7 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
               value={characterName}
               onChange={(e) => setCharacterName(e.target.value)}
               placeholder="e.g., Alice, Bob, Narrator..."
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
@@ -197,21 +197,21 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
           >
             {/* Header with Actions */}
             <div className="flex items-center justify-between">
-              <h4 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+              <h4 className="text-lg font-semibold text-slate-200 flex items-center gap-2">
                 <User className="w-5 h-5 text-purple-400" />
                 {characterName}
               </h4>
               <div className="flex items-center gap-2">
                 <button
                   onClick={exportAnalysis}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors text-sm"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors text-sm"
                 >
                   <Download className="w-4 h-4" />
                   Export
                 </button>
                 <button
                   onClick={() => setAnalysis(null)}
-                  className="text-sm text-gray-400 hover:text-gray-300 transition-colors"
+                  className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
                 >
                   Analyze Another
                 </button>
@@ -220,8 +220,8 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
             {/* Confidence Score */}
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-400">Confidence:</span>
-              <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+              <span className="text-sm text-slate-400">Confidence:</span>
+              <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${analysis.confidence_score * 100}%` }}
@@ -235,21 +235,21 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
             </div>
 
             {/* Personality Summary */}
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
-                <h5 className="text-sm font-semibold text-gray-200">Personality Summary</h5>
+                <h5 className="text-sm font-semibold text-slate-200">Personality Summary</h5>
                 <button
                   onClick={() => copyToClipboard(analysis.personality_summary, 'summary')}
-                  className="p-1 rounded hover:bg-gray-800 transition-colors"
+                  className="p-1 rounded hover:bg-slate-800 transition-colors"
                 >
                   {copiedSection === 'summary' ? (
                     <Check className="w-4 h-4 text-emerald-400" />
                   ) : (
-                    <Copy className="w-4 h-4 text-gray-400" />
+                    <Copy className="w-4 h-4 text-slate-400" />
                   )}
                 </button>
               </div>
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
                 {analysis.personality_summary}
               </p>
             </div>
@@ -258,13 +258,13 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Traits */}
               {analysis.traits.length > 0 && (
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                  <h5 className="text-sm font-semibold text-gray-200 mb-3">Traits</h5>
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                  <h5 className="text-sm font-semibold text-slate-200 mb-3">Traits</h5>
                   <div className="flex flex-wrap gap-2">
                     {analysis.traits.map((trait, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-purple-900/30 border border-purple-700/50 rounded-full text-xs text-purple-200"
+                        className="px-3 py-1 bg-purple-900/30 border border-purple-700/50 rounded-full text-sm text-purple-200"
                       >
                         {trait}
                       </span>
@@ -275,11 +275,11 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
               {/* Key Values */}
               {analysis.key_values.length > 0 && (
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                  <h5 className="text-sm font-semibold text-gray-200 mb-3">Key Values</h5>
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                  <h5 className="text-sm font-semibold text-slate-200 mb-3">Key Values</h5>
                   <ul className="space-y-1">
                     {analysis.key_values.map((value, index) => (
-                      <li key={index} className="text-sm text-gray-300 flex items-start gap-2">
+                      <li key={index} className="text-sm text-slate-300 flex items-start gap-2">
                         <span className="text-purple-400 mt-1">•</span>
                         {value}
                       </li>
@@ -290,9 +290,9 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
               {/* Speaking Style */}
               {analysis.speaking_style && (
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                  <h5 className="text-sm font-semibold text-gray-200 mb-3">Speaking Style</h5>
-                  <p className="text-sm text-gray-300 leading-relaxed">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                  <h5 className="text-sm font-semibold text-slate-200 mb-3">Speaking Style</h5>
+                  <p className="text-sm text-slate-300 leading-relaxed">
                     {analysis.speaking_style}
                   </p>
                 </div>
@@ -300,9 +300,9 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
               {/* Emotional Range */}
               {analysis.emotional_range && (
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                  <h5 className="text-sm font-semibold text-gray-200 mb-3">Emotional Range</h5>
-                  <p className="text-sm text-gray-300 leading-relaxed">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                  <h5 className="text-sm font-semibold text-slate-200 mb-3">Emotional Range</h5>
+                  <p className="text-sm text-slate-300 leading-relaxed">
                     {analysis.emotional_range}
                   </p>
                 </div>
@@ -311,9 +311,9 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
             {/* Communication Patterns */}
             {analysis.communication_patterns && (
-              <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                <h5 className="text-sm font-semibold text-gray-200 mb-3">Communication Patterns</h5>
-                <p className="text-sm text-gray-300 leading-relaxed">
+              <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                <h5 className="text-sm font-semibold text-slate-200 mb-3">Communication Patterns</h5>
+                <p className="text-sm text-slate-300 leading-relaxed">
                   {analysis.communication_patterns}
                 </p>
               </div>
@@ -321,13 +321,13 @@ ${(analysis.confidence_score * 100).toFixed(0)}%
 
             {/* Notable Quotes */}
             {analysis.notable_quotes.length > 0 && (
-              <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                <h5 className="text-sm font-semibold text-gray-200 mb-3">Notable Quotes</h5>
+              <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                <h5 className="text-sm font-semibold text-slate-200 mb-3">Notable Quotes</h5>
                 <div className="space-y-3">
                   {analysis.notable_quotes.map((quote, index) => (
                     <div
                       key={index}
-                      className="pl-4 border-l-2 border-purple-500 text-sm text-gray-300 italic"
+                      className="pl-4 border-l-2 border-purple-500 text-sm text-slate-300 italic"
                     >
                       "{quote}"
                     </div>

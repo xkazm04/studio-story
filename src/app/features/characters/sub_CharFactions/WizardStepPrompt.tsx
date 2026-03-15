@@ -88,7 +88,7 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
 
       {/* Faction Type Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-3">
+        <label className="block text-sm font-medium text-slate-300 mb-3">
           Faction Type
         </label>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -101,7 +101,7 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
                 'px-3 py-2 rounded-lg text-sm font-medium transition-all',
                 factionType === type.value
                   ? 'bg-purple-600 text-white ring-2 ring-purple-400'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
               )}
               data-testid={`faction-type-${type.value}`}
             >
@@ -109,29 +109,29 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
             </button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-sm text-slate-400">
           {FACTION_TYPES.find(t => t.value === factionType)?.description}
         </p>
       </div>
 
       {/* Prompt Input */}
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-slate-300 mb-2">
           Faction Description
         </label>
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Example: A guild of shadow mages who protect the city from supernatural threats. They operate from an ancient tower and value secrecy above all else..."
-          className="w-full min-h-[150px] px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+          className="w-full min-h-[150px] px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
           disabled={isGenerating}
           data-testid="faction-prompt-input"
         />
         <div className="mt-2 flex justify-between items-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-sm text-slate-400">
             {prompt.length} characters
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-sm text-slate-400">
             Tip: Be specific about culture, values, and history
           </p>
         </div>
@@ -139,7 +139,7 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
 
       {/* Example Prompts */}
       <div>
-        <p className="text-sm font-medium text-gray-300 mb-2">Example Prompts:</p>
+        <p className="text-sm font-medium text-slate-300 mb-2">Example Prompts:</p>
         <div className="space-y-2">
           {[
             'A merchant guild controlling trade routes across the desert, known for their caravans of exotic goods',
@@ -150,7 +150,7 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
               key={idx}
               type="button"
               onClick={() => setPrompt(example)}
-              className="w-full text-left px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded text-xs text-gray-400 hover:text-gray-300 transition-colors"
+              className="w-full text-left px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded text-sm text-slate-400 hover:text-slate-300 transition-colors"
               disabled={isGenerating}
               data-testid={`example-prompt-${idx}`}
             >
@@ -166,7 +166,7 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
           type="button"
           onClick={handleGenerate}
           disabled={isGenerating || !prompt.trim()}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-700 disabled:to-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-all"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-all"
           data-testid="generate-faction-btn"
         >
           {isGenerating ? (
@@ -188,13 +188,13 @@ const WizardStepPrompt: React.FC<WizardStepPromptProps> = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-4 bg-gray-800 rounded-lg border border-gray-700"
+          className="p-4 bg-slate-800 rounded-lg border border-slate-700"
         >
           <div className="flex items-center gap-3">
             <Loader2 className="text-purple-400 animate-spin" size={20} />
             <div>
               <p className="text-sm font-medium text-white">AI is generating your faction...</p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-sm text-slate-400 mt-1">
                 Creating lore, timeline, achievements, and branding
               </p>
             </div>

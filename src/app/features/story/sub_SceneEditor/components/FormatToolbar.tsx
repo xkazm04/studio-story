@@ -138,7 +138,7 @@ export default function FormatToolbar({
         <button
           onClick={() => setShowModeDropdown(!showModeDropdown)}
           className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all',
+            'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
             'bg-slate-800/80 border border-slate-700/50 hover:border-cyan-500/30',
             'text-slate-300 hover:text-cyan-400'
           )}
@@ -183,7 +183,7 @@ export default function FormatToolbar({
                     )}>
                       {m.label}
                     </div>
-                    <div className="text-xs text-slate-500">{m.description}</div>
+                    <div className="text-sm text-slate-400">{m.description}</div>
                   </div>
                   {m.id === mode && (
                     <Check className="w-3.5 h-3.5 text-cyan-400 ml-auto mt-0.5" />
@@ -205,7 +205,7 @@ export default function FormatToolbar({
             key={element.id}
             onClick={() => handleElementClick(element.id)}
             className={cn(
-              'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs transition-all',
+              'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
               'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
             )}
             title={`${element.label} (${element.shortcut})`}
@@ -225,7 +225,7 @@ export default function FormatToolbar({
       <button
         onClick={() => setShowShortcuts(!showShortcuts)}
         className={cn(
-          'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs transition-all',
+          'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
           showShortcuts
             ? 'bg-cyan-500/20 text-cyan-400'
             : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
@@ -239,7 +239,7 @@ export default function FormatToolbar({
       <button
         onClick={() => setShowSettings(!showSettings)}
         className={cn(
-          'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs transition-all',
+          'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
           showSettings
             ? 'bg-cyan-500/20 text-cyan-400'
             : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
@@ -258,14 +258,14 @@ export default function FormatToolbar({
             exit={{ opacity: 0, y: -4 }}
             className="absolute top-full right-24 mt-1 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 p-4"
           >
-            <div className="text-xs font-mono uppercase tracking-wide text-cyan-400 mb-3">
+            <div className="text-sm font-mono uppercase tracking-wide text-cyan-400 mb-3">
               {currentMode.label} Shortcuts
             </div>
             <div className="space-y-2">
               {elements.map((element) => (
-                <div key={element.id} className="flex items-center justify-between text-xs">
+                <div key={element.id} className="flex items-center justify-between text-sm">
                   <span className="text-slate-300">{element.label}</span>
-                  <kbd className="px-1.5 py-0.5 bg-slate-700 rounded text-[10px] text-cyan-400 font-mono">
+                  <kbd className="px-1.5 py-0.5 bg-slate-700 rounded text-sm text-cyan-400 font-mono">
                     {element.shortcut}
                   </kbd>
                 </div>
@@ -284,14 +284,14 @@ export default function FormatToolbar({
             exit={{ opacity: 0, y: -4 }}
             className="absolute top-full right-4 mt-1 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 p-4"
           >
-            <div className="text-xs font-mono uppercase tracking-wide text-cyan-400 mb-3">
+            <div className="text-sm font-mono uppercase tracking-wide text-cyan-400 mb-3">
               {currentMode.label} Settings
             </div>
 
             {mode === 'screenplay' && (
               <div className="space-y-3">
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Auto-format elements</span>
+                  <span className="text-sm text-slate-300">Auto-format elements</span>
                   <input
                     type="checkbox"
                     checked={settings.screenplayAutoFormat}
@@ -300,7 +300,7 @@ export default function FormatToolbar({
                   />
                 </label>
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Show line numbers</span>
+                  <span className="text-sm text-slate-300">Show line numbers</span>
                   <input
                     type="checkbox"
                     checked={settings.screenplayShowLineNumbers}
@@ -314,18 +314,18 @@ export default function FormatToolbar({
             {mode === 'prose' && (
               <div className="space-y-3">
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Dialogue style</span>
+                  <span className="text-sm text-slate-300">Dialogue style</span>
                   <select
                     value={settings.proseDialogueStyle}
                     onChange={(e) => onSettingsChange({ proseDialogueStyle: e.target.value as 'american' | 'british' })}
-                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200"
+                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-200"
                   >
                     <option value="american">American "..."</option>
                     <option value="british">British '...'</option>
                   </select>
                 </label>
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Indent paragraphs</span>
+                  <span className="text-sm text-slate-300">Indent paragraphs</span>
                   <input
                     type="checkbox"
                     checked={settings.proseIndentParagraphs}
@@ -334,11 +334,11 @@ export default function FormatToolbar({
                   />
                 </label>
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Scene break</span>
+                  <span className="text-sm text-slate-300">Scene break</span>
                   <select
                     value={settings.proseSceneBreak}
                     onChange={(e) => onSettingsChange({ proseSceneBreak: e.target.value as '***' | '* * *' | '---' | '###' })}
-                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200"
+                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-200"
                   >
                     <option value="***">***</option>
                     <option value="* * *">* * *</option>
@@ -352,25 +352,25 @@ export default function FormatToolbar({
             {mode === 'comic' && (
               <div className="space-y-3">
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Panel numbering</span>
+                  <span className="text-sm text-slate-300">Panel numbering</span>
                   <select
                     value={settings.comicNumberingStyle}
                     onChange={(e) => onSettingsChange({ comicNumberingStyle: e.target.value as 'continuous' | 'per-page' })}
-                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200"
+                    className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-200"
                   >
                     <option value="per-page">Per page (1, 2, 3...)</option>
                     <option value="continuous">Continuous</option>
                   </select>
                 </label>
                 <label className="flex items-center justify-between">
-                  <span className="text-xs text-slate-300">Default panels/page</span>
+                  <span className="text-sm text-slate-300">Default panels/page</span>
                   <input
                     type="number"
                     min={1}
                     max={12}
                     value={settings.comicDefaultPanels}
                     onChange={(e) => onSettingsChange({ comicDefaultPanels: parseInt(e.target.value) || 6 })}
-                    className="w-16 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200"
+                    className="w-16 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-200"
                   />
                 </label>
               </div>

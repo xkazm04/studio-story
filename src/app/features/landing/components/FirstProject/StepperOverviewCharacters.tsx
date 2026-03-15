@@ -36,7 +36,7 @@ const CharacterTypeButton = ({
             onClick={onClick}
             className={`px-2 py-1 text-xs rounded-md transition-all duration-200 ${isSelected
                 ? colorScheme
-                : "text-gray-400 hover:bg-gray-700"
+                : "text-slate-400 hover:bg-slate-700"
                 } ${className}`}
         >
             {label}
@@ -87,12 +87,12 @@ const StepperOverviewCharacters = ({ characters, setCharacters }: Props) => {
                 <label className="block text-sm font-medium text-blue-300">
                     Story Characters
                 </label>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-slate-400">
                     {characters.filter(c => c.name.trim()).length}/3 characters
                 </div>
             </div>
 
-            <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 overflow-y-auto">
+            <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800 overflow-y-auto">
                 <AnimatePresence>
                     {characters.map((character, index) => (
                         <motion.div
@@ -110,15 +110,15 @@ const StepperOverviewCharacters = ({ characters, setCharacters }: Props) => {
                                         value={character.name}
                                         onChange={(e) => handleCharacterNameChange(character.id, e.target.value)}
                                         placeholder={index === characters.length - 1 ? "Add new character..." : "Character name"}
-                                        className={`w-full p-2 z-10 rounded-lg bg-gray-800/50 border ${
-                                            character.name ? 'border-green-700/40' : 'border-gray-700 border-opacity-30'
+                                        className={`w-full p-2 z-10 rounded-lg bg-slate-800/50 border ${
+                                            character.name ? 'border-green-700/40' : 'border-slate-700 border-opacity-30'
                                         } focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm transition-all duration-200`}
                                     />
                                 </div>
 
                                 <div className="flex items-center gap-2 mt-2 z-10 sm:mt-0">
                                     {/* Character Type Selector */}
-                                    <div className="flex items-center rounded-md bg-gray-800/70 border border-gray-700 p-1">
+                                    <div className="flex items-center rounded-md bg-slate-800/70 border border-slate-700 p-1">
                                         {characterTypes.map((typeConfig) => (
                                             <CharacterTypeButton
                                                 key={typeConfig.type}

@@ -129,7 +129,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
           >
             {/* Front face */}
             <motion.div
-              className="absolute inset-0 bg-gray-900 rounded-lg border border-gray-800 overflow-hidden cursor-pointer"
+              className="absolute inset-0 bg-slate-900 rounded-lg border border-slate-800 overflow-hidden cursor-pointer"
               style={{
                 backfaceVisibility: 'hidden',
                 transformStyle: 'preserve-3d',
@@ -142,19 +142,19 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
               <div className="p-6 h-full flex flex-col justify-between">
                 {/* Date and title */}
                 <div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
+                  <div className="flex items-center gap-2 text-slate-400 text-sm mb-3">
                     <Calendar size={14} />
                     <span>
                       {date.month} {date.day}, {date.year}
                     </span>
-                    <span className="px-2 py-0.5 bg-gray-800 rounded text-xs capitalize">
+                    <span className="px-2 py-0.5 bg-slate-800 rounded text-sm capitalize">
                       {event.event_type}
                     </span>
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-4">{event.title}</h3>
 
                   {/* Truncated description preview */}
-                  <p className="text-gray-400 line-clamp-3 text-sm leading-relaxed">
+                  <p className="text-slate-400 line-clamp-3 text-sm leading-relaxed">
                     {event.description}
                   </p>
                 </div>
@@ -200,7 +200,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
 
             {/* Back face */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-lg border border-gray-700 overflow-hidden cursor-pointer"
+              className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-lg border border-slate-700 overflow-hidden cursor-pointer"
               style={{
                 backfaceVisibility: 'hidden',
                 transformStyle: 'preserve-3d',
@@ -219,7 +219,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-lg font-bold text-white">{event.title}</h4>
-                    <div className="flex items-center gap-2 text-gray-400 text-xs mt-1">
+                    <div className="flex items-center gap-2 text-slate-400 text-sm mt-1">
                       <Calendar size={12} />
                       <span>
                         {date.month} {date.day}, {date.year}
@@ -232,26 +232,26 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                   <div className="space-y-4">
                     <div>
-                      <h5 className="text-sm font-semibold text-gray-300 mb-2 uppercase tracking-wide">
+                      <h5 className="text-sm font-semibold text-slate-300 mb-2 uppercase tracking-wide">
                         Event Details
                       </h5>
-                      <p className="text-gray-300 leading-relaxed text-sm">
+                      <p className="text-slate-300 leading-relaxed text-sm">
                         {event.description}
                       </p>
                     </div>
 
                     {/* Event metadata */}
-                    <div className="pt-4 border-t border-gray-700">
-                      <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="pt-4 border-t border-slate-700">
+                      <div className="grid grid-cols-2 gap-3 text-sm">
                         <div>
-                          <span className="text-gray-500 block mb-1">Type</span>
+                          <span className="text-slate-400 block mb-1">Type</span>
                           <span className={cn('px-2 py-1 bg-gradient-to-r text-white rounded capitalize font-medium inline-block', colorGradient)}>
                             {event.event_type}
                           </span>
                         </div>
                         <div>
-                          <span className="text-gray-500 block mb-1">Created</span>
-                          <span className="text-gray-300">
+                          <span className="text-slate-400 block mb-1">Created</span>
+                          <span className="text-slate-300">
                             {event.created_at ? new Date(event.created_at).toLocaleDateString() : 'N/A'}
                           </span>
                         </div>
@@ -261,7 +261,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
                 </div>
 
                 {/* Back hint */}
-                <div className="flex items-center justify-center gap-2 text-blue-400 text-xs font-medium mt-4 pt-4 border-t border-gray-700">
+                <div className="flex items-center justify-center gap-2 text-blue-400 text-sm font-medium mt-4 pt-4 border-t border-slate-700">
                   <span>Move cursor away to flip back</span>
                 </div>
               </div>
@@ -306,7 +306,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ events }) => {
       {/* Empty state */}
       {events.length === 0 && (
         <div className="text-center py-12" data-testid="timeline-empty-state">
-          <div className="text-gray-500 mb-2">
+          <div className="text-slate-400 mb-2">
             <Calendar size={48} className="mx-auto mb-4 opacity-50" />
             <p>No events in the timeline yet</p>
           </div>

@@ -51,7 +51,7 @@ const StepperItem = ({item, currentStep, setSelections, selections, genderPrefer
                     transition-all duration-300 cursor-pointer hover:brightness-150
                     ${getCurrentSelection() === item.id
                 ? 'border-blue-500 border-opacity-100 shadow-lg shadow-blue-500/50 brightness-150 animate-pulse'
-                : 'border-gray-700 opacity-60 border-opacity-30'}`}
+                : 'border-slate-700 opacity-60 border-opacity-30'}`}
     >
         <div className="relative w-full" style={{ height: '80%' }}>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
@@ -75,11 +75,11 @@ const StepperItem = ({item, currentStep, setSelections, selections, genderPrefer
                 </motion.div>
             </AnimatePresence>
         </div>
-        <div className="p-4 bg-gray-900 bg-opacity-90 flex flex-col justify-start z-20" style={{ height: '30%' }}>
+        <div className="p-4 bg-slate-900 bg-opacity-90 flex flex-col justify-start z-20" style={{ height: '30%' }}>
             <h3 className={`text-xl font-semibold ${getCurrentSelection() === item.id ? 'text-blue-400' : 'text-white'}`}>
                 {item.title}
             </h3>
-            <p className="text-gray-400 text-sm line-clamp-3">
+            <p className="text-slate-400 text-sm line-clamp-3">
                 {item.description}
             </p>
         </div>

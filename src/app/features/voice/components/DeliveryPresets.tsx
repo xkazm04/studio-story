@@ -161,7 +161,7 @@ export default function DeliveryPresets({
                       <Check className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
                     )}
                   </div>
-                  <p className="text-[10px] text-slate-500 truncate mt-0.5">
+                  <p className="text-sm text-slate-400 truncate mt-0.5">
                     {preset.description}
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function DeliveryPresets({
             {!showCreateForm && onSaveAsPreset && (
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300"
+                className="flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Save Current
@@ -277,7 +277,7 @@ export default function DeliveryPresets({
                         >
                           <Sparkles
                             className={`w-4 h-4 ${
-                              isSelected ? 'text-cyan-400' : 'text-slate-500'
+                              isSelected ? 'text-cyan-400' : 'text-slate-400'
                             }`}
                           />
                           <span
@@ -293,13 +293,13 @@ export default function DeliveryPresets({
                         </button>
                         <button
                           onClick={() => handleStartEdit(preset)}
-                          className="p-1 rounded text-slate-500 hover:text-slate-300 hover:bg-slate-800"
+                          className="p-1 rounded text-slate-400 hover:text-slate-300 hover:bg-slate-800"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(preset.id)}
-                          className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10"
+                          className="p-1 rounded text-slate-400 hover:text-red-400 hover:bg-red-500/10"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -312,7 +312,7 @@ export default function DeliveryPresets({
           )}
 
           {customPresets.length === 0 && !showCreateForm && (
-            <p className="text-xs text-slate-500 italic">
+            <p className="text-sm text-slate-400 italic">
               No custom presets yet. Adjust settings and save to create one.
             </p>
           )}
@@ -335,8 +335,8 @@ export default function DeliveryPresets({
                     {preset.name}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">{preset.description}</p>
-                <div className="text-[10px] text-slate-500 grid grid-cols-2 gap-1">
+                <p className="text-sm text-slate-400">{preset.description}</p>
+                <div className="text-sm text-slate-400 grid grid-cols-2 gap-1">
                   <span>Emotion: {preset.emotion.type}</span>
                   <span>Speed: {(preset.pacing.speed * 100).toFixed(0)}%</span>
                   <span>Volume: {Math.round(preset.volume * 100)}%</span>

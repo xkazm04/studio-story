@@ -16,6 +16,8 @@ import {
   Globe,
 } from 'lucide-react';
 import type { AISuggestion, SuggestionType } from '@/app/types/AIAssistant';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
+import { cn } from '@/lib/utils';
 import { SectionWrapper } from '@/app/components/UI';
 
 /**
@@ -86,7 +88,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
       ? 'text-green-400'
       : suggestion.confidence >= CONFIDENCE_THRESHOLDS.MEDIUM
       ? 'text-yellow-400'
-      : 'text-gray-400';
+      : 'text-slate-400';
 
   const confidencePercentage = Math.round(suggestion.confidence * 100);
 
@@ -108,25 +110,25 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
-              <h4 className="text-sm font-semibold text-white truncate">{suggestion.title}</h4>
+              <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{suggestion.title}</h4>
               {onDismiss && (
                 <button
                   onClick={handleDismiss}
-                  className="p-1 hover:bg-gray-700 rounded transition-colors shrink-0"
+                  className="p-1 hover:bg-slate-700 rounded transition-colors shrink-0"
                   title="Dismiss"
                   data-testid="dismiss-suggestion-btn"
                 >
-                  <X className="w-3 h-3 text-gray-400" />
+                  <X className="w-3 h-3 text-slate-400" />
                 </button>
               )}
             </div>
 
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-gray-400">{config.label}</span>
+              <span className="text-sm text-slate-400">{config.label}</span>
               {showDetails && (
                 <>
-                  <span className="text-xs text-gray-600">•</span>
-                  <span className={`text-xs ${confidenceColor}`}>
+                  <span className="text-sm text-slate-400">•</span>
+                  <span className={`text-sm ${confidenceColor}`}>
                     {confidencePercentage}% confidence
                   </span>
                 </>
@@ -137,7 +139,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
         {/* Content */}
         <div className="mb-3">
-          <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
             {suggestion.content}
           </p>
         </div>
@@ -147,7 +149,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           <div className="mb-3">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-300 transition-colors"
+              className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-300 transition-colors"
               data-testid="expand-context-btn"
             >
               {expanded ? (
@@ -163,11 +165,11 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="mt-2 p-2 bg-gray-800/50 rounded border border-gray-700"
+                className="mt-2 p-3 bg-slate-800/50 rounded border border-slate-700"
               >
-                <p className="text-xs text-gray-400">{suggestion.context}</p>
+                <p className="text-sm text-slate-400">{suggestion.context}</p>
                 {suggestion.reasoning && (
-                  <p className="text-xs text-gray-500 mt-1 italic">{suggestion.reasoning}</p>
+                  <p className="text-sm text-slate-400 mt-1 italic">{suggestion.reasoning}</p>
                 )}
               </motion.div>
             )}
@@ -178,7 +180,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-sm text-white transition-colors"
             data-testid="copy-suggestion-btn"
           >
             {copied ? (
@@ -197,7 +199,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           {onInsert && (
             <button
               onClick={handleInsert}
-              className={`flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-600 hover:bg-${config.color}-700 rounded text-xs text-white transition-colors`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-600 hover:bg-${config.color}-700 rounded text-sm text-white transition-colors`}
               data-testid="insert-suggestion-btn"
             >
               <Zap className="w-3 h-3" />

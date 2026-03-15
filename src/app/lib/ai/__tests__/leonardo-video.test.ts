@@ -113,7 +113,7 @@ describe('Leonardo Video Generation Request Format', () => {
       const payload = buildVideoGenerationPayload('test-id', 'Test', 4);
 
       // Duration should NOT be at root level
-      expect((payload as Record<string, unknown>).duration).toBeUndefined();
+      expect((payload as unknown as Record<string, unknown>).duration).toBeUndefined();
 
       // Duration should be inside parameters
       expect(payload.parameters.duration).toBe(4);
@@ -338,7 +338,7 @@ describe('Error Handling', () => {
     errors.forEach((err) => {
       const message = err.error || err.message;
       expect(message).toBeDefined();
-      expect(message.length).toBeGreaterThan(0);
+      expect(message?.length ?? 0).toBeGreaterThan(0);
     });
   });
 });

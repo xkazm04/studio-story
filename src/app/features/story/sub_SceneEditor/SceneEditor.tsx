@@ -100,7 +100,7 @@ function ResizeHandle({
         'bg-slate-800 hover:bg-cyan-500/30 transition-colors group'
       )}
     >
-      <GripVertical className="w-3 h-3 text-slate-600 group-hover:text-cyan-400" />
+      <GripVertical className="w-3 h-3 text-slate-400 group-hover:text-cyan-400" />
     </div>
   );
 }
@@ -108,10 +108,10 @@ function ResizeHandle({
 // Keyboard shortcuts hint
 function KeyboardHint() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/50 text-xs text-slate-500 font-mono">
+    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/50 text-sm text-slate-400 font-mono">
       <Keyboard className="w-3 h-3" />
       <span>
-        <kbd className="px-1.5 py-0.5 bg-slate-700/80 rounded-md text-cyan-400 font-mono text-[10px] border border-slate-600/50">Ctrl+\\</kbd>
+        <kbd className="px-1.5 py-0.5 bg-slate-700/80 rounded-md text-cyan-400 font-mono text-sm border border-slate-600/50">Ctrl+\\</kbd>
         <span className="ml-1.5">Toggle split view</span>
       </span>
     </div>
@@ -270,7 +270,7 @@ export default function SceneEditor() {
       >
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-900 mb-4">
-            <FileText className="w-8 h-8 text-slate-700" />
+            <FileText className="w-8 h-8 text-slate-400" />
           </div>
           <p className="text-sm">No project selected</p>
         </div>
@@ -292,7 +292,7 @@ export default function SceneEditor() {
               <FileText className="w-4 h-4 text-cyan-400" />
               <span className="font-mono font-medium uppercase tracking-wide">// scene_editor</span>
               {currentScene && (
-                <span className="text-slate-500 font-normal normal-case">/ {currentScene.name || 'Untitled'}</span>
+                <span className="text-slate-400 font-normal normal-case">/ {currentScene.name || 'Untitled'}</span>
               )}
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function SceneEditor() {
             <button
               onClick={() => setShowRecommendations(!showRecommendations)}
               className={cn(
-                'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all',
+                'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
                 showRecommendations
                   ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
                   : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
@@ -314,7 +314,7 @@ export default function SceneEditor() {
               <Lightbulb className="w-3.5 h-3.5" />
               Suggest
               {recommendations.length > 0 && !showRecommendations && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-900 text-[9px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-900 text-sm font-bold rounded-full flex items-center justify-center">
                   {recommendations.length}
                 </span>
               )}
@@ -324,7 +324,7 @@ export default function SceneEditor() {
             <button
               onClick={() => setShowContextPanel(!showContextPanel)}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-all',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
                 showContextPanel
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                   : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
@@ -340,7 +340,7 @@ export default function SceneEditor() {
               <button
                 onClick={() => setLayoutMode('stacked')}
                 className={cn(
-                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-mono font-medium transition-all uppercase tracking-wide',
+                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-mono font-medium transition-all uppercase tracking-wide',
                   layoutMode === 'stacked'
                     ? 'bg-slate-700 text-cyan-400 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -353,7 +353,7 @@ export default function SceneEditor() {
               <button
                 onClick={() => setLayoutMode('split')}
                 className={cn(
-                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-mono font-medium transition-all uppercase tracking-wide',
+                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-mono font-medium transition-all uppercase tracking-wide',
                   layoutMode === 'split'
                     ? 'bg-slate-700 text-cyan-400 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -511,7 +511,7 @@ export default function SceneEditor() {
                   transition={{ delay: 0.1 }}
                   className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/50 mb-4"
                 >
-                  <Sparkles className="w-8 h-8 text-slate-600" />
+                  <Sparkles className="w-8 h-8 text-slate-400" />
                 </motion.div>
                 <motion.div
                   initial={{ y: 10, opacity: 0 }}
@@ -519,7 +519,7 @@ export default function SceneEditor() {
                   transition={{ delay: 0.2 }}
                 >
                   <p className="text-lg mb-2 text-slate-300">No scene selected</p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-400">
                     Select a scene from the Graph tab or create a new one
                   </p>
                 </motion.div>

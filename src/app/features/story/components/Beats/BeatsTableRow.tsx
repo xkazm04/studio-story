@@ -171,13 +171,13 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
             {isEditing ? (
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                        <div className="w-10 flex items-center justify-center text-gray-400">{index + 1}</div>
+                        <div className="w-10 flex items-center justify-center text-slate-400">{index + 1}</div>
                         <div className="w-1/6">
                             <input
                                 type="text"
                                 value={editValues.name || ''}
                                 onChange={(e) => setEditValues({ ...editValues, name: e.target.value })}
-                                className="w-full px-2 py-1 bg-gray-800 rounded-sm text-white"
+                                className="w-full px-2 py-1 bg-slate-800 rounded-sm text-white"
                                 data-testid="beat-name-input"
                             />
                         </div>
@@ -186,11 +186,11 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
                                 type="text"
                                 value={editValues.description || ''}
                                 onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
-                                className="w-full px-2 py-1 bg-gray-800 rounded-sm text-white"
+                                className="w-full px-2 py-1 bg-slate-800 rounded-sm text-white"
                                 data-testid="beat-description-input"
                             />
                         </div>
-                        <div className="w-16 flex items-center capitalize text-gray-400">{beat.type}</div>
+                        <div className="w-16 flex items-center capitalize text-slate-400">{beat.type}</div>
                         <div className="w-24" />
                         <div className="w-24 flex justify-end items-center space-x-1">
                             <button onClick={saveEditing} className="text-green-500 hover:text-green-400" data-testid="save-beat-btn">
@@ -219,10 +219,10 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
                 </div>
             ) : (
                 <>
-                    <div className="w-10 flex items-center justify-center text-gray-400">{index + 1}</div>
+                    <div className="w-10 flex items-center justify-center text-slate-400">{index + 1}</div>
                     <div className="w-1/6 flex items-center font-semibold">{beat.name}</div>
-                    <div className="flex-1 flex items-center text-xs text-gray-400">{beat.description || '-'}</div>
-                    <div className="w-16 flex items-center capitalize text-gray-400">{beat.type}</div>
+                    <div className="flex-1 flex items-center text-sm text-slate-400">{beat.description || '-'}</div>
+                    <div className="w-16 flex items-center capitalize text-slate-400">{beat.type}</div>
                     <div className="w-24 flex justify-end items-center">
                         <input
                             ref={checkboxRef}
@@ -230,7 +230,7 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
                             checked={beat.completed || false}
                             onChange={toggleCompletion}
                             data-testid="beat-completion-checkbox"
-                            className={`w-4 h-4 rounded border-gray-700 text-blue-600 focus:ring-blue-500 ${
+                            className={`w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 ${
                                 isCelebrating ? 'celebrate-checkmark celebrate-glow' : ''
                             }`}
                         />

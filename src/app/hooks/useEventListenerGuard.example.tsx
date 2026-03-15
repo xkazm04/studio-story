@@ -41,11 +41,11 @@ export function Example1_ProperCleanup() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 1: Proper Cleanup</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         This component properly removes all event listeners on unmount.
         The hook will show a success message.
       </p>
-      <div className="bg-gray-800 p-4 rounded">
+      <div className="bg-slate-800 p-4 rounded">
         <p>Active listeners: {listenerGuard.stats.active}</p>
         <p>Total added: {listenerGuard.stats.totalAdded}</p>
         <p>Total removed: {listenerGuard.stats.totalRemoved}</p>
@@ -80,7 +80,7 @@ export function Example2_MemoryLeak() {
       <h2 className="text-xl font-bold mb-2 text-red-500">
         Example 2: Memory Leak (Intentional)
       </h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         This component intentionally forgets to clean up listeners.
         Check the console when this component unmounts!
       </p>
@@ -116,12 +116,12 @@ export function Example3_NetworkStatus() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 3: Network Status</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         Tracks network status using online/offline listeners
       </p>
       <div className={`p-4 rounded ${isOnline ? 'bg-green-900/20' : 'bg-red-900/20'}`}>
         <p>Status: {isOnline ? '🟢 Online' : '🔴 Offline'}</p>
-        <p className="text-sm text-gray-400 mt-2">
+        <p className="text-sm text-slate-400 mt-2">
           Active listeners: {listenerGuard.stats.active}
         </p>
       </div>
@@ -172,13 +172,13 @@ export function Example4_ResizeWithDebounce() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 4: Debounced Resize</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         Tracks window size with debounced resize handler
       </p>
-      <div className="bg-gray-800 p-4 rounded">
+      <div className="bg-slate-800 p-4 rounded">
         <p>Width: {windowSize.width}px</p>
         <p>Height: {windowSize.height}px</p>
-        <p className="text-sm text-gray-400 mt-2">
+        <p className="text-sm text-slate-400 mt-2">
           Listeners: {JSON.stringify(listenerGuard.stats.byEventType)}
         </p>
       </div>
@@ -211,13 +211,13 @@ export function Example5_SimpleLeakDetector() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 5: Simple Leak Detector</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         Uses the simpler useEventListenerLeakDetector hook.
         Press Escape to test the listener.
       </p>
-      <div className="bg-gray-800 p-4 rounded">
+      <div className="bg-slate-800 p-4 rounded">
         <p>This component tracks listeners but doesn't expose stats.</p>
-        <p className="text-sm text-gray-400 mt-2">
+        <p className="text-sm text-slate-400 mt-2">
           Check console for cleanup messages.
         </p>
       </div>
@@ -262,19 +262,19 @@ export function Example6_MultipleEventTypes() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 6: Multiple Event Types</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         Tracks many different event types simultaneously
       </p>
-      <div className="bg-gray-800 p-4 rounded space-y-2">
+      <div className="bg-slate-800 p-4 rounded space-y-2">
         <div>
           <p className="font-medium">Active Listeners:</p>
           {Object.entries(listenerGuard.stats.byEventType).map(([type, count]) => (
-            <div key={type} className="text-sm text-gray-400">
+            <div key={type} className="text-sm text-slate-400">
               • {type}: {count}
             </div>
           ))}
         </div>
-        <div className="pt-2 border-t border-gray-700">
+        <div className="pt-2 border-t border-slate-700">
           <p className="font-medium">Recent Events:</p>
           {events.map((event, i) => (
             <div key={i} className="text-sm text-blue-400">
@@ -320,10 +320,10 @@ export function Example7_ConditionalListeners() {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-2">Example 7: Conditional Listeners</h2>
-      <p className="text-gray-400 mb-4">
+      <p className="text-slate-400 mb-4">
         Listeners are only added when tracking is enabled
       </p>
-      <div className="bg-gray-800 p-4 rounded space-y-3">
+      <div className="bg-slate-800 p-4 rounded space-y-3">
         <button
           onClick={() => setEnableTracking(!enableTracking)}
           className={`px-4 py-2 rounded font-medium ${
@@ -337,7 +337,7 @@ export function Example7_ConditionalListeners() {
 
         <div>
           <p>Mouse Position: ({mousePosition.x}, {mousePosition.y})</p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-400">
             Active listeners: {listenerGuard.stats.active}
           </p>
         </div>
@@ -368,12 +368,12 @@ export function EventListenerGuardDemo() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-slate-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">
           useEventListenerGuard Hook Examples
         </h1>
-        <p className="text-gray-400 mb-8">
+        <p className="text-slate-400 mb-8">
           Interactive examples demonstrating the event listener tracking hook
         </p>
 
@@ -388,7 +388,7 @@ export function EventListenerGuardDemo() {
               className={`p-3 rounded-lg font-medium transition-colors ${
                 activeExample === example.id
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
               }`}
             >
               {example.name}
@@ -397,20 +397,20 @@ export function EventListenerGuardDemo() {
         </div>
 
         {/* Active Example Display */}
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-slate-800 rounded-lg overflow-hidden">
           {ActiveComponent ? (
             <ActiveComponent />
           ) : (
-            <div className="p-8 text-center text-gray-400">
+            <div className="p-8 text-center text-slate-400">
               Select an example above to see it in action
             </div>
           )}
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 bg-gray-800 rounded-lg p-6">
+        <div className="mt-8 bg-slate-800 rounded-lg p-6">
           <h3 className="text-xl font-bold mb-3">Instructions</h3>
-          <ul className="space-y-2 text-gray-400">
+          <ul className="space-y-2 text-slate-400">
             <li>• Select an example to mount the component</li>
             <li>• Open your browser console to see debug messages</li>
             <li>• Click the example again to unmount and trigger cleanup checks</li>

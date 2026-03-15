@@ -187,7 +187,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                 value: newVar?.defaultValue ?? '',
               });
             }}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
           >
             <option value="">Select variable...</option>
             {variables.map(v => (
@@ -203,7 +203,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
           <select
             value={cond.operator}
             onChange={(e) => handleUpdateSimple(index, { operator: e.target.value as OperatorType })}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
           >
             {availableOperators.map(op => (
               <option key={op.value} value={op.value}>
@@ -220,7 +220,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
               <select
                 value={String(cond.value)}
                 onChange={(e) => handleUpdateSimple(index, { value: e.target.value === 'true' })}
-                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
               >
                 <option value="true">true</option>
                 <option value="false">false</option>
@@ -230,14 +230,14 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                 type="number"
                 value={cond.value as number}
                 onChange={(e) => handleUpdateSimple(index, { value: parseFloat(e.target.value) || 0 })}
-                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
               />
             ) : (
               <input
                 type="text"
                 value={cond.value as string}
                 onChange={(e) => handleUpdateSimple(index, { value: e.target.value })}
-                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                 placeholder="value"
               />
             )}
@@ -248,7 +248,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
         {canRemove && (
           <button
             onClick={() => index !== null ? handleRemoveCondition(index) : handleClear()}
-            className="p-1 text-slate-500 hover:text-red-400 transition-colors"
+            className="p-1 text-slate-400 hover:text-red-400 transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -276,7 +276,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
           <span className="text-sm font-medium text-slate-200">Condition Builder</span>
           {condition && (
             <span className={cn(
-              'px-1.5 py-0.5 text-[10px] rounded',
+              'px-1.5 py-0.5 text-sm rounded',
               validation?.isValid
                 ? 'bg-green-500/20 text-green-400'
                 : 'bg-red-500/20 text-red-400'
@@ -286,9 +286,9 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
           )}
         </div>
         {isExpanded ? (
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          <ChevronDown className="w-4 h-4 text-slate-400" />
         ) : (
-          <ChevronRight className="w-4 h-4 text-slate-500" />
+          <ChevronRight className="w-4 h-4 text-slate-400" />
         )}
       </button>
 
@@ -302,7 +302,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
           >
             <div className="px-3 pb-3 space-y-3">
               {/* Condition Preview */}
-              <div className="px-2 py-1.5 bg-slate-800/50 rounded text-[10px] font-mono text-slate-400 truncate">
+              <div className="px-2 py-1.5 bg-slate-800/50 rounded text-sm font-mono text-slate-400 truncate">
                 {conditionString}
               </div>
 
@@ -310,7 +310,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
               {variables.length === 0 && (
                 <div className="flex items-center gap-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                   <AlertCircle className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs text-amber-300">
+                  <span className="text-sm text-amber-300">
                     No variables defined. Create variables first.
                   </span>
                 </div>
@@ -334,7 +334,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                             key={op.value}
                             onClick={() => handleUpdateOperator(op.value)}
                             className={cn(
-                              'px-3 py-1 text-xs font-medium rounded transition-colors',
+                              'px-3 py-1 text-sm font-medium rounded transition-colors',
                               condition.operator === op.value
                                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                                 : 'bg-slate-800 text-slate-400 border border-transparent hover:text-slate-300'
@@ -343,7 +343,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                             {op.label}
                           </button>
                         ))}
-                        <span className="text-[10px] text-slate-500 ml-2">
+                        <span className="text-sm text-slate-400 ml-2">
                           {condition.operator === 'and' ? 'All conditions must match' : 'Any condition can match'}
                         </span>
                       </div>
@@ -354,7 +354,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                           {index > 0 && (
                             <div className="flex items-center gap-2 py-1">
                               <div className="flex-1 h-px bg-slate-800" />
-                              <span className="text-[10px] font-medium text-slate-500 uppercase">
+                              <span className="text-sm font-medium text-slate-400 uppercase">
                                 {condition.operator}
                               </span>
                               <div className="flex-1 h-px bg-slate-800" />
@@ -383,7 +383,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                       size="xs"
                       variant="ghost"
                       onClick={handleClear}
-                      className="w-full h-7 text-slate-500 hover:text-red-400"
+                      className="w-full h-7 text-slate-400 hover:text-red-400"
                     >
                       <X className="w-3 h-3 mr-1" />
                       Clear All
@@ -398,7 +398,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                   {validation.errors.map((error, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-300"
+                      className="flex items-start gap-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-sm text-red-300"
                     >
                       <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                       {error.message}
@@ -413,7 +413,7 @@ export const ConditionBuilder: React.FC<ConditionBuilderProps> = ({
                   {validation.warnings.map((warning, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded text-xs text-amber-300"
+                      className="flex items-start gap-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded text-sm text-amber-300"
                     >
                       <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                       {warning.message}
@@ -481,12 +481,12 @@ export const VariableEditor: React.FC<{
 
       {/* Name */}
       <div>
-        <label className="block text-[10px] font-medium text-slate-400 mb-1">Name</label>
+        <label className="block text-sm font-medium text-slate-400 mb-1">Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
           placeholder="e.g., playerHealth"
         />
       </div>
@@ -494,11 +494,11 @@ export const VariableEditor: React.FC<{
       {/* Type & Scope */}
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-[10px] font-medium text-slate-400 mb-1">Type</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">Type</label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as VariableDefinition['type'])}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
           >
             <option value="string">String</option>
             <option value="number">Number</option>
@@ -507,11 +507,11 @@ export const VariableEditor: React.FC<{
           </select>
         </div>
         <div>
-          <label className="block text-[10px] font-medium text-slate-400 mb-1">Scope</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">Scope</label>
           <select
             value={scope}
             onChange={(e) => setScope(e.target.value as VariableDefinition['scope'])}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
           >
             <option value="global">Global</option>
             <option value="scene">Scene</option>
@@ -522,12 +522,12 @@ export const VariableEditor: React.FC<{
 
       {/* Default Value */}
       <div>
-        <label className="block text-[10px] font-medium text-slate-400 mb-1">Default Value</label>
+        <label className="block text-sm font-medium text-slate-400 mb-1">Default Value</label>
         {type === 'boolean' ? (
           <select
             value={defaultValue}
             onChange={(e) => setDefaultValue(e.target.value)}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
           >
             <option value="false">false</option>
             <option value="true">true</option>
@@ -537,7 +537,7 @@ export const VariableEditor: React.FC<{
             type={type === 'number' ? 'number' : 'text'}
             value={defaultValue}
             onChange={(e) => setDefaultValue(e.target.value)}
-            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
             placeholder={type === 'array' ? '["item1", "item2"]' : 'default value'}
           />
         )}
@@ -545,12 +545,12 @@ export const VariableEditor: React.FC<{
 
       {/* Description */}
       <div>
-        <label className="block text-[10px] font-medium text-slate-400 mb-1">Description (optional)</label>
+        <label className="block text-sm font-medium text-slate-400 mb-1">Description (optional)</label>
         <input
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+          className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
           placeholder="What does this variable track?"
         />
       </div>

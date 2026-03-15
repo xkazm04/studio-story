@@ -26,6 +26,7 @@ import {
   type BalanceSuggestion,
 } from '@/lib/composition';
 import { cn } from '@/app/lib/utils';
+import { interactive, staggerDelay } from '@/lib/animations';
 
 // ============================================================================
 // Types
@@ -120,7 +121,7 @@ const QuadrantVisual: React.FC<QuadrantVisualProps> = ({ weights, centerOfMass }
           className="border-r border-b border-slate-600/50"
           style={{ backgroundColor: `rgba(59, 130, 246, ${getOpacity(weights.topLeft)})` }}
         >
-          <span className="absolute top-1 left-1 text-[10px] text-slate-300 font-mono">
+          <span className="absolute top-1 left-1 text-sm text-slate-300 font-mono">
             {Math.round(weights.topLeft * 100)}%
           </span>
         </div>
@@ -128,7 +129,7 @@ const QuadrantVisual: React.FC<QuadrantVisualProps> = ({ weights, centerOfMass }
           className="border-b border-slate-600/50"
           style={{ backgroundColor: `rgba(59, 130, 246, ${getOpacity(weights.topRight)})` }}
         >
-          <span className="absolute top-1 right-1 text-[10px] text-slate-300 font-mono">
+          <span className="absolute top-1 right-1 text-sm text-slate-300 font-mono">
             {Math.round(weights.topRight * 100)}%
           </span>
         </div>
@@ -136,14 +137,14 @@ const QuadrantVisual: React.FC<QuadrantVisualProps> = ({ weights, centerOfMass }
           className="border-r border-slate-600/50"
           style={{ backgroundColor: `rgba(59, 130, 246, ${getOpacity(weights.bottomLeft)})` }}
         >
-          <span className="absolute bottom-1 left-1 text-[10px] text-slate-300 font-mono">
+          <span className="absolute bottom-1 left-1 text-sm text-slate-300 font-mono">
             {Math.round(weights.bottomLeft * 100)}%
           </span>
         </div>
         <div
           style={{ backgroundColor: `rgba(59, 130, 246, ${getOpacity(weights.bottomRight)})` }}
         >
-          <span className="absolute bottom-1 right-1 text-[10px] text-slate-300 font-mono">
+          <span className="absolute bottom-1 right-1 text-sm text-slate-300 font-mono">
             {Math.round(weights.bottomRight * 100)}%
           </span>
         </div>
@@ -151,7 +152,7 @@ const QuadrantVisual: React.FC<QuadrantVisualProps> = ({ weights, centerOfMass }
 
       {/* Center of Mass Indicator */}
       <motion.div
-        className="absolute w-4 h-4 -ml-2 -mt-2 rounded-full bg-cyan-500 border-2 border-white shadow-lg"
+        className="absolute w-4 h-4 -ml-2 -mt-2 rounded-full bg-cyan-500 border-2 border-white ms-shadow-card"
         style={{
           left: `${centerOfMass.x * 100}%`,
           top: `${centerOfMass.y * 100}%`,
@@ -181,7 +182,7 @@ interface FocalPointDisplayProps {
 const FocalPointDisplay: React.FC<FocalPointDisplayProps> = ({ focalPoints }) => {
   if (focalPoints.length === 0) {
     return (
-      <div className="flex items-center gap-2 p-3 bg-slate-800/50 rounded-lg text-xs text-slate-500">
+      <div className="flex items-center gap-2 p-3 bg-slate-800/50 rounded-lg text-sm text-slate-400">
         <Target className="w-4 h-4" />
         <span>No focal points detected</span>
       </div>
@@ -190,7 +191,7 @@ const FocalPointDisplay: React.FC<FocalPointDisplayProps> = ({ focalPoints }) =>
 
   return (
     <div className="space-y-2">
-      <span className="text-[10px] text-slate-500 uppercase tracking-wider">
+      <span className="text-sm text-slate-400 uppercase tracking-wider">
         Detected Focal Points ({focalPoints.length})
       </span>
       <div className="relative aspect-video bg-slate-900 rounded-lg overflow-hidden border border-slate-700/50">
@@ -208,7 +209,7 @@ const FocalPointDisplay: React.FC<FocalPointDisplayProps> = ({ focalPoints }) =>
             }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: index * 0.1 }}
+            transition={staggerDelay(index)}
           >
             <div
               className={cn(
@@ -220,7 +221,7 @@ const FocalPointDisplay: React.FC<FocalPointDisplayProps> = ({ focalPoints }) =>
               )}
               style={{ opacity: point.weight }}
             />
-            <span className="text-[10px] font-bold text-white z-10">{index + 1}</span>
+            <span className="text-sm font-bold text-white z-10">{index + 1}</span>
           </motion.div>
         ))}
       </div>
@@ -229,7 +230,7 @@ const FocalPointDisplay: React.FC<FocalPointDisplayProps> = ({ focalPoints }) =>
           <div
             key={point.id}
             className={cn(
-              'flex items-center gap-1 px-2 py-0.5 rounded text-[10px]',
+              'flex items-center gap-1 px-2 py-0.5 rounded text-sm',
               point.type === 'edge' && 'bg-purple-500/20 text-purple-300',
               point.type === 'contrast' && 'bg-orange-500/20 text-orange-300',
               point.type === 'center-of-mass' && 'bg-cyan-500/20 text-cyan-300',
@@ -263,27 +264,27 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({ suggestion, onClick }) 
         'bg-slate-800/50 hover:bg-slate-700/50',
         'focus:outline-none focus:ring-2 focus:ring-blue-500/50'
       )}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
+      whileHover={interactive.hoverSubtle}
+      whileTap={interactive.tapScale}
     >
       <div className={cn('p-1.5 rounded', priorityClass)}>
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-slate-200">{suggestion.description}</p>
+        <p className="text-sm text-slate-200">{suggestion.description}</p>
         <div className="flex items-center gap-2 mt-1">
           <span
             className={cn(
-              'text-[10px] px-1.5 py-0.5 rounded capitalize',
+              'text-sm px-1.5 py-0.5 rounded capitalize',
               priorityClass
             )}
           >
             {suggestion.priority}
           </span>
-          <span className="text-[10px] text-slate-500 capitalize">{suggestion.type}</span>
+          <span className="text-sm text-slate-400 capitalize">{suggestion.type}</span>
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+      <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
     </motion.button>
   );
 };
@@ -349,18 +350,18 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
   }, [imageSource, externalFocalPoints, externalBalance, handleAnalyze]);
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col gap-3', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Lightbulb className="w-4 h-4 text-yellow-400" />
-          <span className="text-xs font-medium text-slate-200">Layout Analysis</span>
+          <span className="text-sm font-medium text-slate-200">Layout Analysis</span>
         </div>
         <button
           onClick={handleAnalyze}
           disabled={isAnalyzing}
           className={cn(
-            'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors',
+            'flex items-center gap-1 px-2 py-1 rounded text-sm transition-colors',
             'bg-slate-700 hover:bg-slate-600 text-slate-200',
             isAnalyzing && 'opacity-50 cursor-not-allowed'
           )}
@@ -374,11 +375,11 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
       {!imageSource && !activeBalance && (
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <div className="p-3 bg-slate-800/50 rounded-full">
-            <Layout className="w-8 h-8 text-slate-600" />
+            <Layout className="w-8 h-8 text-slate-400" />
           </div>
           <div>
-            <p className="text-xs text-slate-400">No image to analyze</p>
-            <p className="text-[10px] text-slate-500 mt-1">
+            <p className="text-sm text-slate-400">No image to analyze</p>
+            <p className="text-sm text-slate-400 mt-1">
               Load an image or start sketching to see layout suggestions
             </p>
           </div>
@@ -392,13 +393,13 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
           <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
             <div className="flex items-center gap-2">
               <Scale className="w-4 h-4 text-blue-400" />
-              <span className="text-xs text-slate-300">Composition Balance</span>
+              <span className="text-sm text-slate-300">Composition Balance</span>
             </div>
             <div className="flex items-center gap-2">
               <span className={cn('text-lg font-bold', getBalanceColor(activeBalance.overallBalance))}>
                 {Math.round(activeBalance.overallBalance * 100)}%
               </span>
-              <span className={cn('text-xs', getBalanceColor(activeBalance.overallBalance))}>
+              <span className={cn('text-sm', getBalanceColor(activeBalance.overallBalance))}>
                 {getBalanceLabel(activeBalance.overallBalance)}
               </span>
             </div>
@@ -409,8 +410,8 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
             {/* Horizontal Balance */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] text-slate-500">Horizontal</span>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-sm text-slate-400">Horizontal</span>
+                <span className="text-sm text-slate-400">
                   {activeBalance.horizontalBalance > 0 ? 'Right' : 'Left'} Heavy
                 </span>
               </div>
@@ -429,8 +430,8 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
             {/* Vertical Balance */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] text-slate-500">Vertical</span>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-sm text-slate-400">Vertical</span>
+                <span className="text-sm text-slate-400">
                   {activeBalance.verticalBalance > 0 ? 'Bottom' : 'Top'} Heavy
                 </span>
               </div>
@@ -449,7 +450,7 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
 
           {/* Quadrant Visual */}
           <div className="space-y-2">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider">
+            <span className="text-sm text-slate-400 uppercase tracking-wider">
               Weight Distribution
             </span>
             <QuadrantVisual
@@ -461,7 +462,7 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
           {/* Show Details Toggle */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-200 transition-colors"
           >
             <Info className="w-3 h-3" />
             <span>{showDetails ? 'Hide' : 'Show'} focal points</span>
@@ -488,8 +489,8 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-medium text-slate-200">Suggestions</span>
-            <span className="text-[10px] px-1.5 py-0.5 bg-slate-700 rounded-full text-slate-400">
+            <span className="text-sm font-medium text-slate-200">Suggestions</span>
+            <span className="text-sm px-1.5 py-0.5 bg-slate-700 rounded-full text-slate-400">
               {suggestions.length}
             </span>
           </div>
@@ -500,7 +501,7 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
                 key={`${suggestion.type}-${index}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={staggerDelay(index)}
               >
                 <SuggestionCard
                   suggestion={suggestion}
@@ -514,11 +515,11 @@ export const LayoutSuggestions: React.FC<LayoutSuggestionsProps> = ({
 
       {/* All Good Message */}
       {activeBalance && activeBalance.overallBalance >= 0.8 && suggestions.length === 0 && (
-        <div className="flex items-center gap-3 p-4 bg-green-500/10 rounded-lg">
+        <div className="flex items-center gap-3 p-3 bg-green-500/10 rounded-lg">
           <CheckCircle className="w-5 h-5 text-green-400" />
           <div>
-            <p className="text-xs font-medium text-green-300">Great composition!</p>
-            <p className="text-[10px] text-green-400/70 mt-0.5">
+            <p className="text-sm font-medium text-green-300">Great composition!</p>
+            <p className="text-sm text-green-400/70 mt-0.5">
               Your layout has good balance and focal points
             </p>
           </div>

@@ -188,12 +188,36 @@ export interface BatchStyleProgress {
   total: number;
   completed: number;
   failed: number;
+  retried: number;
   currentCharacterId?: string;
   currentCharacterName?: string;
   status: 'idle' | 'running' | 'paused' | 'completed' | 'error';
   startedAt?: string;
   completedAt?: string;
   errors: Array<{ characterId: string; error: string }>;
+}
+
+export interface ClosedLoopConfig {
+  enabled: boolean;
+  /** Deviation threshold (0-100) above which a retry is triggered */
+  deviationThreshold: number;
+  /** Maximum retries per item before accepting or failing */
+  maxRetries: number;
+  /** Style definition to evaluate against */
+  styleDefinition: StyleDefinition;
+}
+
+export const DEFAULT_CLOSED_LOOP_CONFIG: Omit<ClosedLoopConfig, 'styleDefinition'> = {
+  enabled: false,
+  deviationThreshold: 40,
+  maxRetries: 2,
+};
+
+export interface ClosedLoopResult {
+  accepted: boolean;
+  deviationScore: number;
+  attempt: number;
+  promptUsed: string;
 }
 
 // ============================================================================
@@ -653,6 +677,71 @@ export function prepareStyleTransfer(
 }
 
 // ============================================================================
+// Closed-Loop Generation Helpers
+// ============================================================================
+
+/**
+ * Map a consistency level to the next stricter level for retry prompts.
+ */
+const CONSISTENCY_ESCALATION: Record<ConsistencyLevel, ConsistencyLevel> = {
+  loose: 'moderate',
+  moderate: 'strict',
+  strict: 'strict',
+};
+
+/**
+ * Strengthen a style prompt for retry attempts.
+ * Each attempt escalates the consistency level and adds enforcement language.
+ */
+export function strengthenStylePrompt(
+  basePrompt: string,
+  definition: StyleDefinition,
+  attempt: number,
+): { prompt: string; negativePrompt: string } {
+  const escalatedLevel = attempt >= 2
+    ? 'strict'
+    : CONSISTENCY_ESCALATION[definition.consistencyLevel];
+
+  const enforcementPrefixes: Record<ConsistencyLevel, string> = {
+    loose: '',
+    moderate: 'consistent style, matching art direction,',
+    strict: 'STRICTLY consistent style, exact art direction match, enforce visual consistency,',
+  };
+
+  const enforcement = enforcementPrefixes[escalatedLevel];
+  const styledPrompt = generateStyledPrompt(basePrompt, {
+    ...definition,
+    consistencyLevel: escalatedLevel,
+    stylePromptPrefix: enforcement
+      ? `${enforcement} ${definition.stylePromptPrefix}`
+      : definition.stylePromptPrefix,
+  });
+
+  return styledPrompt;
+}
+
+/**
+ * Evaluate a generated image's style deviation and decide whether to accept or retry.
+ * Returns the evaluation result with the deviation score and decision.
+ */
+export function evaluateGenerationResult(
+  profile: CharacterStyleProfile,
+  config: ClosedLoopConfig,
+  attempt: number,
+): ClosedLoopResult {
+  const deviationScore = calculateStyleDeviation(profile, config.styleDefinition);
+  const withinThreshold = deviationScore <= config.deviationThreshold;
+  const retriesExhausted = attempt >= config.maxRetries;
+
+  return {
+    accepted: withinThreshold || retriesExhausted,
+    deviationScore,
+    attempt,
+    promptUsed: '',
+  };
+}
+
+// ============================================================================
 // Utility Functions
 // ============================================================================
 
@@ -760,9 +849,12 @@ export default {
   generateStyledPrompt,
   generateConsistencyReport,
   prepareStyleTransfer,
+  strengthenStylePrompt,
+  evaluateGenerationResult,
   isColorInPalette,
   ART_DIRECTION_PRESETS,
   DEFAULT_COLOR_PALETTE,
   DEFAULT_LIGHTING,
+  DEFAULT_CLOSED_LOOP_CONFIG,
   STORAGE_KEYS,
 };

@@ -199,7 +199,7 @@ Generate the enhanced project description:`;
         {/* Project Description with AI */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">
+            <label className="text-sm font-medium text-slate-300">
               Description
             </label>
             <Button
@@ -251,23 +251,23 @@ Generate the enhanced project description:`;
             onInsert={handleInsertResult}
           />
 
-          <p className="text-xs text-gray-500 italic">
+          <p className="text-xs text-slate-400 italic">
             Tip: Write a few words about your story idea, then use AI Inspire to expand it into a full description.
           </p>
         </div>
 
         {/* Project Stats */}
         {(acts.length > 0 || scenes.length > 0) && (
-          <div className="px-4 py-3 bg-gray-800/50 rounded-lg border border-gray-700/50">
-            <p className="text-xs text-gray-400 font-medium mb-2">Current Project Stats:</p>
+          <div className="px-4 py-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+            <p className="text-xs text-slate-400 font-medium mb-2">Current Project Stats:</p>
             <div className="flex items-center gap-4 text-sm">
               {acts.length > 0 && (
-                <span className="text-gray-300">
+                <span className="text-slate-300">
                   <span className="text-blue-400 font-bold">{acts.length}</span> Act{acts.length !== 1 ? 's' : ''}
                 </span>
               )}
               {scenes.length > 0 && (
-                <span className="text-gray-300">
+                <span className="text-slate-300">
                   <span className="text-purple-400 font-bold">{scenes.length}</span> Scene{scenes.length !== 1 ? 's' : ''}
                 </span>
               )}

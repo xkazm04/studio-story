@@ -156,9 +156,9 @@ const OrgNode: React.FC<{
           {role?.level === 0 ? (
             <Crown size={12} className="text-amber-400" />
           ) : (
-            <Shield size={12} className="text-slate-500" />
+            <Shield size={12} className="text-slate-400" />
           )}
-          <span className="text-[10px] font-medium text-slate-400 truncate">
+          <span className="text-sm font-medium text-slate-400 truncate">
             {role?.title || 'Unknown Role'}
           </span>
         </div>
@@ -179,13 +179,13 @@ const OrgNode: React.FC<{
               {isVacant ? (
                 <AlertTriangle size={16} className="text-amber-400" />
               ) : (
-                <User size={16} className="text-slate-500" />
+                <User size={16} className="text-slate-400" />
               )}
             </div>
           )}
           <div className="flex-1 min-w-0">
             {isVacant ? (
-              <span className="text-xs text-amber-400 font-medium">VACANT</span>
+              <span className="text-sm text-amber-400 font-medium">VACANT</span>
             ) : (
               <span className="text-sm text-white font-medium truncate block">
                 {node.character_name || 'Unassigned'}
@@ -360,7 +360,7 @@ const NodeEditorModal: React.FC<NodeEditorModalProps> = ({
               Assign Character
             </label>
             <div className="relative mb-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
               <input
                 type="text"
                 value={searchQuery}
@@ -418,7 +418,7 @@ const NodeEditorModal: React.FC<NodeEditorModalProps> = ({
               ))}
 
               {availableCharacters.length === 0 && searchQuery && (
-                <p className="text-xs text-slate-500 text-center py-2">No characters found</p>
+                <p className="text-sm text-slate-400 text-center py-2">No characters found</p>
               )}
             </div>
           </div>
@@ -777,7 +777,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
             <GitBranch size={16} className="text-cyan-400" />
             Organization Chart
           </span>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {hierarchy.nodes.length} positions
           </span>
         </div>
@@ -787,7 +787,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
             <>
               <button
                 onClick={() => handleAddNode()}
-                className="flex items-center gap-1 px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
+                className="flex items-center gap-1 px-2 py-1 text-sm bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
               >
                 <Plus size={12} />
                 Add Root
@@ -811,7 +811,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
           >
             <ZoomOut size={14} />
           </button>
-          <span className="text-xs text-slate-500 w-12 text-center">
+          <span className="text-sm text-slate-400 w-12 text-center">
             {Math.round(zoom * 100)}%
           </span>
           <button
@@ -912,8 +912,8 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
         {hierarchy.nodes.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
-              <Users className="mx-auto mb-3 text-slate-600" size={48} />
-              <p className="text-slate-500 mb-3">No positions in the organization chart</p>
+              <Users className="mx-auto mb-3 text-slate-400" size={48} />
+              <p className="text-slate-400 mb-3">No positions in the organization chart</p>
               {!readOnly && hierarchy.roles.length > 0 && (
                 <button
                   onClick={() => handleAddNode()}
@@ -923,7 +923,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
                 </button>
               )}
               {hierarchy.roles.length === 0 && (
-                <p className="text-xs text-slate-600 mt-2">
+                <p className="text-sm text-slate-400 mt-2">
                   Add roles first using the Role Template Library
                 </p>
               )}
@@ -941,7 +941,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
             if (!node || !role) return null;
 
             return (
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-3">
                   <span className="text-slate-400">
                     <strong className="text-white">{role.title}</strong>
@@ -954,18 +954,18 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
                       {role.permissions.slice(0, 3).map((perm) => (
                         <span
                           key={perm}
-                          className="px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded text-[10px]"
+                          className="px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded text-sm"
                         >
                           {ROLE_PERMISSION_CONFIG[perm].label}
                         </span>
                       ))}
                       {role.permissions.length > 3 && (
-                        <span className="text-slate-500">+{role.permissions.length - 3}</span>
+                        <span className="text-slate-400">+{role.permissions.length - 3}</span>
                       )}
                     </div>
                   )}
                 </div>
-                <span className="text-slate-500">
+                <span className="text-slate-400">
                   Press Delete to remove, Escape to deselect
                 </span>
               </div>

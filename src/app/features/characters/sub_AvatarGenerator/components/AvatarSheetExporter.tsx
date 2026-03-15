@@ -197,7 +197,7 @@ const SheetPreview: React.FC<SheetPreviewProps> = ({
                     )}
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={cellSize * 0.2} />
                   </div>
                 )}
@@ -208,7 +208,7 @@ const SheetPreview: React.FC<SheetPreviewProps> = ({
       </div>
 
       {/* Dimensions */}
-      <div className="mt-2 flex items-center gap-2 text-[10px] font-mono text-slate-500">
+      <div className="mt-2 flex items-center gap-2 text-sm font-mono text-slate-400">
         <span>{width} × {height} px</span>
         <span>•</span>
         <span>{includedItems.length} / {settings.gridColumns * settings.gridRows} cells</span>
@@ -274,14 +274,14 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
             disabled={disabled || !item.included}
             className={cn(
               'flex-1 px-2 py-1 bg-slate-800/60 border border-slate-700/50 rounded',
-              'font-mono text-xs text-slate-300 placeholder:text-slate-600',
+              'font-mono text-sm text-slate-300 placeholder:text-slate-400',
               'focus:outline-none focus:ring-1 focus:ring-cyan-500/50',
               'disabled:opacity-50'
             )}
           />
 
           {/* Order indicator */}
-          <span className="font-mono text-[10px] text-slate-500 w-4">
+          <span className="font-mono text-sm text-slate-400 w-4">
             #{index + 1}
           </span>
         </div>
@@ -456,7 +456,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
             avatar_sheet_exporter
           </h3>
           {includedCount > 0 && (
-            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-sm">
               {includedCount} avatars
             </span>
           )}
@@ -487,7 +487,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
             <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/30 space-y-4">
               {/* Grid Presets */}
               <div>
-                <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+                <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                   grid_layout
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -497,7 +497,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                       onClick={() => applyGridPreset(preset.cols, preset.rows)}
                       disabled={disabled}
                       className={cn(
-                        'px-2 py-1 rounded border font-mono text-[10px] transition-all',
+                        'px-2 py-1 rounded border font-mono text-sm transition-all',
                         settings.gridColumns === preset.cols && settings.gridRows === preset.rows
                           ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
                           : 'bg-slate-800/60 border-slate-700/50 text-slate-400 hover:border-slate-600'
@@ -511,7 +511,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
 
               {/* Cell Size */}
               <div>
-                <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+                <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                   cell_size
                 </span>
                 <select
@@ -519,7 +519,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                   onChange={(e) => updateSetting('cellSize', Number(e.target.value))}
                   disabled={disabled}
                   className="w-full px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+                             font-mono text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                 >
                   {CELL_SIZE_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -530,7 +530,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
               {/* Format & Quality */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+                  <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                     format
                   </span>
                   <select
@@ -538,7 +538,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                     onChange={(e) => updateSetting('format', e.target.value as ExportFormat)}
                     disabled={disabled}
                     className="w-full px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-lg
-                               font-mono text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+                               font-mono text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                   >
                     {FORMAT_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -547,7 +547,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                 </div>
 
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+                  <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                     quality: {Math.round(settings.quality * 100)}%
                   </span>
                   <input
@@ -580,7 +580,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                 >
                   {settings.includeLabels && <Check size={12} className="text-white" />}
                 </button>
-                <span className="font-mono text-xs text-slate-400">Include labels</span>
+                <span className="font-mono text-sm text-slate-400">Include labels</span>
 
                 {settings.includeLabels && (
                   <select
@@ -588,7 +588,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                     onChange={(e) => updateSetting('labelPosition', e.target.value as 'top' | 'bottom')}
                     disabled={disabled}
                     className="ml-auto px-2 py-1 bg-slate-800/60 border border-slate-700/50 rounded
-                               font-mono text-[10px] text-slate-300"
+                               font-mono text-sm text-slate-300"
                   >
                     <option value="top">Top</option>
                     <option value="bottom">Bottom</option>
@@ -598,7 +598,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
 
               {/* Background Color */}
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] text-slate-500 uppercase">background</span>
+                <span className="font-mono text-sm text-slate-400 uppercase">background</span>
                 <input
                   type="color"
                   value={settings.backgroundColor}
@@ -606,7 +606,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
                   disabled={disabled}
                   className="w-8 h-8 rounded border border-slate-600 cursor-pointer"
                 />
-                <span className="font-mono text-xs text-slate-400">{settings.backgroundColor}</span>
+                <span className="font-mono text-sm text-slate-400">{settings.backgroundColor}</span>
               </div>
             </div>
           </motion.div>
@@ -617,7 +617,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Item Selector */}
         <div>
-          <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+          <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
             select_avatars ({includedCount} / {maxCells})
           </span>
           <ItemSelector
@@ -630,7 +630,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
 
         {/* Preview */}
         <div>
-          <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+          <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
             sheet_preview
           </span>
           <SheetPreview
@@ -645,7 +645,7 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
       {exportError && (
         <div className="mt-4 flex items-center gap-2 p-2 bg-red-500/10 border border-red-500/30 rounded">
           <AlertCircle size={14} className="text-red-400 flex-shrink-0" />
-          <span className="font-mono text-[10px] text-red-400">{exportError}</span>
+          <span className="font-mono text-sm text-red-400">{exportError}</span>
         </div>
       )}
 
@@ -676,10 +676,10 @@ const AvatarSheetExporter: React.FC<AvatarSheetExporterProps> = ({
 
       {/* Empty State */}
       {avatars.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-8 text-slate-400">
           <Layers size={32} className="mb-3 opacity-50" />
-          <p className="font-mono text-xs mb-2">No avatars to export</p>
-          <p className="font-mono text-[10px] text-center">
+          <p className="font-mono text-sm mb-2">No avatars to export</p>
+          <p className="font-mono text-sm text-center">
             Generate some avatars first to create a sprite sheet
           </p>
         </div>

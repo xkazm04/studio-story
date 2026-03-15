@@ -200,12 +200,12 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
         'border rounded-lg transition-all',
         status.isOverridden
           ? 'border-amber-500/30 bg-amber-900/10'
-          : 'border-gray-700/30 bg-gray-800/20'
+          : 'border-slate-700/30 bg-slate-800/20'
       )}
     >
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="w-full flex items-center gap-3 p-2 hover:bg-gray-700/20 transition-colors rounded-lg"
+        className="w-full flex items-center gap-3 p-2 hover:bg-slate-700/20 transition-colors rounded-lg"
       >
         {/* Status Icon */}
         <span
@@ -218,17 +218,17 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
         </span>
 
         {/* Label */}
-        <span className="flex-1 text-left text-sm text-gray-300">{status.label}</span>
+        <span className="flex-1 text-left text-sm text-slate-300">{status.label}</span>
 
         {/* Current Value Preview */}
-        <span className="text-xs text-gray-500 truncate max-w-[120px]">
+        <span className="text-sm text-slate-400 truncate max-w-[120px]">
           {status.currentValue || 'Not set'}
         </span>
 
         {/* Status Badge */}
         <span
           className={cn(
-            'text-xs px-1.5 py-0.5 rounded',
+            'text-sm px-1.5 py-0.5 rounded',
             status.isOverridden ? 'bg-amber-600/30 text-amber-300' : 'bg-green-600/30 text-green-300'
           )}
         >
@@ -237,7 +237,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
 
         {/* Expand Arrow */}
         <motion.span animate={{ rotate: showDetails ? 90 : 0 }}>
-          <ChevronRight size={14} className="text-gray-500" />
+          <ChevronRight size={14} className="text-slate-400" />
         </motion.span>
       </button>
 
@@ -250,14 +250,14 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-2 border-t border-gray-700/30 pt-2 mt-1">
+            <div className="px-3 pb-3 space-y-2 border-t border-slate-700/30 pt-2 mt-1">
               {/* Inherited Value */}
               <div className="flex items-start gap-2">
                 <GitBranch size={12} className="text-green-400 mt-1 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs text-gray-500 mb-0.5">Inherited from archetype:</div>
-                  <div className="text-xs text-gray-300 bg-gray-800/50 rounded p-2">
-                    {status.inheritedValue || <span className="italic text-gray-500">Not set</span>}
+                  <div className="text-sm text-slate-400 mb-0.5">Inherited from archetype:</div>
+                  <div className="text-sm text-slate-300 bg-slate-800/50 rounded p-2">
+                    {status.inheritedValue || <span className="italic text-slate-400">Not set</span>}
                   </div>
                 </div>
               </div>
@@ -267,9 +267,9 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
                 <div className="flex items-start gap-2">
                   <Pencil size={12} className="text-amber-400 mt-1 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs text-gray-500 mb-0.5">Current value:</div>
-                    <div className="text-xs text-amber-200 bg-amber-900/20 rounded p-2 border border-amber-700/30">
-                      {status.currentValue || <span className="italic text-gray-500">Not set</span>}
+                    <div className="text-sm text-slate-400 mb-0.5">Current value:</div>
+                    <div className="text-sm text-amber-200 bg-amber-900/20 rounded p-2 border border-amber-700/30">
+                      {status.currentValue || <span className="italic text-slate-400">Not set</span>}
                     </div>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ status, onReset }) => {
                     e.stopPropagation();
                     onReset();
                   }}
-                  className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1"
+                  className="flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1"
                 >
                   <RotateCcw size={12} />
                   Reset to inherited value
@@ -318,17 +318,17 @@ const CategorySection: React.FC<CategorySectionProps> = ({
     <div className="space-y-2">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center gap-2 p-2 hover:bg-gray-800/50 rounded-lg transition-colors"
+        className="w-full flex items-center gap-2 p-2 hover:bg-slate-800/50 rounded-lg transition-colors"
       >
-        <span className="p-1.5 rounded bg-gray-700 text-gray-300">{icon}</span>
-        <span className="flex-1 text-left font-medium text-gray-200">{title}</span>
+        <span className="p-1.5 rounded bg-slate-700 text-slate-300">{icon}</span>
+        <span className="flex-1 text-left font-medium text-slate-200">{title}</span>
         {overriddenCount > 0 && (
-          <span className="text-xs px-1.5 py-0.5 rounded bg-amber-600/30 text-amber-300">
+          <span className="text-sm px-1.5 py-0.5 rounded bg-amber-600/30 text-amber-300">
             {overriddenCount} custom
           </span>
         )}
         <motion.span animate={{ rotate: isExpanded ? 180 : 0 }}>
-          <ChevronDown size={16} className="text-gray-500" />
+          <ChevronDown size={16} className="text-slate-400" />
         </motion.span>
       </button>
 
@@ -404,14 +404,14 @@ const InheritanceTracker: React.FC<InheritanceTrackerProps> = ({
   return (
     <div className={cn('space-y-4', className)}>
       {/* Header with Stats */}
-      <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+      <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-purple-600/20 rounded-lg">
             <GitMerge size={18} className="text-purple-400" />
           </div>
           <div>
             <h3 className="font-semibold text-white text-sm">Inheritance Tracker</h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-sm text-slate-400">
               Based on <span className="text-purple-400">{archetype.name}</span>
             </p>
           </div>
@@ -420,7 +420,7 @@ const InheritanceTracker: React.FC<InheritanceTrackerProps> = ({
         {overriddenFields > 0 && (
           <button
             onClick={onResetAll}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors"
           >
             <RotateCcw size={12} />
             Reset all
@@ -432,17 +432,17 @@ const InheritanceTracker: React.FC<InheritanceTrackerProps> = ({
       <div className="flex items-center gap-4 px-3">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="text-xs text-gray-400">
+          <span className="text-sm text-slate-400">
             {inheritedFields} inherited
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-amber-500" />
-          <span className="text-xs text-gray-400">
+          <span className="text-sm text-slate-400">
             {overriddenFields} customized
           </span>
         </div>
-        <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-green-500 to-green-400"
             style={{ width: `${(inheritedFields / totalFields) * 100}%` }}
@@ -451,7 +451,7 @@ const InheritanceTracker: React.FC<InheritanceTrackerProps> = ({
       </div>
 
       {/* Info Note */}
-      <div className="flex items-start gap-2 px-3 py-2 bg-blue-900/20 border border-blue-700/30 rounded-lg text-xs text-blue-300">
+      <div className="flex items-start gap-2 px-3 py-2 bg-blue-900/20 border border-blue-700/30 rounded-lg text-sm text-blue-300">
         <Info size={14} className="flex-shrink-0 mt-0.5" />
         <p>
           Inherited fields automatically update when you change archetypes. Customized fields are preserved.

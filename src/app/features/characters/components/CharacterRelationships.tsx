@@ -71,7 +71,7 @@ const CharacterRelationships: React.FC<CharacterRelationshipsProps> = ({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-gray-400">Loading relationships...</div>
+        <div className="animate-pulse text-slate-400">Loading relationships...</div>
       </div>
     );
   }
@@ -82,11 +82,11 @@ const CharacterRelationships: React.FC<CharacterRelationshipsProps> = ({
         {/* Header with Controls */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h3 className="ms-h3 flex items-center gap-2">
               <Heart size={18} className="text-rose-500" />
               Character Relationships
             </h3>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="ms-caption mt-1">
               Define how this character relates to others in your story
             </p>
           </div>
@@ -102,7 +102,7 @@ const CharacterRelationships: React.FC<CharacterRelationshipsProps> = ({
 
         {/* Filter Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          <Filter size={16} className="text-gray-400" />
+          <Filter size={16} className="text-slate-400" />
           {['all', 'positive', 'negative', 'neutral', 'complicated'].map((type) => (
             <button
               key={type}
@@ -111,7 +111,7 @@ const CharacterRelationships: React.FC<CharacterRelationshipsProps> = ({
                 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                 filter === type
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
               )}
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -136,13 +136,13 @@ const CharacterRelationships: React.FC<CharacterRelationshipsProps> = ({
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-gray-800/50 text-gray-400 mb-4">
+            <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-slate-800/50 text-slate-400 mb-4">
               <Heart size={28} />
             </div>
             <h4 className="text-lg text-white mb-2">
               {filter === 'all' ? 'No relationships yet' : `No ${filter} relationships`}
             </h4>
-            <p className="text-gray-400 text-sm max-w-md mx-auto mb-4">
+            <p className="text-slate-400 text-sm max-w-md mx-auto mb-4">
               {filter === 'all'
                 ? 'Define how this character connects with others in your story by creating relationship events.'
                 : `This character has no ${filter} relationships yet.`}

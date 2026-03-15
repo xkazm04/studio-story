@@ -42,7 +42,7 @@ const ScriptEditor = () => {
 
     if (!selectedScene) {
         return (
-            <div className="text-center py-10 text-gray-400">
+            <div className="text-center py-10 text-slate-400">
                 No scene selected
             </div>
         );
@@ -50,9 +50,9 @@ const ScriptEditor = () => {
 
     return (
         <div className="w-full max-w-4xl mx-auto space-y-6">
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-white">Script Editor</h3>
+                    <h3 className="ms-h3">Script Editor</h3>
                     <div className="flex gap-2">
                         <SmartGenerateButton
                             onClick={handleSmartGenerate}
@@ -78,9 +78,9 @@ const ScriptEditor = () => {
                 )}
 
                 {overview && (
-                    <div className="mb-4 p-4 bg-gray-950/50 border border-gray-800 rounded-lg">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Overview</h4>
-                        <p className="text-gray-300 text-sm italic">{overview}</p>
+                    <div className="mb-4 p-4 bg-slate-950/50 border border-slate-800 rounded-lg">
+                        <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Overview</h4>
+                        <p className="text-slate-300 text-sm italic">{overview}</p>
                     </div>
                 )}
 
@@ -88,10 +88,10 @@ const ScriptEditor = () => {
                     value={script}
                     onChange={(e) => setScript(e.target.value)}
                     placeholder="Write your scene script here..."
-                    className="w-full h-96 bg-gray-950 border border-gray-800 rounded-lg p-4 text-white font-mono text-sm resize-none focus:outline-none focus:border-blue-500 transition"
+                    className="w-full h-96 bg-slate-950 border border-slate-800 rounded-lg p-4 text-white font-mono text-sm resize-none focus:outline-none focus:border-blue-500 transition"
                 />
 
-                <div className="mt-4 flex justify-between items-center text-sm text-gray-400">
+                <div className="mt-4 flex justify-between items-center text-sm text-slate-400">
                     <div>
                         Words: {script.split(/\s+/).filter((w: string) => w).length}
                     </div>

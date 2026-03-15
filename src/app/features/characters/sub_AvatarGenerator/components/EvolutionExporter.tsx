@@ -340,7 +340,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               export
             </h3>
           </div>
@@ -352,7 +352,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
             onChange={(e) => updateSetting('layout', e.target.value as ExportLayout)}
             disabled={disabled || entries.length === 0}
             className="flex-1 px-2 py-1.5 bg-slate-800/40 border border-slate-700/50 rounded
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                        disabled:opacity-50"
           >
@@ -369,7 +369,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
             className={cn(
               'flex items-center gap-1 px-3 py-1.5 rounded',
               'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400',
-              'font-mono text-xs transition-colors',
+              'font-mono text-sm transition-colors',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
@@ -390,7 +390,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
           <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             evolution_exporter
           </h3>
-          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
             {entries.length} entries
           </span>
         </div>
@@ -405,7 +405,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
           )}
         >
           <Settings size={12} />
-          <span className="font-mono text-[10px]">Advanced</span>
+          <span className="font-mono text-sm">Advanced</span>
           <ChevronDown
             size={12}
             className={cn('transition-transform', showAdvanced && 'rotate-180')}
@@ -415,7 +415,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
       {/* Layout Selection */}
       <div className="mb-4">
-        <label className="block font-mono text-[10px] text-slate-500 uppercase mb-2">
+        <label className="block font-mono text-sm text-slate-400 uppercase mb-2">
           layout
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -430,12 +430,12 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
                   'flex flex-col items-center p-3 rounded-lg border transition-all text-center',
                   isSelected
                     ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400'
-                    : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600',
+                    : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600',
                   disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
                 {option.icon}
-                <span className="font-mono text-[10px] mt-1">{option.label}</span>
+                <span className="font-mono text-sm mt-1">{option.label}</span>
               </button>
             );
           })}
@@ -446,7 +446,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Format */}
         <div>
-          <label className="block font-mono text-[10px] text-slate-500 uppercase mb-2">
+          <label className="block font-mono text-sm text-slate-400 uppercase mb-2">
             format
           </label>
           <select
@@ -454,7 +454,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
             onChange={(e) => updateSetting('format', e.target.value as ExportFormat)}
             disabled={disabled}
             className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                        disabled:opacity-50"
           >
@@ -468,7 +468,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
         {/* Size */}
         <div>
-          <label className="block font-mono text-[10px] text-slate-500 uppercase mb-2">
+          <label className="block font-mono text-sm text-slate-400 uppercase mb-2">
             image_size
           </label>
           <div className="flex gap-1">
@@ -481,10 +481,10 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
                 }}
                 disabled={disabled}
                 className={cn(
-                  'flex-1 px-2 py-2 rounded font-mono text-[10px] transition-colors',
+                  'flex-1 px-2 py-2 rounded font-mono text-sm transition-colors',
                   settings.width === size.value
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'bg-slate-800/40 text-slate-500 hover:bg-slate-700/60',
+                    : 'bg-slate-800/40 text-slate-400 hover:bg-slate-700/60',
                   disabled && 'opacity-50'
                 )}
               >
@@ -507,7 +507,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
             <div className="grid grid-cols-2 gap-4">
               {/* Quality */}
               <div>
-                <label className="block font-mono text-[10px] text-slate-500 uppercase mb-1">
+                <label className="block font-mono text-sm text-slate-400 uppercase mb-1">
                   quality: {settings.quality}%
                 </label>
                 <input
@@ -525,7 +525,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
               {/* Padding */}
               <div>
-                <label className="block font-mono text-[10px] text-slate-500 uppercase mb-1">
+                <label className="block font-mono text-sm text-slate-400 uppercase mb-1">
                   padding: {settings.padding}px
                 </label>
                 <input
@@ -543,7 +543,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
               {/* Background Color */}
               <div>
-                <label className="block font-mono text-[10px] text-slate-500 uppercase mb-1">
+                <label className="block font-mono text-sm text-slate-400 uppercase mb-1">
                   background
                 </label>
                 <div className="flex items-center gap-2">
@@ -560,7 +560,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
                     onChange={(e) => updateSetting('backgroundColor', e.target.value)}
                     disabled={disabled}
                     className="flex-1 px-2 py-1 bg-slate-900/50 border border-slate-700/50 rounded
-                               font-mono text-[10px] text-slate-400
+                               font-mono text-sm text-slate-400
                                focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                   />
                 </div>
@@ -568,7 +568,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
               {/* Labels */}
               <div>
-                <label className="block font-mono text-[10px] text-slate-500 uppercase mb-1">
+                <label className="block font-mono text-sm text-slate-400 uppercase mb-1">
                   labels
                 </label>
                 <button
@@ -578,11 +578,11 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
                     'w-full flex items-center justify-center gap-2 px-3 py-2 rounded border transition-colors',
                     settings.includeLabels
                       ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400'
-                      : 'bg-slate-800/40 border-slate-700/50 text-slate-500'
+                      : 'bg-slate-800/40 border-slate-700/50 text-slate-400'
                   )}
                 >
                   {settings.includeLabels ? <Check size={12} /> : <X size={12} />}
-                  <span className="font-mono text-[10px]">
+                  <span className="font-mono text-sm">
                     {settings.includeLabels ? 'Enabled' : 'Disabled'}
                   </span>
                 </button>
@@ -591,7 +591,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
 
             {/* Output dimensions info */}
             <div className="mt-3 pt-3 border-t border-slate-700/30">
-              <span className="font-mono text-[10px] text-slate-600">
+              <span className="font-mono text-sm text-slate-400">
                 Output: {canvasDimensions.width} x {canvasDimensions.height}px
               </span>
             </div>
@@ -603,10 +603,10 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
       {previewUrl && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-[10px] text-slate-500 uppercase">preview</span>
+            <span className="font-mono text-sm text-slate-400 uppercase">preview</span>
             <button
               onClick={() => setPreviewUrl(null)}
-              className="p-1 rounded hover:bg-slate-700/50 text-slate-500 transition-colors"
+              className="p-1 rounded hover:bg-slate-700/50 text-slate-400 transition-colors"
             >
               <X size={12} />
             </button>
@@ -626,7 +626,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
       {error && (
         <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-2">
           <AlertCircle size={14} className="text-red-400" />
-          <span className="font-mono text-xs text-red-400">{error}</span>
+          <span className="font-mono text-sm text-red-400">{error}</span>
         </div>
       )}
 
@@ -638,7 +638,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
           className={cn(
             'flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg',
             'bg-slate-800/40 hover:bg-slate-700/60 text-slate-300',
-            'font-mono text-xs transition-colors',
+            'font-mono text-sm transition-colors',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >
@@ -652,7 +652,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
           className={cn(
             'flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg',
             'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400',
-            'font-mono text-xs transition-colors',
+            'font-mono text-sm transition-colors',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >
@@ -676,7 +676,7 @@ const EvolutionExporter: React.FC<EvolutionExporterProps> = ({
       {/* Empty state */}
       {entries.length === 0 && (
         <div className="mt-4 text-center">
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Add timeline entries to enable export
           </p>
         </div>

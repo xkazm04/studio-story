@@ -55,18 +55,18 @@ const SourceCard: React.FC<SourceCardProps> = ({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="bg-gray-800 border border-gray-700 rounded-lg p-4 space-y-3"
+      className="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3"
     >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h4 className="font-medium text-white">{source.archetype.name}</h4>
-          <span className="text-xs text-purple-400">{source.archetype.category}</span>
+          <span className="text-sm text-purple-400">{source.archetype.category}</span>
         </div>
         {!isLocked && (
           <button
             onClick={onRemove}
-            className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+            className="p-1 text-slate-400 hover:text-red-400 transition-colors"
           >
             <X size={16} />
           </button>
@@ -76,7 +76,7 @@ const SourceCard: React.FC<SourceCardProps> = ({
       {/* Weight Slider */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-400">Influence</span>
+          <span className="text-slate-400">Influence</span>
           <span className="font-mono text-purple-300">{percentage}%</span>
         </div>
         <input
@@ -85,9 +85,9 @@ const SourceCard: React.FC<SourceCardProps> = ({
           max="100"
           value={percentage}
           onChange={(e) => onWeightChange(parseInt(e.target.value) / 100)}
-          className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+          className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
         />
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between text-sm text-slate-400">
           <span>Subtle</span>
           <span>Dominant</span>
         </div>
@@ -98,7 +98,7 @@ const SourceCard: React.FC<SourceCardProps> = ({
         {source.archetype.tags.slice(0, 3).map(tag => (
           <span
             key={tag}
-            className="text-xs px-1.5 py-0.5 bg-gray-700 text-gray-300 rounded"
+            className="text-sm px-1.5 py-0.5 bg-slate-700 text-slate-300 rounded"
           >
             {tag}
           </span>
@@ -126,16 +126,16 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       onClick={onAdd}
-      className="w-full flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700/50 hover:border-purple-500/50 rounded-lg transition-all text-left"
+      className="w-full flex items-center gap-3 p-3 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-purple-500/50 rounded-lg transition-all text-left"
     >
       <div className="p-2 bg-purple-600/20 rounded-lg">
         <Lightbulb size={16} className="text-purple-400" />
       </div>
       <div className="flex-1">
         <div className="font-medium text-white text-sm">{archetype.name}</div>
-        <div className="text-xs text-gray-400">{suggestion.rationale}</div>
+        <div className="text-sm text-slate-400">{suggestion.rationale}</div>
       </div>
-      <ChevronRight size={16} className="text-gray-500" />
+      <ChevronRight size={16} className="text-slate-400" />
     </motion.button>
   );
 };
@@ -154,28 +154,28 @@ const BlendPreview: React.FC<BlendPreviewProps> = ({ result }) => {
       content: (
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
-            <span className="text-gray-500">Gender:</span>{' '}
-            <span className="text-gray-300">{result.appearance.gender}</span>
+            <span className="text-slate-400">Gender:</span>{' '}
+            <span className="text-slate-300">{result.appearance.gender}</span>
           </div>
           <div>
-            <span className="text-gray-500">Age:</span>{' '}
-            <span className="text-gray-300">{result.appearance.age}</span>
+            <span className="text-slate-400">Age:</span>{' '}
+            <span className="text-slate-300">{result.appearance.age}</span>
           </div>
           <div>
-            <span className="text-gray-500">Body:</span>{' '}
-            <span className="text-gray-300">{result.appearance.bodyType}</span>
+            <span className="text-slate-400">Body:</span>{' '}
+            <span className="text-slate-300">{result.appearance.bodyType}</span>
           </div>
           <div>
-            <span className="text-gray-500">Hair:</span>{' '}
-            <span className="text-gray-300">{result.appearance.face.hairColor}</span>
+            <span className="text-slate-400">Hair:</span>{' '}
+            <span className="text-slate-300">{result.appearance.face.hairColor}</span>
           </div>
           <div>
-            <span className="text-gray-500">Eyes:</span>{' '}
-            <span className="text-gray-300">{result.appearance.face.eyeColor}</span>
+            <span className="text-slate-400">Eyes:</span>{' '}
+            <span className="text-slate-300">{result.appearance.face.eyeColor}</span>
           </div>
           <div>
-            <span className="text-gray-500">Style:</span>{' '}
-            <span className="text-gray-300 truncate">{result.appearance.clothing.style}</span>
+            <span className="text-slate-400">Style:</span>{' '}
+            <span className="text-slate-300 truncate">{result.appearance.clothing.style}</span>
           </div>
         </div>
       ),
@@ -184,14 +184,14 @@ const BlendPreview: React.FC<BlendPreviewProps> = ({ result }) => {
       id: 'personality',
       title: 'Blended Personality',
       content: (
-        <p className="text-sm text-gray-300">{result.personality}</p>
+        <p className="text-sm text-slate-300">{result.personality}</p>
       ),
     },
     {
       id: 'backstory',
       title: 'Blended Backstory',
       content: (
-        <p className="text-sm text-gray-300">{result.backstory}</p>
+        <p className="text-sm text-slate-300">{result.backstory}</p>
       ),
     },
     {
@@ -202,7 +202,7 @@ const BlendPreview: React.FC<BlendPreviewProps> = ({ result }) => {
           {result.tags.map(tag => (
             <span
               key={tag}
-              className="text-xs px-2 py-1 bg-purple-600/20 text-purple-300 rounded"
+              className="text-sm px-2 py-1 bg-purple-600/20 text-purple-300 rounded"
             >
               {tag}
             </span>
@@ -222,17 +222,17 @@ const BlendPreview: React.FC<BlendPreviewProps> = ({ result }) => {
         {sections.map(section => (
           <div
             key={section.id}
-            className="bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden"
+            className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden"
           >
             <button
               onClick={() => setExpandedSection(
                 expandedSection === section.id ? null : section.id
               )}
-              className="w-full flex items-center justify-between p-3 hover:bg-gray-700/30 transition-colors"
+              className="w-full flex items-center justify-between p-3 hover:bg-slate-700/30 transition-colors"
             >
-              <span className="text-sm font-medium text-gray-200">{section.title}</span>
+              <span className="text-sm font-medium text-slate-200">{section.title}</span>
               <motion.span animate={{ rotate: expandedSection === section.id ? 90 : 0 }}>
-                <ChevronRight size={14} className="text-gray-500" />
+                <ChevronRight size={14} className="text-slate-400" />
               </motion.span>
             </button>
             <AnimatePresence>
@@ -325,14 +325,14 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">Archetype Blender</h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-slate-400">
               Combine 2-3 archetypes to create unique characters
             </p>
           </div>
         </div>
         <button
           onClick={onCancel}
-          className="p-2 text-gray-400 hover:text-white transition-colors"
+          className="p-2 text-slate-400 hover:text-white transition-colors"
         >
           <X size={20} />
         </button>
@@ -350,13 +350,13 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
       {/* Source Cards */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="font-medium text-gray-200">
+          <h4 className="font-medium text-slate-200">
             Blend Sources ({blendState.sources.length}/3)
           </h4>
           {blendState.sources.length > 0 && (
             <button
               onClick={clearBlend}
-              className="text-xs text-gray-400 hover:text-white transition-colors"
+              className="text-sm text-slate-400 hover:text-white transition-colors"
             >
               Clear all
             </button>
@@ -381,7 +381,7 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               onClick={() => setShowArchetypePicker(true)}
-              className="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-gray-700 hover:border-purple-500/50 rounded-lg transition-all text-gray-500 hover:text-purple-400"
+              className="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-slate-700 hover:border-purple-500/50 rounded-lg transition-all text-slate-400 hover:text-purple-400"
             >
               <Plus size={24} />
               <span className="text-sm">Add archetype</span>
@@ -393,7 +393,7 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
       {/* Suggestions */}
       {blendState.sources.length === 1 && suggestions.length > 0 && (
         <div className="space-y-3">
-          <h4 className="font-medium text-gray-200 flex items-center gap-2">
+          <h4 className="font-medium text-slate-200 flex items-center gap-2">
             <Lightbulb size={16} className="text-yellow-400" />
             Suggested Combinations
           </h4>
@@ -428,16 +428,16 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-gray-900 border border-gray-700 rounded-xl max-w-2xl w-full max-h-[70vh] overflow-hidden"
+              className="bg-slate-900 border border-slate-700 rounded-xl max-w-2xl w-full max-h-[70vh] overflow-hidden"
             >
-              <div className="p-4 border-b border-gray-700">
+              <div className="p-4 border-b border-slate-700">
                 <h4 className="font-semibold text-white mb-3">Select Archetype to Add</h4>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search archetypes..."
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div className="p-4 overflow-y-auto max-h-[50vh] space-y-2">
@@ -449,19 +449,19 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
                       setShowArchetypePicker(false);
                       setSearchTerm('');
                     }}
-                    className="w-full flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700/50 hover:border-purple-500/50 rounded-lg transition-all text-left"
+                    className="w-full flex items-center gap-3 p-3 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-purple-500/50 rounded-lg transition-all text-left"
                   >
                     <div className="flex-1">
                       <div className="font-medium text-white">{archetype.name}</div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-sm text-slate-400">
                         {archetype.category} • {archetype.description}
                       </div>
                     </div>
-                    <Plus size={16} className="text-gray-500" />
+                    <Plus size={16} className="text-slate-400" />
                   </button>
                 ))}
                 {filteredArchetypes.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-slate-400">
                     No archetypes found
                   </div>
                 )}
@@ -489,10 +489,10 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
       {blendState.result && <BlendPreview result={blendState.result} />}
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-700">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-700">
         <button
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors"
         >
           Cancel
         </button>
@@ -505,7 +505,7 @@ const ArchetypeBlender: React.FC<ArchetypeBlenderProps> = ({
               'flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors',
               canBlend
                 ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
             )}
           >
             <Wand2 size={18} />

@@ -14,8 +14,11 @@ interface StyleImageCardProps {
   imageUrl: string;
   label: string;
   description?: string;
+  ariaLabel?: string;
   isSelected: boolean;
   onSelect: () => void;
+  onFocus?: () => void;
+  tabIndex?: number;
   disabled?: boolean;
   className?: string;
 }
@@ -24,8 +27,11 @@ export function StyleImageCard({
   imageUrl,
   label,
   description,
+  ariaLabel,
   isSelected,
   onSelect,
+  onFocus,
+  tabIndex,
   disabled = false,
   className,
 }: StyleImageCardProps) {
@@ -35,7 +41,11 @@ export function StyleImageCard({
   return (
     <button
       onClick={onSelect}
+      onFocus={onFocus}
       disabled={disabled}
+      tabIndex={tabIndex}
+      aria-label={ariaLabel || label}
+      aria-pressed={isSelected}
       title={description || label}
       className={cn(
         'group relative rounded-lg overflow-hidden border-2 transition-all',
@@ -53,14 +63,14 @@ export function StyleImageCard({
         {/* Loading skeleton */}
         {isLoading && !hasError && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-800 animate-pulse">
-            <Loader2 className="w-6 h-6 text-slate-600 animate-spin" />
+            <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
           </div>
         )}
 
         {/* Error state */}
         {hasError && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-            <span className="text-xs text-slate-500">Failed to load</span>
+            <span className="text-sm text-slate-400">Failed to load</span>
           </div>
         )}
 
@@ -98,7 +108,7 @@ export function StyleImageCard({
             'opacity-0 group-hover:opacity-100 transition-opacity',
             'pointer-events-none'
           )}>
-            <p className="text-[10px] text-slate-300 line-clamp-2">
+            <p className="text-sm text-slate-300 line-clamp-2">
               {description}
             </p>
           </div>
@@ -109,7 +119,7 @@ export function StyleImageCard({
       <div className="bg-slate-900 p-2 text-center border-t border-slate-800">
         <p
           className={cn(
-            'font-medium text-xs truncate',
+            'font-medium text-sm truncate',
             isSelected ? 'text-cyan-400' : 'text-slate-200'
           )}
         >

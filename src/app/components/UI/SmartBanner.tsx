@@ -10,7 +10,7 @@ import Image from "next/image";
 // Placeholder image component for when no image is provided
 const PlaceholderImage = () => {
   return (
-    <div className="flex items-center justify-center h-10 w-10 rounded-md bg-gray-800">
+    <div className="flex items-center justify-center h-10 w-10 rounded-md bg-slate-800">
       <Layers size={20} className="text-blue-500" />
     </div>
   );
@@ -47,7 +47,7 @@ const SmartBanner = () => {
                 <ColoredBorder />
 
                 <div className="p-1">
-                    <div className="px-4 pt-3 flex justify-between items-center">
+                    <div className="px-3 pt-2 flex justify-between items-center">
                         <h3 className="text-lg font-semibold text-blue-400">{title}</h3>
                         <div className="flex gap-2">
                             <motion.button
@@ -55,7 +55,7 @@ const SmartBanner = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsExpanded(!isExpanded)}
-                                className="p-1 rounded-full bg-gray-700/50 hover:bg-gray-700 transition-colors"
+                                className="p-1 rounded-full bg-slate-700/50 hover:bg-slate-700 transition-colors"
                             >
                                 {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                             </motion.button>
@@ -64,7 +64,7 @@ const SmartBanner = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleClose}
-                                className="p-1 rounded-full bg-gray-700/50 hover:bg-red-500/70 transition-colors"
+                                className="p-1 rounded-full bg-slate-700/50 hover:bg-red-500/70 transition-colors"
                             >
                                 <X size={18} />
                             </motion.button>
@@ -81,8 +81,8 @@ const SmartBanner = () => {
                                 transition={{ duration: 0.3 }}
                                 className="overflow-hidden"
                             >
-                                <div className="p-4 pt-2">
-                                    <p className="text-gray-400 mb-4 text-sm">
+                                <div className="p-3 pt-1.5">
+                                    <p className="text-slate-400 mb-3 text-sm">
                                         {subtitle}
                                     </p>
 
@@ -90,12 +90,12 @@ const SmartBanner = () => {
                                         {options.map((option, index) => (
                                             <motion.div
                                                 id={`option-${index}`}
-                                                className="flex flex-col border border-gray-700/50 bg-gray-800/30 rounded-lg p-4 transition-all hover:bg-gray-800/50"
+                                                className="flex flex-col border border-slate-700/50 bg-slate-800/30 rounded-lg p-3 transition-all hover:bg-slate-800/50"
                                                 key={index}
                                                 whileHover={{ scale: 1.02, y: -2 }}
                                                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                                             >
-                                                <div className="flex items-start gap-3 mb-3">
+                                                <div className="flex items-start gap-2 mb-2">
                                                     {option.imageUrl ? (
                                                         <div className="shrink-0">
                                                             <Image
@@ -113,7 +113,7 @@ const SmartBanner = () => {
                                                     )}
                                                     <div>
                                                         <h3 className="font-medium text-sm mb-1">{option.title}</h3>
-                                                        <p className="text-gray-400 text-xs">
+                                                        <p className="text-slate-400 text-xs">
                                                             {option.description}
                                                         </p>
                                                     </div>

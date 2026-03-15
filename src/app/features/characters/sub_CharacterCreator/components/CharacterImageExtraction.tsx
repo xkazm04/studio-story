@@ -101,7 +101,7 @@ export function CharacterImageExtraction({
         className={cn(
           'w-full py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300',
           !selectedFile || isExtracting
-            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+            ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
             : 'bg-purple-600 text-white hover:bg-purple-700 shadow-lg hover:shadow-purple-600/20'
         )}
       >
@@ -118,7 +118,7 @@ export function CharacterImageExtraction({
         )}
       </motion.button>
 
-      <p className="text-xs text-gray-500 text-center">
+      <p className="text-sm text-slate-400 text-center">
         AI will analyze the image and fill in the appearance fields below
       </p>
     </div>

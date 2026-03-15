@@ -140,7 +140,7 @@ const SliderControl: React.FC<SliderControlProps> = ({
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between text-sm">
         <span className="text-slate-400">{label}</span>
         <span className="text-slate-300 font-mono">
           {value.toFixed(step < 1 ? 1 : 0)}
@@ -263,7 +263,7 @@ const LevelsControls: React.FC<LayerControlsProps> = ({ layer, onUpdate }) => {
 
   return (
     <div className="space-y-3">
-      <div className="text-xs text-slate-500 mb-2">Input Levels</div>
+      <div className="text-sm text-slate-400 mb-2">Input Levels</div>
       <SliderControl
         label="Black Point"
         value={params.inputBlack}
@@ -298,7 +298,7 @@ const LevelsControls: React.FC<LayerControlsProps> = ({ layer, onUpdate }) => {
           })
         }
       />
-      <div className="text-xs text-slate-500 mt-4 mb-2">Output Levels</div>
+      <div className="text-sm text-slate-400 mt-4 mb-2">Output Levels</div>
       <SliderControl
         label="Black"
         value={params.outputBlack}
@@ -577,7 +577,7 @@ const GrainControls: React.FC<LayerControlsProps> = ({ layer, onUpdate }) => {
           }
           className="rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
         />
-        <span className="text-xs text-slate-400">Monochromatic</span>
+        <span className="text-sm text-slate-400">Monochromatic</span>
       </label>
     </div>
   );
@@ -653,7 +653,7 @@ const LayerItem: React.FC<LayerItemProps> = ({
         return <GrainControls layer={layer} onUpdate={onUpdate} />;
       default:
         return (
-          <div className="text-xs text-slate-500 text-center py-2">
+          <div className="text-sm text-slate-400 text-center py-2">
             Controls not implemented for this adjustment type
           </div>
         );
@@ -678,7 +678,7 @@ const LayerItem: React.FC<LayerItemProps> = ({
         className="flex items-center gap-2 p-2 cursor-pointer"
         onClick={onSelect}
       >
-        <div className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-400">
+        <div className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-400">
           <GripVertical className="w-4 h-4" />
         </div>
 
@@ -703,7 +703,7 @@ const LayerItem: React.FC<LayerItemProps> = ({
         <span
           className={cn(
             'flex-1 text-sm truncate',
-            layer.visible ? 'text-slate-200' : 'text-slate-500'
+            layer.visible ? 'text-slate-200' : 'text-slate-400'
           )}
         >
           {layer.name}
@@ -775,11 +775,11 @@ const LayerItem: React.FC<LayerItemProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-slate-400">Blend Mode</label>
+                <label className="text-sm text-slate-400">Blend Mode</label>
                 <select
                   value={layer.blendMode}
                   onChange={(e) => onUpdate({ blendMode: e.target.value as BlendMode })}
-                  className="w-full px-2 py-1.5 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1.5 text-sm bg-slate-700 border border-slate-600 rounded text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   {BLEND_MODES.map((mode) => (
                     <option key={mode.value} value={mode.value}>
@@ -839,7 +839,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
         <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-slate-400" />
           <span className="text-sm font-medium text-slate-200">Adjustments</span>
-          <span className="text-xs text-slate-500">({layers.length})</span>
+          <span className="text-sm text-slate-400">({layers.length})</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -856,7 +856,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowAddMenu(!showAddMenu)}
-              className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
+              className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add
@@ -878,7 +878,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
                             expandedCategory === category.name ? null : category.name
                           )
                         }
-                        className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-400 hover:bg-slate-700/50"
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-400 hover:bg-slate-700/50"
                       >
                         {category.name}
                         <ChevronDown
@@ -906,7 +906,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
                                     onAddLayer(item.type);
                                     setShowAddMenu(false);
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-slate-700 transition-colors"
+                                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 transition-colors"
                                 >
                                   <Icon className="w-3.5 h-3.5 text-slate-400" />
                                   {item.label}
@@ -929,9 +929,9 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
       <div className="flex-1 overflow-y-auto p-2 space-y-2">
         {sortedLayers.length === 0 ? (
           <div className="text-center py-8">
-            <Layers className="w-8 h-8 mx-auto mb-2 text-slate-600" />
-            <p className="text-sm text-slate-500">No adjustments yet</p>
-            <p className="text-xs text-slate-600 mt-1">
+            <Layers className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+            <p className="text-sm text-slate-400">No adjustments yet</p>
+            <p className="text-sm text-slate-400 mt-1">
               Click &quot;Add&quot; to create your first adjustment layer
             </p>
           </div>

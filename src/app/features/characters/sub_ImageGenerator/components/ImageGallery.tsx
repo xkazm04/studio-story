@@ -37,17 +37,17 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     return (
       <div className="p-4 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-4">
-          <Images className="w-4 h-4 text-slate-500" />
+          <Images className="w-4 h-4 text-slate-400" />
           <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             image_gallery
           </h3>
-          <span className="font-mono text-[10px] text-slate-600">
+          <span className="font-mono text-sm text-slate-400">
             0/{maxImages}
           </span>
         </div>
         <div className="py-8 text-center">
-          <Images className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-          <span className="font-mono text-xs text-slate-500">
+          <Images className="w-10 h-10 text-slate-400 mx-auto mb-2" />
+          <span className="font-mono text-sm text-slate-400">
             // no_images_saved_yet
           </span>
         </div>
@@ -65,10 +65,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
               image_gallery
             </h3>
             <span className={cn(
-              'font-mono text-[10px] px-1.5 py-0.5 rounded',
+              'font-mono text-sm px-1.5 py-0.5 rounded',
               images.length >= maxImages
                 ? 'text-amber-400 bg-amber-500/10 border border-amber-500/20'
-                : 'text-slate-500'
+                : 'text-slate-400'
             )}>
               {images.length}/{maxImages}
             </span>
@@ -140,7 +140,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         </div>
 
         {images.length >= maxImages && (
-          <p className="mt-3 font-mono text-[10px] text-amber-400/80 text-center">
+          <p className="mt-3 font-mono text-sm text-amber-400/80 text-center">
             // gallery_full_delete_images_to_add_more
           </p>
         )}
@@ -186,7 +186,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                       onSetPrimary(selectedImage.id);
                       setSelectedImage(null);
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                                bg-amber-600 hover:bg-amber-500 text-white transition-all"
                   >
                     <Star className="w-3 h-3" />
@@ -198,7 +198,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                   download={`character-${selectedImage.id}.png`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                              bg-slate-700 hover:bg-slate-600 text-slate-200 transition-all"
                 >
                   <Download className="w-3 h-3" />
@@ -209,7 +209,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                     onDeleteImage(selectedImage.id);
                     setSelectedImage(null);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs uppercase tracking-wide
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm uppercase tracking-wide
                              bg-red-600/80 hover:bg-red-600 text-white transition-all"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -220,7 +220,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
               {/* Prompt display */}
               {selectedImage.prompt && (
                 <div className="absolute -bottom-16 left-0 right-0 p-2 bg-slate-900/80 rounded-lg border border-slate-700">
-                  <p className="font-mono text-[10px] text-slate-400 line-clamp-2">
+                  <p className="font-mono text-sm text-slate-400 line-clamp-2">
                     {selectedImage.prompt}
                   </p>
                 </div>

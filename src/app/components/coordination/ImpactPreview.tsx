@@ -175,7 +175,7 @@ function ImpactNodeCard({ node, isExpanded, onToggle }: ImpactNodeCardProps) {
               {node.entity.name || `${config.label} ${node.entity.id.slice(0, 8)}`}
             </span>
             {node.impactLevel === 'direct' && (
-              <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-red-500/20 text-red-400 border border-red-500/30">
+              <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-red-500/20 text-red-400 border border-red-500/30">
                 Direct
               </span>
             )}
@@ -188,7 +188,7 @@ function ImpactNodeCard({ node, isExpanded, onToggle }: ImpactNodeCardProps) {
 
         <ChevronDown
           className={clsx(
-            'w-4 h-4 text-slate-500 transition-transform',
+            'w-4 h-4 text-slate-400 transition-transform',
             isExpanded && 'rotate-180'
           )}
         />
@@ -203,7 +203,7 @@ function ImpactNodeCard({ node, isExpanded, onToggle }: ImpactNodeCardProps) {
             className="overflow-hidden"
           >
             <div className="px-3 pb-3 pt-0">
-              <div className="text-xs text-slate-500 mb-1.5">Dependency path:</div>
+              <div className="text-xs text-slate-400 mb-1.5">Dependency path:</div>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {node.dependencyPath.map((id, idx) => (
                   <div key={idx} className="flex items-center gap-1.5">
@@ -211,7 +211,7 @@ function ImpactNodeCard({ node, isExpanded, onToggle }: ImpactNodeCardProps) {
                       {id.slice(0, 8)}...
                     </span>
                     {idx < node.dependencyPath.length - 1 && (
-                      <ChevronRight className="w-3 h-3 text-slate-600" />
+                      <ChevronRight className="w-3 h-3 text-slate-400" />
                     )}
                   </div>
                 ))}
@@ -245,7 +245,7 @@ function EntityBadge({ entity }: { entity: EntityReference }) {
           {entity.name || config.label}
         </div>
         {entity.id && entity.id !== '*' && (
-          <div className="text-xs text-slate-500 font-mono">
+          <div className="text-xs text-slate-400 font-mono">
             {entity.id.slice(0, 12)}...
           </div>
         )}
@@ -416,7 +416,7 @@ export function ImpactPreview({
         <div className="space-y-4">
           {/* Source Entity */}
           <div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">
+            <div className="text-xs text-slate-400 uppercase tracking-wider mb-2">
               Source Entity
             </div>
             <EntityBadge entity={impact.sourceEntity} />
@@ -427,7 +427,7 @@ export function ImpactPreview({
 
           {/* Group Toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">Group by:</span>
+            <span className="text-xs text-slate-400">Group by:</span>
             <div className="flex rounded-lg overflow-hidden border border-slate-700/50">
               <button
                 onClick={() => setGroupBy('type')}
@@ -505,7 +505,7 @@ export function ImpactPreview({
               <div className="text-slate-300 font-medium">
                 No entities will be affected
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-slate-400">
                 This change is isolated and won&apos;t impact other parts of your
                 story
               </div>

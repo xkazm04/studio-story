@@ -30,13 +30,17 @@ import {
   Eye,
   EyeOff,
   BarChart2,
+  Zap,
+  TrendingDown,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, SEMANTIC_COLORS, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { Button } from '@/app/components/UI/Button';
 import { TokenBudget } from './TokenBudget';
 import {
   relevanceScorer,
   contextCompressor,
+  differentialEngine,
   type ContextElement,
   type ScoredContext,
   type ContextType,
@@ -46,6 +50,7 @@ import {
   type CompressionLevel,
   type ScoringConfig,
   type CompressedContext,
+  type DiffStats,
 } from '@/lib/context';
 
 // ============================================================================
@@ -57,6 +62,8 @@ interface ContextBuilderProps {
   focusSceneId?: string;
   focusCharacterIds?: string[];
   currentContent?: string;
+  /** Session ID for differential context tracking. Enables delta mode when provided. */
+  sessionId?: string;
   onContextGenerated?: (context: CompressedContext) => void;
   className?: string;
 }
@@ -94,11 +101,11 @@ const TYPE_LABELS: Record<ContextType, string> = {
 };
 
 const RELEVANCE_COLORS: Record<RelevanceLevel, { text: string; bg: string; border: string }> = {
-  critical: { text: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30' },
-  high: { text: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30' },
-  medium: { text: 'text-emerald-400', bg: 'bg-emerald-500/20', border: 'border-emerald-500/30' },
-  low: { text: 'text-blue-400', bg: 'bg-blue-500/20', border: 'border-blue-500/30' },
-  minimal: { text: 'text-slate-500', bg: 'bg-slate-500/20', border: 'border-slate-500/30' },
+  critical: { text: SEMANTIC_COLORS.danger.text, bg: SEMANTIC_COLORS.danger.bg, border: SEMANTIC_COLORS.danger.border },
+  high: { text: SEMANTIC_COLORS.warning.text, bg: SEMANTIC_COLORS.warning.bg, border: SEMANTIC_COLORS.warning.border },
+  medium: { text: SEMANTIC_COLORS.success.text, bg: SEMANTIC_COLORS.success.bg, border: SEMANTIC_COLORS.success.border },
+  low: { text: SEMANTIC_COLORS.accent.text, bg: SEMANTIC_COLORS.accent.bg, border: SEMANTIC_COLORS.accent.border },
+  minimal: { text: 'text-slate-400', bg: 'bg-slate-500/15', border: 'border-slate-500/30' },
 };
 
 // ============================================================================
@@ -126,9 +133,8 @@ function ContextElementCard({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
+      {...FM_VARIANTS.fadeIn}
+      transition={FM_TRANSITION.normal}
       className={cn(
         'rounded-lg border transition-all',
         isSelected ? `${colors.border} ${colors.bg}` : 'border-slate-700 bg-slate-800/50',
@@ -156,21 +162,21 @@ function ContextElementCard({
               {TYPE_ICONS[element.type]}
             </span>
             <div className="flex-1 min-w-0">
-              <h4 className="text-xs font-medium text-slate-200 truncate">{element.name}</h4>
+              <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{element.name}</h4>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[9px] text-slate-500">{TYPE_LABELS[element.type]}</span>
-                <span className="text-[9px] text-slate-600">|</span>
-                <span className={cn('text-[9px]', colors.text)}>
+                <span className="text-sm text-slate-400">{TYPE_LABELS[element.type]}</span>
+                <span className="text-sm text-slate-400">|</span>
+                <span className={cn('text-sm', colors.text)}>
                   {relevanceLevel} ({Math.round(score * 100)}%)
                 </span>
-                <span className="text-[9px] text-slate-600">|</span>
-                <span className="text-[9px] text-slate-500">{tokenEstimate} tokens</span>
+                <span className="text-sm text-slate-400">|</span>
+                <span className="text-sm text-slate-400">{tokenEstimate} tokens</span>
               </div>
             </div>
           </div>
 
           {/* Preview */}
-          <p className="text-[10px] text-slate-500 line-clamp-2 mt-1.5">
+          <p className="text-sm text-slate-400 line-clamp-2 mt-1">
             {element.content.slice(0, 150)}
             {element.content.length > 150 && '...'}
           </p>
@@ -178,7 +184,7 @@ function ContextElementCard({
           {/* Details Toggle */}
           <button
             onClick={onToggleDetails}
-            className="flex items-center gap-1 mt-2 text-[10px] text-slate-500 hover:text-slate-300"
+            className="flex items-center gap-1 mt-2 text-sm text-slate-400 hover:text-slate-300"
           >
             {showDetails ? (
               <ChevronDown className="w-3 h-3" />
@@ -192,25 +198,24 @@ function ContextElementCard({
           <AnimatePresence>
             {showDetails && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="mt-2 pt-2 border-t border-slate-700/50 space-y-1">
                   {relevanceScorer.getFactorBreakdown(factors).map(({ label, value, weight }) => (
                     <div key={label} className="flex items-center gap-2">
-                      <span className="text-[9px] text-slate-500 w-20">{label}</span>
+                      <span className="text-sm text-slate-400 w-20">{label}</span>
                       <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-purple-500 rounded-full"
                           style={{ width: `${value * 100}%` }}
                         />
                       </div>
-                      <span className="text-[9px] text-slate-500 w-8 text-right">
+                      <span className="text-sm text-slate-400 w-8 text-right">
                         {Math.round(value * 100)}%
                       </span>
-                      <span className="text-[8px] text-slate-600 w-6">
+                      <span className="text-[8px] text-slate-400 w-6">
                         x{weight.toFixed(2)}
                       </span>
                     </div>
@@ -234,6 +239,7 @@ export function ContextBuilder({
   focusSceneId,
   focusCharacterIds,
   currentContent,
+  sessionId,
   onContextGenerated,
   className,
 }: ContextBuilderProps) {
@@ -246,6 +252,10 @@ export function ContextBuilder({
   const [typeFilter, setTypeFilter] = useState<ContextType | 'all'>('all');
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showSelectionControls, setShowSelectionControls] = useState(false);
+  const [diffStats, setDiffStats] = useState<DiffStats | null>(null);
+  const [diffEnabled, setDiffEnabled] = useState(!!sessionId);
 
   // Scoring config
   const scoringConfig: ScoringConfig = useMemo(
@@ -284,11 +294,25 @@ export function ContextBuilder({
     return scoredElements.filter(scored => selectedIds.has(scored.element.id));
   }, [scoredElements, selectedIds]);
 
-  // Compress selected context
+  // Compress selected context (with optional differential mode)
   const compressedContext = useMemo(() => {
     if (selectedElements.length === 0) return null;
 
     const selectedContextElements = selectedElements.map(s => s.element);
+
+    // Differential mode: use the diff engine when a session is active
+    if (diffEnabled && sessionId) {
+      const diffResult = differentialEngine.computeDiff(sessionId, selectedContextElements, {
+        tokenBudget: budget,
+        compressionLevel,
+        scoringConfig,
+      });
+      setDiffStats(diffResult.stats);
+      return diffResult.compressed;
+    }
+
+    // Batch mode: standard full compression
+    setDiffStats(null);
     return contextCompressor.compress(selectedContextElements, {
       tokenBudget: budget,
       compressionLevel,
@@ -296,7 +320,7 @@ export function ContextBuilder({
       preserveRelationships: true,
       scoringConfig,
     });
-  }, [selectedElements, budget, compressionLevel, scoringConfig]);
+  }, [selectedElements, budget, compressionLevel, scoringConfig, diffEnabled, sessionId]);
 
   // Calculate current usage
   const usage: BudgetUsage = useMemo(() => {
@@ -402,85 +426,158 @@ export function ContextBuilder({
           onCompressionChange={setCompressionLevel}
         />
 
-        {/* Search and Filter */}
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search context..."
-              className={cn(
-                'w-full pl-8 pr-3 py-1.5 text-xs rounded-md',
-                'bg-slate-900/50 border border-slate-700',
-                'text-slate-200 placeholder:text-slate-600',
-                'focus:outline-none focus:ring-1 focus:ring-purple-500/50'
-              )}
-            />
-          </div>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as ContextType | 'all')}
+        {/* Search — always visible */}
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search context..."
             className={cn(
-              'px-2 py-1.5 text-xs rounded-md',
+              'w-full pl-8 pr-3 py-1.5 text-sm rounded-md',
               'bg-slate-900/50 border border-slate-700',
-              'text-slate-200',
+              'text-slate-200 placeholder:text-slate-400',
               'focus:outline-none focus:ring-1 focus:ring-purple-500/50'
             )}
-          >
-            <option value="all">All Types</option>
-            {availableTypes.map(type => (
-              <option key={type} value={type}>{TYPE_LABELS[type]}</option>
-            ))}
-          </select>
+          />
         </div>
 
-        {/* Selection Controls */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-slate-500">Select:</span>
+        {/* Disclosure toggles + count */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowAdvancedFilters(prev => !prev)}
+            className={cn(
+              'flex items-center gap-1.5 px-2 py-1 text-sm rounded-md transition-colors',
+              showAdvancedFilters
+                ? cn(SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text)
+                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+            )}
+          >
+            <Filter className="w-3 h-3" />
+            Filters
+            {typeFilter !== 'all' && (
+              <span className={cn('px-1.5 py-0.5 text-[10px] rounded-full font-medium', SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text)}>1</span>
+            )}
+          </button>
+          <button
+            onClick={() => setShowSelectionControls(prev => !prev)}
+            className={cn(
+              'flex items-center gap-1.5 px-2 py-1 text-sm rounded-md transition-colors',
+              showSelectionControls
+                ? cn(SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text)
+                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+            )}
+          >
+            <Check className="w-3 h-3" />
+            Selection
+          </button>
+          {sessionId && (
             <button
-              onClick={selectAll}
-              className="px-1.5 py-0.5 text-[9px] text-slate-400 hover:text-purple-400"
+              onClick={() => setDiffEnabled(prev => !prev)}
+              className={cn(
+                'flex items-center gap-1.5 px-2 py-1 text-sm rounded-md transition-colors',
+                diffEnabled
+                  ? 'bg-amber-500/15 text-amber-400'
+                  : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
+              )}
             >
-              All
+              <Zap className="w-3 h-3" />
+              Diff
             </button>
-            <span className="text-slate-600">/</span>
-            <button
-              onClick={selectNone}
-              className="px-1.5 py-0.5 text-[9px] text-slate-400 hover:text-purple-400"
-            >
-              None
-            </button>
-            <span className="text-slate-600">|</span>
-            <button
-              onClick={() => selectByRelevance('critical')}
-              className="px-1.5 py-0.5 text-[9px] text-red-400 hover:text-red-300"
-            >
-              Critical
-            </button>
-            <button
-              onClick={() => selectByRelevance('high')}
-              className="px-1.5 py-0.5 text-[9px] text-amber-400 hover:text-amber-300"
-            >
-              High
-            </button>
-          </div>
-          <span className="text-[10px] text-slate-500">
+          )}
+          <span className="ml-auto text-sm text-slate-400">
             {selectedIds.size} of {scoredElements.length} selected
           </span>
         </div>
+
+        {/* Advanced Filters — collapsed */}
+        <AnimatePresence>
+          {showAdvancedFilters && (
+            <motion.div
+              {...FM_VARIANTS.collapse}
+              transition={FM_TRANSITION.slow}
+              className="overflow-hidden"
+            >
+              <div className="flex flex-wrap gap-1.5 pt-1 pb-2 border-t border-slate-800/50">
+                <button
+                  onClick={() => setTypeFilter('all')}
+                  className={cn(
+                    'px-2 py-1 text-sm rounded-md transition-colors',
+                    typeFilter === 'all'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  )}
+                >
+                  All Types
+                </button>
+                {availableTypes.map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setTypeFilter(type)}
+                    className={cn(
+                      'flex items-center gap-1 px-2 py-1 text-sm rounded-md transition-colors',
+                      typeFilter === type
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                    )}
+                  >
+                    {TYPE_ICONS[type]}
+                    {TYPE_LABELS[type]}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Selection Controls — collapsed */}
+        <AnimatePresence>
+          {showSelectionControls && (
+            <motion.div
+              {...FM_VARIANTS.collapse}
+              transition={FM_TRANSITION.slow}
+              className="overflow-hidden"
+            >
+              <div className="flex items-center gap-1.5 pt-1 pb-2 border-t border-slate-800/50">
+                <button
+                  onClick={selectAll}
+                  className="px-2 py-1 text-sm rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-purple-400 transition-colors"
+                >
+                  All
+                </button>
+                <button
+                  onClick={selectNone}
+                  className="px-2 py-1 text-sm rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-purple-400 transition-colors"
+                >
+                  None
+                </button>
+                <button
+                  onClick={() => selectByRelevance('critical')}
+                  className={cn('px-2 py-1 text-sm rounded-md transition-colors', SEMANTIC_COLORS.danger.bg, SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.hover)}
+                >
+                  Critical
+                </button>
+                <button
+                  onClick={() => selectByRelevance('high')}
+                  className={cn('px-2 py-1 text-sm rounded-md transition-colors', SEMANTIC_COLORS.warning.bg, SEMANTIC_COLORS.warning.text, SEMANTIC_COLORS.warning.hover)}
+                >
+                  High
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Elements List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {filteredElements.length === 0 ? (
           <div className="text-center py-8">
-            <AlertCircle className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-            <p className="text-sm text-slate-500">No context elements found</p>
+            <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+            <p className="text-sm text-slate-400">No context elements found</p>
             {searchQuery && (
-              <p className="text-xs text-slate-600 mt-1">Try a different search term</p>
+              <p className="text-sm text-slate-400 mt-1">Try a different search term</p>
             )}
           </div>
         ) : (
@@ -499,6 +596,55 @@ export function ContextBuilder({
         )}
       </div>
 
+      {/* Differential Context Stats */}
+      {diffStats && diffStats.version > 1 && (
+        <div className="shrink-0 px-4 py-2 border-t border-slate-800 bg-slate-900/30">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            <span className={cn(TYPOGRAPHY.caption, 'text-amber-400 font-medium')}>
+              Differential Mode v{diffStats.version}
+            </span>
+          </div>
+          <div className="grid grid-cols-4 gap-2 text-center">
+            {diffStats.added > 0 && (
+              <div className="px-2 py-1 rounded bg-emerald-500/10">
+                <div className="text-sm font-mono text-emerald-400">+{diffStats.added}</div>
+                <div className="text-[10px] text-slate-400">added</div>
+              </div>
+            )}
+            {diffStats.modified > 0 && (
+              <div className="px-2 py-1 rounded bg-amber-500/10">
+                <div className="text-sm font-mono text-amber-400">{diffStats.modified}</div>
+                <div className="text-[10px] text-slate-400">modified</div>
+              </div>
+            )}
+            {diffStats.unchanged > 0 && (
+              <div className="px-2 py-1 rounded bg-slate-500/10">
+                <div className="text-sm font-mono text-slate-400">{diffStats.unchanged}</div>
+                <div className="text-[10px] text-slate-400">unchanged</div>
+              </div>
+            )}
+            {diffStats.removed > 0 && (
+              <div className="px-2 py-1 rounded bg-red-500/10">
+                <div className="text-sm font-mono text-red-400">-{diffStats.removed}</div>
+                <div className="text-[10px] text-slate-400">removed</div>
+              </div>
+            )}
+          </div>
+          {diffStats.tokenSavingsPercent > 0 && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <TrendingDown className="w-3 h-3 text-emerald-400" />
+              <span className="text-sm text-emerald-400 font-mono">
+                {diffStats.tokenSavingsPercent}% fewer tokens
+              </span>
+              <span className="text-sm text-slate-400">
+                ({diffStats.sentTokens} vs {diffStats.fullContextTokens} full)
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Preview Footer */}
       {compressedContext && (
         <div className="shrink-0 border-t border-slate-800">
@@ -508,19 +654,19 @@ export function ContextBuilder({
           >
             <div className="flex items-center gap-2">
               {showPreview ? (
-                <EyeOff className="w-4 h-4 text-slate-500" />
+                <EyeOff className="w-4 h-4 text-slate-400" />
               ) : (
-                <Eye className="w-4 h-4 text-slate-500" />
+                <Eye className="w-4 h-4 text-slate-400" />
               )}
-              <span className="text-xs text-slate-400">
+              <span className="text-sm text-slate-400">
                 {showPreview ? 'Hide' : 'Show'} Compressed Preview
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-emerald-400">
+              <span className={cn('text-sm', SEMANTIC_COLORS.success.text)}>
                 {compressedContext.compressedTokens} tokens
               </span>
-              <span className="text-[10px] text-slate-600">
+              <span className="text-sm text-slate-400">
                 ({Math.round((1 - compressedContext.compressionRatio) * 100)}% saved)
               </span>
             </div>
@@ -529,19 +675,18 @@ export function ContextBuilder({
           <AnimatePresence>
             {showPreview && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="p-3 border-t border-slate-700/50 max-h-48 overflow-y-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-slate-300">Compressed Context</span>
+                    <span className={TYPOGRAPHY.h3}>Compressed Context</span>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={copyContext}
-                      className="h-6 text-[10px]"
+                      className="h-6 text-sm"
                     >
                       {copied ? (
                         <Check className="w-3 h-3 mr-1 text-emerald-400" />
@@ -551,7 +696,7 @@ export function ContextBuilder({
                       {copied ? 'Copied!' : 'Copy'}
                     </Button>
                   </div>
-                  <pre className="text-[10px] text-slate-400 whitespace-pre-wrap font-mono bg-slate-900/50 p-2 rounded">
+                  <pre className="text-sm text-slate-400 whitespace-pre-wrap font-mono bg-slate-900/50 p-2 rounded">
                     {compressedContext.content}
                   </pre>
                 </div>

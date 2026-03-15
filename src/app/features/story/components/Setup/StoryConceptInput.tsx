@@ -26,7 +26,7 @@ const StoryConceptInput = ({ column }: Props) => {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <LightbulbIcon size={18} className="text-yellow-500" />
-          <label htmlFor="concept" className="text-sm font-medium text-gray-100">
+          <label htmlFor="concept" className="text-sm font-medium text-slate-100">
             Concept
           </label>
         </div>

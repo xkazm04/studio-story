@@ -17,12 +17,10 @@ import {
   CheckCircle,
   Info,
   ArrowRight,
-  Lock,
-  Zap,
-  Clock,
   Target,
   Layers,
 } from 'lucide-react';
+import { DATA_VIZ, ChartContainer, ChartLegend, type LegendItem } from './dataVizTheme';
 import {
   type Dependency,
   type DependencyType,
@@ -80,7 +78,7 @@ function GraphNode({
     <motion.g
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: DATA_VIZ.animDuration * 0.5 }}
       style={{ cursor: 'pointer' }}
       onClick={onClick}
     >
@@ -115,7 +113,7 @@ function GraphNode({
         y={position.y - nodeSize / 2 + 8}
         textAnchor="middle"
         dominantBaseline="central"
-        className="fill-slate-300 text-[10px] font-medium"
+        className="fill-slate-300 text-sm font-medium"
         style={{ fontSize: `${10 * scale}px` }}
       >
         {beat.order}
@@ -129,7 +127,7 @@ function GraphNode({
         height={20}
       >
         <div
-          className="text-center text-[10px] text-slate-200 truncate px-1"
+          className="text-center text-sm text-slate-200 truncate px-1"
           title={beat.title}
           style={{ fontSize: `${10 * scale}px` }}
         >
@@ -412,7 +410,7 @@ export default function DependencyGraph({
 
   if (beats.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-slate-500 text-sm">
+      <div className="flex items-center justify-center h-full text-slate-400 text-sm">
         No beats to display
       </div>
     );
@@ -422,7 +420,9 @@ export default function DependencyGraph({
     <div
       ref={containerRef}
       className={cn(
-        'relative overflow-hidden bg-slate-900/50 rounded-lg border border-slate-700/50',
+        'relative overflow-hidden rounded-lg border',
+        DATA_VIZ.containerBg,
+        DATA_VIZ.containerBorder,
         compact ? 'h-48' : 'h-96'
       )}
       onMouseDown={handleMouseDown}
@@ -434,21 +434,21 @@ export default function DependencyGraph({
       <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
         <button
           onClick={handleZoomIn}
-          className="p-1.5 rounded bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white transition-colors"
+          className={cn('p-1.5 rounded transition-colors', DATA_VIZ.controlBg, DATA_VIZ.controlBorder, DATA_VIZ.controlText)}
           title="Zoom in"
         >
           <ZoomIn className="w-4 h-4" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-1.5 rounded bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white transition-colors"
+          className={cn('p-1.5 rounded transition-colors', DATA_VIZ.controlBg, DATA_VIZ.controlBorder, DATA_VIZ.controlText)}
           title="Zoom out"
         >
           <ZoomOut className="w-4 h-4" />
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 rounded bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white transition-colors"
+          className={cn('p-1.5 rounded transition-colors', DATA_VIZ.controlBg, DATA_VIZ.controlBorder, DATA_VIZ.controlText)}
           title="Reset view"
         >
           <Maximize2 className="w-4 h-4" />
@@ -456,8 +456,10 @@ export default function DependencyGraph({
         <button
           onClick={() => setShowLegend(!showLegend)}
           className={cn(
-            'p-1.5 rounded bg-slate-800/80 border border-slate-700 transition-colors',
-            showLegend ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
+            'p-1.5 rounded transition-colors',
+            DATA_VIZ.controlBg,
+            DATA_VIZ.controlBorder,
+            showLegend ? 'text-cyan-400' : DATA_VIZ.controlText
           )}
           title="Toggle legend"
         >
@@ -472,25 +474,19 @@ export default function DependencyGraph({
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
-            className="absolute top-2 left-2 z-10 bg-slate-800/90 border border-slate-700 rounded-lg p-2 text-xs"
+            className={cn('absolute top-2 left-2 z-10 rounded-lg border p-2 text-sm', DATA_VIZ.legendBg, DATA_VIZ.legendBorder)}
           >
-            <div className="font-medium text-slate-200 mb-2">Dependency Types</div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-0.5 bg-red-500" />
-                <span className="text-slate-400">Sequential</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-0.5 bg-amber-500" />
-                <span className="text-slate-400">Parallel</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-0.5 bg-green-500" />
-                <span className="text-slate-400">Causal</span>
-              </div>
-            </div>
+            <div className={cn(DATA_VIZ.legendTitle, 'font-medium mb-2')}>Dependency Types</div>
+            <ChartLegend
+              items={[
+                { color: '#ef4444', label: 'Sequential', isLine: true },
+                { color: '#f59e0b', label: 'Parallel', isLine: true },
+                { color: '#22c55e', label: 'Causal', isLine: true },
+              ]}
+              className="flex-col items-start"
+            />
             <div className="border-t border-slate-700 mt-2 pt-2">
-              <div className="flex items-center gap-2 text-slate-500">
+              <div className={cn('flex items-center gap-2', DATA_VIZ.legendText)}>
                 <Move className="w-3 h-3" />
                 Alt+drag to pan
               </div>
@@ -500,12 +496,12 @@ export default function DependencyGraph({
       </AnimatePresence>
 
       {/* Stats overlay */}
-      <div className="absolute bottom-2 left-2 z-10 flex items-center gap-3 text-xs">
-        <div className="flex items-center gap-1 text-slate-400">
+      <div className={cn('absolute bottom-2 left-2 z-10 flex items-center gap-3', DATA_VIZ.statsText)}>
+        <div className="flex items-center gap-1">
           <Layers className="w-3 h-3" />
           {beats.length} beats
         </div>
-        <div className="flex items-center gap-1 text-slate-400">
+        <div className="flex items-center gap-1">
           <ArrowRight className="w-3 h-3" />
           {dependencies.length} dependencies
         </div>
@@ -607,7 +603,7 @@ export function CausalityChainDisplay({
 }) {
   if (chains.length === 0) {
     return (
-      <div className="text-xs text-slate-500 italic">No causality chains detected</div>
+      <div className="text-sm text-slate-400 italic">No causality chains detected</div>
     );
   }
 
@@ -622,19 +618,19 @@ export function CausalityChainDisplay({
         >
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-3 h-3 text-amber-400" />
-            <span className="text-xs font-medium text-slate-200">
+            <span className="text-sm font-medium text-slate-200">
               {chain.name} ({chain.beats.length} beats)
             </span>
             <span
               className={cn(
-                'text-xs px-1.5 py-0.5 rounded',
+                'text-sm px-1.5 py-0.5 rounded',
                 chain.isComplete ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'
               )}
             >
               {chain.isComplete ? 'Complete' : 'Incomplete'}
             </span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-slate-400 overflow-hidden">
+          <div className="flex items-center gap-1 text-sm text-slate-400 overflow-hidden">
             {chain.beats.slice(0, 4).map((beatId, i) => (
               <span key={beatId} className="flex items-center gap-1">
                 {i > 0 && <ArrowRight className="w-2 h-2" />}
@@ -644,13 +640,13 @@ export function CausalityChainDisplay({
               </span>
             ))}
             {chain.beats.length > 4 && (
-              <span className="text-slate-500">+{chain.beats.length - 4}</span>
+              <span className="text-slate-400">+{chain.beats.length - 4}</span>
             )}
           </div>
         </button>
       ))}
       {chains.length > 5 && (
-        <div className="text-xs text-slate-500">+{chains.length - 5} more chains</div>
+        <div className="text-sm text-slate-400">+{chains.length - 5} more chains</div>
       )}
     </div>
   );

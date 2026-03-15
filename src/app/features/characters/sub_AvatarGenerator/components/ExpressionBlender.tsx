@@ -203,7 +203,7 @@ const BlendSlider: React.FC<BlendSliderProps> = ({
         <span className={component.expression.color}>
           {component.expression.icon}
         </span>
-        <span className="font-mono text-xs uppercase text-slate-300">
+        <span className="font-mono text-sm uppercase text-slate-300">
           {component.expression.label}
         </span>
       </div>
@@ -224,7 +224,7 @@ const BlendSlider: React.FC<BlendSliderProps> = ({
             disabled && 'opacity-50 cursor-not-allowed'
           )}
         />
-        <span className="font-mono text-xs text-cyan-400 w-10 text-right">
+        <span className="font-mono text-sm text-cyan-400 w-10 text-right">
           {component.weight}%
         </span>
       </div>
@@ -273,7 +273,7 @@ const ExpressionPicker: React.FC<ExpressionPickerProps> = ({
           )}
         >
           <span className={exp.color}>{exp.icon}</span>
-          <span className="font-mono text-[9px] uppercase text-slate-400">
+          <span className="font-mono text-sm uppercase text-slate-400">
             {exp.label}
           </span>
         </button>
@@ -381,7 +381,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
             expression_blender
           </h3>
           {components.length >= 2 && (
-            <span className="px-2 py-0.5 bg-purple-500/20 rounded text-purple-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-purple-500/20 rounded text-purple-400 font-mono text-sm">
               {components.length} mixed
             </span>
           )}
@@ -392,7 +392,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
             onClick={resetBlend}
             disabled={disabled}
             className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800/40
-                       text-slate-500 hover:text-slate-300 transition-colors text-xs font-mono
+                       text-slate-400 hover:text-slate-300 transition-colors text-sm font-mono
                        disabled:opacity-50"
           >
             <RefreshCw size={12} />
@@ -403,7 +403,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
 
       {/* Presets */}
       <div className="mb-4">
-        <span className="font-mono text-[10px] text-slate-500 uppercase mb-2 block">
+        <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
           blend_presets
         </span>
         <div className="flex flex-wrap gap-2">
@@ -413,7 +413,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
               onClick={() => applyPreset(preset)}
               disabled={disabled}
               className={cn(
-                'px-3 py-1.5 rounded-lg border font-mono text-xs transition-all',
+                'px-3 py-1.5 rounded-lg border font-mono text-sm transition-all',
                 'bg-slate-800/40 border-slate-700/50 text-slate-300',
                 'hover:border-purple-500/40 hover:bg-purple-500/10',
                 disabled && 'opacity-50 cursor-not-allowed'
@@ -446,12 +446,12 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
             {showPicker ? (
               <div className="p-3 bg-slate-800/60 border border-cyan-500/30 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-xs text-slate-400 uppercase">
+                  <span className="font-mono text-sm text-slate-400 uppercase">
                     add expression
                   </span>
                   <button
                     onClick={() => setShowPicker(false)}
-                    className="p-1 text-slate-500 hover:text-slate-300"
+                    className="p-1 text-slate-400 hover:text-slate-300"
                   >
                     <X size={14} />
                   </button>
@@ -469,7 +469,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
                 className={cn(
                   'w-full flex items-center justify-center gap-2 p-3',
                   'border border-dashed border-slate-600 rounded-lg',
-                  'font-mono text-xs text-slate-500',
+                  'font-mono text-sm text-slate-400',
                   'hover:border-cyan-500/50 hover:text-cyan-400 hover:bg-cyan-500/5',
                   'transition-all disabled:opacity-50'
                 )}
@@ -486,11 +486,11 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
       {components.length >= 2 && (
         <div className="mb-4 p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-xs text-slate-500 uppercase flex items-center gap-1">
+            <span className="font-mono text-sm text-slate-400 uppercase flex items-center gap-1">
               <Sliders size={12} />
               blend_intensity
             </span>
-            <span className="font-mono text-xs text-cyan-400">{blendIntensity}%</span>
+            <span className="font-mono text-sm text-cyan-400">{blendIntensity}%</span>
           </div>
           <input
             type="range"
@@ -510,7 +510,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
       {/* Blend Name */}
       {components.length >= 2 && (
         <div className="mb-4">
-          <label className="font-mono text-[10px] text-slate-500 uppercase mb-1 block">
+          <label className="font-mono text-sm text-slate-400 uppercase mb-1 block">
             blend_name (optional)
           </label>
           <input
@@ -520,7 +520,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
             placeholder="e.g., Bittersweet Smile"
             disabled={disabled}
             className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                        disabled:opacity-50"
           />
@@ -534,7 +534,7 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
             <AlertTriangle size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
               {compatibilityWarnings.map((warning, i) => (
-                <p key={i} className="font-mono text-[10px] text-amber-400/80">
+                <p key={i} className="font-mono text-sm text-amber-400/80">
                   {warning}
                 </p>
               ))}
@@ -547,19 +547,19 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
       {components.length >= 2 && (
         <div className="mb-4 p-3 bg-slate-800/40 rounded border border-slate-700/30">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-[10px] text-slate-500 uppercase flex items-center gap-1">
+            <span className="font-mono text-sm text-slate-400 uppercase flex items-center gap-1">
               <Eye size={10} />
               combined_prompt
             </span>
             <button
               onClick={copyPrompt}
-              className="p-1 text-slate-500 hover:text-cyan-400 transition-colors"
+              className="p-1 text-slate-400 hover:text-cyan-400 transition-colors"
               title="Copy to clipboard"
             >
               <Copy size={12} />
             </button>
           </div>
-          <p className="font-mono text-[10px] text-slate-400 leading-relaxed">
+          <p className="font-mono text-sm text-slate-400 leading-relaxed">
             {combinedPrompt}
           </p>
         </div>
@@ -585,10 +585,10 @@ const ExpressionBlender: React.FC<ExpressionBlenderProps> = ({
 
       {/* Empty State */}
       {components.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-8 text-slate-400">
           <Blend size={32} className="mb-3 opacity-50" />
-          <p className="font-mono text-xs mb-2">No expressions selected</p>
-          <p className="font-mono text-[10px] text-center max-w-xs">
+          <p className="font-mono text-sm mb-2">No expressions selected</p>
+          <p className="font-mono text-sm text-center max-w-xs">
             Add 2-3 expressions to blend them into unique mixed emotions
           </p>
         </div>

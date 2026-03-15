@@ -52,7 +52,7 @@ export const HeatmapOverlay: React.FC<HeatmapOverlayProps> = ({
           exit={{ opacity: 0, y: -10 }}
           className="absolute top-4 right-4 bg-slate-900/90 border border-slate-800 rounded-lg p-3 pointer-events-auto"
         >
-          <div className="text-[10px] font-medium text-slate-400 mb-2">Traffic Heatmap</div>
+          <div className="text-sm font-medium text-slate-400 mb-2">Traffic Heatmap</div>
           <div className="flex items-center gap-2">
             <div className="flex h-2 rounded-full overflow-hidden">
               <div className="w-4 bg-blue-500/50" />
@@ -60,17 +60,17 @@ export const HeatmapOverlay: React.FC<HeatmapOverlayProps> = ({
               <div className="w-4 bg-yellow-500/80" />
               <div className="w-4 bg-red-500/90" />
             </div>
-            <div className="flex justify-between text-[9px] text-slate-500 gap-2">
+            <div className="flex justify-between text-sm text-slate-400 gap-2">
               <span>Low</span>
               <span>High</span>
             </div>
           </div>
           <div className="mt-2 pt-2 border-t border-slate-800">
-            <div className="flex justify-between text-[9px] text-slate-500">
+            <div className="flex justify-between text-sm text-slate-400">
               <span>Max visits:</span>
               <span className="text-slate-400">{heatmapData.maxVisits.toLocaleString()}</span>
             </div>
-            <div className="flex justify-between text-[9px] text-slate-500">
+            <div className="flex justify-between text-sm text-slate-400">
               <span>Min visits:</span>
               <span className="text-slate-400">{heatmapData.minVisits.toLocaleString()}</span>
             </div>
@@ -160,7 +160,7 @@ export const HeatmapNodeBadge: React.FC<{
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       className={cn(
-        'absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-medium text-white',
+        'absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-sm font-medium text-white',
         bgColor,
         className
       )}
@@ -223,10 +223,10 @@ export const HeatmapTooltip: React.FC<{
       }}
       className="bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg pointer-events-none z-50"
     >
-      <div className="text-xs text-slate-200 font-medium mb-1">
+      <div className="text-sm text-slate-200 font-medium mb-1">
         {nodeHeat.visits.toLocaleString()} visits
       </div>
-      <div className="text-[10px] text-slate-500">
+      <div className="text-sm text-slate-400">
         {percentage.toFixed(1)}% of max traffic
       </div>
       <HeatBar value={nodeHeat.visits} max={maxVisits} className="mt-1.5 w-24" />

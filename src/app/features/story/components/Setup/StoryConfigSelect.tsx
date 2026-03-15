@@ -3,6 +3,7 @@
 import { Select } from "@/app/components/UI/Select";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 
 const audienceOptions = [
     { value: "children-5-8", label: "Children (5-8)" },
@@ -121,7 +122,7 @@ const StoryConfigSelect = ({ type, column }: Props) => {
             transition={{ duration: 0.2 }}
             className="flex items-center justify-between mb-2">
             <button
-              className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              className={`text-sm text-slate-400 ${INTERACTIVE.ghost}`}
               onClick={() => setEditMode(true)}
             >
               {displayLabel}

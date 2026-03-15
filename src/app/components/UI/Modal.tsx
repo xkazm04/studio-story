@@ -168,10 +168,10 @@ export function Modal({
             {/* Header */}
             {(title || showCloseButton) && (
               <div
-                className="flex items-center justify-between px-4 py-3 border-b border-slate-800/70 flex-shrink-0"
+                className="flex items-center justify-between px-3 py-2 border-b border-slate-800/70 flex-shrink-0"
                 data-testid="modal-header"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   {icon && (
                     <div
                       className="p-1.5 bg-cyan-500/10 rounded-lg border border-cyan-500/30"
@@ -193,7 +193,7 @@ export function Modal({
                       </h2>
                       {subtitle && (
                         <p
-                          className="text-xs text-slate-400 mt-0.5"
+                          className="text-sm text-slate-400 mt-0.5"
                           data-testid="modal-subtitle"
                         >
                           {subtitle}
@@ -217,7 +217,7 @@ export function Modal({
 
             {/* Scrollable Content */}
             <div
-              className="flex-1 overflow-y-auto p-4 text-sm text-slate-200"
+              className="flex-1 overflow-y-auto p-3 text-sm text-slate-200"
               data-testid="modal-content"
             >
               {children}
@@ -226,7 +226,7 @@ export function Modal({
             {/* Footer */}
             {footer && (
               <div
-                className="flex items-center justify-between px-4 py-3 border-t border-slate-800/70 bg-slate-900/60 flex-shrink-0"
+                className="flex items-center justify-between px-3 py-2 border-t border-slate-800/70 bg-slate-900/60 flex-shrink-0"
                 data-testid="modal-footer"
               >
                 {footer}

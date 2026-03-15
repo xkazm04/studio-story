@@ -91,7 +91,7 @@ const LandingCard: React.FC<LandingCardProps> = ({
       </div>
       
       <div 
-        className={`absolute inset-0 bg-gray-900/95 backdrop-blur-xs z-30 flex flex-col transition-all duration-300 ease-in-out ${
+        className={`absolute inset-0 bg-slate-900/95 backdrop-blur-xs z-30 flex flex-col transition-all duration-300 ease-in-out ${
           showOverlay ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
         }`}
         style={{

@@ -113,7 +113,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors rounded',
+        'w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm transition-colors rounded',
         disabled && 'opacity-50 cursor-not-allowed',
         danger && !disabled && 'text-red-400 hover:bg-red-500/10',
         success && !disabled && 'text-emerald-400 hover:bg-emerald-500/10',
@@ -130,7 +130,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
       </span>
       <span className="flex-1">{label}</span>
       {shortcut && (
-        <kbd className="px-1 py-0.5 text-[9px] font-mono bg-slate-800 text-slate-500 rounded border border-slate-700">
+        <kbd className="px-1 py-0.5 text-sm font-mono bg-slate-800 text-slate-400 rounded border border-slate-700">
           {shortcut}
         </kbd>
       )}
@@ -238,27 +238,27 @@ export function GraphContextMenu({
             {/* Node Header */}
             {nodeData && (
               <div className="px-3 py-2 border-b border-slate-700/50">
-                <p className="text-xs font-medium text-slate-200 truncate max-w-40">
+                <p className="text-sm font-medium text-slate-200 truncate max-w-40">
                   {nodeData.label}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   {nodeData.isFirst && (
-                    <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/20 text-cyan-400 rounded">
+                    <span className="text-sm px-1.5 py-0.5 bg-cyan-500/20 text-cyan-400 rounded">
                       START
                     </span>
                   )}
                   {nodeData.isOrphaned && (
-                    <span className="text-[9px] px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded">
+                    <span className="text-sm px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded">
                       ORPHAN
                     </span>
                   )}
                   {nodeData.isDeadEnd && (
-                    <span className="text-[9px] px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded">
+                    <span className="text-sm px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded">
                       DEAD END
                     </span>
                   )}
                   {nodeData.choiceCount > 0 && (
-                    <span className="text-[9px] px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded">
+                    <span className="text-sm px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded">
                       {nodeData.choiceCount} choices
                     </span>
                   )}

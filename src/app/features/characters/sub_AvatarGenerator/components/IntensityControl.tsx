@@ -136,7 +136,7 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
   if (compact) {
     return (
       <div className="flex items-center gap-3">
-        <span className="font-mono text-[10px] uppercase text-slate-500 w-16">
+        <span className="font-mono text-sm uppercase text-slate-400 w-16">
           {label}
         </span>
         <div className="flex-1 relative">
@@ -157,7 +157,7 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
             )}
           />
         </div>
-        <span className={cn('font-mono text-xs w-8 text-right', currentLevel.color)}>
+        <span className={cn('font-mono text-sm w-8 text-right', currentLevel.color)}>
           {value}%
         </span>
       </div>
@@ -186,12 +186,12 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
       {/* Current Level Display */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className={cn('font-mono text-xs uppercase', currentLevel.color)}>
+          <span className={cn('font-mono text-sm uppercase', currentLevel.color)}>
             {currentLevel.label}
           </span>
         </div>
         {showDescription && (
-          <span className="font-mono text-[10px] text-slate-500">
+          <span className="font-mono text-sm text-slate-400">
             {currentLevel.description}
           </span>
         )}
@@ -271,8 +271,8 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
                   {level.icon}
                 </span>
                 <span className={cn(
-                  'font-mono text-[9px] uppercase',
-                  isActive ? 'text-cyan-400' : 'text-slate-500'
+                  'font-mono text-sm uppercase',
+                  isActive ? 'text-cyan-400' : 'text-slate-400'
                 )}>
                   {level.label}
                 </span>
@@ -290,7 +290,7 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
           className="flex items-center gap-2 mt-3 p-2 bg-amber-500/10 border border-amber-500/30 rounded"
         >
           <AlertTriangle size={14} className="text-amber-400 flex-shrink-0" />
-          <span className="font-mono text-[10px] text-amber-400/80">
+          <span className="font-mono text-sm text-amber-400/80">
             Extreme intensity may produce exaggerated results
           </span>
         </motion.div>
@@ -298,10 +298,10 @@ const IntensityControl: React.FC<IntensityControlProps> = ({
 
       {/* Prompt modifier preview */}
       <div className="mt-4 p-2 bg-slate-800/40 rounded border border-slate-700/30">
-        <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
           prompt_modifier
         </span>
-        <p className="font-mono text-[10px] text-slate-400">
+        <p className="font-mono text-sm text-slate-400">
           "{getIntensityPromptModifier(value)}"
         </p>
       </div>

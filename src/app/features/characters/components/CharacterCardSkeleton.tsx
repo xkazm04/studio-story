@@ -25,7 +25,7 @@ const CharacterCardSkeleton: React.FC<CharacterCardSkeletonProps> = ({ index = 0
         delay: index * 0.05,
         ease: [0.4, 0, 0.2, 1],
       }}
-      className="relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800"
+      className="relative bg-slate-900 rounded-lg overflow-hidden border border-slate-800"
       data-testid={`character-skeleton-${index}`}
     >
       {/* Shimmer effect overlay */}
@@ -44,19 +44,19 @@ const CharacterCardSkeleton: React.FC<CharacterCardSkeletonProps> = ({ index = 0
       </div>
 
       {/* Avatar Skeleton - matches aspect-square */}
-      <div className="aspect-square relative bg-gray-800">
+      <div className="aspect-square relative bg-slate-800">
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-gray-700 animate-pulse" />
+          <div className="w-16 h-16 rounded-full bg-slate-700 animate-pulse" />
         </div>
       </div>
 
       {/* Character Info Skeleton - matches p-4 */}
       <div className="p-4 space-y-2">
         {/* Name skeleton - matches h3 */}
-        <div className="h-5 bg-gray-800 rounded-md w-3/4 animate-pulse" />
+        <div className="h-5 bg-slate-800 rounded-md w-3/4 animate-pulse" />
 
         {/* Type badge skeleton - matches badge size */}
-        <div className="h-6 bg-gray-700 rounded w-20 animate-pulse" />
+        <div className="h-6 bg-slate-700 rounded w-20 animate-pulse" />
       </div>
     </motion.div>
   );

@@ -43,7 +43,7 @@ const RelationshipCard: React.FC<RelationshipCardProps> = ({
       case 'complicated':
         return <Zap size={16} className="text-yellow-500" />;
       default:
-        return <Minus size={16} className="text-gray-500" />;
+        return <Minus size={16} className="text-slate-400" />;
     }
   };
 
@@ -56,7 +56,7 @@ const RelationshipCard: React.FC<RelationshipCardProps> = ({
       case 'complicated':
         return 'border-yellow-500/30 bg-yellow-500/5';
       default:
-        return 'border-gray-700 bg-gray-800/30';
+        return 'border-slate-700 bg-slate-800/30';
     }
   };
 
@@ -91,19 +91,19 @@ const RelationshipCard: React.FC<RelationshipCardProps> = ({
 
       {/* Event Date */}
       {relationship.event_date && (
-        <div className="flex items-center gap-2 mb-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2 mb-2 text-sm text-slate-400">
           <Calendar size={12} />
           {relationship.event_date}
         </div>
       )}
 
       {/* Description */}
-      <p className="text-sm text-gray-300">{relationship.description}</p>
+      <p className="text-sm text-slate-300">{relationship.description}</p>
 
       {/* Relationship Type Badge */}
       {relationship.relationship_type && (
         <div className="mt-3">
-          <span className="text-xs px-2 py-1 bg-gray-800 text-gray-400 rounded capitalize">
+          <span className="text-sm px-2 py-1 bg-slate-800 text-slate-400 rounded capitalize">
             {relationship.relationship_type}
           </span>
         </div>

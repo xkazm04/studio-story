@@ -153,23 +153,23 @@ const NormCard: React.FC<{
         <div>
           <div className="flex items-center gap-2">
             <h4 className="font-medium text-white text-sm">{norm.name}</h4>
-            <span className={cn('text-[10px] px-1.5 py-0.5 rounded', severityConfig.color)}>
+            <span className={cn('text-sm px-1.5 py-0.5 rounded', severityConfig.color)}>
               {severityConfig.label}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">{norm.description}</p>
+          <p className="text-sm text-slate-400 mt-1">{norm.description}</p>
           {norm.punishment && (
-            <p className="text-[10px] text-red-400 mt-1">
+            <p className="text-sm text-red-400 mt-1">
               Punishment: {norm.punishment}
             </p>
           )}
         </div>
         {!readOnly && (
           <div className="flex gap-1">
-            <button onClick={onEdit} className="p-1 text-slate-500 hover:text-cyan-400">
+            <button onClick={onEdit} className="p-1 text-slate-400 hover:text-cyan-400">
               <ScrollText size={12} />
             </button>
-            <button onClick={onDelete} className="p-1 text-slate-500 hover:text-red-400">
+            <button onClick={onDelete} className="p-1 text-slate-400 hover:text-red-400">
               <AlertTriangle size={12} />
             </button>
           </div>
@@ -197,18 +197,18 @@ const TabooCard: React.FC<{
           <div className="flex items-center gap-2">
             <AlertTriangle className="text-red-400" size={14} />
             <h4 className="font-medium text-white text-sm">{taboo.name}</h4>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 capitalize">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 capitalize">
               {taboo.severity}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">{taboo.description}</p>
+          <p className="text-sm text-slate-400 mt-1">{taboo.description}</p>
           {taboo.origin && (
-            <p className="text-[10px] text-slate-500 mt-1 italic">Origin: {taboo.origin}</p>
+            <p className="text-sm text-slate-400 mt-1 italic">Origin: {taboo.origin}</p>
           )}
-          <p className="text-[10px] text-red-400 mt-1">Punishment: {taboo.punishment}</p>
+          <p className="text-sm text-red-400 mt-1">Punishment: {taboo.punishment}</p>
         </div>
         {!readOnly && (
-          <button onClick={onDelete} className="p-1 text-slate-500 hover:text-red-400">
+          <button onClick={onDelete} className="p-1 text-slate-400 hover:text-red-400">
             <AlertTriangle size={12} />
           </button>
         )}
@@ -236,22 +236,22 @@ const GreetingCard: React.FC<{
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <MessageCircle size={14} className="text-cyan-400" />
-            <span className="text-xs px-1.5 py-0.5 rounded bg-slate-700 text-slate-300 capitalize">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-slate-700 text-slate-300 capitalize">
               {greeting.context}
             </span>
           </div>
           <p className="text-sm text-white mt-2 font-medium">&quot;{greeting.greeting}&quot;</p>
           {greeting.response && (
-            <p className="text-xs text-slate-400 mt-1">Response: &quot;{greeting.response}&quot;</p>
+            <p className="text-sm text-slate-400 mt-1">Response: &quot;{greeting.response}&quot;</p>
           )}
           {greeting.physical_gesture && (
-            <p className="text-[10px] text-slate-500 mt-1 italic">
+            <p className="text-sm text-slate-400 mt-1 italic">
               Gesture: {greeting.physical_gesture}
             </p>
           )}
         </div>
         {!readOnly && (
-          <button onClick={onDelete} className="p-1 text-slate-500 hover:text-red-400">
+          <button onClick={onDelete} className="p-1 text-slate-400 hover:text-red-400">
             <AlertTriangle size={12} />
           </button>
         )}
@@ -284,10 +284,10 @@ const CompatibilityCard: React.FC<{
           <div>
             <h4 className="font-medium text-white">{culture.faction_name}</h4>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className={cn('text-xs px-2 py-0.5 rounded', allianceColors[compatibility.alliance_potential])}>
+              <span className={cn('text-sm px-2 py-0.5 rounded', allianceColors[compatibility.alliance_potential])}>
                 {compatibility.alliance_potential.replace('_', ' ')}
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-sm text-slate-400">
                 Score: {compatibility.overall_score}%
               </span>
             </div>
@@ -303,7 +303,7 @@ const CompatibilityCard: React.FC<{
               fill="none"
               stroke="currentColor"
               strokeWidth="4"
-              className="text-slate-700"
+              className="text-slate-400"
             />
             <circle
               cx="32"
@@ -330,7 +330,7 @@ const CompatibilityCard: React.FC<{
 
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1 mt-3 text-xs text-slate-500 hover:text-slate-300"
+        className="flex items-center gap-1 mt-3 text-sm text-slate-400 hover:text-slate-300"
       >
         {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         {expanded ? 'Hide analysis' : 'Show analysis'}
@@ -348,10 +348,10 @@ const CompatibilityCard: React.FC<{
 
             {compatibility.shared_values.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">Shared Values</p>
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1">Shared Values</p>
                 <div className="flex flex-wrap gap-1">
                   {compatibility.shared_values.map((v, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 bg-green-500/10 text-green-400 rounded">
+                    <span key={i} className="text-sm px-2 py-0.5 bg-green-500/10 text-green-400 rounded">
                       {v}
                     </span>
                   ))}
@@ -361,10 +361,10 @@ const CompatibilityCard: React.FC<{
 
             {compatibility.conflicting_values.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">Conflicting Values</p>
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1">Conflicting Values</p>
                 <div className="flex flex-wrap gap-1">
                   {compatibility.conflicting_values.map((v, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 bg-red-500/10 text-red-400 rounded">
+                    <span key={i} className="text-sm px-2 py-0.5 bg-red-500/10 text-red-400 rounded">
                       {v}
                     </span>
                   ))}
@@ -374,10 +374,10 @@ const CompatibilityCard: React.FC<{
 
             {compatibility.potential_friction_points.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">Friction Points</p>
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1">Friction Points</p>
                 <ul className="space-y-1">
                   {compatibility.potential_friction_points.map((p, i) => (
-                    <li key={i} className="text-xs text-slate-400 flex items-start gap-1">
+                    <li key={i} className="text-sm text-slate-400 flex items-start gap-1">
                       <AlertTriangle size={10} className="text-amber-500 mt-0.5" />
                       {p}
                     </li>
@@ -687,7 +687,7 @@ Return as a valid JSON object with this structure:
             </div>
             <div>
               <h2 className="font-bold text-white">{factionName} Culture</h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-slate-400">
                 {currentCulture.values.values.length} values · {currentCulture.rituals.length} rituals · {currentCulture.social_norms.length} norms
               </p>
             </div>
@@ -768,7 +768,7 @@ Return as a valid JSON object with this structure:
                 <h3 className="text-sm font-medium text-white">Behavior Guidelines</h3>
                 <button
                   onClick={handleCopyGuidelines}
-                  className="flex items-center gap-1 text-xs text-slate-400 hover:text-white"
+                  className="flex items-center gap-1 text-sm text-slate-400 hover:text-white"
                 >
                   {copied ? <Check size={12} /> : <Copy size={12} />}
                   {copied ? 'Copied!' : 'Copy'}
@@ -784,7 +784,7 @@ Return as a valid JSON object with this structure:
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-slate-500 italic">
+                <p className="text-sm text-slate-400 italic">
                   Add values, norms, and rituals to generate behavior guidelines.
                 </p>
               )}
@@ -800,7 +800,7 @@ Return as a valid JSON object with this structure:
               ].map((stat) => (
                 <div key={stat.label} className="bg-slate-800/30 rounded-lg p-3 text-center">
                   <div className={cn('text-2xl font-bold', stat.color)}>{stat.count}</div>
-                  <div className="text-xs text-slate-500">{stat.label}</div>
+                  <div className="text-sm text-slate-400">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -868,7 +868,7 @@ Return as a valid JSON object with this structure:
                         social_norms: [...currentCulture.social_norms, newNorm],
                       });
                     }}
-                    className="text-xs px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                    className="text-sm px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
                   >
                     Add Norm
                   </button>
@@ -889,7 +889,7 @@ Return as a valid JSON object with this structure:
                   />
                 ))}
                 {currentCulture.social_norms.length === 0 && (
-                  <p className="text-sm text-slate-500 italic">No social norms defined yet.</p>
+                  <p className="text-sm text-slate-400 italic">No social norms defined yet.</p>
                 )}
               </div>
             </div>
@@ -916,7 +916,7 @@ Return as a valid JSON object with this structure:
                         taboos: [...currentCulture.taboos, newTaboo],
                       });
                     }}
-                    className="text-xs px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+                    className="text-sm px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
                   >
                     Add Taboo
                   </button>
@@ -936,7 +936,7 @@ Return as a valid JSON object with this structure:
                   />
                 ))}
                 {currentCulture.taboos.length === 0 && (
-                  <p className="text-sm text-slate-500 italic">No taboos defined yet.</p>
+                  <p className="text-sm text-slate-400 italic">No taboos defined yet.</p>
                 )}
               </div>
             </div>
@@ -964,7 +964,7 @@ Return as a valid JSON object with this structure:
                         greetings: [...currentCulture.greetings, newGreeting],
                       });
                     }}
-                    className="text-xs px-2 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded"
+                    className="text-sm px-2 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded"
                   >
                     Add Greeting
                   </button>
@@ -985,7 +985,7 @@ Return as a valid JSON object with this structure:
                 ))}
               </div>
               {currentCulture.greetings.length === 0 && (
-                <p className="text-sm text-slate-500 italic">No greetings defined yet.</p>
+                <p className="text-sm text-slate-400 italic">No greetings defined yet.</p>
               )}
             </div>
 
@@ -1010,7 +1010,7 @@ Return as a valid JSON object with this structure:
                         honorifics: [...currentCulture.honorifics, newHonorific],
                       });
                     }}
-                    className="text-xs px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded"
+                    className="text-sm px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded"
                   >
                     Add Honorific
                   </button>
@@ -1025,11 +1025,11 @@ Return as a valid JSON object with this structure:
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-white">{honorific.title || 'Untitled'}</span>
-                        <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded capitalize">
+                        <span className="text-sm px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded capitalize">
                           {honorific.placement}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">Used for: {honorific.used_for || 'Not specified'}</p>
+                      <p className="text-sm text-slate-400 mt-0.5">Used for: {honorific.used_for || 'Not specified'}</p>
                     </div>
                     {!readOnly && (
                       <button
@@ -1038,7 +1038,7 @@ Return as a valid JSON object with this structure:
                             honorifics: currentCulture.honorifics.filter((h) => h.id !== honorific.id),
                           })
                         }
-                        className="p-1 text-slate-500 hover:text-red-400"
+                        className="p-1 text-slate-400 hover:text-red-400"
                       >
                         <AlertTriangle size={12} />
                       </button>
@@ -1046,7 +1046,7 @@ Return as a valid JSON object with this structure:
                   </div>
                 ))}
                 {currentCulture.honorifics.length === 0 && (
-                  <p className="text-sm text-slate-500 italic">No honorifics defined yet.</p>
+                  <p className="text-sm text-slate-400 italic">No honorifics defined yet.</p>
                 )}
               </div>
             </div>
@@ -1082,10 +1082,10 @@ Return as a valid JSON object with this structure:
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-slate-500">
+              <div className="text-center py-12 text-slate-400">
                 <Handshake className="mx-auto mb-3 opacity-50" size={48} />
                 <p className="text-sm">No other faction cultures available for comparison.</p>
-                <p className="text-xs mt-1">Create cultures for other factions to see compatibility analysis.</p>
+                <p className="text-sm mt-1">Create cultures for other factions to see compatibility analysis.</p>
               </div>
             )}
           </div>

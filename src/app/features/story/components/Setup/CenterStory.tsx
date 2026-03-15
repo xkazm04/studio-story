@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/app/components/UI/Button';
 import { deleteGenerations } from '@/lib/services/sketchCleanup';
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 
 interface GeneratedCover {
     url: string;
@@ -267,7 +268,7 @@ const CenterStory = () => {
     if (!selectedProject) {
         return (
             <div className="h-full flex items-center justify-center">
-                <p className="text-gray-400">Select a project to configure story setup</p>
+                <p className="text-slate-400">Select a project to configure story setup</p>
             </div>
         );
     }
@@ -291,7 +292,7 @@ const CenterStory = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <div className="h-full overflow-y-auto w-full max-w-6xl mx-auto text-gray-100 bg-gradient-to-b from-slate-900/40 to-slate-800/10 rounded-lg shadow-lg p-6">
+            <div className="h-full overflow-y-auto w-full max-w-6xl mx-auto text-slate-100 bg-gradient-to-b from-slate-900/40 to-slate-800/10 rounded-lg shadow-lg p-6">
                 {/* Header with Progress */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
@@ -300,7 +301,7 @@ const CenterStory = () => {
                         </div>
                         <div>
                             <h2 className="text-lg font-semibold text-white">Story Setup</h2>
-                            <p className="text-xs text-slate-400">Configure your story's identity</p>
+                            <p className="text-sm text-slate-400">Configure your story's identity</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -314,7 +315,7 @@ const CenterStory = () => {
                                     transition={{ duration: 0.5 }}
                                 />
                             </div>
-                            <span className="text-xs text-slate-400">{completionPercent}%</span>
+                            <span className="text-sm text-slate-400">{completionPercent}%</span>
                         </div>
                         {/* Preview Toggle */}
                         <Button
@@ -349,7 +350,7 @@ const CenterStory = () => {
                                         />
                                     ) : (
                                         <div className="w-48 h-48 bg-slate-800/50 rounded-lg border border-dashed border-slate-700 flex items-center justify-center">
-                                            <ImageIcon className="w-12 h-12 text-slate-600" />
+                                            <ImageIcon className="w-12 h-12 text-slate-400" />
                                         </div>
                                     )}
                                     <div>
@@ -384,7 +385,7 @@ const CenterStory = () => {
 
                                         {/* Story Name */}
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-medium text-slate-400">
+                                            <label className="text-sm font-medium text-slate-400">
                                                 Story Name <span className="text-red-400">*</span>
                                             </label>
                                             <input
@@ -397,7 +398,7 @@ const CenterStory = () => {
                                                     'w-full px-3 py-2 text-sm rounded-lg',
                                                     'bg-slate-800/60 border border-slate-700/50',
                                                     'text-white placeholder:text-slate-500',
-                                                    'focus:outline-none focus:ring-2 focus:ring-cyan-500/50',
+                                                    INTERACTIVE.focusRing,
                                                     'disabled:opacity-50'
                                                 )}
                                             />
@@ -405,7 +406,7 @@ const CenterStory = () => {
 
                                         {/* Story Description */}
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-medium text-slate-400">
+                                            <label className="text-sm font-medium text-slate-400">
                                                 Description
                                             </label>
                                             <textarea
@@ -419,7 +420,7 @@ const CenterStory = () => {
                                                     'w-full px-3 py-2 text-sm rounded-lg resize-none',
                                                     'bg-slate-800/60 border border-slate-700/50',
                                                     'text-white placeholder:text-slate-500',
-                                                    'focus:outline-none focus:ring-2 focus:ring-cyan-500/50',
+                                                    INTERACTIVE.focusRing,
                                                     'disabled:opacity-50'
                                                 )}
                                             />
@@ -446,7 +447,7 @@ const CenterStory = () => {
                                             )}
                                         </Button>
                                         {textGenAvailable === false && (
-                                            <p className="text-xs text-amber-400 flex items-center gap-1">
+                                            <p className="text-sm text-amber-400 flex items-center gap-1">
                                                 <AlertCircle className="w-3 h-3" />
                                                 AI generation unavailable
                                             </p>
@@ -508,8 +509,8 @@ const CenterStory = () => {
                                             </div>
                                         ) : generatedCovers.length === 0 ? (
                                             <div className="aspect-square max-w-[200px] mx-auto rounded-lg border-2 border-dashed border-slate-700 bg-slate-800/30 flex flex-col items-center justify-center gap-2">
-                                                <ImageIcon className="w-8 h-8 text-slate-600" />
-                                                <p className="text-xs text-slate-500">No cover image</p>
+                                                <ImageIcon className="w-8 h-8 text-slate-400" />
+                                                <p className="text-sm text-slate-400">No cover image</p>
                                             </div>
                                         ) : null}
 
@@ -591,7 +592,7 @@ const CenterStory = () => {
                                             </Button>
                                         )}
                                         {imageGenAvailable === false && (
-                                            <p className="text-xs text-amber-400 flex items-center gap-1">
+                                            <p className="text-sm text-amber-400 flex items-center gap-1">
                                                 <AlertCircle className="w-3 h-3" />
                                                 Image generation unavailable
                                             </p>
@@ -621,7 +622,7 @@ const CenterStory = () => {
 
                             {/* Info Footer */}
                             <div className="p-4 rounded-lg bg-slate-800/30 border-l-4 border-cyan-500/30">
-                                <p className="pl-4 font-light italic text-xs text-slate-400">
+                                <p className="pl-4 font-light italic text-sm text-slate-400">
                                     A well-crafted story overview serves as your creative compass, guiding your narrative toward a cohesive and compelling destination.
                                 </p>
                             </div>

@@ -24,9 +24,9 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'siz
 }
 
 const sizeClasses: Record<SelectSize, string> = {
-  sm: 'px-2 py-1.5 text-xs',
-  md: 'px-3 py-2 text-sm',
-  lg: 'px-4 py-2.5 text-base',
+  sm: 'px-2 py-1 text-sm',
+  md: 'px-2.5 py-1.5 text-sm',
+  lg: 'px-3 py-2 text-sm',
 };
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -55,7 +55,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="text-sm font-medium text-gray-300"
+            className="text-sm font-medium text-slate-300"
           >
             {label}
             {props.required && <span className="text-red-400 ml-1">*</span>}
@@ -107,8 +107,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {(error || helperText) && (
           <span
             className={clsx(
-              'text-xs',
-              hasError ? 'text-red-400' : 'text-gray-500'
+              'text-sm',
+              hasError ? 'text-red-400' : 'text-slate-400'
             )}
           >
             {error || helperText}

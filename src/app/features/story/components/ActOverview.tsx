@@ -11,6 +11,7 @@ import { useProjectStore } from "@/app/store/slices/projectSlice";
 import { sceneApi } from "@/app/hooks/integration/useScenes";
 import { USE_MOCK_DATA } from '@/app/utils/api';
 import { cn } from '@/lib/utils';
+import { INTERACTIVE, BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import {
     BarChart3,
     FileText,
@@ -200,8 +201,8 @@ const ActOverview = () => {
         <button
             onClick={() => handleSort(field)}
             className={cn(
-                'flex items-center gap-1 text-[10px] uppercase tracking-wide font-semibold transition-colors',
-                sortField === field ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'
+                'flex items-center gap-1 text-sm uppercase tracking-wide font-semibold', INTERACTIVE.ghost,
+                sortField === field ? 'text-cyan-400' : 'text-slate-400'
             )}
         >
             {children}
@@ -217,12 +218,12 @@ const ActOverview = () => {
             <div className="shrink-0 border-b border-slate-800">
                 <button
                     onClick={() => setShowStats(!showStats)}
-                    className="w-full px-4 py-2 flex items-center justify-between text-left hover:bg-slate-900/50 transition-colors"
+                    className={`w-full px-4 py-2 flex items-center justify-between text-left ${INTERACTIVE.row}`}
                 >
                     <div className="flex items-center gap-3">
                         <Terminal className="w-4 h-4 text-cyan-400" />
                         <span className="text-sm font-medium text-slate-200">Story Evaluator</span>
-                        <div className="flex items-center gap-2 text-xs">
+                        <div className="flex items-center gap-2 text-sm">
                             {issues.length === 0 ? (
                                 <span className="flex items-center gap-1 text-emerald-400">
                                     <CheckCircle className="w-3 h-3" /> Valid
@@ -234,7 +235,7 @@ const ActOverview = () => {
                             )}
                         </div>
                     </div>
-                    <ChevronDown className={cn('w-4 h-4 text-slate-500 transition-transform', showStats && 'rotate-180')} />
+                    <ChevronDown className={cn('w-4 h-4 text-slate-400 transition-transform', showStats && 'rotate-180')} />
                 </button>
 
                 <AnimatePresence>
@@ -243,6 +244,7 @@ const ActOverview = () => {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
+                            transition={BEAT_ANIMATIONS.quick}
                             className="overflow-hidden"
                         >
                             <div className="px-4 pb-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
@@ -257,7 +259,7 @@ const ActOverview = () => {
                                 ].map(stat => (
                                     <div key={stat.label} className="text-center py-2 px-2 bg-slate-900/50 rounded-lg border border-slate-800">
                                         <div className={cn('text-lg font-bold tabular-nums', stat.color)}>{stat.value}</div>
-                                        <div className="text-[10px] text-slate-500 uppercase">{stat.label}</div>
+                                        <div className="text-sm text-slate-400 uppercase">{stat.label}</div>
                                     </div>
                                 ))}
                             </div>
@@ -278,7 +280,7 @@ const ActOverview = () => {
             {issues.length > 0 && (
                 <div className="shrink-0 border-b border-slate-800 bg-slate-900/30 p-3">
                     <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
                             <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
                             Issues ({filteredIssues.length})
                         </h3>
@@ -288,10 +290,10 @@ const ActOverview = () => {
                                     key={filter}
                                     onClick={() => setIssueFilter(filter)}
                                     className={cn(
-                                        'px-2 py-0.5 text-[10px] rounded transition-colors',
+                                        'px-2 py-0.5 text-sm rounded', INTERACTIVE.control,
                                         issueFilter === filter
                                             ? 'bg-slate-700 text-slate-200'
-                                            : 'text-slate-500 hover:text-slate-300'
+                                            : 'text-slate-400'
                                     )}
                                 >
                                     {filter === 'all' ? 'All' : filter === 'errors' ? 'Errors' : 'Warnings'}
@@ -304,7 +306,7 @@ const ActOverview = () => {
                             <div
                                 key={`${issue.sceneId}-${issue.type}-${i}`}
                                 className={cn(
-                                    'flex items-center gap-2 px-2 py-1.5 rounded text-xs',
+                                    'flex items-center gap-2 px-2 py-1.5 rounded text-sm',
                                     issue.severity === 'error' ? 'bg-red-500/10 border border-red-500/20' : 'bg-amber-500/10 border border-amber-500/20'
                                 )}
                             >
@@ -318,7 +320,7 @@ const ActOverview = () => {
                                 </span>
                                 <span className="text-slate-400">in</span>
                                 <span className="text-slate-200 truncate">{issue.sceneName}</span>
-                                <span className="text-slate-500 ml-auto shrink-0">{issue.message}</span>
+                                <span className="text-slate-400 ml-auto shrink-0">{issue.message}</span>
                             </div>
                         ))}
                     </div>
@@ -327,7 +329,7 @@ const ActOverview = () => {
 
             {/* Compact Table */}
             <div className="flex-1 overflow-auto">
-                <table className="w-full text-xs">
+                <table className="w-full text-sm">
                     <thead className="sticky top-0 bg-slate-900 border-b border-slate-800">
                         <tr>
                             <th className="text-left px-3 py-2 w-10"><SortHeader field="order">#</SortHeader></th>
@@ -342,15 +344,15 @@ const ActOverview = () => {
                             <tr
                                 key={scene.id}
                                 className={cn(
-                                    'hover:bg-slate-800/30 transition-colors',
+                                    INTERACTIVE.row,
                                     status === 'error' && 'bg-red-500/5',
                                     status === 'warning' && 'bg-amber-500/5'
                                 )}
                             >
-                                <td className="px-3 py-2 text-slate-500 font-mono">{index + 1}</td>
+                                <td className="px-3 py-2 text-slate-400 font-mono">{index + 1}</td>
                                 <td className="px-3 py-2">
                                     <div className="font-medium text-slate-200 truncate max-w-xs">{scene.name || 'Untitled'}</div>
-                                    <div className="text-slate-500 truncate max-w-xs">{scene.description || '—'}</div>
+                                    <div className="text-slate-400 truncate max-w-xs">{scene.description || '—'}</div>
                                 </td>
                                 <td className="px-3 py-2 text-right tabular-nums text-slate-400">{wordCount}</td>
                                 <td className="px-3 py-2 text-right">
@@ -364,17 +366,17 @@ const ActOverview = () => {
                                 </td>
                                 <td className="px-3 py-2 text-center">
                                     {status === 'good' && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-sm">
                                             <CheckCircle className="w-3 h-3" /> OK
                                         </span>
                                     )}
                                     {status === 'warning' && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px]">
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-sm">
                                             <AlertTriangle className="w-3 h-3" /> Warn
                                         </span>
                                     )}
                                     {status === 'error' && (
-                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px]">
+                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-sm">
                                             <XCircle className="w-3 h-3" /> Error
                                         </span>
                                     )}
@@ -385,8 +387,8 @@ const ActOverview = () => {
                 </table>
 
                 {scenes.length === 0 && (
-                    <div className="py-12 text-center text-slate-500">
-                        <FileText className="w-8 h-8 mx-auto mb-2 text-slate-600" />
+                    <div className="py-12 text-center text-slate-400">
+                        <FileText className="w-8 h-8 mx-auto mb-2 text-slate-400" />
                         <p className="text-sm">No scenes to evaluate</p>
                     </div>
                 )}

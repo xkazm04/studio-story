@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { interactive } from "@/lib/animations";
 import { Copy, Sparkles, Check } from "lucide-react";
 import { clsx } from "clsx";
 import { ClaudePromptOption } from "../lib/promptMapClaude";
@@ -40,13 +41,13 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
               "w-full aspect-square rounded-lg flex items-center justify-center text-2xl transition-all",
               "border backdrop-blur-sm",
               selections.theme
-                ? "bg-cyan-500/10 border-cyan-500/30 shadow-sm shadow-cyan-500/20"
+                ? "bg-cyan-500/10 border-cyan-500/30 ms-shadow-subtle shadow-cyan-500/20"
                 : "bg-slate-900/40 border-slate-800/60"
             )}
           >
             {selections.theme?.emoji || "🎨"}
           </div>
-          <span className="text-[9px] text-slate-500 font-medium truncate w-full text-center">
+          <span className="text-sm text-slate-400 font-medium truncate w-full text-center">
             {selections.theme?.label || "Theme"}
           </span>
         </div>
@@ -58,13 +59,13 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
               "w-full aspect-square rounded-lg flex items-center justify-center text-2xl transition-all",
               "border backdrop-blur-sm",
               selections.scene
-                ? "bg-purple-500/10 border-purple-500/30 shadow-sm shadow-purple-500/20"
+                ? "bg-purple-500/10 border-purple-500/30 ms-shadow-subtle shadow-purple-500/20"
                 : "bg-slate-900/40 border-slate-800/60"
             )}
           >
             {selections.scene?.emoji || "🎬"}
           </div>
-          <span className="text-[9px] text-slate-500 font-medium truncate w-full text-center">
+          <span className="text-sm text-slate-400 font-medium truncate w-full text-center">
             {selections.scene?.label || "Scene"}
           </span>
         </div>
@@ -76,13 +77,13 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
               "w-full aspect-square rounded-lg flex items-center justify-center text-2xl transition-all",
               "border backdrop-blur-sm",
               selections.character
-                ? "bg-amber-500/10 border-amber-500/30 shadow-sm shadow-amber-500/20"
+                ? "bg-amber-500/10 border-amber-500/30 ms-shadow-subtle shadow-amber-500/20"
                 : "bg-slate-900/40 border-slate-800/60"
             )}
           >
             {selections.character?.emoji || "👤"}
           </div>
-          <span className="text-[9px] text-slate-500 font-medium truncate w-full text-center">
+          <span className="text-sm text-slate-400 font-medium truncate w-full text-center">
             {selections.character?.label || "Character"}
           </span>
         </div>
@@ -93,13 +94,13 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
         <div className="flex items-start gap-2">
           <Sparkles className="w-3 h-3 text-cyan-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-slate-400 mb-1 uppercase tracking-wide">
               Composed Prompt
             </div>
             <div
               className={clsx(
-                "text-[11px] leading-relaxed transition-colors",
-                prompt ? "text-slate-200" : "text-slate-500 italic"
+                "text-sm leading-relaxed transition-colors",
+                prompt ? "text-slate-200" : "text-slate-400 italic"
               )}
             >
               {prompt || "Select options from each column to compose your prompt..."}
@@ -111,11 +112,13 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
             <motion.button
               type="button"
               onClick={onCopy}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileHover={interactive.hoverScale}
+              whileTap={interactive.tapScale}
+              aria-label="Copy prompt to clipboard"
               className={clsx(
-                "flex-shrink-0 w-6 h-6 rounded flex items-center justify-center transition-all",
+                "flex-shrink-0 w-11 h-11 rounded flex items-center justify-center transition-all",
                 "border backdrop-blur-sm",
+                "focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none",
                 copied
                   ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400"
                   : "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
@@ -149,7 +152,7 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <span className="text-[9px] text-slate-500 font-medium">
+              <span className="text-sm text-slate-400 font-medium">
                 {(selections.theme ? 1 : 0) +
                   (selections.scene ? 1 : 0) +
                   (selections.character ? 1 : 0)}

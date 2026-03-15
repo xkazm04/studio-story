@@ -257,7 +257,7 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
       <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             age
           </h3>
         </div>
@@ -279,7 +279,7 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
             currentConfig.color
           )}>
             {currentConfig.icon}
-            <span className="font-mono text-xs">{currentConfig.label}</span>
+            <span className="font-mono text-sm">{currentConfig.label}</span>
           </div>
 
           <button
@@ -372,12 +372,12 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
                   'flex flex-col items-center p-2 rounded-lg border transition-all',
                   isActive
                     ? config.color
-                    : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600',
+                    : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600',
                   disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
                 <span className={isActive ? '' : 'opacity-60'}>{config.icon}</span>
-                <span className="font-mono text-[9px] mt-1 truncate w-full text-center">
+                <span className="font-mono text-sm mt-1 truncate w-full text-center">
                   {config.label.split(' ')[0]}
                 </span>
               </button>
@@ -407,17 +407,17 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
             {currentConfig.icon}
             <span className="font-mono text-sm">{currentConfig.label}</span>
           </div>
-          <span className="font-mono text-xs opacity-70">
+          <span className="font-mono text-sm opacity-70">
             {currentConfig.ageRange[0]}-{currentConfig.ageRange[1]} years
           </span>
         </div>
-        <p className="font-mono text-xs opacity-70">{currentConfig.description}</p>
+        <p className="font-mono text-sm opacity-70">{currentConfig.description}</p>
       </div>
 
       {/* Age Slider */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-xs text-slate-400 uppercase">
+          <span className="font-mono text-sm text-slate-400 uppercase">
             specific_age
           </span>
           <span className="font-mono text-sm text-slate-300">
@@ -439,8 +439,8 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
         />
 
         <div className="flex justify-between mt-1">
-          <span className="font-mono text-[10px] text-slate-600">4</span>
-          <span className="font-mono text-[10px] text-slate-600">100</span>
+          <span className="font-mono text-sm text-slate-400">4</span>
+          <span className="font-mono text-sm text-slate-400">100</span>
         </div>
       </div>
 
@@ -455,14 +455,14 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
           >
             {/* Physical Changes */}
             <div className="mb-3">
-              <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+              <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                 physical_changes
               </span>
               <div className="flex flex-wrap gap-1">
                 {currentModifier.physicalChanges.map((change, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-400"
+                    className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400"
                   >
                     {change}
                   </span>
@@ -472,14 +472,14 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
 
             {/* Facial Changes */}
             <div className="mb-3">
-              <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+              <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                 facial_changes
               </span>
               <div className="flex flex-wrap gap-1">
                 {currentModifier.facialChanges.map((change, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-400"
+                    className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400"
                   >
                     {change}
                   </span>
@@ -489,10 +489,10 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
 
             {/* Prompt Preview */}
             <div className="p-2 bg-slate-800/40 rounded border border-slate-700/30">
-              <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+              <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                 prompt_modifier
               </span>
-              <p className="font-mono text-[10px] text-slate-400 leading-relaxed">
+              <p className="font-mono text-sm text-slate-400 leading-relaxed">
                 {buildAgePrompt(currentModifier.stage, estimatedAge || undefined)}
               </p>
             </div>
@@ -509,7 +509,7 @@ const AgeProgressor: React.FC<AgeProgressorProps> = ({
             className={cn(
               'w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg',
               'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400',
-              'font-mono text-xs transition-colors',
+              'font-mono text-sm transition-colors',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >

@@ -45,10 +45,10 @@ export function AppearancePreview({ appearance }: AppearancePreviewProps) {
   return (
     <SectionWrapper borderColor="pink" padding="md">
       <div className="flex items-center gap-2 mb-4">
-        <Eye size={18} className="text-gray-400" />
+        <Eye size={18} className="text-slate-400" />
         <h4 className="font-semibold text-white">Generated Description</h4>
       </div>
-      <p className="text-gray-300 italic">{generateDescription()}</p>
+      <p className="text-slate-300 italic">{generateDescription()}</p>
     </SectionWrapper>
   );
 }

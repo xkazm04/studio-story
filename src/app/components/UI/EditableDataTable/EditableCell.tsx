@@ -38,9 +38,9 @@ export function EditableCell<T>({
         {column.render ? (
           column.render(value, row, index)
         ) : column.format ? (
-          <span className="text-sm text-gray-300">{column.format(value)}</span>
+          <span className="text-sm text-slate-300">{column.format(value)}</span>
         ) : (
-          <span className="text-sm text-gray-300">{value ?? '-'}</span>
+          <span className="text-sm text-slate-300">{value ?? '-'}</span>
         )}
       </div>
     );
@@ -64,7 +64,7 @@ export function EditableCell<T>({
             type="checkbox"
             checked={!!value}
             onChange={(e) => onChange(e.target.checked)}
-            className="w-4 h-4 rounded border-gray-700 text-blue-600 focus:ring-blue-500"
+            className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
             data-testid={`${testId}-checkbox`}
           />
         </div>

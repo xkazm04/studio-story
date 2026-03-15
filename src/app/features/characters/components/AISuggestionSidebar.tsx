@@ -59,7 +59,7 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-semibold text-white">AI Suggestions</h3>
-            <p className="text-xs text-gray-400">Live enhancements</p>
+            <p className="text-sm text-slate-400">Live enhancements</p>
           </div>
         </div>
         <IconButton
@@ -78,7 +78,7 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
         {isLoading && suggestions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
             <Loader2 size={32} className="text-cyan-400 animate-spin mb-3" />
-            <p className="text-sm text-gray-400">Analyzing your text...</p>
+            <p className="text-sm text-slate-400">Analyzing your text...</p>
           </div>
         )}
 
@@ -87,10 +87,10 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
           <Card variant="glass" padding="sm" className="mb-2">
             <div className="flex items-center gap-2 mb-2">
               <Loader2 size={14} className="text-cyan-400 animate-spin" />
-              <span className="text-xs text-cyan-400 font-medium">Generating...</span>
+              <span className="text-sm text-cyan-400 font-medium">Generating...</span>
             </div>
             {streamProgress && (
-              <p className="text-xs text-gray-400 line-clamp-2">{streamProgress}</p>
+              <p className="text-sm text-slate-400 line-clamp-2">{streamProgress}</p>
             )}
           </Card>
         )}
@@ -128,11 +128,11 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
                       <Lightbulb size={14} className="text-amber-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-medium text-white truncate">
+                      <h4 className="text-sm font-medium text-white truncate">
                         {suggestion.title}
                       </h4>
                       {!isExpanded && (
-                        <p className="text-xs text-gray-400 line-clamp-1 mt-0.5">
+                        <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">
                           {suggestion.suggestion}
                         </p>
                       )}
@@ -142,7 +142,7 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
                       transition={{ duration: 0.2 }}
                       className="flex-shrink-0"
                     >
-                      <ChevronRight size={14} className="text-gray-500" />
+                      <ChevronRight size={14} className="text-slate-400" />
                     </motion.div>
                   </button>
 
@@ -159,20 +159,20 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
                         <div className="p-2.5 pt-0 space-y-2 border-t border-slate-800/50">
                           {/* Suggestion Text */}
                           <div>
-                            <label className="text-[10px] uppercase tracking-wide text-gray-500 font-medium">
+                            <label className="text-sm uppercase tracking-wide text-slate-400 font-medium">
                               Suggestion
                             </label>
-                            <p className="text-xs text-gray-300 mt-1 leading-relaxed">
+                            <p className="text-sm text-slate-300 mt-1 leading-relaxed">
                               {suggestion.suggestion}
                             </p>
                           </div>
 
                           {/* Reasoning */}
                           <div>
-                            <label className="text-[10px] uppercase tracking-wide text-gray-500 font-medium">
+                            <label className="text-sm uppercase tracking-wide text-slate-400 font-medium">
                               Why?
                             </label>
-                            <p className="text-xs text-gray-400 mt-1 leading-relaxed italic">
+                            <p className="text-sm text-slate-400 mt-1 leading-relaxed italic">
                               {suggestion.reasoning}
                             </p>
                           </div>
@@ -191,7 +191,7 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
                                 Apply
                               </Button>
                             ) : (
-                              <div className="w-full px-2 py-1.5 bg-green-500/10 border border-green-500/30 rounded text-xs text-green-400 flex items-center justify-center gap-1">
+                              <div className="w-full px-2 py-1.5 bg-green-500/10 border border-green-500/30 rounded text-sm text-green-400 flex items-center justify-center gap-1">
                                 <Check size={12} />
                                 Applied
                               </div>
@@ -211,12 +211,12 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
         {!isLoading && suggestions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 px-4">
             <div className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center mb-3">
-              <Sparkles size={20} className="text-gray-500" />
+              <Sparkles size={20} className="text-slate-400" />
             </div>
-            <h4 className="text-sm font-medium text-gray-400 text-center mb-1">
+            <h4 className="text-sm font-medium text-slate-400 text-center mb-1">
               Start typing to get suggestions
             </h4>
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-sm text-slate-400 text-center">
               AI will analyze your text and provide creative enhancements
             </p>
           </div>
@@ -225,7 +225,7 @@ const AISuggestionSidebar: React.FC<AISuggestionSidebarProps> = ({
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-800/80 bg-slate-900/50">
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+        <div className="flex items-center gap-1.5 text-sm text-slate-400">
           <Sparkles size={12} className="text-cyan-500" />
           <span>{suggestions.length} suggestion{suggestions.length !== 1 ? 's' : ''}</span>
         </div>

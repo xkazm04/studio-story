@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import {
   PlusIcon,
   ChevronDown,
@@ -114,10 +115,10 @@ const StoryRightPanel: React.FC = () => {
 
   if (!beats || beats.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-slate-500 p-4 text-sm">
+      <div className="flex flex-col items-center justify-center h-full text-slate-400 p-4 text-sm">
         <BookOpen className="w-10 h-10 mb-2 opacity-60" />
         <p className="text-center text-slate-300">No beats yet</p>
-        <p className="text-xs text-center mt-1">Create beats in the Story tab.</p>
+        <p className="text-sm text-center mt-1">Create beats in the Story tab.</p>
       </div>
     );
   }
@@ -142,7 +143,7 @@ const StoryRightPanel: React.FC = () => {
       transition: {
         staggerChildren: 0.05,
         delayChildren: 0.1,
-        duration: 0.2,
+        ...BEAT_ANIMATIONS.quick,
       },
     },
     closed: {
@@ -151,7 +152,7 @@ const StoryRightPanel: React.FC = () => {
       transition: {
         staggerChildren: 0.03,
         staggerDirection: -1,
-        duration: 0.15,
+        ...BEAT_ANIMATIONS.micro,
       },
     },
   };
@@ -175,7 +176,7 @@ const StoryRightPanel: React.FC = () => {
             <button
               onClick={() => setShowCompleted(!showCompleted)}
               className={`
-                text-[11px] px-2 py-1 rounded-lg border transition-colors
+                text-sm px-2 py-1 rounded-lg border transition-colors
                 ${showCompleted
                   ? 'bg-slate-900/80 text-slate-50 border-cyan-500/40'
                   : 'bg-slate-950/80 text-slate-400 border-slate-800 hover:bg-slate-900'
@@ -201,7 +202,7 @@ const StoryRightPanel: React.FC = () => {
         </div>
 
         <div className="flex justify-end mt-1">
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {completedCount}/{totalCount} completed
           </span>
         </div>
@@ -213,7 +214,7 @@ const StoryRightPanel: React.FC = () => {
         {actBeats.length > 0 && (
           <div className="mb-3">
             <button
-              className="w-full px-3 py-2 flex justify-between items-center text-xs font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
+              className="w-full px-3 py-2 flex justify-between items-center text-sm font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
               onClick={() => toggleSection('act')}
             >
               <span className="flex items-center gap-2">
@@ -221,9 +222,9 @@ const StoryRightPanel: React.FC = () => {
                 Act Beats ({actBeats.length})
               </span>
               {expandedSections.act ? (
-                <ChevronUp className="h-3.5 w-3.5 text-slate-500" />
+                <ChevronUp className="h-3.5 w-3.5 text-slate-400" />
               ) : (
-                <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
               )}
             </button>
 
@@ -262,19 +263,19 @@ const StoryRightPanel: React.FC = () => {
                             <CheckCircle className="h-4 w-4" />
                           </motion.div>
                         ) : (
-                          <Circle className="h-4 w-4 text-slate-600" />
+                          <Circle className="h-4 w-4 text-slate-400" />
                         )}
                       </button>
                       <div className="flex-1 min-w-0">
                         <div
-                          className={`text-xs font-medium ${
-                            completedBeats[beat.id] ? 'line-through text-slate-500' : 'text-slate-100'
+                          className={`text-sm font-medium ${
+                            completedBeats[beat.id] ? 'line-through text-slate-400' : 'text-slate-100'
                           }`}
                         >
                           {beat.name}
                         </div>
                         {beat.description && (
-                          <div className="text-[11px] text-slate-400 line-clamp-2 mt-1">
+                          <div className="text-sm text-slate-400 line-clamp-2 mt-1">
                             {beat.description}
                           </div>
                         )}
@@ -291,7 +292,7 @@ const StoryRightPanel: React.FC = () => {
         {storyBeats.length > 0 && (
           <div className="mb-3">
             <button
-              className="w-full px-3 py-2 flex justify-between items-center text-xs font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
+              className="w-full px-3 py-2 flex justify-between items-center text-sm font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
               onClick={() => toggleSection('story')}
             >
               <span className="flex items-center gap-2">
@@ -299,9 +300,9 @@ const StoryRightPanel: React.FC = () => {
                 Story Beats ({storyBeats.length})
               </span>
               {expandedSections.story ? (
-                <ChevronUp className="h-3.5 w-3.5 text-slate-500" />
+                <ChevronUp className="h-3.5 w-3.5 text-slate-400" />
               ) : (
-                <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
               )}
             </button>
 
@@ -340,19 +341,19 @@ const StoryRightPanel: React.FC = () => {
                             <CheckCircle className="h-4 w-4" />
                           </motion.div>
                         ) : (
-                          <Circle className="h-4 w-4 text-slate-600" />
+                          <Circle className="h-4 w-4 text-slate-400" />
                         )}
                       </button>
                       <div className="flex-1 min-w-0">
                         <div
-                          className={`text-xs font-medium ${
-                            completedBeats[beat.id] ? 'line-through text-slate-500' : 'text-slate-100'
+                          className={`text-sm font-medium ${
+                            completedBeats[beat.id] ? 'line-through text-slate-400' : 'text-slate-100'
                           }`}
                         >
                           {beat.name}
                         </div>
                         {beat.description && (
-                          <div className="text-[11px] text-slate-400 line-clamp-2 mt-1">
+                          <div className="text-sm text-slate-400 line-clamp-2 mt-1">
                             {beat.description}
                           </div>
                         )}
@@ -368,23 +369,23 @@ const StoryRightPanel: React.FC = () => {
         {/* Themes & Premise Section */}
         <div className="mb-3">
           <button
-            className="w-full px-3 py-2 flex justify-between items-center text-xs font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
+            className="w-full px-3 py-2 flex justify-between items-center text-sm font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
             onClick={() => toggleSection('themes')}
           >
             <span className="flex items-center gap-2">
               <Palette className="w-3 h-3 text-violet-400" />
               Themes & Premise
               {balance.recommendations.filter((r) => r.priority === 'high').length > 0 && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 rounded">
+                <span className="flex items-center gap-1 px-1.5 py-0.5 text-sm bg-amber-500/20 text-amber-400 rounded">
                   <AlertTriangle className="w-2.5 h-2.5" />
                   {balance.recommendations.filter((r) => r.priority === 'high').length}
                 </span>
               )}
             </span>
             {expandedSections.themes ? (
-              <ChevronUp className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronUp className="h-3.5 w-3.5 text-slate-400" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
             )}
           </button>
 
@@ -399,10 +400,10 @@ const StoryRightPanel: React.FC = () => {
               >
                 <div className="mt-2 px-2">
                   {themes.length === 0 && !premise ? (
-                    <div className="p-4 text-center text-slate-500 bg-slate-900/50 rounded-lg">
+                    <div className="p-4 text-center text-slate-400 bg-slate-900/50 rounded-lg">
                       <Target className="w-6 h-6 mx-auto mb-2 opacity-50" />
-                      <p className="text-xs">No themes defined yet</p>
-                      <p className="text-[10px] mt-1 text-slate-600">
+                      <p className="text-sm">No themes defined yet</p>
+                      <p className="text-sm mt-1 text-slate-400">
                         Add themes in the Story Structure tab
                       </p>
                     </div>
@@ -426,7 +427,7 @@ const StoryRightPanel: React.FC = () => {
         {/* AI Assistant Section */}
         <div className="mb-3">
           <button
-            className="w-full px-3 py-2 flex justify-between items-center text-xs font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
+            className="w-full px-3 py-2 flex justify-between items-center text-sm font-medium rounded-lg hover:bg-slate-900 transition-colors text-slate-200"
             onClick={() => toggleSection('assistant')}
           >
             <span className="flex items-center gap-2">
@@ -434,9 +435,9 @@ const StoryRightPanel: React.FC = () => {
               AI Assistant
             </span>
             {expandedSections.assistant ? (
-              <ChevronUp className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronUp className="h-3.5 w-3.5 text-slate-400" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
             )}
           </button>
 

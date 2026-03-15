@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { interactive } from '@/lib/animations';
 import {
   Pencil,
   Pen,
@@ -28,6 +29,7 @@ import {
   DEFAULT_BRUSH,
 } from '@/lib/canvas';
 import { cn } from '@/app/lib/utils';
+import { RangeSlider } from '@/app/components/UI/RangeSlider';
 
 // ============================================================================
 // Types
@@ -190,46 +192,7 @@ const QUICK_COLORS = [
 // Sub-components
 // ============================================================================
 
-interface SliderControlProps {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step?: number;
-  onChange: (value: number) => void;
-  unit?: string;
-}
-
-const SliderControl: React.FC<SliderControlProps> = ({
-  label,
-  value,
-  min,
-  max,
-  step = 1,
-  onChange,
-  unit = '',
-}) => {
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-400">{label}</span>
-        <span className="text-[10px] text-slate-300 font-mono">
-          {typeof value === 'number' ? (value < 1 && max <= 1 ? Math.round(value * 100) : Math.round(value)) : value}
-          {unit}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-      />
-    </div>
-  );
-};
+/* SliderControl replaced by shared RangeSlider */
 
 interface BrushButtonProps {
   preset: BrushPreset;
@@ -241,8 +204,9 @@ const BrushButton: React.FC<BrushButtonProps> = ({ preset, isActive, onClick }) 
   const Icon = preset.icon;
 
   return (
-    <button
+    <motion.button
       onClick={onClick}
+      whileTap={interactive.tapButton}
       className={cn(
         'flex flex-col items-center gap-1 p-2 rounded-lg transition-all',
         isActive
@@ -251,8 +215,8 @@ const BrushButton: React.FC<BrushButtonProps> = ({ preset, isActive, onClick }) 
       )}
     >
       <Icon className="w-4 h-4" />
-      <span className="text-[9px] truncate w-full text-center">{preset.name}</span>
-    </button>
+      <span className="text-sm truncate w-full text-center">{preset.name}</span>
+    </motion.button>
   );
 };
 
@@ -358,13 +322,13 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
           onClick={() => toggleCategory(category)}
           className="flex items-center justify-between w-full px-2 py-2 text-left hover:bg-slate-800/30 transition-colors"
         >
-          <span className="text-[10px] font-medium text-slate-300 uppercase tracking-wider">
+          <span className="text-sm font-medium text-slate-300 uppercase tracking-wider">
             {label}
           </span>
           {isExpanded ? (
-            <ChevronDown className="w-3 h-3 text-slate-500" />
+            <ChevronDown className="w-3 h-3 text-slate-400" />
           ) : (
-            <ChevronRight className="w-3 h-3 text-slate-500" />
+            <ChevronRight className="w-3 h-3 text-slate-400" />
           )}
         </button>
 
@@ -391,7 +355,8 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
                           e.stopPropagation();
                           deleteCustomPreset(preset.id);
                         }}
-                        className="absolute -top-1 -right-1 p-0.5 bg-red-500/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-1.5 -right-1.5 p-1.5 bg-red-500/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none focus-visible:opacity-100"
+                        aria-label="Delete preset"
                       >
                         <Trash2 className="w-2 h-2 text-white" />
                       </button>
@@ -401,10 +366,11 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
                 {category === 'custom' && (
                   <button
                     onClick={saveAsCustomPreset}
-                    className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-dashed border-slate-600 text-slate-500 hover:text-slate-300 hover:border-slate-500 transition-colors"
+                    className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-dashed border-slate-600 text-slate-400 hover:text-slate-300 hover:border-slate-500 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+                    aria-label="Save preset"
                   >
                     <Plus className="w-4 h-4" />
-                    <span className="text-[9px]">Save</span>
+                    <span className="text-sm">Save</span>
                   </button>
                 )}
               </div>
@@ -416,30 +382,32 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
   };
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Brush className="w-4 h-4 text-purple-400" />
-          <span className="text-xs font-medium text-slate-200">Brush Library</span>
+          <span className="text-sm font-medium text-slate-200">Brush Library</span>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={resetToDefaults}
-            className="p-1.5 text-slate-400 hover:text-slate-200 rounded transition-colors"
+            className="p-2.5 text-slate-400 hover:text-slate-200 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
             title="Reset to defaults"
+            aria-label="Reset defaults"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
               showAdvanced
                 ? 'bg-slate-700 text-slate-200'
                 : 'text-slate-400 hover:text-slate-200'
             )}
             title="Advanced settings"
+            aria-label="Advanced settings"
           >
             <Settings className="w-3.5 h-3.5" />
           </button>
@@ -449,8 +417,8 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
       {/* Quick Color Picker */}
       <div className="space-y-1.5">
         <div className="flex items-center gap-2">
-          <Palette className="w-3 h-3 text-slate-500" />
-          <span className="text-[10px] text-slate-400">Quick Colors</span>
+          <Palette className="w-3 h-3 text-slate-400" />
+          <span className="text-sm text-slate-400">Quick Colors</span>
         </div>
         <div className="flex flex-wrap gap-1">
           {QUICK_COLORS.map((color) => (
@@ -458,7 +426,7 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
               key={color}
               onClick={() => onBrushChange({ color })}
               className={cn(
-                'w-5 h-5 rounded border-2 transition-all',
+                'w-8 h-8 rounded border-2 transition-all',
                 currentBrush.color === color
                   ? 'border-white scale-110'
                   : 'border-transparent hover:scale-105'
@@ -466,12 +434,12 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
               style={{ backgroundColor: color }}
             />
           ))}
-          <label className="w-5 h-5 rounded border border-slate-600 cursor-pointer overflow-hidden">
+          <label className="w-8 h-8 rounded border border-slate-600 cursor-pointer overflow-hidden">
             <input
               type="color"
               value={currentBrush.color}
               onChange={(e) => onBrushChange({ color: e.target.value })}
-              className="w-8 h-8 -ml-1.5 -mt-1.5 cursor-pointer"
+              className="w-10 h-10 -ml-1 -mt-1 cursor-pointer"
             />
           </label>
         </div>
@@ -479,32 +447,18 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
 
       {/* Basic Controls */}
       <div className="space-y-2 p-2 bg-slate-800/30 rounded-lg">
-        <SliderControl
-          label="Size"
-          value={currentBrush.size}
-          min={1}
-          max={100}
-          onChange={(size) => onBrushChange({ size })}
-          unit="px"
-        />
-        <SliderControl
-          label="Opacity"
-          value={currentBrush.opacity}
-          min={0}
-          max={1}
-          step={0.01}
-          onChange={(opacity) => onBrushChange({ opacity })}
-          unit="%"
-        />
-        <SliderControl
-          label="Hardness"
-          value={currentBrush.hardness}
-          min={0}
-          max={1}
-          step={0.01}
-          onChange={(hardness) => onBrushChange({ hardness })}
-          unit="%"
-        />
+        <div className="space-y-1">
+          <span className="text-sm text-slate-300">Size</span>
+          <RangeSlider aria-label="Brush size" value={currentBrush.size} min={1} max={100} onChange={(size) => onBrushChange({ size })} unit="px" />
+        </div>
+        <div className="space-y-1">
+          <span className="text-sm text-slate-300">Opacity</span>
+          <RangeSlider aria-label="Brush opacity" value={currentBrush.opacity} min={0} max={1} step={0.01} onChange={(opacity) => onBrushChange({ opacity })} />
+        </div>
+        <div className="space-y-1">
+          <span className="text-sm text-slate-300">Hardness</span>
+          <RangeSlider aria-label="Brush hardness" value={currentBrush.hardness} min={0} max={1} step={0.01} onChange={(hardness) => onBrushChange({ hardness })} />
+        </div>
       </div>
 
       {/* Brush Presets */}
@@ -526,53 +480,35 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
           >
             <div className="space-y-3 p-2 bg-slate-800/30 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
-                <Sliders className="w-3 h-3 text-slate-500" />
-                <span className="text-[10px] font-medium text-slate-300 uppercase tracking-wider">
+                <Sliders className="w-3 h-3 text-slate-400" />
+                <span className="text-sm font-medium text-slate-300 uppercase tracking-wider">
                   Advanced
                 </span>
               </div>
 
-              <SliderControl
-                label="Spacing"
-                value={currentBrush.spacing}
-                min={0.01}
-                max={1}
-                step={0.01}
-                onChange={(spacing) => onBrushChange({ spacing })}
-                unit="%"
-              />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Spacing</span>
+                <RangeSlider aria-label="Brush spacing" value={currentBrush.spacing} min={0.01} max={1} step={0.01} onChange={(spacing) => onBrushChange({ spacing })} />
+              </div>
 
-              <SliderControl
-                label="Smoothing"
-                value={currentBrush.smoothing}
-                min={0}
-                max={1}
-                step={0.01}
-                onChange={(smoothing) => onBrushChange({ smoothing })}
-                unit="%"
-              />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Smoothing</span>
+                <RangeSlider aria-label="Brush smoothing" value={currentBrush.smoothing} min={0} max={1} step={0.01} onChange={(smoothing) => onBrushChange({ smoothing })} />
+              </div>
 
-              <SliderControl
-                label="Min Size"
-                value={currentBrush.minSize}
-                min={1}
-                max={currentBrush.size}
-                onChange={(minSize) => onBrushChange({ minSize })}
-                unit="px"
-              />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Min Size</span>
+                <RangeSlider aria-label="Minimum brush size" value={currentBrush.minSize} min={1} max={currentBrush.size} onChange={(minSize) => onBrushChange({ minSize })} unit="px" />
+              </div>
 
-              <SliderControl
-                label="Max Size"
-                value={currentBrush.maxSize}
-                min={currentBrush.size}
-                max={200}
-                onChange={(maxSize) => onBrushChange({ maxSize })}
-                unit="px"
-              />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Max Size</span>
+                <RangeSlider aria-label="Maximum brush size" value={currentBrush.maxSize} min={currentBrush.size} max={200} onChange={(maxSize) => onBrushChange({ maxSize })} unit="px" />
+              </div>
 
               {/* Pressure Options */}
               <div className="space-y-1.5">
-                <span className="text-[10px] text-slate-400">Pressure Sensitivity</span>
+                <span className="text-sm text-slate-400">Pressure Sensitivity</span>
                 <div className="flex flex-col gap-1">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -583,7 +519,7 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
                       }
                       className="w-3 h-3 rounded border-slate-600 bg-slate-700"
                     />
-                    <span className="text-[10px] text-slate-300">Pressure affects size</span>
+                    <span className="text-sm text-slate-300">Pressure affects size</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -594,18 +530,18 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
                       }
                       className="w-3 h-3 rounded border-slate-600 bg-slate-700"
                     />
-                    <span className="text-[10px] text-slate-300">Pressure affects opacity</span>
+                    <span className="text-sm text-slate-300">Pressure affects opacity</span>
                   </label>
                 </div>
               </div>
 
               {/* Blend Mode */}
               <div className="space-y-1.5">
-                <span className="text-[10px] text-slate-400">Blend Mode</span>
+                <span className="text-sm text-slate-400">Blend Mode</span>
                 <select
                   value={currentBrush.blendMode}
                   onChange={(e) => onBrushChange({ blendMode: e.target.value as BlendMode })}
-                  className="w-full px-2 py-1 text-[10px] bg-slate-700 border border-slate-600 rounded text-slate-200"
+                  className="w-full px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded text-slate-200"
                 >
                   {BLEND_MODES.map((mode) => (
                     <option key={mode.value} value={mode.value}>
@@ -630,15 +566,15 @@ export const BrushLibrary: React.FC<BrushLibraryProps> = ({
             }}
           />
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-300 capitalize">{currentBrush.type}</span>
-            <span className="text-[9px] text-slate-500">
+            <span className="text-sm text-slate-300 capitalize">{currentBrush.type}</span>
+            <span className="text-sm text-slate-400">
               {currentBrush.size}px / {Math.round(currentBrush.opacity * 100)}%
             </span>
           </div>
         </div>
         <button
           onClick={saveAsCustomPreset}
-          className="p-1.5 text-slate-400 hover:text-green-400 rounded transition-colors"
+          className="p-2.5 text-slate-400 hover:text-green-400 rounded transition-colors"
           title="Save as preset"
         >
           <Save className="w-3.5 h-3.5" />

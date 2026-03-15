@@ -193,7 +193,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
         </div>
         <button
           onClick={onToggle}
-          className="p-1 text-slate-500 hover:text-slate-300 transition-colors"
+          className="p-1 text-slate-400 hover:text-slate-300 transition-colors"
           title="Close Panel"
         >
           <PanelRightClose className="w-4 h-4" />
@@ -202,9 +202,9 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
 
       {/* Scene Info */}
       <div className="shrink-0 px-3 py-2 border-b border-slate-800 bg-slate-900/50">
-        <div className="text-xs font-medium text-slate-300 truncate">{scene.name || 'Untitled Scene'}</div>
+        <div className="text-sm font-medium text-slate-300 truncate">{scene.name || 'Untitled Scene'}</div>
         {scene.description && (
-          <div className="text-[10px] text-slate-500 truncate mt-0.5">{scene.description}</div>
+          <div className="text-sm text-slate-400 truncate mt-0.5">{scene.description}</div>
         )}
       </div>
 
@@ -215,10 +215,10 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors',
+              'flex items-center gap-1 px-2 py-1 rounded text-sm font-medium transition-colors',
               activeTab === tab.id
                 ? 'bg-slate-800 text-slate-200'
-                : 'text-slate-500 hover:text-slate-300'
+                : 'text-slate-400 hover:text-slate-300'
             )}
           >
             <tab.icon className="w-3 h-3" />
@@ -276,15 +276,15 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
             >
               {linkedScenes.length === 0 ? (
                 <div className="text-center py-6">
-                  <Link2 className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No linked scenes</p>
+                  <Link2 className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No linked scenes</p>
                 </div>
               ) : (
                 <>
                   {/* Previous/Next */}
                   {linkedScenes.filter(l => l.type === 'previous' || l.type === 'next').length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                      <div className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                         Sequence
                       </div>
                       {linkedScenes
@@ -296,12 +296,12 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                             className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors text-left"
                           >
                             <div className={cn(
-                              'px-1.5 py-0.5 rounded text-[9px] font-medium',
+                              'px-1.5 py-0.5 rounded text-sm font-medium',
                               link.type === 'previous' ? 'bg-slate-700 text-slate-300' : 'bg-cyan-500/20 text-cyan-300'
                             )}>
                               {link.type === 'previous' ? '← Prev' : 'Next →'}
                             </div>
-                            <span className="text-xs text-slate-300 truncate">{link.sceneName}</span>
+                            <span className="text-sm text-slate-300 truncate">{link.sceneName}</span>
                           </button>
                         ))}
                     </div>
@@ -310,7 +310,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                   {/* Referenced */}
                   {linkedScenes.filter(l => l.type === 'reference').length > 0 && (
                     <div className="space-y-1.5">
-                      <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                      <div className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                         Referenced in Content
                       </div>
                       {linkedScenes
@@ -321,8 +321,8 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                             onClick={() => onNavigateToScene?.(link.sceneId)}
                             className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors text-left"
                           >
-                            <Link2 className="w-3 h-3 text-slate-500" />
-                            <span className="text-xs text-slate-300 truncate">{link.sceneName}</span>
+                            <Link2 className="w-3 h-3 text-slate-400" />
+                            <span className="text-sm text-slate-300 truncate">{link.sceneName}</span>
                           </button>
                         ))}
                     </div>
@@ -343,9 +343,9 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
             >
               {contextHistory.length === 0 ? (
                 <div className="text-center py-6">
-                  <History className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No history recorded</p>
-                  <p className="text-[10px] text-slate-600 mt-1">
+                  <History className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No history recorded</p>
+                  <p className="text-sm text-slate-400 mt-1">
                     Context snapshots will appear here
                   </p>
                 </div>
@@ -356,14 +356,14 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                       key={index}
                       className="p-2 bg-slate-900/50 border border-slate-800 rounded-lg"
                     >
-                      <div className="text-[10px] text-slate-500">
+                      <div className="text-sm text-slate-400">
                         {new Date(entry.timestamp).toLocaleTimeString()}
                       </div>
-                      <div className="text-xs text-slate-300 mt-1">
+                      <div className="text-sm text-slate-300 mt-1">
                         {entry.presentCharacters.length} characters present
                       </div>
                       {entry.location && (
-                        <div className="text-[10px] text-slate-500">@ {entry.location}</div>
+                        <div className="text-sm text-slate-400">@ {entry.location}</div>
                       )}
                     </div>
                   ))}
@@ -386,7 +386,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
 
       {/* Footer - Quick Info */}
       <div className="shrink-0 px-3 py-2 border-t border-slate-800 bg-slate-900/50">
-        <div className="flex items-center gap-2 text-[10px] text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-slate-400">
           <Info className="w-3 h-3" />
           <span>{content.length} chars • {content.split(/\s+/).filter(Boolean).length} words</span>
         </div>

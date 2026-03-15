@@ -334,7 +334,7 @@ export function BatchStyler({
   const getStatusIcon = (jobStatus: BatchJob['status']) => {
     switch (jobStatus) {
       case 'pending':
-        return <Clock className="w-4 h-4 text-slate-500" />;
+        return <Clock className="w-4 h-4 text-slate-400" />;
       case 'processing':
         return <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />;
       case 'completed':
@@ -413,7 +413,7 @@ export function BatchStyler({
                   <label className="text-sm font-medium text-slate-300">
                     Skip High Consistency Scores
                   </label>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm text-slate-400">
                     Skip characters already above threshold
                   </p>
                 </div>
@@ -460,7 +460,7 @@ export function BatchStyler({
                   <label className="text-sm font-medium text-slate-300">
                     Preserve Character Identity
                   </label>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm text-slate-400">
                     Maintain distinctive features during style transfer
                   </p>
                 </div>
@@ -506,7 +506,7 @@ export function BatchStyler({
                   <label className="text-sm font-medium text-slate-300">
                     Retry Failed Jobs
                   </label>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm text-slate-400">
                     Automatically retry up to {config.maxRetries} times
                   </p>
                 </div>
@@ -538,14 +538,14 @@ export function BatchStyler({
             <div className="flex gap-2">
               <button
                 onClick={selectAll}
-                className="text-xs text-cyan-400 hover:text-cyan-300"
+                className="text-sm text-cyan-400 hover:text-cyan-300"
               >
                 Select All
               </button>
-              <span className="text-slate-600">|</span>
+              <span className="text-slate-400">|</span>
               <button
                 onClick={selectNone}
-                className="text-xs text-slate-400 hover:text-slate-300"
+                className="text-sm text-slate-400 hover:text-slate-300"
               >
                 Select None
               </button>
@@ -573,7 +573,7 @@ export function BatchStyler({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Users className="w-4 h-4 text-slate-500" />
+                      <Users className="w-4 h-4 text-slate-400" />
                     </div>
                   )}
                 </div>
@@ -609,17 +609,17 @@ export function BatchStyler({
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/30 text-center">
               <div className="text-2xl font-semibold text-green-400">{completedJobs}</div>
-              <div className="text-xs text-slate-400">Completed</div>
+              <div className="text-sm text-slate-400">Completed</div>
             </div>
             <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/30 text-center">
               <div className="text-2xl font-semibold text-cyan-400">
                 {jobs.filter(j => j.status === 'processing').length}
               </div>
-              <div className="text-xs text-slate-400">Processing</div>
+              <div className="text-sm text-slate-400">Processing</div>
             </div>
             <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/30 text-center">
               <div className="text-2xl font-semibold text-red-400">{failedJobs}</div>
-              <div className="text-xs text-slate-400">Failed</div>
+              <div className="text-sm text-slate-400">Failed</div>
             </div>
           </div>
 
@@ -637,7 +637,7 @@ export function BatchStyler({
                       {job.characterName}
                     </span>
                     {job.result?.consistencyScore && (
-                      <span className="text-xs text-cyan-400">
+                      <span className="text-sm text-cyan-400">
                         {job.result.consistencyScore}%
                       </span>
                     )}
@@ -651,17 +651,17 @@ export function BatchStyler({
                     </div>
                   )}
                   {job.status === 'failed' && job.result?.error && (
-                    <p className="text-xs text-red-400 mt-1">{job.result.error}</p>
+                    <p className="text-sm text-red-400 mt-1">{job.result.error}</p>
                   )}
                   {job.status === 'skipped' && (
-                    <p className="text-xs text-yellow-400 mt-1">
+                    <p className="text-sm text-yellow-400 mt-1">
                       Skipped (score above threshold)
                     </p>
                   )}
                 </div>
                 {job.status === 'completed' && job.result?.newAvatarUrl && (
                   <div className="w-10 h-10 rounded-lg bg-slate-700/50 overflow-hidden">
-                    <Image className="w-full h-full p-2 text-slate-500" />
+                    <Image className="w-full h-full p-2 text-slate-400" />
                   </div>
                 )}
               </div>
@@ -680,7 +680,7 @@ export function BatchStyler({
               'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
               selectedCharacters.size > 0
                 ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900'
-                : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
             )}
           >
             <Play className="w-4 h-4" />

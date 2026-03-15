@@ -92,7 +92,7 @@ const CharactersFeature: React.FC = () => {
             preloadOnHover
             loadingHeight="h-full"
             loadingComponent={
-              <div className="h-full flex items-center justify-center font-mono text-xs text-slate-500">
+              <div className="h-full flex items-center justify-center font-mono text-sm text-slate-400">
                 loading_relationship_map...
               </div>
             }
@@ -138,7 +138,7 @@ const CharactersFeature: React.FC = () => {
       {/* Tab Navigation - Clean Manuscript style */}
       <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-800/50 bg-slate-950/80">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-slate-600 mr-2">
+          <span className="font-mono text-sm uppercase tracking-wider text-slate-400 mr-2">
             // module
           </span>
           {tabs.map((tab, index) => {
@@ -149,7 +149,7 @@ const CharactersFeature: React.FC = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 font-mono text-xs',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 font-mono text-sm',
                   isActive
                     ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                     : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'
@@ -168,7 +168,7 @@ const CharactersFeature: React.FC = () => {
         <button
           onClick={() => setShowCLI(!showCLI)}
           className={cn(
-            'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-xs transition-all',
+            'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-sm transition-all',
             showCLI
               ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
               : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'
@@ -186,7 +186,7 @@ const CharactersFeature: React.FC = () => {
         <button
           onClick={() => setShowRecommendations(!showRecommendations)}
           className={cn(
-            'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-xs transition-all',
+            'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-sm transition-all',
             showRecommendations
               ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
               : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'
@@ -196,7 +196,7 @@ const CharactersFeature: React.FC = () => {
           <Lightbulb className="w-3.5 h-3.5" />
           <span className="uppercase tracking-wide">suggest</span>
           {recommendations.length > 0 && !showRecommendations && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-900 text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-900 text-sm font-bold rounded-full flex items-center justify-center">
               {recommendations.length}
             </span>
           )}
@@ -217,7 +217,7 @@ const CharactersFeature: React.FC = () => {
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             >
               {tabs[activeTab]?.content || (
-                <div className="font-mono text-xs text-slate-500 italic">// no_content_available</div>
+                <div className="font-mono text-sm text-slate-400 italic">// no_content_available</div>
               )}
             </motion.div>
           )}

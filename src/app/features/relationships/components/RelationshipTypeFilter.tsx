@@ -50,7 +50,7 @@ const RelationshipTypeFilter: React.FC<RelationshipTypeFilterProps> = ({
           </div>
           <button
             onClick={handleToggleAll}
-            className="text-xs text-blue-300 hover:text-blue-200 transition-colors font-medium"
+            className="text-sm text-blue-300 hover:text-blue-200 transition-colors font-medium"
           >
             {allSelected ? 'Deselect All' : 'Select All'}
           </button>
@@ -115,7 +115,7 @@ const RelationshipTypeFilter: React.FC<RelationshipTypeFilterProps> = ({
                 </span>
 
                 {/* Count Badge (optional - for future use) */}
-                {/* <span className="text-xs text-white/70 bg-white/10 px-2 py-0.5 rounded-full">
+                {/* <span className="text-sm text-white/70 bg-white/10 px-2 py-0.5 rounded-full">
                   0
                 </span> */}
               </label>
@@ -125,7 +125,7 @@ const RelationshipTypeFilter: React.FC<RelationshipTypeFilterProps> = ({
 
         {/* Active Count */}
         <div className="mt-4 pt-4 border-t border-white/20">
-          <div className="text-xs text-white/70 text-center">
+          <div className="text-sm text-white/70 text-center">
             {activeFilters.size === 0
               ? 'No filters active (showing all)'
               : `Showing ${activeFilters.size} of ${Object.keys(RelationshipType).length} types`

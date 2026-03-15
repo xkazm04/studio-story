@@ -129,7 +129,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
 
   return (
     <div className="space-y-2">
-      <label className="font-mono text-[10px] text-slate-500 uppercase block">
+      <label className="font-mono text-sm text-slate-400 uppercase block">
         {label}
       </label>
       <div className="flex flex-wrap gap-2">
@@ -157,7 +157,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
           <button
             onClick={addColor}
             className="w-8 h-8 rounded border-2 border-dashed border-slate-600
-                       flex items-center justify-center text-slate-500 hover:border-cyan-500 hover:text-cyan-400
+                       flex items-center justify-center text-slate-400 hover:border-cyan-500 hover:text-cyan-400
                        transition-colors"
           >
             <Plus size={14} />
@@ -277,7 +277,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               style
             </h3>
           </div>
@@ -293,10 +293,10 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                 onClick={() => applyArtDirectionPreset(option.id)}
                 disabled={disabled}
                 className={cn(
-                  'px-2 py-1 rounded text-[10px] font-mono transition-all',
+                  'px-2 py-1 rounded text-sm font-mono transition-all',
                   isSelected
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-400'
-                    : 'bg-slate-800/40 border border-slate-700/50 text-slate-500 hover:border-slate-600',
+                    : 'bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:border-slate-600',
                   disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -334,7 +334,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
               onClick={() => onSave(definition)}
               disabled={disabled}
               className="flex items-center gap-1 px-2 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30
-                         text-cyan-400 text-xs font-mono transition-colors disabled:opacity-50"
+                         text-cyan-400 text-sm font-mono transition-colors disabled:opacity-50"
             >
               <Save size={12} />
               <span>Save</span>
@@ -345,7 +345,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
       {/* Style Name */}
       <div className="mb-4">
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           style_name
         </label>
         <input
@@ -355,7 +355,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
           disabled={disabled}
           placeholder="Enter style name..."
           className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                     font-mono text-sm text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                      disabled:opacity-50"
         />
@@ -369,14 +369,14 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
         >
           <div className="flex items-center gap-2">
             <Paintbrush size={14} className="text-cyan-400" />
-            <span className="font-mono text-xs text-slate-300">
+            <span className="font-mono text-sm text-slate-300">
               Art Direction: {currentPreset?.label}
             </span>
           </div>
           {expandedSection === 'artDirection' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -405,12 +405,12 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                       )}
                     >
                       <span className={cn(
-                        'font-mono text-xs',
+                        'font-mono text-sm',
                         isSelected ? 'text-cyan-400' : 'text-slate-300'
                       )}>
                         {option.label}
                       </span>
-                      <span className="font-mono text-[9px] text-slate-500 line-clamp-1">
+                      <span className="font-mono text-sm text-slate-400 line-clamp-1">
                         {option.description}
                       </span>
                     </button>
@@ -420,7 +420,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Style Keywords */}
               <div className="mb-3">
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   style_keywords
                 </label>
                 <div className="flex flex-wrap gap-1">
@@ -428,7 +428,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                     <span
                       key={index}
                       className="px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/30 rounded
-                                 text-[10px] font-mono text-cyan-400"
+                                 text-sm font-mono text-cyan-400"
                     >
                       {keyword}
                     </span>
@@ -438,7 +438,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Artistic Influences */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   artistic_influences
                 </label>
                 <div className="flex flex-wrap gap-1">
@@ -446,7 +446,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                     <span
                       key={index}
                       className="px-2 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded
-                                 text-[10px] font-mono text-purple-400"
+                                 text-sm font-mono text-purple-400"
                     >
                       {influence}
                     </span>
@@ -466,7 +466,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
         >
           <div className="flex items-center gap-2">
             <Palette size={14} className="text-cyan-400" />
-            <span className="font-mono text-xs text-slate-300">Color Palette</span>
+            <span className="font-mono text-sm text-slate-300">Color Palette</span>
             <div className="flex gap-0.5">
               {definition.colorPalette.primaryColors.slice(0, 3).map((color, i) => (
                 <span
@@ -478,9 +478,9 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
             </div>
           </div>
           {expandedSection === 'colorPalette' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -497,7 +497,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                 <button
                   onClick={() => setShowPresetPalettes(!showPresetPalettes)}
                   className="flex items-center gap-2 px-2 py-1 rounded bg-slate-700/50 hover:bg-slate-700
-                             text-xs font-mono text-slate-300 transition-colors"
+                             text-sm font-mono text-slate-300 transition-colors"
                 >
                   <Sparkles size={12} />
                   <span>Preset Palettes</span>
@@ -524,7 +524,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                             />
                           ))}
                         </div>
-                        <span className="font-mono text-xs text-slate-300">{palette.name}</span>
+                        <span className="font-mono text-sm text-slate-300">{palette.name}</span>
                       </button>
                     ))}
                   </div>
@@ -558,7 +558,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
               {/* Saturation/Brightness Ranges */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     saturation: {definition.colorPalette.saturationRange[0]}-{definition.colorPalette.saturationRange[1]}%
                   </label>
                   <div className="flex gap-2">
@@ -592,7 +592,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                 </div>
 
                 <div>
-                  <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     brightness: {definition.colorPalette.brightnessRange[0]}-{definition.colorPalette.brightnessRange[1]}%
                   </label>
                   <div className="flex gap-2">
@@ -638,14 +638,14 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
         >
           <div className="flex items-center gap-2">
             <Sun size={14} className="text-cyan-400" />
-            <span className="font-mono text-xs text-slate-300">
+            <span className="font-mono text-sm text-slate-300">
               Lighting: {definition.lighting.type}
             </span>
           </div>
           {expandedSection === 'lighting' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -659,7 +659,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
             >
               {/* Lighting Type */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   lighting_type
                 </label>
                 <select
@@ -667,7 +667,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                   onChange={(e) => updateLighting({ type: e.target.value })}
                   disabled={disabled}
                   className="w-full px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300
+                             font-mono text-sm text-slate-300
                              focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                 >
                   <option value="natural">Natural</option>
@@ -681,7 +681,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Lighting Direction */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   direction
                 </label>
                 <select
@@ -689,7 +689,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                   onChange={(e) => updateLighting({ direction: e.target.value })}
                   disabled={disabled}
                   className="w-full px-3 py-2 bg-slate-800/60 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300
+                             font-mono text-sm text-slate-300
                              focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                 >
                   <option value="front">Front</option>
@@ -702,7 +702,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Shadow Style */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   shadow_style
                 </label>
                 <div className="flex gap-2">
@@ -712,10 +712,10 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                       onClick={() => updateLighting({ shadowStyle: style })}
                       disabled={disabled}
                       className={cn(
-                        'flex-1 px-2 py-1.5 rounded font-mono text-xs transition-colors',
+                        'flex-1 px-2 py-1.5 rounded font-mono text-sm transition-colors',
                         definition.lighting.shadowStyle === style
                           ? 'bg-cyan-500/20 text-cyan-400'
-                          : 'bg-slate-800/40 text-slate-500 hover:bg-slate-700/60'
+                          : 'bg-slate-800/40 text-slate-400 hover:bg-slate-700/60'
                       )}
                     >
                       {style}
@@ -726,7 +726,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Highlight Strength */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
                   highlight_strength: {definition.lighting.highlightStrength}%
                 </label>
                 <input
@@ -754,14 +754,14 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
         >
           <div className="flex items-center gap-2">
             <Settings size={14} className="text-cyan-400" />
-            <span className="font-mono text-xs text-slate-300">
+            <span className="font-mono text-sm text-slate-300">
               Consistency: {definition.consistencyLevel}
             </span>
           </div>
           {expandedSection === 'consistency' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -775,7 +775,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
             >
               {/* Consistency Level */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   consistency_level
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -792,12 +792,12 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                       )}
                     >
                       <span className={cn(
-                        'font-mono text-xs',
+                        'font-mono text-sm',
                         definition.consistencyLevel === level.id ? 'text-cyan-400' : 'text-slate-300'
                       )}>
                         {level.label}
                       </span>
-                      <span className="font-mono text-[8px] text-slate-500 text-center">
+                      <span className="font-mono text-[8px] text-slate-400 text-center">
                         {level.description}
                       </span>
                     </button>
@@ -807,7 +807,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
 
               {/* Lighting Consistency */}
               <div>
-                <label className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <label className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   lighting_consistency
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -824,12 +824,12 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
                       )}
                     >
                       <span className={cn(
-                        'font-mono text-xs',
+                        'font-mono text-sm',
                         definition.lightingConsistency === option.id ? 'text-cyan-400' : 'text-slate-300'
                       )}>
                         {option.label}
                       </span>
-                      <span className="font-mono text-[8px] text-slate-500">
+                      <span className="font-mono text-[8px] text-slate-400">
                         {option.description}
                       </span>
                     </button>
@@ -844,7 +844,7 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
       {/* Prompt Preview */}
       <div className="mt-4 p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-[10px] text-slate-500 uppercase">
+          <span className="font-mono text-sm text-slate-400 uppercase">
             prompt_preview
           </span>
           <button
@@ -852,19 +852,19 @@ const StyleDefinition: React.FC<StyleDefinitionProps> = ({
               const text = `${definition.stylePromptPrefix} [character description] ${definition.stylePromptSuffix}`;
               navigator.clipboard.writeText(text);
             }}
-            className="p-1 rounded hover:bg-slate-700/50 text-slate-500 transition-colors"
+            className="p-1 rounded hover:bg-slate-700/50 text-slate-400 transition-colors"
             title="Copy prompt"
           >
             <Copy size={12} />
           </button>
         </div>
-        <p className="font-mono text-[10px] text-slate-400 leading-relaxed">
+        <p className="font-mono text-sm text-slate-400 leading-relaxed">
           <span className="text-cyan-400">{definition.stylePromptPrefix}</span>
           {' [character description] '}
           <span className="text-cyan-400">{definition.stylePromptSuffix}</span>
         </p>
         {definition.negativePrompt && (
-          <p className="font-mono text-[10px] text-red-400/70 mt-2">
+          <p className="font-mono text-sm text-red-400/70 mt-2">
             Avoid: {definition.negativePrompt}
           </p>
         )}

@@ -17,22 +17,22 @@ export interface PanelHeaderProps {
 
 const sizeClasses: Record<PanelHeaderSize, { container: string; title: string; subtitle: string; icon: string }> = {
   sm: {
-    container: 'px-3 py-2',
-    title: 'text-xs font-medium',
-    subtitle: 'text-[10px]',
+    container: 'px-2.5 py-1.5',
+    title: 'text-sm font-medium',
+    subtitle: 'text-xs',
     icon: '[&>svg]:w-3.5 [&>svg]:h-3.5',
   },
   md: {
-    container: 'px-4 py-3',
+    container: 'px-3 py-2',
     title: 'text-sm font-semibold',
     subtitle: 'text-xs',
-    icon: '[&>svg]:w-4 [&>svg]:h-4',
+    icon: '[&>svg]:w-3.5 [&>svg]:h-3.5',
   },
   lg: {
-    container: 'px-4 py-4',
+    container: 'px-3 py-2.5',
     title: 'text-base font-semibold',
-    subtitle: 'text-sm',
-    icon: '[&>svg]:w-5 [&>svg]:h-5',
+    subtitle: 'text-xs',
+    icon: '[&>svg]:w-4 [&>svg]:h-4',
   },
 };
 
@@ -63,7 +63,7 @@ export function PanelHeader({
         <div className="min-w-0">
           <h3 className={cn(sizes.title, 'text-slate-200 truncate')}>{title}</h3>
           {subtitle && (
-            <p className={cn(sizes.subtitle, 'text-slate-500 truncate')}>{subtitle}</p>
+            <p className={cn(sizes.subtitle, 'text-slate-400 truncate')}>{subtitle}</p>
           )}
         </div>
       </div>

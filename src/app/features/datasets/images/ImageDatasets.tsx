@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fadeInDown } from '@/lib/animations';
 import { useDatasetsByProject, useCreateDataset, useDeleteDataset } from '@/app/hooks/useDatasets';
 import { Plus, Loader2, FolderOpen, Trash2 } from 'lucide-react';
+import { LoadingState } from '@/app/components/UI/LoadingState';
+import { EmptyState } from '@/app/components/UI/EmptyState';
 import ImageDatasetGallery from './ImageDatasetGallery';
 import DatasetSketchWizard from './DatasetSketchWizard';
 import { Dataset } from '@/app/types/Dataset';
@@ -53,33 +56,30 @@ const ImageDatasets = ({ projectId }: ImageDatasetsProps) => {
   const selectedDataset = datasets?.find((d) => d.id === selectedDatasetId);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-12">
-        <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
-      </div>
-    );
+    return <LoadingState size="md" />;
   }
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
+        <h2 className="ms-h1 flex items-center gap-2">
           <FolderOpen className="w-6 h-6 text-blue-400" />
           Image Datasets
         </h2>
-        <p className="text-gray-400 mt-1">
+        <p className="ms-caption mt-1">
           Organize and manage image collections for your project
         </p>
       </div>
 
       {/* Create New Dataset */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gray-900 border border-gray-700 rounded-xl p-6"
+        variants={fadeInDown}
+        initial="initial"
+        animate="animate"
+        className="bg-slate-900 border border-slate-700 rounded-xl p-6"
       >
-        <h3 className="text-sm font-semibold text-gray-200 mb-4">Create New Dataset</h3>
+        <h3 className="text-sm font-semibold text-slate-200 mb-4">Create New Dataset</h3>
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -87,7 +87,7 @@ const ImageDatasets = ({ projectId }: ImageDatasetsProps) => {
             onChange={(e) => setNewDatasetName(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleCreateDataset()}
             placeholder="Enter dataset name..."
-            className="flex-1 px-4 py-2 bg-gray-950 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-4 py-2 bg-slate-950 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
             onClick={handleCreateDataset}
@@ -124,20 +124,20 @@ const ImageDatasets = ({ projectId }: ImageDatasetsProps) => {
                 className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
                   selectedDatasetId === dataset.id
                     ? 'bg-blue-900 border-2 border-blue-600 shadow-lg shadow-blue-500/30'
-                    : 'bg-gray-900 border border-gray-700 hover:border-gray-600'
+                    : 'bg-slate-900 border border-slate-700 hover:border-slate-600'
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-base font-semibold text-gray-100 truncate">
+                    <h4 className="text-base font-semibold text-slate-100 truncate">
                       {dataset.name}
                     </h4>
                     {dataset.description && (
-                      <p className="text-sm text-gray-400 mt-1 line-clamp-2">
+                      <p className="text-sm text-slate-400 mt-1 line-clamp-2">
                         {dataset.description}
                       </p>
                     )}
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-sm text-slate-400 mt-2">
                       Created {new Date(dataset.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -152,11 +152,12 @@ const ImageDatasets = ({ projectId }: ImageDatasetsProps) => {
             ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-400">No image datasets yet</p>
-          <p className="text-sm text-gray-500 mt-1">Create your first dataset above</p>
-        </div>
+        <EmptyState
+          icon={<FolderOpen />}
+          iconSize="lg"
+          title="No image datasets yet"
+          subtitle="Create your first dataset above"
+        />
       )}
 
       {/* Selected Dataset Gallery */}
@@ -167,7 +168,7 @@ const ImageDatasets = ({ projectId }: ImageDatasetsProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="border-t border-gray-800 pt-6"
+            className="border-t border-slate-800 pt-6"
           >
             <ImageDatasetGallery
               dataset={selectedDataset}

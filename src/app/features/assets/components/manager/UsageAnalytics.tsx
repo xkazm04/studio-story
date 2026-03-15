@@ -119,7 +119,7 @@ export function UsageAnalytics({
             </div>
             <div>
               <h2 className="text-lg font-medium text-slate-100">Usage Analytics</h2>
-              <p className="text-xs text-slate-400">Asset utilization overview</p>
+              <p className="text-sm text-slate-400">Asset utilization overview</p>
             </div>
           </div>
           <button
@@ -137,7 +137,7 @@ export function UsageAnalytics({
         <div className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/30">
           <div className="flex items-center gap-2 mb-2">
             <Package className="w-4 h-4 text-slate-400" />
-            <span className="text-xs text-slate-400">Total Assets</span>
+            <span className="text-sm text-slate-400">Total Assets</span>
           </div>
           <p className="text-2xl font-bold text-slate-100">{analytics.totalAssets}</p>
         </div>
@@ -145,7 +145,7 @@ export function UsageAnalytics({
         <div className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/30">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs text-slate-400">References</span>
+            <span className="text-sm text-slate-400">References</span>
           </div>
           <p className="text-2xl font-bold text-cyan-400">{analytics.totalReferences}</p>
         </div>
@@ -153,7 +153,7 @@ export function UsageAnalytics({
         <div className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/30">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="w-4 h-4 text-amber-400" />
-            <span className="text-xs text-slate-400">Orphans</span>
+            <span className="text-sm text-slate-400">Orphans</span>
           </div>
           <p className="text-2xl font-bold text-amber-400">{analytics.orphanCount}</p>
         </div>
@@ -161,7 +161,7 @@ export function UsageAnalytics({
         <div className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/30">
           <div className="flex items-center gap-2 mb-2">
             <BarChart3 className="w-4 h-4 text-green-400" />
-            <span className="text-xs text-slate-400">Usage Rate</span>
+            <span className="text-sm text-slate-400">Usage Rate</span>
           </div>
           <p className="text-2xl font-bold text-green-400">{usageRate}%</p>
         </div>
@@ -183,11 +183,11 @@ export function UsageAnalytics({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon className="w-4 h-4 text-slate-400" />
-                    <span className="text-xs text-slate-300">
+                    <span className="text-sm text-slate-300">
                       {entityTypeLabels[entityType]}
                     </span>
                   </div>
-                  <span className="text-xs font-medium text-slate-400">{count}</span>
+                  <span className="text-sm font-medium text-slate-400">{count}</span>
                 </div>
                 <div className="h-2 bg-slate-800/50 rounded-full overflow-hidden">
                   <motion.div
@@ -212,19 +212,19 @@ export function UsageAnalytics({
               <p className="text-lg font-bold text-green-400">
                 {analytics.unusedDuration.lessThan7Days}
               </p>
-              <p className="text-xs text-green-400/70">&lt; 7 days</p>
+              <p className="text-sm text-green-400/70">&lt; 7 days</p>
             </div>
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-center">
               <p className="text-lg font-bold text-amber-400">
                 {analytics.unusedDuration.lessThan30Days}
               </p>
-              <p className="text-xs text-amber-400/70">7-30 days</p>
+              <p className="text-sm text-amber-400/70">7-30 days</p>
             </div>
             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center">
               <p className="text-lg font-bold text-red-400">
                 {analytics.unusedDuration.moreThan30Days}
               </p>
-              <p className="text-xs text-red-400/70">30+ days</p>
+              <p className="text-sm text-red-400/70">30+ days</p>
             </div>
           </div>
         </div>
@@ -241,7 +241,7 @@ export function UsageAnalytics({
                 onClick={() => onSelectAsset?.(asset.assetId)}
                 className="w-full flex items-center gap-3 p-2 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 border border-slate-700/30 transition-colors text-left"
               >
-                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold">
+                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400 text-sm font-bold">
                   {index + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -269,7 +269,7 @@ export function UsageAnalytics({
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-slate-200 truncate">{asset.assetName}</p>
                 </div>
-                <span className="text-xs text-slate-500">{formatTime(asset.lastUsed)}</span>
+                <span className="text-sm text-slate-400">{formatTime(asset.lastUsed)}</span>
               </button>
             ))}
           </div>

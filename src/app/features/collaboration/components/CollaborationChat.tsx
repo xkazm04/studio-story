@@ -100,7 +100,7 @@ export function CollaborationChat({
           <h3 className="text-sm font-semibold text-white">Team Chat</h3>
         </div>
         {!isConnected && (
-          <span className="text-xs text-amber-400">Reconnecting...</span>
+          <span className="text-sm text-amber-400">Reconnecting...</span>
         )}
       </div>
 
@@ -126,7 +126,7 @@ export function CollaborationChat({
               >
                 {/* Avatar */}
                 <div
-                  className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white text-xs font-medium"
+                  className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white text-sm font-medium"
                   title={message.user_name || 'User'}
                 >
                   {message.user_avatar ? (
@@ -152,18 +152,18 @@ export function CollaborationChat({
                   {/* User name and timestamp */}
                   <div
                     className={clsx(
-                      'flex items-center gap-2 text-xs',
+                      'flex items-center gap-2 text-sm',
                       isOwn && 'flex-row-reverse'
                     )}
                   >
                     <span className="font-medium text-slate-300">
                       {isOwn ? 'You' : message.user_name || 'User'}
                     </span>
-                    <span className="text-slate-500">
+                    <span className="text-slate-400">
                       {formatMessageTime(message.created_at)}
                     </span>
                     {message.edited_at && (
-                      <span className="text-slate-500 italic">(edited)</span>
+                      <span className="text-slate-400 italic">(edited)</span>
                     )}
                   </div>
 
@@ -293,7 +293,7 @@ export function CollaborationChat({
             Send
           </Button>
         </div>
-        <p className="text-xs text-slate-500 mt-1.5">
+        <p className="text-sm text-slate-400 mt-1.5">
           Press Enter to send, Shift+Enter for new line
         </p>
       </div>

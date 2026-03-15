@@ -132,7 +132,7 @@ export function UsagePanel({
           <div>
             <h3 className="text-sm font-medium text-slate-100">Asset Usage</h3>
             {assetName && (
-              <p className="text-xs text-slate-400 truncate max-w-[180px]">{assetName}</p>
+              <p className="text-sm text-slate-400 truncate max-w-[180px]">{assetName}</p>
             )}
           </div>
         </div>
@@ -150,7 +150,7 @@ export function UsagePanel({
       {/* Summary stats */}
       <div className="p-4 border-b border-slate-800/50">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-slate-400">Total References</span>
+          <span className="text-sm text-slate-400">Total References</span>
           <span
             className={clsx(
               'text-lg font-bold',
@@ -165,8 +165,8 @@ export function UsagePanel({
           <div className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-medium text-amber-300">Orphan Asset</p>
-              <p className="text-xs text-amber-400/70">
+              <p className="text-sm font-medium text-amber-300">Orphan Asset</p>
+              <p className="text-sm text-amber-400/70">
                 This asset is not used anywhere. Consider removing it.
               </p>
             </div>
@@ -174,7 +174,7 @@ export function UsagePanel({
         )}
 
         {!summary.isOrphan && summary.lastUsedAt && (
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-sm text-slate-400">
             <Clock className="w-3.5 h-3.5" />
             <span>
               Last tracked: {new Date(summary.lastUsedAt).toLocaleDateString()}
@@ -210,7 +210,7 @@ export function UsagePanel({
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold">{count}</span>
+                      <span className="text-sm font-bold">{count}</span>
                       <ChevronRight
                         className={clsx(
                           'w-4 h-4 transition-transform',
@@ -240,7 +240,7 @@ export function UsagePanel({
                                 <p className="text-sm text-slate-200 truncate">
                                   {location.entityName}
                                 </p>
-                                <p className="text-xs text-slate-500 truncate">
+                                <p className="text-sm text-slate-400 truncate">
                                   {location.fieldType.replace(/_/g, ' ')}
                                   {location.projectName && ` • ${location.projectName}`}
                                 </p>
@@ -265,7 +265,7 @@ export function UsagePanel({
           <div className="text-center">
             <Link2 className="w-8 h-8 mx-auto mb-2 opacity-40" />
             <p className="text-sm">No tracked usages</p>
-            <p className="text-xs text-slate-500">
+            <p className="text-sm text-slate-400">
               Usage will appear when asset is assigned
             </p>
           </div>

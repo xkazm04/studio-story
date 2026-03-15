@@ -67,7 +67,7 @@ export default function AssetSearchBar() {
         {localQuery && (
           <button
             onClick={handleClear}
-            className="p-1 text-slate-500 hover:text-slate-300 transition-colors"
+            className="p-1 text-slate-400 hover:text-slate-300 transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -79,7 +79,7 @@ export default function AssetSearchBar() {
           className={`p-1.5 rounded-md transition-all duration-200 ${
             searchMode === 'semantic'
               ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/60'
+              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/60'
           }`}
           title={searchMode === 'semantic' ? 'Using AI search' : 'Enable AI search'}
           data-testid="ai-search-toggle"
@@ -90,7 +90,7 @@ export default function AssetSearchBar() {
 
       {/* AI search indicator */}
       {searchMode === 'semantic' && (
-        <span className="text-[10px] text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded-full border border-cyan-500/20">
+        <span className="text-sm text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded-full border border-cyan-500/20">
           AI
         </span>
       )}

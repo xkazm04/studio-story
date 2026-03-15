@@ -95,10 +95,10 @@ const CameraSetup: React.FC<CameraSetupProps> = ({ onCameraChange }) => {
             {/* Category Header */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-gray-400" />
+                <Icon className="w-4 h-4 text-slate-400" />
                 <h4 className="text-sm font-semibold text-white">{category.label}</h4>
                 {hasSelection && (
-                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">
+                  <span className="text-sm bg-blue-600 text-white px-2 py-0.5 rounded">
                     {selectedPresets[category.id].length}
                   </span>
                 )}
@@ -106,7 +106,7 @@ const CameraSetup: React.FC<CameraSetupProps> = ({ onCameraChange }) => {
               {hasSelection && (
                 <button
                   onClick={() => clearCategory(category.id)}
-                  className="text-xs text-gray-500 hover:text-gray-300"
+                  className="text-sm text-slate-400 hover:text-slate-300"
                 >
                   Clear
                 </button>
@@ -129,7 +129,7 @@ const CameraSetup: React.FC<CameraSetupProps> = ({ onCameraChange }) => {
                       transition-all duration-200
                       ${isSelected
                         ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                       }
                     `}
                   >
@@ -154,9 +154,9 @@ const CameraSetup: React.FC<CameraSetupProps> = ({ onCameraChange }) => {
         selectedPresets.shots.length > 0 ||
         selectedPresets.lighting.length > 0 ||
         selectedPresets.composition.length > 0) && (
-        <div className="mt-4 p-3 bg-gray-800 rounded-lg">
-          <div className="text-xs font-medium text-gray-400 mb-1">Camera Prompt</div>
-          <div className="text-sm text-gray-300">
+        <div className="mt-4 p-3 bg-slate-800 rounded-lg">
+          <div className="text-sm font-medium text-slate-400 mb-1">Camera Prompt</div>
+          <div className="text-sm text-slate-300">
             {[
               ...selectedPresets.angles,
               ...selectedPresets.shots,

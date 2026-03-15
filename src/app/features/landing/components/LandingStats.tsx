@@ -37,7 +37,7 @@ const LandingStats = ({project}: Props) => {
           }}
         ></div>
         <div className="text-2xl font-bold text-blue-400">{project.completion ?? 0}%</div>
-        <div className="text-xs text-gray-400 mt-1">Completion</div>
+        <div className="text-xs text-slate-400 mt-1">Completion</div>
       </div>
       
       {/* Research stat */}
@@ -62,7 +62,7 @@ const LandingStats = ({project}: Props) => {
           }}
         ></div>
         <div className="text-2xl font-bold text-green-400">{project.research ?? 0}%</div>
-        <div className="text-xs text-gray-400 mt-1">Research</div>
+        <div className="text-xs text-slate-400 mt-1">Research</div>
       </div>
       
       {/* Editing stat */}
@@ -87,7 +87,7 @@ const LandingStats = ({project}: Props) => {
           }}
         ></div>
         <div className="text-2xl font-bold text-purple-400">{project.editing ?? 0}%</div>
-        <div className="text-xs text-gray-400 mt-1">Editing</div>
+        <div className="text-xs text-slate-400 mt-1">Editing</div>
       </div>
       
       {/* Planning stat */}
@@ -112,7 +112,7 @@ const LandingStats = ({project}: Props) => {
           }}
         ></div>
         <div className="text-2xl font-bold text-yellow-400">{project.planning ?? 0}%</div>
-        <div className="text-xs text-gray-400 mt-1">Planning</div>
+        <div className="text-xs text-slate-400 mt-1">Planning</div>
       </div>
     </div>
 }

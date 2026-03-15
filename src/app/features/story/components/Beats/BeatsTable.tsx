@@ -52,7 +52,7 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
         width: 'flex-1',
         type: 'text',
         editable: true,
-        className: 'text-xs text-gray-400',
+        className: 'text-sm text-slate-400',
         render: (value: unknown) => (value as string) || '-',
       },
       {
@@ -60,7 +60,7 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
         header: 'Type',
         width: 'w-16',
         editable: false,
-        className: 'capitalize text-gray-400',
+        className: 'capitalize text-slate-400',
       },
       {
         key: 'completed',
@@ -83,7 +83,7 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
                 type="checkbox"
                 checked={!!value}
                 onChange={() => handleToggleCompletion(row)}
-                className="w-4 h-4 rounded border-gray-700 text-blue-600 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
                 data-testid={`beat-completion-checkbox-${rowId}`}
               />
             </div>
@@ -219,6 +219,7 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
         showIndex={true}
         indexHeader="#"
         showHeader={true}
+        headerClassName="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-slate-700"
         showFooter={false}
         emptyMessage="No beats available"
         loading={false}

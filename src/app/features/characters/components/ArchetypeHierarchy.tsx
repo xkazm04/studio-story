@@ -86,7 +86,7 @@ const CATEGORY_COLORS: Record<ArchetypeCategory, string> = {
 };
 
 const LEVEL_BADGES: Record<ArchetypeLevel, { label: string; color: string }> = {
-  base: { label: 'Base', color: 'bg-gray-600 text-gray-200' },
+  base: { label: 'Base', color: 'bg-slate-600 text-slate-200' },
   genre: { label: 'Genre', color: 'bg-blue-600 text-blue-100' },
   specific: { label: 'Specific', color: 'bg-purple-600 text-purple-100' },
   custom: { label: 'Custom', color: 'bg-green-600 text-green-100' },
@@ -118,7 +118,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
       onClick={onToggle}
       className={cn(
         'w-full flex items-center gap-3 p-3 rounded-lg border transition-all',
-        'hover:bg-gray-800/50',
+        'hover:bg-slate-800/50',
         colorClasses
       )}
     >
@@ -129,12 +129,12 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
       <div className="flex-1 text-left">
         <div className="flex items-center gap-2">
           <span className="font-semibold">{category}</span>
-          <span className="text-xs px-1.5 py-0.5 rounded-full bg-white/10">
+          <span className="text-sm px-1.5 py-0.5 rounded-full bg-white/10">
             {count}
           </span>
         </div>
         {baseDescription && (
-          <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">
+          <p className="text-sm text-slate-400 mt-0.5 line-clamp-1">
             {baseDescription}
           </p>
         )}
@@ -144,7 +144,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
         animate={{ rotate: isExpanded ? 90 : 0 }}
         transition={{ duration: 0.2 }}
       >
-        <ChevronRight size={18} className="text-gray-400" />
+        <ChevronRight size={18} className="text-slate-400" />
       </motion.span>
     </button>
   );
@@ -177,36 +177,36 @@ const ArchetypeNode: React.FC<ArchetypeNodeProps> = ({
       onClick={onClick}
       className={cn(
         'w-full flex items-start gap-3 p-3 rounded-lg border transition-all text-left',
-        'hover:bg-gray-800/50',
+        'hover:bg-slate-800/50',
         isSelected
           ? 'border-purple-500 bg-purple-900/20'
-          : 'border-gray-700/50 bg-gray-800/30'
+          : 'border-slate-700/50 bg-slate-800/30'
       )}
       style={{ marginLeft: depth * 16 }}
     >
       {/* Connection Line */}
       <div className="relative flex items-center">
-        <GitBranch size={14} className="text-gray-600" />
+        <GitBranch size={14} className="text-slate-400" />
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="font-medium text-white truncate">{archetype.name}</span>
-          <span className={cn('text-xs px-1.5 py-0.5 rounded', badge.color)}>
+          <span className={cn('text-sm px-1.5 py-0.5 rounded', badge.color)}>
             {badge.label}
           </span>
           {hierarchical.isCustom && (
             <Sparkles size={12} className="text-yellow-400" />
           )}
         </div>
-        <p className="text-xs text-gray-400 line-clamp-2">
+        <p className="text-sm text-slate-400 line-clamp-2">
           {archetype.description}
         </p>
         <div className="flex flex-wrap gap-1 mt-2">
           {archetype.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="text-xs px-1.5 py-0.5 bg-gray-700/50 text-gray-300 rounded"
+              className="text-sm px-1.5 py-0.5 bg-slate-700/50 text-slate-300 rounded"
             >
               {tag}
             </span>
@@ -301,21 +301,21 @@ const ArchetypeHierarchy: React.FC<ArchetypeHierarchyProps> = ({
     <div className={cn('space-y-2', className)}>
       {/* Header Controls */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-sm text-gray-400">
+        <div className="flex items-center gap-2 text-sm text-slate-400">
           <Layers size={16} />
           <span>Archetype Hierarchy</span>
         </div>
         <div className="flex gap-2">
           <button
             onClick={expandAll}
-            className="text-xs text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-slate-400 hover:text-white transition-colors"
           >
             Expand all
           </button>
-          <span className="text-gray-600">|</span>
+          <span className="text-slate-400">|</span>
           <button
             onClick={collapseAll}
-            className="text-xs text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-slate-400 hover:text-white transition-colors"
           >
             Collapse all
           </button>
@@ -356,12 +356,12 @@ const ArchetypeHierarchy: React.FC<ArchetypeHierarchyProps> = ({
                   <div className="pl-4 space-y-1 py-1">
                     {/* Base Archetype Info */}
                     {showBaseArchetypes && node.baseData && (
-                      <div className="flex items-start gap-3 p-2 rounded-lg bg-gray-900/50 border border-gray-700/30 ml-4 mb-2">
-                        <div className="p-1 rounded bg-gray-700">
-                          <GitBranch size={12} className="text-gray-400" />
+                      <div className="flex items-start gap-3 p-2 rounded-lg bg-slate-900/50 border border-slate-700/30 ml-4 mb-2">
+                        <div className="p-1 rounded bg-slate-700">
+                          <GitBranch size={12} className="text-slate-400" />
                         </div>
-                        <div className="text-xs text-gray-400">
-                          <div className="font-medium text-gray-300 mb-1">
+                        <div className="text-sm text-slate-400">
+                          <div className="font-medium text-slate-300 mb-1">
                             Base {node.category} Traits
                           </div>
                           <p className="line-clamp-2">
@@ -384,7 +384,7 @@ const ArchetypeHierarchy: React.FC<ArchetypeHierarchyProps> = ({
                     ))}
 
                     {node.archetypes.length === 0 && (
-                      <div className="ml-4 p-3 text-sm text-gray-500 italic">
+                      <div className="ml-4 p-3 text-sm text-slate-400 italic">
                         No specific archetypes in this category
                         {currentGenre && currentGenre !== 'all'
                           ? ` for ${currentGenre} genre`
@@ -401,7 +401,7 @@ const ArchetypeHierarchy: React.FC<ArchetypeHierarchyProps> = ({
 
       {/* Empty State */}
       {categoryNodes.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <User size={48} className="mb-4 opacity-50" />
           <p className="text-lg">No archetypes available</p>
           <p className="text-sm">

@@ -127,10 +127,10 @@ const ValueCard: React.FC<{
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-white truncate">{value.name}</h4>
-              <span className={cn('text-xs px-2 py-0.5 rounded-full', categoryConfig.color)}>
+              <span className={cn('text-sm px-2 py-0.5 rounded-full', categoryConfig.color)}>
                 {categoryConfig.label}
               </span>
-              <span className="text-xs text-slate-500">P{value.priority}</span>
+              <span className="text-sm text-slate-400">P{value.priority}</span>
             </div>
             <p className="text-sm text-slate-400 mt-1">{value.description}</p>
           </div>
@@ -141,26 +141,26 @@ const ValueCard: React.FC<{
             <button
               onClick={() => onPriorityChange('up')}
               disabled={isFirst}
-              className="p-1 text-slate-500 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ArrowUp size={14} />
             </button>
             <button
               onClick={() => onPriorityChange('down')}
               disabled={isLast}
-              className="p-1 text-slate-500 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1 text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ArrowDown size={14} />
             </button>
             <button
               onClick={onEdit}
-              className="p-1 text-slate-500 hover:text-cyan-400"
+              className="p-1 text-slate-400 hover:text-cyan-400"
             >
               <Edit3 size={14} />
             </button>
             <button
               onClick={onDelete}
-              className="p-1 text-slate-500 hover:text-red-400"
+              className="p-1 text-slate-400 hover:text-red-400"
             >
               <Trash2 size={14} />
             </button>
@@ -171,7 +171,7 @@ const ValueCard: React.FC<{
       {/* Expand toggle */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1 mt-3 text-xs text-slate-500 hover:text-slate-300"
+        className="flex items-center gap-1 mt-3 text-sm text-slate-400 hover:text-slate-300"
       >
         {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         {expanded ? 'Hide details' : 'Show details'}
@@ -188,12 +188,12 @@ const ValueCard: React.FC<{
             {/* Manifestations */}
             {value.manifestations.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                   How it manifests
                 </p>
                 <ul className="space-y-1">
                   {value.manifestations.map((m, i) => (
-                    <li key={i} className="text-xs text-slate-400 flex items-start gap-2">
+                    <li key={i} className="text-sm text-slate-400 flex items-start gap-2">
                       <span className="text-cyan-500 mt-0.5">•</span>
                       {m}
                     </li>
@@ -205,15 +205,15 @@ const ValueCard: React.FC<{
             {/* Origin */}
             {value.origin && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">Origin</p>
-                <p className="text-xs text-slate-400 italic">{value.origin}</p>
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1">Origin</p>
+                <p className="text-sm text-slate-400 italic">{value.origin}</p>
               </div>
             )}
 
             {/* Conflicts */}
             {value.conflicts_with && value.conflicts_with.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1 flex items-center gap-1">
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1 flex items-center gap-1">
                   <AlertTriangle size={10} className="text-amber-500" />
                   Potential conflicts
                 </p>
@@ -221,7 +221,7 @@ const ValueCard: React.FC<{
                   {value.conflicts_with.map((c, i) => (
                     <span
                       key={i}
-                      className="text-[10px] px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded"
+                      className="text-sm px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded"
                     >
                       {c}
                     </span>
@@ -410,7 +410,7 @@ const ValueEditorModal: React.FC<ValueEditorModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveManifestation(i)}
-                    className="text-slate-500 hover:text-red-400"
+                    className="text-slate-400 hover:text-red-400"
                   >
                     <X size={14} />
                   </button>
@@ -459,7 +459,7 @@ const ValueEditorModal: React.FC<ValueEditorModalProps> = ({
               {formData.conflicts_with?.map((c, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded"
+                  className="inline-flex items-center gap-1 text-sm px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded"
                 >
                   {c}
                   <button
@@ -664,7 +664,7 @@ const ValuesEditor: React.FC<ValuesEditorProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-400 mb-1">Core Philosophy</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">Core Philosophy</label>
           <textarea
             value={corePhilosophy}
             onChange={(e) => onPhilosophyChange(e.target.value)}
@@ -676,7 +676,7 @@ const ValuesEditor: React.FC<ValuesEditorProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-400 mb-1">Guiding Principle</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">Guiding Principle</label>
           <input
             type="text"
             value={guidingPrinciple}
@@ -702,9 +702,9 @@ const ValuesEditor: React.FC<ValuesEditorProps> = ({
                 </div>
                 <div className="text-left">
                   <h4 className="font-medium text-white">{config.label}</h4>
-                  <p className="text-xs text-slate-500">{config.description}</p>
+                  <p className="text-sm text-slate-400">{config.description}</p>
                 </div>
-                <span className="ml-2 text-xs px-2 py-0.5 bg-slate-700 text-slate-400 rounded-full">
+                <span className="ml-2 text-sm px-2 py-0.5 bg-slate-700 text-slate-400 rounded-full">
                   {valuesByCategory[category].length}
                 </span>
               </div>
@@ -737,7 +737,7 @@ const ValuesEditor: React.FC<ValuesEditorProps> = ({
                   ))}
 
                   {valuesByCategory[category].length === 0 && (
-                    <p className="text-sm text-slate-500 italic py-2">
+                    <p className="text-sm text-slate-400 italic py-2">
                       No {config.label.toLowerCase()} defined yet.
                     </p>
                   )}

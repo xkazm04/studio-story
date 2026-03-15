@@ -46,7 +46,7 @@ const ModelChip = memo(function ModelChip({
         whileTap={{ scale: 0.98 }}
         onClick={() => onToggle(!enabled)}
         className={`
-          inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium
+          inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium
           border transition-all duration-200
           ${
             enabled
@@ -66,7 +66,7 @@ const ModelChip = memo(function ModelChip({
           href={referenceUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="p-1 text-slate-500 hover:text-slate-300 transition-colors"
+          className="p-1 text-slate-400 hover:text-slate-300 transition-colors"
           title="API documentation"
         >
           <ExternalLink className="w-3 h-3" />
@@ -174,8 +174,8 @@ export default function ModelConfigPanel({
       <div className="flex flex-col gap-3">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-400">AI Models</span>
-          <span className="text-[10px] text-slate-500">
+          <span className="text-sm font-medium text-slate-400">AI Models</span>
+          <span className="text-sm text-slate-400">
             {enabledCount} enabled
           </span>
         </div>
@@ -197,7 +197,7 @@ export default function ModelConfigPanel({
 
         {/* Validation message */}
         {enabledCount === 0 && (
-          <p className="text-[11px] text-amber-400/80">
+          <p className="text-sm text-amber-400/80">
             Enable at least one model to analyze
           </p>
         )}
@@ -209,11 +209,11 @@ export default function ModelConfigPanel({
           {/* Collapsible header */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex items-center justify-between text-xs text-slate-400 hover:text-slate-300 transition-colors"
+            className="flex items-center justify-between text-sm text-slate-400 hover:text-slate-300 transition-colors"
           >
             <span className="font-medium">Analysis Options</span>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-500">
+              <span className="text-sm text-slate-400">
                 {enabledOptionsCount} active
               </span>
               <motion.div
@@ -247,7 +247,7 @@ export default function ModelConfigPanel({
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleOptionToggle(option.key)}
                         className={`
-                          inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium
+                          inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium
                           border transition-all duration-200
                           ${
                             isEnabled

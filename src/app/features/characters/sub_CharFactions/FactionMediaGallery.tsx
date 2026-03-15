@@ -87,7 +87,7 @@ const FactionMediaGallery: React.FC<FactionMediaGalleryProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative bg-gray-900 rounded-lg border border-gray-800 overflow-hidden"
+          className="relative bg-slate-900 rounded-lg border border-slate-800 overflow-hidden"
         >
           <ColoredBorder color="purple" />
           <div className="relative h-48 bg-gradient-to-br from-purple-900/20 to-blue-900/20">
@@ -104,7 +104,7 @@ const FactionMediaGallery: React.FC<FactionMediaGalleryProps> = ({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-600 text-6xl font-bold">
+                <div className="text-slate-400 text-6xl font-bold">
                   {featuredMedia.type.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -115,10 +115,10 @@ const FactionMediaGallery: React.FC<FactionMediaGalleryProps> = ({
                 <div>
                   <p className="text-white font-semibold">Featured {featuredMedia.type}</p>
                   {featuredMedia.description && (
-                    <p className="text-gray-300 text-sm">{featuredMedia.description}</p>
+                    <p className="text-slate-300 text-sm">{featuredMedia.description}</p>
                   )}
                 </div>
-                <div className="text-gray-400 text-xs">
+                <div className="text-slate-400 text-sm">
                   {new Date(featuredMedia.uploaded_at).toLocaleDateString()}
                 </div>
               </div>
@@ -152,7 +152,7 @@ const FactionMediaGallery: React.FC<FactionMediaGalleryProps> = ({
           className={cn('px-4 py-2 rounded-lg transition-all',
             selectedFilter === 'all'
               ? 'bg-purple-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
           )}
           data-testid="filter-all-btn"
         >
@@ -168,7 +168,7 @@ const FactionMediaGallery: React.FC<FactionMediaGalleryProps> = ({
               className={cn('flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
                 selectedFilter === type
                   ? 'bg-purple-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
               )}
               data-testid={`filter-${type}-btn`}
             >

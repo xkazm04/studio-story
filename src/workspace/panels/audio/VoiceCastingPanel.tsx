@@ -8,12 +8,14 @@ import AuditionPanel from '@/app/features/voice/components/AuditionPanel';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { useVoicesByProject } from '@/app/hooks/useVoices';
+import type { PanelDensity } from '@/workspace/types';
 
 interface VoiceCastingPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
-export default function VoiceCastingPanel({ onClose }: VoiceCastingPanelProps) {
+export default function VoiceCastingPanel({ onClose, density }: VoiceCastingPanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id;
   const { data: characters = [] } = characterApi.useProjectCharacters(projectId ?? '', !!projectId);
@@ -27,7 +29,7 @@ export default function VoiceCastingPanel({ onClose }: VoiceCastingPanelProps) {
 
   if (!projectId) {
     return (
-      <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald">
+      <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald" density={density}>
         <PanelEmptyState
           icon={Users}
           title="No project selected"
@@ -39,7 +41,7 @@ export default function VoiceCastingPanel({ onClose }: VoiceCastingPanelProps) {
 
   if (characters.length === 0 || voices.length === 0) {
     return (
-      <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald">
+      <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald" density={density}>
         <PanelEmptyState
           icon={Users}
           title={characters.length === 0 ? 'No characters available' : 'No voices available'}
@@ -50,7 +52,7 @@ export default function VoiceCastingPanel({ onClose }: VoiceCastingPanelProps) {
   }
 
   return (
-    <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald">
+    <PanelFrame title="Voice Casting" icon={Users} onClose={onClose} headerAccent="emerald" density={density}>
       <AuditionPanel
         characters={characters}
         voices={voices}

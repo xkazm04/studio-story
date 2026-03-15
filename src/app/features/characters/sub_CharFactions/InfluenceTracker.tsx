@@ -102,7 +102,7 @@ const InfluenceBar: React.FC<InfluenceBarProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span style={{ color: config.color }}>{INFLUENCE_ICONS[type]}</span>
-          <span className="text-sm text-gray-300">{config.label}</span>
+          <span className="text-sm text-slate-300">{config.label}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-white">{value}</span>
@@ -111,14 +111,14 @@ const InfluenceBar: React.FC<InfluenceBarProps> = ({
               <button
                 type="button"
                 onClick={() => onChange(Math.max(0, value - 5))}
-                className="w-5 h-5 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded text-gray-400 hover:text-white transition-colors"
+                className="w-5 h-5 flex items-center justify-center bg-slate-700 hover:bg-slate-600 rounded text-slate-400 hover:text-white transition-colors"
               >
                 <Minus size={10} />
               </button>
               <button
                 type="button"
                 onClick={() => onChange(value + 5)}
-                className="w-5 h-5 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded text-gray-400 hover:text-white transition-colors"
+                className="w-5 h-5 flex items-center justify-center bg-slate-700 hover:bg-slate-600 rounded text-slate-400 hover:text-white transition-colors"
               >
                 <Plus size={10} />
               </button>
@@ -126,7 +126,7 @@ const InfluenceBar: React.FC<InfluenceBarProps> = ({
           )}
         </div>
       </div>
-      <div className="relative h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
         <motion.div
           className="absolute left-0 top-0 h-full rounded-full"
           style={{ backgroundColor: config.color }}
@@ -148,7 +148,7 @@ const PowerRankBadge: React.FC<PowerRankBadgeProps> = ({ rank, totalFactions }) 
   const isTopThree = rank <= 3;
   const rankColors: Record<number, string> = {
     1: 'from-amber-500 to-yellow-600',
-    2: 'from-gray-400 to-slate-500',
+    2: 'from-slate-400 to-slate-500',
     3: 'from-amber-700 to-orange-800',
   };
 
@@ -157,17 +157,17 @@ const PowerRankBadge: React.FC<PowerRankBadgeProps> = ({ rank, totalFactions }) 
       className={cn(
         'flex items-center gap-2 px-3 py-1.5 rounded-lg',
         isTopThree
-          ? `bg-gradient-to-r ${rankColors[rank] || 'from-gray-600 to-gray-700'}`
-          : 'bg-gray-800 border border-gray-700'
+          ? `bg-gradient-to-r ${rankColors[rank] || 'from-slate-600 to-slate-700'}`
+          : 'bg-slate-800 border border-slate-700'
       )}
     >
       <Crown
         size={16}
-        className={isTopThree ? 'text-white' : 'text-gray-400'}
+        className={isTopThree ? 'text-white' : 'text-slate-400'}
       />
-      <span className={cn('text-sm font-medium', isTopThree ? 'text-white' : 'text-gray-300')}>
+      <span className={cn('text-sm font-medium', isTopThree ? 'text-white' : 'text-slate-300')}>
         Rank #{rank}
-        <span className="text-xs opacity-70 ml-1">of {totalFactions}</span>
+        <span className="text-sm opacity-70 ml-1">of {totalFactions}</span>
       </span>
     </div>
   );
@@ -186,10 +186,10 @@ const TerritoryCard: React.FC<TerritoryCardProps> = ({ territory, onRemove, read
       ? 'text-red-400'
       : territory.strategic_importance >= 5
         ? 'text-amber-400'
-        : 'text-gray-400';
+        : 'text-slate-400';
 
   return (
-    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-3 hover:border-gray-600 transition-colors">
+    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 hover:border-slate-600 transition-colors">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <MapPin size={16} className="text-cyan-400" />
@@ -199,14 +199,14 @@ const TerritoryCard: React.FC<TerritoryCardProps> = ({ territory, onRemove, read
           <button
             type="button"
             onClick={onRemove}
-            className="text-gray-500 hover:text-red-400 transition-colors"
+            className="text-slate-400 hover:text-red-400 transition-colors"
           >
             <Minus size={14} />
           </button>
         )}
       </div>
-      <div className="mt-2 flex flex-wrap gap-2 text-xs">
-        <span className={cn('px-2 py-0.5 rounded-full bg-gray-700', importanceColor)}>
+      <div className="mt-2 flex flex-wrap gap-2 text-sm">
+        <span className={cn('px-2 py-0.5 rounded-full bg-slate-700', importanceColor)}>
           {importanceLabel}
         </span>
         {territory.resource_type && (
@@ -219,7 +219,7 @@ const TerritoryCard: React.FC<TerritoryCardProps> = ({ territory, onRemove, read
         </span>
       </div>
       {territory.contested_by && territory.contested_by.length > 0 && (
-        <div className="mt-2 flex items-center gap-1 text-xs text-red-400">
+        <div className="mt-2 flex items-center gap-1 text-sm text-red-400">
           <Shield size={12} />
           <span>Contested by {territory.contested_by.length} faction(s)</span>
         </div>
@@ -238,7 +238,7 @@ const HistoryChart: React.FC<HistoryChartProps> = ({ history }) => {
 
   if (recentHistory.length === 0) {
     return (
-      <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
+      <div className="flex items-center justify-center h-32 text-slate-400 text-sm">
         No history data available
       </div>
     );
@@ -266,9 +266,9 @@ const HistoryChart: React.FC<HistoryChartProps> = ({ history }) => {
                 )}
               />
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-                <div className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-xs whitespace-nowrap">
+                <div className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm whitespace-nowrap">
                   <div className="text-white font-medium">{snapshot.total_influence}</div>
-                  <div className="text-gray-400">
+                  <div className="text-slate-400">
                     {new Date(snapshot.timestamp).toLocaleDateString()}
                   </div>
                 </div>
@@ -277,7 +277,7 @@ const HistoryChart: React.FC<HistoryChartProps> = ({ history }) => {
           );
         })}
       </div>
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className="flex justify-between text-sm text-slate-400">
         <span>
           {recentHistory.length > 0 &&
             new Date(recentHistory[0].timestamp).toLocaleDateString()}
@@ -322,37 +322,37 @@ const AddTerritoryForm: React.FC<AddTerritoryFormProps> = ({ onAdd, onCancel, fa
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
       onSubmit={handleSubmit}
-      className="bg-gray-800/50 border border-cyan-500/30 rounded-lg p-4 space-y-4"
+      className="bg-slate-800/50 border border-cyan-500/30 rounded-lg p-4 space-y-4"
     >
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Territory Name</label>
+        <label className="block text-sm text-slate-300 mb-1">Territory Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g., Northern Plains"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-gray-300 mb-1">Influence Value</label>
+          <label className="block text-sm text-slate-300 mb-1">Influence Value</label>
           <input
             type="number"
             value={influenceValue}
             onChange={(e) => setInfluenceValue(Number(e.target.value))}
             min={1}
             max={100}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
         </div>
         <div>
-          <label className="block text-sm text-gray-300 mb-1">Strategic Importance</label>
+          <label className="block text-sm text-slate-300 mb-1">Strategic Importance</label>
           <select
             value={strategicImportance}
             onChange={(e) => setStrategicImportance(Number(e.target.value))}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {Object.entries(STRATEGIC_IMPORTANCE_LABELS).map(([value, label]) => (
               <option key={value} value={value}>
@@ -364,13 +364,13 @@ const AddTerritoryForm: React.FC<AddTerritoryFormProps> = ({ onAdd, onCancel, fa
       </div>
 
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Resource Type (Optional)</label>
+        <label className="block text-sm text-slate-300 mb-1">Resource Type (Optional)</label>
         <input
           type="text"
           value={resourceType}
           onChange={(e) => setResourceType(e.target.value)}
           placeholder="e.g., Iron, Gold, Timber"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
       </div>
 
@@ -378,14 +378,14 @@ const AddTerritoryForm: React.FC<AddTerritoryFormProps> = ({ onAdd, onCancel, fa
         <button
           type="submit"
           disabled={!name.trim()}
-          className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
         >
           Add Territory
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
         >
           Cancel
         </button>
@@ -448,8 +448,8 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
 
   if (!influence) {
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-        <div className="text-center text-gray-500">
+      <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+        <div className="text-center text-slate-400">
           <BarChart3 size={32} className="mx-auto mb-2 opacity-50" />
           <p>No influence data available for {faction.name}</p>
           {!readOnly && (
@@ -466,16 +466,16 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
   }
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
+    <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-900/30 to-cyan-900/30 p-4 border-b border-gray-800">
+      <div className="bg-gradient-to-r from-purple-900/30 to-cyan-900/30 p-4 border-b border-slate-800">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <BarChart3 className="text-purple-400" size={20} />
               Influence Tracker
             </h3>
-            <p className="text-sm text-gray-400 mt-0.5">{faction.name}</p>
+            <p className="text-sm text-slate-400 mt-0.5">{faction.name}</p>
           </div>
           <div className="flex items-center gap-3">
             {recentTrend === 'up' && (
@@ -491,7 +491,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
               </div>
             )}
             {recentTrend === 'stable' && (
-              <div className="flex items-center gap-1 text-gray-400 text-sm">
+              <div className="flex items-center gap-1 text-slate-400 text-sm">
                 <Minus size={16} />
                 <span>Stable</span>
               </div>
@@ -502,7 +502,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
       </div>
 
       {/* View Mode Tabs */}
-      <div className="flex border-b border-gray-800">
+      <div className="flex border-b border-slate-800">
         {(['overview', 'breakdown', 'territories', 'history'] as ViewMode[]).map((mode) => (
           <button
             key={mode}
@@ -511,8 +511,8 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
             className={cn(
               'flex-1 px-4 py-2 text-sm font-medium transition-colors',
               viewMode === mode
-                ? 'bg-gray-800 text-white border-b-2 border-purple-500'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                ? 'bg-slate-800 text-white border-b-2 border-purple-500'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             )}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
@@ -536,20 +536,20 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
               <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 rounded-xl p-6 border border-purple-500/20">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-white mb-1">{totalPower}</div>
-                  <div className="text-sm text-gray-400">Total Power</div>
+                  <div className="text-sm text-slate-400">Total Power</div>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <div className="text-lg font-semibold text-white">{influence.territories.length}</div>
-                    <div className="text-xs text-gray-500">Territories</div>
+                    <div className="text-sm text-slate-400">Territories</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-semibold text-white">{territoryInfluence}</div>
-                    <div className="text-xs text-gray-500">Land Influence</div>
+                    <div className="text-sm text-slate-400">Land Influence</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-semibold text-white">{influence.influence_history.length}</div>
-                    <div className="text-xs text-gray-500">Events</div>
+                    <div className="text-sm text-slate-400">Events</div>
                   </div>
                 </div>
               </div>
@@ -561,11 +561,11 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                   onClick={() => setExpandedBreakdown(!expandedBreakdown)}
                   className="flex items-center justify-between w-full text-left"
                 >
-                  <span className="text-sm font-medium text-gray-300">Influence Breakdown</span>
+                  <span className="text-sm font-medium text-slate-300">Influence Breakdown</span>
                   {expandedBreakdown ? (
-                    <ChevronUp size={16} className="text-gray-500" />
+                    <ChevronUp size={16} className="text-slate-400" />
                   ) : (
-                    <ChevronDown size={16} className="text-gray-500" />
+                    <ChevronDown size={16} className="text-slate-400" />
                   )}
                 </button>
                 <AnimatePresence>
@@ -614,7 +614,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                 return (
                   <div
                     key={type}
-                    className="bg-gray-800/50 border border-gray-700 rounded-lg p-4"
+                    className="bg-slate-800/50 border border-slate-700 rounded-lg p-4"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -626,7 +626,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                         </div>
                         <div>
                           <div className="font-medium text-white">{config.label}</div>
-                          <div className="text-xs text-gray-500">{percentage}% of total power</div>
+                          <div className="text-sm text-slate-400">{percentage}% of total power</div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -636,14 +636,14 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                             <button
                               type="button"
                               onClick={() => onInfluenceChange(type, Math.max(0, value - 5))}
-                              className="px-2 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-sm text-gray-400 hover:text-white transition-colors"
+                              className="px-2 py-0.5 bg-slate-700 hover:bg-slate-600 rounded text-sm text-slate-400 hover:text-white transition-colors"
                             >
                               -5
                             </button>
                             <button
                               type="button"
                               onClick={() => onInfluenceChange(type, value + 5)}
-                              className="px-2 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-sm text-gray-400 hover:text-white transition-colors"
+                              className="px-2 py-0.5 bg-slate-700 hover:bg-slate-600 rounded text-sm text-slate-400 hover:text-white transition-colors"
                             >
                               +5
                             </button>
@@ -651,7 +651,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                         )}
                       </div>
                     </div>
-                    <div className="relative h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
                       <motion.div
                         className="absolute left-0 top-0 h-full rounded-full"
                         style={{ backgroundColor: config.color }}
@@ -677,7 +677,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
             >
               {/* Territory Summary */}
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-slate-400">
                   {influence.territories.length} controlled{' '}
                   {influence.territories.length === 1 ? 'territory' : 'territories'}
                 </div>
@@ -706,7 +706,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
 
               {/* Territory List */}
               {influence.territories.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-slate-400">
                   <MapPin size={32} className="mx-auto mb-2 opacity-50" />
                   <p>No territories controlled</p>
                 </div>
@@ -729,11 +729,11 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
 
               {/* Territory Stats */}
               {influence.territories.length > 0 && (
-                <div className="mt-4 p-4 bg-gray-800/30 rounded-lg">
+                <div className="mt-4 p-4 bg-slate-800/30 rounded-lg">
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
                       <div className="text-lg font-semibold text-white">{territoryInfluence}</div>
-                      <div className="text-xs text-gray-500">Total Influence</div>
+                      <div className="text-sm text-slate-400">Total Influence</div>
                     </div>
                     <div>
                       <div className="text-lg font-semibold text-white">
@@ -742,13 +742,13 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                             influence.territories.length
                         )}
                       </div>
-                      <div className="text-xs text-gray-500">Avg Importance</div>
+                      <div className="text-sm text-slate-400">Avg Importance</div>
                     </div>
                     <div>
                       <div className="text-lg font-semibold text-white">
                         {influence.territories.filter((t) => t.contested_by?.length).length}
                       </div>
-                      <div className="text-xs text-gray-500">Contested</div>
+                      <div className="text-sm text-slate-400">Contested</div>
                     </div>
                   </div>
                 </div>
@@ -765,7 +765,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
               exit={{ opacity: 0, y: -10 }}
               className="space-y-4"
             >
-              <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+              <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
                 <History size={16} />
                 <span>Power Over Time</span>
               </div>
@@ -774,9 +774,9 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
 
               {/* Recent Events */}
               <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-300 mb-3">Recent Changes</h4>
+                <h4 className="text-sm font-medium text-slate-300 mb-3">Recent Changes</h4>
                 {influence.influence_history.length === 0 ? (
-                  <div className="text-center py-4 text-gray-500 text-sm">
+                  <div className="text-center py-4 text-slate-400 text-sm">
                     No recorded history yet
                   </div>
                 ) : (
@@ -787,17 +787,17 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
                       .map((snapshot, index) => (
                         <div
                           key={snapshot.timestamp + index}
-                          className="flex items-center justify-between py-2 px-3 bg-gray-800/30 rounded-lg"
+                          className="flex items-center justify-between py-2 px-3 bg-slate-800/30 rounded-lg"
                         >
                           <div>
                             <div className="text-sm text-white">
                               Power: {snapshot.total_influence}
                             </div>
                             {snapshot.triggered_by && (
-                              <div className="text-xs text-gray-500">{snapshot.triggered_by}</div>
+                              <div className="text-sm text-slate-400">{snapshot.triggered_by}</div>
                             )}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-sm text-slate-400">
                             {new Date(snapshot.timestamp).toLocaleString()}
                           </div>
                         </div>
@@ -812,7 +812,7 @@ const InfluenceTracker: React.FC<InfluenceTrackerProps> = ({
 
       {/* AI Enhancement */}
       {!readOnly && (
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-4 border-t border-slate-800">
           <button
             type="button"
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 hover:from-purple-600/30 hover:to-cyan-600/30 border border-purple-500/30 text-purple-300 rounded-lg transition-colors"

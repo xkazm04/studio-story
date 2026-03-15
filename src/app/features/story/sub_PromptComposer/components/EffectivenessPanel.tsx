@@ -21,6 +21,7 @@ import {
   GitCompare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, SEMANTIC_COLORS, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { Button } from '@/app/components/UI/Button';
 import {
   templateManager,
@@ -92,21 +93,21 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
     switch (trend) {
       case 'improving':
         return (
-          <span className="flex items-center gap-1 text-green-400 text-xs">
+          <span className={cn('flex items-center gap-1 text-sm', SEMANTIC_COLORS.success.text)}>
             <TrendingUp className="w-3 h-3" />
             Improving
           </span>
         );
       case 'declining':
         return (
-          <span className="flex items-center gap-1 text-red-400 text-xs">
+          <span className={cn('flex items-center gap-1 text-sm', SEMANTIC_COLORS.danger.text)}>
             <TrendingDown className="w-3 h-3" />
             Declining
           </span>
         );
       default:
         return (
-          <span className="flex items-center gap-1 text-slate-400 text-xs">
+          <span className="flex items-center gap-1 text-slate-400 text-sm">
             <Minus className="w-3 h-3" />
             Stable
           </span>
@@ -126,7 +127,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
           <Star
             className={cn(
               'w-5 h-5 transition-colors',
-              star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600 hover:text-slate-500'
+              star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-slate-400 hover:text-slate-400'
             )}
           />
         </button>
@@ -147,7 +148,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
 
   if (!report) {
     return (
-      <div className={cn('p-4 text-center text-slate-500', className)}>
+      <div className={cn('p-4 text-center text-slate-400', className)}>
         <BarChart2 className="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p className="text-sm">No effectiveness data available</p>
       </div>
@@ -163,8 +164,8 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
       <div className="shrink-0 p-3 border-b border-slate-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BarChart2 className="w-4 h-4 text-purple-400" />
-            <h3 className="text-sm font-semibold text-slate-200">Effectiveness Metrics</h3>
+            <BarChart2 className={cn('w-4 h-4', SEMANTIC_COLORS.brand.text)} />
+            <h3 className={TYPOGRAPHY.h1}>Effectiveness Metrics</h3>
           </div>
           {renderTrend(report.trend)}
         </div>
@@ -180,29 +181,28 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
           >
             <div className="flex items-center gap-2">
               {expandedSection === 'overview' ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               )}
               <Activity className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-medium text-slate-300">Overview</span>
+              <span className={TYPOGRAPHY.h2}>Overview</span>
             </div>
           </button>
 
           <AnimatePresence>
             {expandedSection === 'overview' && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="px-3 pb-3 grid grid-cols-2 gap-3">
                   {/* Usage Count */}
-                  <div className="bg-slate-900/50 rounded-lg p-2.5 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-500 mb-1">
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
                       <Zap className="w-3 h-3" />
-                      <span className="text-[10px]">Total Uses</span>
+                      <span className="text-sm">Total Uses</span>
                     </div>
                     <div className="text-lg font-semibold text-slate-200">
                       {report.metrics.usageCount.toLocaleString()}
@@ -210,41 +210,41 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
                   </div>
 
                   {/* Average Rating */}
-                  <div className="bg-slate-900/50 rounded-lg p-2.5 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-500 mb-1">
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
                       <Star className="w-3 h-3" />
-                      <span className="text-[10px]">Avg Rating</span>
+                      <span className="text-sm">Avg Rating</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-lg font-semibold text-slate-200">
                         {report.metrics.averageRating.toFixed(1)}
                       </span>
-                      <span className="text-xs text-slate-500">/ 5</span>
+                      <span className="text-sm text-slate-400">/ 5</span>
                     </div>
                   </div>
 
                   {/* Success Rate */}
-                  <div className="bg-slate-900/50 rounded-lg p-2.5 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-500 mb-1">
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
                       <Target className="w-3 h-3" />
-                      <span className="text-[10px]">Success Rate</span>
+                      <span className="text-sm">Success Rate</span>
                     </div>
-                    <div className="text-lg font-semibold text-green-400">
+                    <div className={cn('text-lg font-semibold', SEMANTIC_COLORS.success.text)}>
                       {(report.metrics.successRate * 100).toFixed(0)}%
                     </div>
                   </div>
 
                   {/* Avg Output Length */}
-                  <div className="bg-slate-900/50 rounded-lg p-2.5 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-500 mb-1">
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
                       <FileText className="w-3 h-3" />
-                      <span className="text-[10px]">Avg Output</span>
+                      <span className="text-sm">Avg Output</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-lg font-semibold text-slate-200">
                         {Math.round(report.metrics.averageOutputLength).toLocaleString()}
                       </span>
-                      <span className="text-xs text-slate-500">chars</span>
+                      <span className="text-sm text-slate-400">chars</span>
                     </div>
                   </div>
                 </div>
@@ -261,35 +261,34 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
           >
             <div className="flex items-center gap-2">
               {expandedSection === 'ratings' ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               )}
               <Star className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-medium text-slate-300">Rating Distribution</span>
+              <span className={TYPOGRAPHY.h2}>Rating Distribution</span>
             </div>
-            <span className="text-xs text-slate-500">{report.metrics.ratingCount} ratings</span>
+            <span className="text-sm text-slate-400">{report.metrics.ratingCount} ratings</span>
           </button>
 
           <AnimatePresence>
             {expandedSection === 'ratings' && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="px-3 pb-3 space-y-2">
                   {[5, 4, 3, 2, 1].map((rating) => (
                     <div key={rating} className="flex items-center gap-2">
-                      <span className="text-xs text-slate-400 w-4">{rating}</span>
+                      <span className="text-sm text-slate-400 w-4">{rating}</span>
                       <Star className="w-3 h-3 text-amber-400" />
                       {renderDistributionBar(
                         report.ratingDistribution[rating] || 0,
                         maxRatingCount,
                         rating >= 4 ? 'bg-green-500' : rating >= 3 ? 'bg-amber-500' : 'bg-red-500'
                       )}
-                      <span className="text-xs text-slate-500 w-8 text-right">
+                      <span className="text-sm text-slate-400 w-8 text-right">
                         {report.ratingDistribution[rating] || 0}
                       </span>
                     </div>
@@ -308,27 +307,26 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
           >
             <div className="flex items-center gap-2">
               {expandedSection === 'quality' ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               )}
               <ThumbsUp className="w-4 h-4 text-green-400" />
-              <span className="text-xs font-medium text-slate-300">Output Quality</span>
+              <span className={TYPOGRAPHY.h2}>Output Quality</span>
             </div>
           </button>
 
           <AnimatePresence>
             {expandedSection === 'quality' && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="px-3 pb-3 space-y-2">
                   {QUALITY_OPTIONS.slice().reverse().map(({ value, label }) => (
                     <div key={value} className="flex items-center gap-2">
-                      <span className="text-xs text-slate-400 w-16">{label}</span>
+                      <span className="text-sm text-slate-400 w-16">{label}</span>
                       {renderDistributionBar(
                         report.qualityDistribution[value!] || 0,
                         maxQualityCount,
@@ -336,7 +334,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
                         value === 'good' ? 'bg-green-500' :
                         value === 'fair' ? 'bg-amber-500' : 'bg-red-500'
                       )}
-                      <span className="text-xs text-slate-500 w-8 text-right">
+                      <span className="text-sm text-slate-400 w-8 text-right">
                         {report.qualityDistribution[value!] || 0}
                       </span>
                     </div>
@@ -356,14 +354,14 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
             >
               <div className="flex items-center gap-2">
                 {expandedSection === 'abtests' ? (
-                  <ChevronDown className="w-4 h-4 text-slate-500" />
+                  <ChevronDown className="w-4 h-4 text-slate-400" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
                 )}
                 <GitCompare className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-medium text-slate-300">A/B Test Results</span>
+                <span className={TYPOGRAPHY.h2}>A/B Test Results</span>
               </div>
-              <span className="text-xs text-slate-500">
+              <span className="text-sm text-slate-400">
                 {report.metrics.abTestResults.length} tests
               </span>
             </button>
@@ -371,39 +369,38 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
             <AnimatePresence>
               {expandedSection === 'abtests' && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
+                  {...FM_VARIANTS.collapse}
+                  transition={FM_TRANSITION.slow}
                   className="overflow-hidden"
                 >
                   <div className="px-3 pb-3 space-y-2">
                     {report.metrics.abTestResults.map((test, idx) => (
                       <div
                         key={test.testId}
-                        className="bg-slate-900/50 rounded-lg p-2.5 border border-slate-800"
+                        className="bg-slate-900/50 rounded-lg p-3 border border-slate-800"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs text-slate-400">Test #{idx + 1}</span>
-                          <span className="text-[10px] text-slate-500">
+                          <span className="text-sm text-slate-400">Test #{idx + 1}</span>
+                          <span className="text-sm text-slate-400">
                             {new Date(test.completedAt).toLocaleDateString()}
                           </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
-                            <span className="text-slate-500">Winner: </span>
-                            <span className="text-green-400">{test.winnerRating.toFixed(2)}</span>
+                            <span className="text-slate-400">Winner: </span>
+                            <span className={SEMANTIC_COLORS.success.text}>{test.winnerRating.toFixed(2)}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500">Loser: </span>
-                            <span className="text-red-400">{test.loserRating.toFixed(2)}</span>
+                            <span className="text-slate-400">Loser: </span>
+                            <span className={SEMANTIC_COLORS.danger.text}>{test.loserRating.toFixed(2)}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500">Sample: </span>
+                            <span className="text-slate-400">Sample: </span>
                             <span className="text-slate-300">{test.sampleSize}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500">Confidence: </span>
-                            <span className="text-cyan-400">{(test.confidence * 100).toFixed(0)}%</span>
+                            <span className="text-slate-400">Confidence: </span>
+                            <span className={SEMANTIC_COLORS.accent.text}>{(test.confidence * 100).toFixed(0)}%</span>
                           </div>
                         </div>
                       </div>
@@ -419,29 +416,28 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
         <div className="p-3">
           <button
             onClick={() => setShowRatingForm(!showRatingForm)}
-            className="w-full flex items-center justify-between p-2.5 bg-slate-900/50 border border-slate-800 rounded-lg hover:bg-slate-800/50 transition-colors"
+            className="w-full flex items-center justify-between p-3 bg-slate-900/50 border border-slate-800 rounded-lg hover:bg-slate-800/50 transition-colors"
           >
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-medium text-slate-300">Rate This Template</span>
+              <span className={TYPOGRAPHY.h2}>Rate This Template</span>
             </div>
             <ChevronDown
-              className={cn('w-4 h-4 text-slate-500 transition-transform', showRatingForm && 'rotate-180')}
+              className={cn('w-4 h-4 text-slate-400 transition-transform', showRatingForm && 'rotate-180')}
             />
           </button>
 
           <AnimatePresence>
             {showRatingForm && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                {...FM_VARIANTS.collapse}
+                transition={FM_TRANSITION.slow}
                 className="overflow-hidden"
               >
                 <div className="pt-3 space-y-3">
                   {/* Star Rating */}
                   <div>
-                    <label className="text-[10px] font-medium text-slate-400 mb-1.5 block">
+                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">
                       Your Rating
                     </label>
                     {renderStarInput()}
@@ -449,7 +445,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
 
                   {/* Output Quality */}
                   <div>
-                    <label className="text-[10px] font-medium text-slate-400 mb-1.5 block">
+                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">
                       Output Quality
                     </label>
                     <div className="flex gap-1">
@@ -458,9 +454,9 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
                           key={value}
                           onClick={() => setUserQuality(value)}
                           className={cn(
-                            'flex-1 flex items-center justify-center gap-1 py-1.5 text-[10px] rounded transition-colors',
+                            'flex-1 flex items-center justify-center gap-1 py-1.5 text-sm rounded transition-colors',
                             userQuality === value
-                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                              ? cn(SEMANTIC_COLORS.accent.bg, SEMANTIC_COLORS.accent.text, 'border', SEMANTIC_COLORS.accent.border)
                               : 'bg-slate-800 text-slate-400 border border-transparent hover:text-slate-300'
                           )}
                         >
@@ -473,7 +469,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
 
                   {/* Feedback */}
                   <div>
-                    <label className="text-[10px] font-medium text-slate-400 mb-1.5 block">
+                    <label className="text-sm font-medium text-slate-400 mb-1.5 block">
                       Feedback (optional)
                     </label>
                     <textarea
@@ -481,7 +477,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
                       onChange={(e) => setUserFeedback(e.target.value)}
                       placeholder="Share your experience with this template..."
                       rows={2}
-                      className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+                      className="w-full px-2.5 py-2 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
                     />
                   </div>
 
@@ -490,7 +486,7 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
                     size="sm"
                     onClick={handleSubmitRating}
                     disabled={userRating < 1}
-                    className="w-full h-8 text-xs"
+                    className="w-full h-8 text-sm"
                   >
                     Submit Rating
                   </Button>

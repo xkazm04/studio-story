@@ -3,16 +3,20 @@
 import React, { useState, useCallback } from 'react';
 import { Sparkles } from 'lucide-react';
 import PanelFrame from '../shared/PanelFrame';
+import { usePanelSize } from '../shared/PanelSizeContext';
 import { PanelSectionTitle } from '../shared/PanelPrimitives';
 import ThemeManager from '@/app/features/story/components/ThemeManager';
 import type { Theme } from '@/lib/themes/ThemeTracker';
+import type { PanelDensity } from '@/workspace/types';
 
 interface ThemeManagerPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
-export default function ThemeManagerPanel({ onClose }: ThemeManagerPanelProps) {
+export default function ThemeManagerPanel({ onClose, density }: ThemeManagerPanelProps) {
   const [themes, setThemes] = useState<Theme[]>([]);
+  const { isCompact } = usePanelSize();
 
   const handleAdd = useCallback((theme: Omit<Theme, 'id'>) => {
     setThemes((prev) => [...prev, { ...theme, id: `theme-${Date.now()}` }]);
@@ -29,7 +33,7 @@ export default function ThemeManagerPanel({ onClose }: ThemeManagerPanelProps) {
   }, []);
 
   return (
-    <PanelFrame title="Themes" icon={Sparkles} onClose={onClose} headerAccent="violet">
+    <PanelFrame title="Themes" icon={Sparkles} onClose={onClose} headerAccent="violet" density={density}>
       <div className="flex h-full min-h-0 flex-col">
         <div className="shrink-0 border-b border-slate-800/40 bg-slate-900/35 px-3 py-2">
           <PanelSectionTitle
@@ -44,6 +48,7 @@ export default function ThemeManagerPanel({ onClose }: ThemeManagerPanelProps) {
             onAddTheme={handleAdd}
             onUpdateTheme={handleUpdate}
             onRemoveTheme={handleRemove}
+            compact={isCompact}
           />
         </div>
       </div>

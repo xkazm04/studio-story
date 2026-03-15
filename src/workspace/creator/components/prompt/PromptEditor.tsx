@@ -1,20 +1,30 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Edit3, Check, X, Sparkles } from 'lucide-react';
-import { useCreatorCharacterStore } from '../../store/creatorCharacterStore';
+import { useCreatorCharacterStore, selectComposedPrompt } from '../../store/creatorCharacterStore';
 import { useCreatorUIStore } from '../../store/creatorUIStore';
 import { getCategoryById } from '../../constants';
+
+const MAX_CHARS = 1000;
+const MAX_UNDO_HISTORY = 5;
+
+function autoResize(el: HTMLTextAreaElement) {
+  el.style.height = 'auto';
+  el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+}
 
 export function PromptEditor() {
   const activeCategory = useCreatorUIStore((s) => s.activeCategory);
   const selections = useCreatorCharacterStore((s) => s.selections);
   const setCustomPrompt = useCreatorCharacterStore((s) => s.setCustomPrompt);
   const clearCustomPrompt = useCreatorCharacterStore((s) => s.clearCustomPrompt);
+  const composedPrompt = useCreatorCharacterStore(selectComposedPrompt);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [undoHistory, setUndoHistory] = useState<string[]>([]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const category = activeCategory ? getCategoryById(activeCategory) : null;
   const selection = activeCategory ? selections[activeCategory] : null;
@@ -25,13 +35,25 @@ export function PromptEditor() {
     } else {
       setEditValue('');
     }
+    setUndoHistory([]);
   }, [activeCategory, selection?.isCustom, selection?.customPrompt]);
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      autoResize(textareaRef.current);
     }
   }, [isEditing]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value.slice(0, MAX_CHARS);
+    setUndoHistory((prev) => {
+      const next = [...prev, editValue];
+      return next.slice(-MAX_UNDO_HISTORY);
+    });
+    setEditValue(newValue);
+    if (textareaRef.current) autoResize(textareaRef.current);
+  }, [editValue]);
 
   const handleSave = () => {
     if (activeCategory && editValue.trim()) {
@@ -52,79 +74,124 @@ export function PromptEditor() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSave();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSave();
+    }
     if (e.key === 'Escape') handleCancel();
+    if (e.key === 'z' && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+      e.preventDefault();
+      setUndoHistory((prev) => {
+        if (prev.length === 0) return prev;
+        const next = [...prev];
+        const last = next.pop()!;
+        setEditValue(last);
+        if (textareaRef.current) {
+          requestAnimationFrame(() => autoResize(textareaRef.current!));
+        }
+        return next;
+      });
+    }
   };
+
+  const charCount = editValue.length;
+  const isNearLimit = charCount > MAX_CHARS * 0.9;
 
   if (!category) {
     return (
       <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.02] rounded-lg border border-white/[0.04]">
-        <Sparkles size={14} className="text-slate-600" />
-        <span className="text-sm text-slate-600">Select a category to customize</span>
+        <Sparkles size={14} className="text-slate-400" />
+        <span className="text-sm text-slate-400">Select a category to customize</span>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 rounded-lg border border-amber-500/20">
-        <span className="text-xs font-medium text-amber-400 uppercase tracking-wide">
-          {category.label}
-        </span>
-      </div>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 rounded-lg border border-amber-500/20">
+          <span className="text-xs font-medium text-amber-400 uppercase tracking-wide">
+            {category.label}
+          </span>
+        </div>
 
-      <div className="flex-1 relative">
-        {isEditing ? (
-          <div className="flex items-center gap-2">
-            <input
-              ref={inputRef}
-              type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={`Custom ${category.label.toLowerCase()} description...`}
-              className="flex-1 px-4 py-2 bg-white/[0.03] border border-amber-500/30 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500/50"
-            />
+        {!isEditing && (
+          <div className="flex-1 relative">
             <button
-              onClick={handleSave}
-              className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 hover:bg-amber-500/30 transition-all"
+              onClick={() => setIsEditing(true)}
+              className="w-full flex items-center gap-2 px-4 py-2 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] rounded-lg transition-all text-left group"
             >
-              <Check size={14} />
-            </button>
-            <button
-              onClick={handleCancel}
-              className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
-            >
-              <X size={14} />
+              <Edit3 size={14} className="text-slate-400 group-hover:text-slate-300" />
+              {selection?.isCustom && selection.customPrompt ? (
+                <span className="flex-1 text-sm text-amber-400 line-clamp-2">
+                  {selection.customPrompt}
+                </span>
+              ) : (
+                <span className="flex-1 text-sm text-slate-400">
+                  Enter custom {category.label.toLowerCase()} prompt...
+                </span>
+              )}
             </button>
           </div>
-        ) : (
+        )}
+
+        {selection?.isCustom && !isEditing && (
           <button
-            onClick={() => setIsEditing(true)}
-            className="w-full flex items-center gap-2 px-4 py-2 bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] rounded-lg transition-all text-left group"
+            onClick={handleClear}
+            className="px-3 py-2 text-sm text-slate-400 hover:text-amber-400 transition-colors"
           >
-            <Edit3 size={14} className="text-slate-600 group-hover:text-slate-400" />
-            {selection?.isCustom && selection.customPrompt ? (
-              <span className="flex-1 text-sm text-amber-400 truncate">
-                {selection.customPrompt}
-              </span>
-            ) : (
-              <span className="flex-1 text-sm text-slate-600">
-                Enter custom {category.label.toLowerCase()} prompt...
-              </span>
-            )}
+            Clear
           </button>
         )}
       </div>
 
-      {selection?.isCustom && !isEditing && (
-        <button
-          onClick={handleClear}
-          className="px-3 py-2 text-xs text-slate-500 hover:text-amber-400 transition-colors"
-        >
-          Clear
-        </button>
+      {isEditing && (
+        <div className="flex flex-col gap-1.5">
+          {composedPrompt && composedPrompt !== 'A character portrait of.' && (
+            <div className="px-3 py-2 bg-white/[0.02] rounded-lg border border-white/[0.04]">
+              <span className="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                {composedPrompt}
+              </span>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={editValue}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                placeholder={`Custom ${category.label.toLowerCase()} description...`}
+                rows={2}
+                maxLength={MAX_CHARS}
+                className="w-full px-4 py-2 bg-white/[0.03] border border-amber-500/30 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500/50 resize-none leading-relaxed"
+              />
+              <span
+                className={`absolute bottom-1.5 right-2 text-[10px] tabular-nums ${
+                  isNearLimit ? 'text-amber-400' : 'text-slate-600'
+                }`}
+              >
+                {charCount}/{MAX_CHARS}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <button
+                onClick={handleSave}
+                className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 hover:bg-amber-500/30 transition-all"
+              >
+                <Check size={14} />
+              </button>
+              <button
+                onClick={handleCancel}
+                className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

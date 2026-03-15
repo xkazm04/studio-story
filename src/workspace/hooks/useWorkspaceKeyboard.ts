@@ -1,61 +1,70 @@
 /**
  * Workspace Keyboard Shortcuts
  *
- * Ctrl+`       → Toggle terminal dock collapse
- * Ctrl+T       → Create new terminal tab
- * Ctrl+W       → Close active tab (only when no input focused)
- * Ctrl+Tab     → Cycle through tabs
+ * Ctrl+`       → Toggle command bar expand/collapse
  * Ctrl+Shift+L → Cycle workspace layout
+ * Ctrl+1..4    → Focus panel by slot position (brief cyan ring flash)
+ * Escape       → Focus command bar input
  */
 
 import { useEffect } from 'react';
-import { useTerminalDockStore } from '../store/terminalDockStore';
+import { useCommandBarStore } from '../store/commandBarStore';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import { getNextLayout } from '../engine/layoutEngine';
 
+const FOCUSABLE_SELECTOR = 'input:not([disabled]), button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Find the nth panel frame in the workspace grid and focus the first
+ * focusable element inside it, flashing a cyan ring for 200ms.
+ */
+function focusPanelBySlot(slotIndex: number) {
+  const panelFrames = document.querySelectorAll<HTMLElement>('[data-panel-frame]');
+  const target = panelFrames[slotIndex];
+  if (!target) return;
+
+  const focusable = target.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+  if (focusable) {
+    focusable.focus();
+  }
+
+  target.style.animation = 'panelFocusFlash 200ms ease-out';
+  const onEnd = () => {
+    target.style.animation = '';
+    target.removeEventListener('animationend', onEnd);
+  };
+  target.addEventListener('animationend', onEnd);
+}
+
+/**
+ * Focus the command bar input.
+ */
+function focusCommandBar() {
+  const commandBar = document.querySelector('[data-command-bar]');
+  if (commandBar) {
+    const input = commandBar.querySelector<HTMLElement>('textarea, input, [data-command-bar-input]');
+    if (input) {
+      input.focus();
+      return;
+    }
+  }
+  // Expand and focus
+  useCommandBarStore.getState().expand();
+  useCommandBarStore.getState().focusInput();
+}
+
 export function useWorkspaceKeyboard() {
-  const toggleCollapsed = useTerminalDockStore((s) => s.toggleCollapsed);
-  const createTab = useTerminalDockStore((s) => s.createTab);
-  const closeTab = useTerminalDockStore((s) => s.closeTab);
-  const setActiveTab = useTerminalDockStore((s) => s.setActiveTab);
+  const toggle = useCommandBarStore((s) => s.toggle);
   const setLayout = useWorkspaceStore((s) => s.setLayout);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const isCtrl = e.ctrlKey || e.metaKey;
 
-      // Ctrl+` — toggle dock
+      // Ctrl+` — toggle command bar
       if (isCtrl && e.key === '`') {
         e.preventDefault();
-        toggleCollapsed();
-        return;
-      }
-
-      // Ctrl+T — new tab
-      if (isCtrl && e.key === 't' && !e.shiftKey) {
-        e.preventDefault();
-        createTab();
-        return;
-      }
-
-      // Ctrl+W — close active tab (only if no input focused)
-      if (isCtrl && e.key === 'w' && !e.shiftKey) {
-        const active = document.activeElement;
-        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
-        e.preventDefault();
-        const { activeTabId } = useTerminalDockStore.getState();
-        if (activeTabId) closeTab(activeTabId);
-        return;
-      }
-
-      // Ctrl+Tab — cycle tabs
-      if (isCtrl && e.key === 'Tab') {
-        e.preventDefault();
-        const { tabs, activeTabId } = useTerminalDockStore.getState();
-        if (tabs.length <= 1) return;
-        const idx = tabs.findIndex((t) => t.id === activeTabId);
-        const nextIdx = (idx + 1) % tabs.length;
-        setActiveTab(tabs[nextIdx].id);
+        toggle();
         return;
       }
 
@@ -63,12 +72,30 @@ export function useWorkspaceKeyboard() {
       if (isCtrl && e.shiftKey && e.key === 'L') {
         e.preventDefault();
         const { layout } = useWorkspaceStore.getState();
-        setLayout(getNextLayout(layout));
+        const next = getNextLayout(layout);
+        setLayout(next);
+        window.dispatchEvent(new CustomEvent('workspace-layout-switched', { detail: { layout: next } }));
+        return;
+      }
+
+      // Ctrl+1..4 — focus panel by slot position
+      if (isCtrl && !e.shiftKey && !e.altKey && e.key >= '1' && e.key <= '4') {
+        e.preventDefault();
+        const slotIndex = parseInt(e.key, 10) - 1;
+        focusPanelBySlot(slotIndex);
+        return;
+      }
+
+      // Escape — focus command bar input (only when not in modal/dropdown)
+      if (e.key === 'Escape') {
+        const active = document.activeElement;
+        if (active?.closest('[role="dialog"]') || active?.closest('[data-radix-popper-content-wrapper]')) return;
+        focusCommandBar();
         return;
       }
     };
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [toggleCollapsed, createTab, closeTab, setActiveTab, setLayout]);
+  }, [toggle, setLayout]);
 }

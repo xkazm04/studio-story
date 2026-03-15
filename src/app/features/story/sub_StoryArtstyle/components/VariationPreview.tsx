@@ -70,7 +70,7 @@ function ColorSwatch({ color, label, size = 'md' }: ColorSwatchProps) {
         style={{ backgroundColor: color }}
         title={color}
       />
-      <span className="text-[8px] text-slate-500">{label}</span>
+      <span className="text-[8px] text-slate-400">{label}</span>
     </div>
   );
 }
@@ -98,7 +98,7 @@ function ComparisonPanel({ title, colors, lighting, mood, modifiers, isAfter }: 
     )}>
       <div className="flex items-center gap-2 mb-3">
         <span className={cn(
-          'text-xs font-medium',
+          'text-sm font-medium',
           isAfter ? 'text-cyan-400' : 'text-slate-400'
         )}>
           {title}
@@ -108,7 +108,7 @@ function ComparisonPanel({ title, colors, lighting, mood, modifiers, isAfter }: 
 
       {/* Colors */}
       <div className="flex items-center gap-2 mb-3">
-        <Palette className="w-3.5 h-3.5 text-slate-500" />
+        <Palette className="w-3.5 h-3.5 text-slate-400" />
         <div className="flex gap-1.5">
           {colors.length > 0 ? (
             colors.map((color, i) => (
@@ -120,28 +120,28 @@ function ComparisonPanel({ title, colors, lighting, mood, modifiers, isAfter }: 
               />
             ))
           ) : (
-            <span className="text-[10px] text-slate-500 italic">No colors</span>
+            <span className="text-sm text-slate-400 italic">No colors</span>
           )}
         </div>
       </div>
 
       {/* Lighting */}
       <div className="flex items-center gap-2 mb-2">
-        <Sun className="w-3.5 h-3.5 text-slate-500" />
-        <span className="text-[10px] text-slate-300 capitalize">{lighting}</span>
+        <Sun className="w-3.5 h-3.5 text-slate-400" />
+        <span className="text-sm text-slate-300 capitalize">{lighting}</span>
       </div>
 
       {/* Mood */}
       <div className="flex items-center gap-2">
-        <Sparkles className="w-3.5 h-3.5 text-slate-500" />
-        <span className="text-[10px] text-slate-300 capitalize">{mood}</span>
+        <Sparkles className="w-3.5 h-3.5 text-slate-400" />
+        <span className="text-sm text-slate-300 capitalize">{mood}</span>
       </div>
 
       {/* Modifiers (only for after) */}
       {modifiers && isAfter && (
         <div className="mt-3 pt-3 border-t border-slate-700/50">
-          <div className="text-[9px] text-slate-500 mb-1">Style Modifiers:</div>
-          <div className="text-[10px] text-cyan-300 leading-relaxed">{modifiers}</div>
+          <div className="text-sm text-slate-400 mb-1">Style Modifiers:</div>
+          <div className="text-sm text-cyan-300 leading-relaxed">{modifiers}</div>
         </div>
       )}
     </div>
@@ -294,8 +294,8 @@ export function VariationPreview({
       {/* No Variation Active */}
       {!hasActiveVariation && (
         <div className="p-6 rounded-lg bg-slate-800/30 border border-slate-700 text-center">
-          <RefreshCw className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">
+          <RefreshCw className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+          <p className="text-sm text-slate-400">
             Select an era, mood, or scene type to preview style variations
           </p>
         </div>
@@ -307,19 +307,19 @@ export function VariationPreview({
           {/* Applied Variations Summary */}
           <div className="flex flex-wrap gap-2">
             {era && (
-              <span className="px-2 py-1 text-[10px] rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span className="px-2 py-1 text-sm rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
                 Era: {era}
               </span>
             )}
             {mood && (
-              <span className="px-2 py-1 text-[10px] rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30">
+              <span className="px-2 py-1 text-sm rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30">
                 Mood: {mood}
               </span>
             )}
             {sceneTypes.map(type => (
               <span
                 key={type}
-                className="px-2 py-1 text-[10px] rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30"
+                className="px-2 py-1 text-sm rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30"
               >
                 {type}
               </span>
@@ -336,7 +336,7 @@ export function VariationPreview({
             />
 
             <div className="flex items-center">
-              <ArrowRight className="w-5 h-5 text-slate-600" />
+              <ArrowRight className="w-5 h-5 text-slate-400" />
             </div>
 
             <ComparisonPanel
@@ -352,17 +352,17 @@ export function VariationPreview({
           {/* Detailed Changes */}
           {variationResult && (
             <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-700 space-y-3">
-              <Label className="text-xs text-slate-400">Applied Changes</Label>
+              <Label className="text-sm text-slate-400">Applied Changes</Label>
 
               {/* Era Effect */}
               {variationResult.appliedEra && (
                 <div className="flex items-start gap-2">
                   <ChevronRight className="w-3 h-3 text-amber-400 mt-0.5" />
                   <div>
-                    <span className="text-[10px] text-amber-400 font-medium">
+                    <span className="text-sm text-amber-400 font-medium">
                       {variationResult.appliedEra.name}
                     </span>
-                    <p className="text-[9px] text-slate-500">
+                    <p className="text-sm text-slate-400">
                       {variationResult.appliedEra.description}
                     </p>
                   </div>
@@ -374,10 +374,10 @@ export function VariationPreview({
                 <div className="flex items-start gap-2">
                   <ChevronRight className="w-3 h-3 text-pink-400 mt-0.5" />
                   <div>
-                    <span className="text-[10px] text-pink-400 font-medium">
+                    <span className="text-sm text-pink-400 font-medium">
                       {variationResult.appliedMood.name} Mood
                     </span>
-                    <p className="text-[9px] text-slate-500">
+                    <p className="text-sm text-slate-400">
                       Hue: {variationResult.appliedMood.colorShift.hueRotation}°,
                       Sat: {variationResult.appliedMood.colorShift.saturation}%,
                       Bright: {variationResult.appliedMood.colorShift.brightness}%
@@ -391,13 +391,13 @@ export function VariationPreview({
                 <div key={rule.sceneType} className="flex items-start gap-2">
                   <ChevronRight className="w-3 h-3 text-orange-400 mt-0.5" />
                   <div>
-                    <span className="text-[10px] text-orange-400 font-medium">
+                    <span className="text-sm text-orange-400 font-medium">
                       {rule.name}
                     </span>
-                    <span className="text-[9px] text-slate-600 ml-1">
+                    <span className="text-sm text-slate-400 ml-1">
                       (Priority {rule.priority})
                     </span>
-                    <p className="text-[9px] text-slate-500">{rule.description}</p>
+                    <p className="text-sm text-slate-400">{rule.description}</p>
                   </div>
                 </div>
               ))}
@@ -405,12 +405,12 @@ export function VariationPreview({
               {/* Keywords Added */}
               {variationResult.additionalKeywords.length > 0 && (
                 <div className="pt-2 border-t border-slate-700/50">
-                  <div className="text-[9px] text-slate-500 mb-1">Added Keywords:</div>
+                  <div className="text-sm text-slate-400 mb-1">Added Keywords:</div>
                   <div className="flex flex-wrap gap-1">
                     {variationResult.additionalKeywords.map((kw, i) => (
                       <span
                         key={i}
-                        className="px-1.5 py-0.5 text-[9px] rounded bg-cyan-500/20 text-cyan-300"
+                        className="px-1.5 py-0.5 text-sm rounded bg-cyan-500/20 text-cyan-300"
                       >
                         {kw}
                       </span>
@@ -422,12 +422,12 @@ export function VariationPreview({
               {/* Keywords to Avoid */}
               {variationResult.avoidKeywords.length > 0 && (
                 <div className="pt-2 border-t border-slate-700/50">
-                  <div className="text-[9px] text-slate-500 mb-1">Avoid Keywords:</div>
+                  <div className="text-sm text-slate-400 mb-1">Avoid Keywords:</div>
                   <div className="flex flex-wrap gap-1">
                     {variationResult.avoidKeywords.map((kw, i) => (
                       <span
                         key={i}
-                        className="px-1.5 py-0.5 text-[9px] rounded bg-red-500/20 text-red-300"
+                        className="px-1.5 py-0.5 text-sm rounded bg-red-500/20 text-red-300"
                       >
                         {kw}
                       </span>
@@ -441,8 +441,8 @@ export function VariationPreview({
           {/* Final Prompt Modifier */}
           {variationResult?.promptModifier && (
             <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-              <Label className="text-[10px] text-cyan-400 mb-2 block">Generated Style Modifier</Label>
-              <p className="text-xs text-cyan-200 font-mono leading-relaxed">
+              <Label className="text-sm text-cyan-400 mb-2 block">Generated Style Modifier</Label>
+              <p className="text-sm text-cyan-200 font-mono leading-relaxed">
                 {variationResult.promptModifier}
               </p>
             </div>

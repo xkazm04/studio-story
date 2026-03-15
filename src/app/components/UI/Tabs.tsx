@@ -51,8 +51,8 @@ export function Tabs({
             onClick={() => onChange(tab.value)}
             className={cn(
               'flex items-center gap-1.5 font-medium transition-all duration-200 whitespace-nowrap',
-              size === 'sm' && 'px-2.5 py-1.5 text-xs',
-              size === 'md' && 'px-3.5 py-2 text-sm',
+              size === 'sm' && 'px-2 py-1 text-sm',
+              size === 'md' && 'px-3 py-1.5 text-sm',
               variant === 'pills' && [
                 'rounded-md',
                 isActive

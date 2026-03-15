@@ -101,7 +101,7 @@ export default function UploadProgress({
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
-              className="text-slate-700"
+              className="text-slate-400"
             />
             <circle
               cx="20"
@@ -118,7 +118,7 @@ export default function UploadProgress({
               )}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-slate-200">
+          <span className="absolute inset-0 flex items-center justify-center text-sm font-medium text-slate-200">
             {overallProgress}%
           </span>
         </div>
@@ -134,7 +134,7 @@ export default function UploadProgress({
               ? 'Upload Complete'
               : 'Ready to Upload'}
           </h4>
-          <p className="text-xs text-slate-400">
+          <p className="text-sm text-slate-400">
             {stats.completed} of {stats.total} files completed
             {hasFailedFiles && (
               <span className="text-red-400 ml-1">({stats.failed} failed)</span>
@@ -203,7 +203,7 @@ export default function UploadProgress({
           variant="ghost"
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-slate-500"
+          className="text-slate-400"
         />
       </div>
 
@@ -274,7 +274,7 @@ function FileProgressItem({ file, onCancel, onRemove }: FileProgressItemProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <ImageIcon className="w-5 h-5 text-slate-500" />
+          <ImageIcon className="w-5 h-5 text-slate-400" />
         )}
       </div>
 
@@ -284,7 +284,7 @@ function FileProgressItem({ file, onCancel, onRemove }: FileProgressItemProps) {
           <p className="text-sm text-slate-200 truncate">{file.name}</p>
           <span
             className={clsx(
-              'px-1.5 py-0.5 rounded text-[10px] font-medium',
+              'px-1.5 py-0.5 rounded text-sm font-medium',
               `bg-${config.color}-500/20 text-${config.color}-400`
             )}
             style={{
@@ -330,16 +330,16 @@ function FileProgressItem({ file, onCancel, onRemove }: FileProgressItemProps) {
 
         {/* Error message */}
         {file.error && (
-          <p className="mt-1 text-xs text-red-400 truncate">{file.error}</p>
+          <p className="mt-1 text-sm text-red-400 truncate">{file.error}</p>
         )}
 
         {/* File size and progress */}
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {formatFileSize(file.size)}
           </span>
           {isUploading && (
-            <span className="text-xs text-cyan-400">{file.progress}%</span>
+            <span className="text-sm text-cyan-400">{file.progress}%</span>
           )}
         </div>
       </div>
@@ -392,7 +392,7 @@ function FileProgressItem({ file, onCancel, onRemove }: FileProgressItemProps) {
           variant="ghost"
           size="sm"
           onClick={onCancel}
-          className="text-slate-500 hover:text-red-400"
+          className="text-slate-400 hover:text-red-400"
         />
       )}
       {canRemove && !canCancel && (
@@ -402,7 +402,7 @@ function FileProgressItem({ file, onCancel, onRemove }: FileProgressItemProps) {
           variant="ghost"
           size="sm"
           onClick={onRemove}
-          className="text-slate-500 hover:text-red-400"
+          className="text-slate-400 hover:text-red-400"
         />
       )}
     </div>
@@ -430,7 +430,7 @@ export function MiniProgress({ progress, status, className = '' }: MiniProgressP
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-slate-700"
+            className="text-slate-400"
           />
           <circle
             cx="12"
@@ -456,7 +456,7 @@ export function MiniProgress({ progress, status, className = '' }: MiniProgressP
           />
         </svg>
       </div>
-      <span className="text-xs text-slate-400">{progress}%</span>
+      <span className="text-sm text-slate-400">{progress}%</span>
     </div>
   );
 }

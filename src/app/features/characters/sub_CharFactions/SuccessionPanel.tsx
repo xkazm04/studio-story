@@ -119,11 +119,11 @@ const VacancyCard: React.FC<{
           <div>
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-white text-sm">{vacancy.role_name}</h4>
-              <span className={cn('text-[10px] px-1.5 py-0.5 rounded', severityConfig.color)}>
+              <span className={cn('text-sm px-1.5 py-0.5 rounded', severityConfig.color)}>
                 {severityConfig.label}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-sm text-slate-400 mt-0.5">
               {vacancy.affected_nodes.length} position(s) affected
             </p>
           </div>
@@ -131,7 +131,7 @@ const VacancyCard: React.FC<{
       </div>
 
       {vacancy.recommendations.length > 0 && (
-        <p className="text-xs text-slate-400 mt-2 italic">
+        <p className="text-sm text-slate-400 mt-2 italic">
           {vacancy.recommendations[0]}
         </p>
       )}
@@ -140,7 +140,7 @@ const VacancyCard: React.FC<{
         <>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 mt-2 text-xs text-slate-500 hover:text-slate-300"
+            className="flex items-center gap-1 mt-2 text-sm text-slate-400 hover:text-slate-300"
           >
             {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
             {candidates.length} potential successor(s)
@@ -164,22 +164,22 @@ const VacancyCard: React.FC<{
                         <User size={12} className="text-slate-400" />
                       </div>
                       <div>
-                        <span className="text-xs text-white">{candidate.character_name}</span>
+                        <span className="text-sm text-white">{candidate.character_name}</span>
                         {candidate.current_role && (
-                          <span className="text-[10px] text-slate-500 ml-1">
+                          <span className="text-sm text-slate-400 ml-1">
                             ({candidate.current_role})
                           </span>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-green-400">
+                      <span className="text-sm text-green-400">
                         Score: {Math.round(candidate.succession_score)}
                       </span>
                       {!readOnly && (
                         <button
                           onClick={() => onFillVacancy(candidate.character_id)}
-                          className="text-[10px] px-2 py-0.5 bg-green-600 hover:bg-green-700 text-white rounded"
+                          className="text-sm px-2 py-0.5 bg-green-600 hover:bg-green-700 text-white rounded"
                         >
                           Appoint
                         </button>
@@ -215,14 +215,14 @@ const SuccessionRuleCard: React.FC<{
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">Priority #{rule.priority}</span>
-              <span className={cn('text-[10px] px-1.5 py-0.5 rounded', typeColor)}>
+              <span className="text-sm text-slate-400">Priority #{rule.priority}</span>
+              <span className={cn('text-sm px-1.5 py-0.5 rounded', typeColor)}>
                 {typeConfig.label}
               </span>
             </div>
             <p className="text-sm text-white mt-0.5">{rule.description}</p>
             {role && (
-              <p className="text-[10px] text-slate-500 mt-1">
+              <p className="text-sm text-slate-400 mt-1">
                 For role: {role.title}
               </p>
             )}
@@ -233,13 +233,13 @@ const SuccessionRuleCard: React.FC<{
           <div className="flex items-center gap-1">
             <button
               onClick={onEdit}
-              className="p-1 text-slate-500 hover:text-cyan-400"
+              className="p-1 text-slate-400 hover:text-cyan-400"
             >
               <Edit3 size={12} />
             </button>
             <button
               onClick={onDelete}
-              className="p-1 text-slate-500 hover:text-red-400"
+              className="p-1 text-slate-400 hover:text-red-400"
             >
               <Trash2 size={12} />
             </button>
@@ -248,7 +248,7 @@ const SuccessionRuleCard: React.FC<{
       </div>
 
       {rule.condition && (
-        <div className="mt-2 p-2 bg-slate-900/50 rounded text-[10px] text-slate-400">
+        <div className="mt-2 p-2 bg-slate-900/50 rounded text-sm text-slate-400">
           Condition: {rule.condition.type} {rule.condition.comparison || 'equals'} {rule.condition.value}
           {rule.condition.minimum && ` (min: ${rule.condition.minimum})`}
         </div>
@@ -267,8 +267,8 @@ const SnapshotCard: React.FC<{
       <div className="flex items-center gap-2">
         <Camera size={14} className="text-purple-400" />
         <div>
-          <p className="text-xs text-white">{snapshot.description}</p>
-          <p className="text-[10px] text-slate-500">
+          <p className="text-sm text-white">{snapshot.description}</p>
+          <p className="text-sm text-slate-400">
             {new Date(snapshot.timestamp).toLocaleDateString()} - {snapshot.nodes.length} positions
           </p>
         </div>
@@ -276,7 +276,7 @@ const SnapshotCard: React.FC<{
       {!readOnly && (
         <button
           onClick={onRestore}
-          className="flex items-center gap-1 text-[10px] px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded"
+          className="flex items-center gap-1 text-sm px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded"
         >
           <RotateCcw size={10} />
           Restore
@@ -378,7 +378,7 @@ const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
                     type="button"
                     onClick={() => setFormData({ ...formData, rule_type: type })}
                     className={cn(
-                      'flex items-center gap-1 p-2 rounded text-xs transition-colors',
+                      'flex items-center gap-1 p-2 rounded text-sm transition-colors',
                       isSelected
                         ? RULE_TYPE_COLORS[type]
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -437,7 +437,7 @@ const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
               <div className="space-y-2 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] text-slate-500 mb-1">Type</label>
+                    <label className="block text-sm text-slate-400 mb-1">Type</label>
                     <select
                       value={condition.type}
                       onChange={(e) =>
@@ -454,7 +454,7 @@ const RuleEditorModal: React.FC<RuleEditorModalProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] text-slate-500 mb-1">Value</label>
+                    <label className="block text-sm text-slate-400 mb-1">Value</label>
                     <input
                       type="text"
                       value={condition.value}
@@ -685,7 +685,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
           </span>
 
           {vacancies.length > 0 && (
-            <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded">
+            <span className="flex items-center gap-1 text-sm px-2 py-0.5 bg-red-500/20 text-red-400 rounded">
               <AlertTriangle size={12} />
               {vacancies.length} vacanc{vacancies.length === 1 ? 'y' : 'ies'}
             </span>
@@ -697,7 +697,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
           <button
             onClick={() => setActiveTab('vacancies')}
             className={cn(
-              'flex-1 px-3 py-1.5 text-xs rounded transition-colors',
+              'flex-1 px-3 py-1.5 text-sm rounded transition-colors',
               activeTab === 'vacancies'
                 ? 'bg-red-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -708,7 +708,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
           <button
             onClick={() => setActiveTab('rules')}
             className={cn(
-              'flex-1 px-3 py-1.5 text-xs rounded transition-colors',
+              'flex-1 px-3 py-1.5 text-sm rounded transition-colors',
               activeTab === 'rules'
                 ? 'bg-amber-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -719,7 +719,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
           <button
             onClick={() => setActiveTab('history')}
             className={cn(
-              'flex-1 px-3 py-1.5 text-xs rounded transition-colors',
+              'flex-1 px-3 py-1.5 text-sm rounded transition-colors',
               activeTab === 'history'
                 ? 'bg-purple-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -745,10 +745,10 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
             ))}
 
             {vacancies.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-400">
                 <Check className="mx-auto mb-2 text-green-400" size={32} />
                 <p className="text-sm">All positions are filled</p>
-                <p className="text-xs mt-1">No succession crises detected</p>
+                <p className="text-sm mt-1">No succession crises detected</p>
               </div>
             )}
           </div>
@@ -772,10 +772,10 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
 
               return (
                 <div key={role.id}>
-                  <h4 className="text-xs font-medium text-slate-400 mb-2 flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
                     <Crown size={12} className="text-amber-400" />
                     {role.title}
-                    <span className="text-slate-600">({roleRules.length} rules)</span>
+                    <span className="text-slate-400">({roleRules.length} rules)</span>
                   </h4>
 
                   <div className="space-y-2 pl-4">
@@ -791,7 +791,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
                     ))}
 
                     {roleRules.length === 0 && (
-                      <p className="text-xs text-slate-600 italic">No succession rules defined</p>
+                      <p className="text-sm text-slate-400 italic">No succession rules defined</p>
                     )}
                   </div>
                 </div>
@@ -799,7 +799,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
             })}
 
             {hierarchy.roles.length === 0 && (
-              <p className="text-center text-sm text-slate-500 py-8">
+              <p className="text-center text-sm text-slate-400 py-8">
                 Add roles first to define succession rules
               </p>
             )}
@@ -811,7 +811,7 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
             {/* Create snapshot */}
             {!readOnly && (
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                <p className="text-xs text-slate-400 mb-2">Save current organization state</p>
+                <p className="text-sm text-slate-400 mb-2">Save current organization state</p>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -846,10 +846,10 @@ const SuccessionPanel: React.FC<SuccessionPanelProps> = ({
                 ))}
 
               {hierarchy.snapshots.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-slate-400">
                   <History className="mx-auto mb-2 opacity-50" size={32} />
                   <p className="text-sm">No snapshots saved</p>
-                  <p className="text-xs mt-1">
+                  <p className="text-sm mt-1">
                     Create snapshots to track organizational changes over time
                   </p>
                 </div>

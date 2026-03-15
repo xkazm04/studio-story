@@ -148,7 +148,7 @@ export default function DirectionControls({
               <ThermometerSun className="w-4 h-4 text-orange-400" />
               <label className="text-sm text-slate-300">Warmth</label>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-sm text-slate-400">
               {getSliderLabel(direction.warmth, ['Cold', 'Neutral', 'Warm'])}
             </span>
           </div>
@@ -159,7 +159,7 @@ export default function DirectionControls({
             step={0.1}
             onChange={(value) => handleChange('warmth', value)}
           />
-          <div className="flex justify-between text-[10px] text-slate-500">
+          <div className="flex justify-between text-sm text-slate-400">
             <span>Cold</span>
             <span>Neutral</span>
             <span>Warm</span>
@@ -173,7 +173,7 @@ export default function DirectionControls({
               <Shield className="w-4 h-4 text-blue-400" />
               <label className="text-sm text-slate-300">Authority</label>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-sm text-slate-400">
               {getSliderLabel(direction.authority, ['Submissive', 'Balanced', 'Commanding'])}
             </span>
           </div>
@@ -184,7 +184,7 @@ export default function DirectionControls({
             step={0.1}
             onChange={(value) => handleChange('authority', value)}
           />
-          <div className="flex justify-between text-[10px] text-slate-500">
+          <div className="flex justify-between text-sm text-slate-400">
             <span>Submissive</span>
             <span>Balanced</span>
             <span>Commanding</span>
@@ -198,7 +198,7 @@ export default function DirectionControls({
               <Heart className="w-4 h-4 text-pink-400" />
               <label className="text-sm text-slate-300">Friendliness</label>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-sm text-slate-400">
               {getSliderLabel(direction.friendliness, ['Distant', 'Neutral', 'Friendly'])}
             </span>
           </div>
@@ -209,7 +209,7 @@ export default function DirectionControls({
             step={0.1}
             onChange={(value) => handleChange('friendliness', value)}
           />
-          <div className="flex justify-between text-[10px] text-slate-500">
+          <div className="flex justify-between text-sm text-slate-400">
             <span>Distant</span>
             <span>Neutral</span>
             <span>Friendly</span>
@@ -228,7 +228,7 @@ export default function DirectionControls({
               <Briefcase className="w-4 h-4 text-slate-400" />
               <label className="text-sm text-slate-300">Formality</label>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-sm text-slate-400">
               {Math.round(direction.formality * 100)}%
             </span>
           </div>
@@ -239,7 +239,7 @@ export default function DirectionControls({
             step={0.05}
             onChange={(value) => handleChange('formality', value)}
           />
-          <div className="flex justify-between text-[10px] text-slate-500">
+          <div className="flex justify-between text-sm text-slate-400">
             <span>Casual</span>
             <span>Formal</span>
           </div>
@@ -252,7 +252,7 @@ export default function DirectionControls({
               <Zap className="w-4 h-4 text-yellow-400" />
               <label className="text-sm text-slate-300">Intensity</label>
             </div>
-            <span className="text-xs text-slate-500">
+            <span className="text-sm text-slate-400">
               {Math.round(direction.intensity * 100)}%
             </span>
           </div>
@@ -263,7 +263,7 @@ export default function DirectionControls({
             step={0.05}
             onChange={(value) => handleChange('intensity', value)}
           />
-          <div className="flex justify-between text-[10px] text-slate-500">
+          <div className="flex justify-between text-sm text-slate-400">
             <span>Subdued</span>
             <span>Intense</span>
           </div>
@@ -299,7 +299,7 @@ export default function DirectionControls({
                 <span className="flex-1">{item}</span>
                 <button
                   onClick={() => handleRemoveItem('doList', index)}
-                  className="p-1 text-slate-500 hover:text-red-400"
+                  className="p-1 text-slate-400 hover:text-red-400"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -342,7 +342,7 @@ export default function DirectionControls({
                 <span className="flex-1">{item}</span>
                 <button
                   onClick={() => handleRemoveItem('dontList', index)}
-                  className="p-1 text-slate-500 hover:text-red-400"
+                  className="p-1 text-slate-400 hover:text-red-400"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -377,7 +377,7 @@ export default function DirectionControls({
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-center gap-2 p-2 rounded-lg bg-amber-900/20 border border-amber-500/30"
         >
-          <span className="text-xs text-amber-400">Unsaved changes</span>
+          <span className="text-sm text-amber-400">Unsaved changes</span>
         </motion.div>
       )}
     </div>

@@ -111,10 +111,10 @@ function ScoreRing({
         </div>
       </div>
       {label && (
-        <span className="mt-1 text-xs font-medium text-slate-300">{label}</span>
+        <span className="mt-1 text-sm font-medium text-slate-300">{label}</span>
       )}
       {sublabel && (
-        <span className="text-xs text-slate-500">{sublabel}</span>
+        <span className="text-sm text-slate-400">{sublabel}</span>
       )}
     </div>
   );
@@ -159,7 +159,7 @@ function CoverageBar({
         <div className="flex items-center gap-2">
           <span
             className={cn(
-              'w-5 h-5 rounded text-xs font-bold flex items-center justify-center text-white',
+              'w-5 h-5 rounded text-sm font-bold flex items-center justify-center text-white',
               getLevelColor(coverage.level)
             )}
           >
@@ -185,17 +185,17 @@ function CoverageBar({
       </div>
 
       {/* Stats row */}
-      <div className="flex items-center gap-3 text-xs text-slate-400">
+      <div className="flex items-center gap-3 text-sm text-slate-400">
         <span title="Scenes with this theme">
           {coverage.sceneCount} scenes
         </span>
-        <span className="text-slate-600">|</span>
+        <span className="text-slate-400">|</span>
         <span title="Distribution score">
           Dist: {coverage.distributionScore}%
         </span>
         {coverage.gaps.length > 0 && (
           <>
-            <span className="text-slate-600">|</span>
+            <span className="text-slate-400">|</span>
             <span className="text-amber-400" title="Gaps in coverage">
               {coverage.gaps.length} gap{coverage.gaps.length !== 1 ? 's' : ''}
             </span>
@@ -206,22 +206,22 @@ function CoverageBar({
       {/* Relevance breakdown */}
       <div className="flex items-center gap-1 mt-2">
         {coverage.strongOccurrences > 0 && (
-          <span className="px-1.5 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-400">
+          <span className="px-1.5 py-0.5 text-sm rounded bg-emerald-500/20 text-emerald-400">
             {coverage.strongOccurrences} strong
           </span>
         )}
         {coverage.moderateOccurrences > 0 && (
-          <span className="px-1.5 py-0.5 text-xs rounded bg-blue-500/20 text-blue-400">
+          <span className="px-1.5 py-0.5 text-sm rounded bg-blue-500/20 text-blue-400">
             {coverage.moderateOccurrences} moderate
           </span>
         )}
         {coverage.subtleOccurrences > 0 && (
-          <span className="px-1.5 py-0.5 text-xs rounded bg-slate-500/20 text-slate-400">
+          <span className="px-1.5 py-0.5 text-sm rounded bg-slate-500/20 text-slate-400">
             {coverage.subtleOccurrences} subtle
           </span>
         )}
         {coverage.implicitOccurrences > 0 && (
-          <span className="px-1.5 py-0.5 text-xs rounded bg-slate-600/20 text-slate-500">
+          <span className="px-1.5 py-0.5 text-sm rounded bg-slate-600/20 text-slate-400">
             {coverage.implicitOccurrences} implicit
           </span>
         )}
@@ -244,7 +244,7 @@ function GapVisualization({
 
   return (
     <div className="mt-2 p-2 rounded bg-slate-900/50">
-      <div className="text-xs text-slate-500 mb-2">Coverage gaps:</div>
+      <div className="text-sm text-slate-400 mb-2">Coverage gaps:</div>
       <div className="flex h-6 rounded overflow-hidden bg-slate-800">
         {Array.from({ length: sceneCount }).map((_, idx) => {
           const inGap = coverage.gaps.some(
@@ -273,7 +273,7 @@ function GapVisualization({
           );
         })}
       </div>
-      <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+      <div className="flex items-center gap-3 mt-2 text-sm text-slate-400">
         <span className="flex items-center gap-1">
           <div className="w-3 h-3 rounded bg-emerald-500/30" />
           Covered
@@ -330,14 +330,14 @@ function RecommendationCard({
         <div className="flex-1">
           <p className="text-sm text-slate-300">{recommendation.message}</p>
           {recommendation.sceneRange && (
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               Scenes {recommendation.sceneRange.start + 1} -{' '}
               {recommendation.sceneRange.end + 1}
             </p>
           )}
           {recommendation.themeId && (
             <button
-              className="text-xs text-violet-400 hover:text-violet-300 mt-1"
+              className="text-sm text-violet-400 hover:text-violet-300 mt-1"
               onClick={() => onThemeClick?.(recommendation.themeId!)}
             >
               View theme &rarr;
@@ -346,7 +346,7 @@ function RecommendationCard({
         </div>
         <span
           className={cn(
-            'px-1.5 py-0.5 text-xs rounded font-medium',
+            'px-1.5 py-0.5 text-sm rounded font-medium',
             recommendation.priority === 'high'
               ? 'bg-red-500/20 text-red-400'
               : recommendation.priority === 'medium'
@@ -374,12 +374,12 @@ function MilestoneItem({ milestone }: { milestone: FulfillmentMilestone }) {
         <p
           className={cn(
             'text-sm font-medium',
-            milestone.achieved ? 'text-slate-300' : 'text-slate-500'
+            milestone.achieved ? 'text-slate-300' : 'text-slate-400'
           )}
         >
           {milestone.name}
         </p>
-        <p className="text-xs text-slate-500 truncate">{milestone.description}</p>
+        <p className="text-sm text-slate-400 truncate">{milestone.description}</p>
       </div>
     </div>
   );
@@ -410,13 +410,13 @@ function IssueCard({ issue }: { issue: FulfillmentIssue }) {
           <span className="text-sm text-slate-300">{issue.message}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
+          <span className="text-sm px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
             {getTypeLabel(issue.type)}
           </span>
           {expanded ? (
-            <ChevronDown className="w-4 h-4 text-slate-500" />
+            <ChevronDown className="w-4 h-4 text-slate-400" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400" />
           )}
         </div>
       </button>
@@ -430,10 +430,10 @@ function IssueCard({ issue }: { issue: FulfillmentIssue }) {
             className="overflow-hidden"
           >
             <div className="mt-3 pt-3 border-t border-slate-700">
-              <p className="text-xs text-slate-500 mb-2">Suggestions:</p>
+              <p className="text-sm text-slate-400 mb-2">Suggestions:</p>
               <ul className="space-y-1">
                 {issue.suggestions.map((suggestion, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-slate-400">
+                  <li key={idx} className="flex items-start gap-2 text-sm text-slate-400">
                     <span className="text-violet-400 mt-0.5">•</span>
                     {suggestion}
                   </li>
@@ -463,7 +463,7 @@ function ComponentScoreBar({
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between text-sm">
         <span className="text-slate-400">{label}</span>
         <span className="text-slate-300 font-mono">{score}%</span>
       </div>
@@ -520,7 +520,7 @@ export function ThematicAnalysis({
       <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-200">Thematic Analysis</h3>
-          <Activity className="w-4 h-4 text-slate-500" />
+          <Activity className="w-4 h-4 text-slate-400" />
         </div>
         <div className="flex items-center justify-around">
           <ScoreRing score={balance.overallScore} size={60} label="Balance" />
@@ -528,7 +528,7 @@ export function ThematicAnalysis({
         </div>
         {balance.recommendations.length > 0 && (
           <div className="mt-3 pt-3 border-t border-slate-700">
-            <p className="text-xs text-slate-500">
+            <p className="text-sm text-slate-400">
               {balance.recommendations.filter(r => r.priority === 'high').length} high priority recommendations
             </p>
           </div>
@@ -570,12 +570,12 @@ export function ThematicAnalysis({
           >
             {/* Level Filter */}
             <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-slate-500" />
+              <Layers className="w-4 h-4 text-slate-400" />
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setSelectedLevel(null)}
                   className={cn(
-                    'px-2 py-1 text-xs rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     !selectedLevel
                       ? 'bg-slate-700 text-slate-200'
                       : 'text-slate-400 hover:text-slate-300'
@@ -586,7 +586,7 @@ export function ThematicAnalysis({
                 <button
                   onClick={() => setSelectedLevel('primary')}
                   className={cn(
-                    'px-2 py-1 text-xs rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     selectedLevel === 'primary'
                       ? 'bg-violet-500/20 text-violet-400'
                       : 'text-slate-400 hover:text-slate-300'
@@ -597,7 +597,7 @@ export function ThematicAnalysis({
                 <button
                   onClick={() => setSelectedLevel('secondary')}
                   className={cn(
-                    'px-2 py-1 text-xs rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     selectedLevel === 'secondary'
                       ? 'bg-blue-500/20 text-blue-400'
                       : 'text-slate-400 hover:text-slate-300'
@@ -608,7 +608,7 @@ export function ThematicAnalysis({
                 <button
                   onClick={() => setSelectedLevel('motif')}
                   className={cn(
-                    'px-2 py-1 text-xs rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     selectedLevel === 'motif'
                       ? 'bg-cyan-500/20 text-cyan-400'
                       : 'text-slate-400 hover:text-slate-300'
@@ -621,10 +621,10 @@ export function ThematicAnalysis({
 
             {/* Coverage List */}
             {sortedCoverage.length === 0 ? (
-              <div className="p-8 text-center text-slate-500">
+              <div className="p-8 text-center text-slate-400">
                 <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>No themes to analyze</p>
-                <p className="text-xs mt-1">Add themes to see coverage analysis</p>
+                <p className="text-sm mt-1">Add themes to see coverage analysis</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -661,7 +661,7 @@ export function ThematicAnalysis({
                   <h3 className="text-sm font-semibold text-slate-200 mb-1">
                     Thematic Balance
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm text-slate-400">
                     How well themes are distributed across your story
                   </p>
                 </div>
@@ -674,19 +674,19 @@ export function ThematicAnalysis({
                   <div className="text-lg font-bold text-violet-400">
                     {balance.primaryThemesCoverage}%
                   </div>
-                  <div className="text-xs text-slate-500">Primary</div>
+                  <div className="text-sm text-slate-400">Primary</div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-blue-400">
                     {balance.secondaryThemesCoverage}%
                   </div>
-                  <div className="text-xs text-slate-500">Secondary</div>
+                  <div className="text-sm text-slate-400">Secondary</div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-cyan-400">
                     {balance.motifsCoverage}%
                   </div>
-                  <div className="text-xs text-slate-500">Motifs</div>
+                  <div className="text-sm text-slate-400">Motifs</div>
                 </div>
               </div>
             </div>
@@ -709,10 +709,10 @@ export function ThematicAnalysis({
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-slate-500 bg-emerald-500/5 rounded-lg border border-emerald-500/20">
+              <div className="p-6 text-center text-slate-400 bg-emerald-500/5 rounded-lg border border-emerald-500/20">
                 <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-emerald-400" />
                 <p className="text-emerald-400 font-medium">Well balanced!</p>
-                <p className="text-xs mt-1">Your themes are well distributed</p>
+                <p className="text-sm mt-1">Your themes are well distributed</p>
               </div>
             )}
           </motion.div>
@@ -733,7 +733,7 @@ export function ThematicAnalysis({
                   <h3 className="text-sm font-semibold text-slate-200 mb-1">
                     Premise Fulfillment
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm text-slate-400">
                     How well your story delivers on its premise
                   </p>
                 </div>

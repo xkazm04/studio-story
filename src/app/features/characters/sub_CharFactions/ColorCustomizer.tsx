@@ -7,6 +7,7 @@ import { cn } from '@/app/lib/utils';
 import { FactionBranding } from '@/app/types/Faction';
 import FactionCard from './FactionCard';
 import { validateFactionBrandingColors } from '@/app/utils/colorValidation';
+import { FACTION_PRESET_COLORS } from './factionTheme';
 
 interface ColorCustomizerProps {
   currentBranding?: FactionBranding;
@@ -16,13 +17,6 @@ interface ColorCustomizerProps {
   factionId: string;
 }
 
-const PRESET_COLORS = [
-  '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
-  '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
-  '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
-  '#ec4899', '#f43f5e', '#64748b', '#6b7280', '#71717a',
-];
-
 const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
   currentBranding,
   onSave,
@@ -31,13 +25,13 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
   factionId,
 }) => {
   const [primaryColor, setPrimaryColor] = useState(
-    currentBranding?.primary_color || PRESET_COLORS[0]
+    currentBranding?.primary_color || FACTION_PRESET_COLORS[0]
   );
   const [secondaryColor, setSecondaryColor] = useState(
-    currentBranding?.secondary_color || PRESET_COLORS[5]
+    currentBranding?.secondary_color || FACTION_PRESET_COLORS[5]
   );
   const [accentColor, setAccentColor] = useState(
-    currentBranding?.accent_color || PRESET_COLORS[10]
+    currentBranding?.accent_color || FACTION_PRESET_COLORS[10]
   );
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
@@ -74,9 +68,9 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
   };
 
   const handleReset = () => {
-    setPrimaryColor(currentBranding?.primary_color || PRESET_COLORS[0]);
-    setSecondaryColor(currentBranding?.secondary_color || PRESET_COLORS[5]);
-    setAccentColor(currentBranding?.accent_color || PRESET_COLORS[10]);
+    setPrimaryColor(currentBranding?.primary_color || FACTION_PRESET_COLORS[0]);
+    setSecondaryColor(currentBranding?.secondary_color || FACTION_PRESET_COLORS[5]);
+    setAccentColor(currentBranding?.accent_color || FACTION_PRESET_COLORS[10]);
     setValidationErrors({});
     onReset();
   };
@@ -130,7 +124,7 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
             <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
             <div>
               <div className="font-medium mb-1">Color Validation Errors:</div>
-              <ul className="list-disc list-inside text-xs space-y-1">
+              <ul className="list-disc list-inside text-sm space-y-1">
                 {Object.entries(validationErrors).map(([field, error]) => (
                   <li key={field}>{error}</li>
                 ))}
@@ -145,19 +139,19 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
         {/* Primary Color */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Palette size={16} className="text-gray-400" />
-            <label className="text-sm font-medium text-gray-300">Primary Color</label>
+            <Palette size={16} className="text-slate-400" />
+            <label className="text-sm font-medium text-slate-300">Primary Color</label>
           </div>
           <div className="space-y-3">
             <input
               type="color"
               value={primaryColor}
               onChange={(e) => handleColorChange('primary', e.target.value)}
-              className="w-full h-12 rounded-lg cursor-pointer bg-gray-800 border border-gray-700"
+              className="w-full h-12 rounded-lg cursor-pointer bg-slate-800 border border-slate-700"
               data-testid="primary-color-input"
             />
             <div className="grid grid-cols-5 gap-2">
-              {PRESET_COLORS.slice(0, 10).map((color) => (
+              {FACTION_PRESET_COLORS.slice(0, 10).map((color) => (
                 <button
                   key={color}
                   type="button"
@@ -172,9 +166,9 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
                 />
               ))}
             </div>
-            <div className="text-xs text-gray-500 font-mono">{primaryColor}</div>
+            <div className="text-sm text-slate-400 font-mono">{primaryColor}</div>
             {validationErrors.primary_color && (
-              <div className="text-xs text-red-400 flex items-center gap-1">
+              <div className="text-sm text-red-400 flex items-center gap-1">
                 <AlertCircle size={12} />
                 {validationErrors.primary_color}
               </div>
@@ -185,19 +179,19 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
         {/* Secondary Color */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Palette size={16} className="text-gray-400" />
-            <label className="text-sm font-medium text-gray-300">Secondary Color</label>
+            <Palette size={16} className="text-slate-400" />
+            <label className="text-sm font-medium text-slate-300">Secondary Color</label>
           </div>
           <div className="space-y-3">
             <input
               type="color"
               value={secondaryColor}
               onChange={(e) => handleColorChange('secondary', e.target.value)}
-              className="w-full h-12 rounded-lg cursor-pointer bg-gray-800 border border-gray-700"
+              className="w-full h-12 rounded-lg cursor-pointer bg-slate-800 border border-slate-700"
               data-testid="secondary-color-input"
             />
             <div className="grid grid-cols-5 gap-2">
-              {PRESET_COLORS.slice(5, 15).map((color) => (
+              {FACTION_PRESET_COLORS.slice(5, 15).map((color) => (
                 <button
                   key={color}
                   type="button"
@@ -212,9 +206,9 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
                 />
               ))}
             </div>
-            <div className="text-xs text-gray-500 font-mono">{secondaryColor}</div>
+            <div className="text-sm text-slate-400 font-mono">{secondaryColor}</div>
             {validationErrors.secondary_color && (
-              <div className="text-xs text-red-400 flex items-center gap-1">
+              <div className="text-sm text-red-400 flex items-center gap-1">
                 <AlertCircle size={12} />
                 {validationErrors.secondary_color}
               </div>
@@ -225,19 +219,19 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
         {/* Accent Color */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Palette size={16} className="text-gray-400" />
-            <label className="text-sm font-medium text-gray-300">Accent Color</label>
+            <Palette size={16} className="text-slate-400" />
+            <label className="text-sm font-medium text-slate-300">Accent Color</label>
           </div>
           <div className="space-y-3">
             <input
               type="color"
               value={accentColor}
               onChange={(e) => handleColorChange('accent', e.target.value)}
-              className="w-full h-12 rounded-lg cursor-pointer bg-gray-800 border border-gray-700"
+              className="w-full h-12 rounded-lg cursor-pointer bg-slate-800 border border-slate-700"
               data-testid="accent-color-input"
             />
             <div className="grid grid-cols-5 gap-2">
-              {PRESET_COLORS.slice(10, 20).map((color) => (
+              {FACTION_PRESET_COLORS.slice(10, 20).map((color) => (
                 <button
                   key={color}
                   type="button"
@@ -252,9 +246,9 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
                 />
               ))}
             </div>
-            <div className="text-xs text-gray-500 font-mono">{accentColor}</div>
+            <div className="text-sm text-slate-400 font-mono">{accentColor}</div>
             {validationErrors.accent_color && (
-              <div className="text-xs text-red-400 flex items-center gap-1">
+              <div className="text-sm text-red-400 flex items-center gap-1">
                 <AlertCircle size={12} />
                 {validationErrors.accent_color}
               </div>
@@ -264,8 +258,8 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
       </div>
 
       {/* Live Preview */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h4 className="text-sm font-medium text-gray-300 mb-4 flex items-center gap-2">
+      <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+        <h4 className="text-sm font-medium text-slate-300 mb-4 flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
           Live Preview
         </h4>
@@ -283,7 +277,7 @@ const ColorCustomizer: React.FC<ColorCustomizerProps> = ({
         <button
           type="button"
           onClick={handleReset}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
           data-testid="reset-colors-btn"
         >
           <RotateCcw size={16} />

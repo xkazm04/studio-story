@@ -136,17 +136,17 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
   return (
     <div className="space-y-6">
       {/* Theme Tier Indicator */}
-      <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-700">
+      <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg border border-slate-700">
         <div className="flex items-center gap-3">
           <Crown
             size={20}
-            className={brandingState.theme_tier === 'premium' ? 'text-yellow-400' : 'text-gray-400'}
+            className={brandingState.theme_tier === 'premium' ? 'text-yellow-400' : 'text-slate-400'}
           />
           <div>
             <div className="text-sm font-medium text-white">
               {brandingState.theme_tier === 'premium' ? 'Premium Theme' : 'Free Theme'}
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-sm text-slate-400">
               {brandingState.theme_tier === 'premium'
                 ? 'Access to all branding features'
                 : 'Upgrade for advanced customization'}
@@ -176,13 +176,13 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
       )}
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-gray-800">
+      <div className="flex gap-2 border-b border-slate-800">
         <button
           onClick={() => setActiveTab('colors')}
           className={cn('flex items-center gap-2 px-6 py-3 font-medium transition-all',
             activeTab === 'colors'
               ? 'text-blue-400 border-b-2 border-blue-400'
-              : 'text-gray-400 hover:text-gray-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Palette size={18} />
@@ -193,7 +193,7 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
           className={cn('flex items-center gap-2 px-6 py-3 font-medium transition-all',
             activeTab === 'emblem'
               ? 'text-purple-400 border-b-2 border-purple-400'
-              : 'text-gray-400 hover:text-gray-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Shield size={18} />
@@ -204,7 +204,7 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
           className={cn('flex items-center gap-2 px-6 py-3 font-medium transition-all',
             activeTab === 'templates'
               ? 'text-green-400 border-b-2 border-green-400'
-              : 'text-gray-400 hover:text-gray-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Layout size={18} />
@@ -218,7 +218,7 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
           className={cn('flex items-center gap-2 px-6 py-3 font-medium transition-all ml-auto',
             activeTab === 'preview'
               ? 'text-orange-400 border-b-2 border-orange-400'
-              : 'text-gray-400 hover:text-gray-300'
+              : 'text-slate-400 hover:text-slate-300'
           )}
         >
           Preview Mode
@@ -272,7 +272,7 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
             className="space-y-6"
           >
             <div>
-              <h4 className="text-sm font-medium text-gray-300 mb-4">Select Banner Template</h4>
+              <h4 className="text-sm font-medium text-slate-300 mb-4">Select Banner Template</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {BANNER_TEMPLATES.map((template) => (
                   <button
@@ -282,14 +282,14 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
                     className={cn('relative p-6 rounded-lg border-2 transition-all text-left',
                       selectedTemplate === template.id
                         ? 'border-green-500 bg-green-500/10'
-                        : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                        : 'border-slate-700 bg-slate-800 hover:border-slate-600'
                     )}
                   >
                     <div className="space-y-2">
                       <div className="font-medium text-white">{template.name}</div>
-                      <div className="text-sm text-gray-400">{template.description}</div>
+                      <div className="text-sm text-slate-400">{template.description}</div>
                       {/* Template preview placeholder */}
-                      <div className="mt-4 h-24 bg-gray-900 rounded border border-gray-700 flex items-center justify-center text-xs text-gray-500">
+                      <div className="mt-4 h-24 bg-slate-900 rounded border border-slate-700 flex items-center justify-center text-sm text-slate-400">
                         {template.name} Preview
                       </div>
                     </div>
@@ -311,7 +311,7 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
                 type="button"
                 onClick={handleTemplateSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 text-white rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-700 text-white rounded-lg transition-colors"
               >
                 Save Template
               </button>
@@ -327,18 +327,18 @@ const FactionBrandingPanel: React.FC<FactionBrandingPanelProps> = ({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h4 className="text-sm font-medium text-gray-300 mb-4">Full Preview</h4>
+            <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+              <h4 className="text-sm font-medium text-slate-300 mb-4">Full Preview</h4>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-xs text-gray-400 mb-2">Faction Card Preview</p>
-                  <div className="bg-gray-900 rounded-lg p-4 border border-gray-700 min-h-[200px] flex items-center justify-center text-gray-500">
+                  <p className="text-sm text-slate-400 mb-2">Faction Card Preview</p>
+                  <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 min-h-[200px] flex items-center justify-center text-slate-400">
                     Card preview with branding
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 mb-2">Banner Preview</p>
-                  <div className="bg-gray-900 rounded-lg p-4 border border-gray-700 min-h-[200px] flex items-center justify-center text-gray-500">
+                  <p className="text-sm text-slate-400 mb-2">Banner Preview</p>
+                  <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 min-h-[200px] flex items-center justify-center text-slate-400">
                     Banner preview with branding
                   </div>
                 </div>

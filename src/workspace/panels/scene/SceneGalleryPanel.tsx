@@ -7,12 +7,14 @@ import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelSkeletonList } from '../shared/PanelPrimitives';
+import type { PanelDensity } from '@/workspace/types';
 
 interface SceneGalleryPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
-export default function SceneGalleryPanel({ onClose }: SceneGalleryPanelProps) {
+export default function SceneGalleryPanel({ onClose, density }: SceneGalleryPanelProps) {
   const { selectedProject, selectedAct, selectedScene, setSelectedScene } = useProjectStore();
   const projectId = selectedProject?.id || '';
   const actId = selectedAct?.id || '';
@@ -24,7 +26,7 @@ export default function SceneGalleryPanel({ onClose }: SceneGalleryPanelProps) {
 
   if (!projectId || !actId) {
     return (
-      <PanelFrame title="Scenes" icon={Film} onClose={onClose} headerAccent="amber">
+      <PanelFrame title="Scenes" icon={Film} onClose={onClose} headerAccent="amber" density={density}>
         <PanelEmptyState
           icon={Film}
           title="Pick a project and act"
@@ -40,9 +42,10 @@ export default function SceneGalleryPanel({ onClose }: SceneGalleryPanelProps) {
       icon={Film}
       onClose={onClose}
       headerAccent="amber"
+      density={density}
       actions={
         isFetching && !isLoading ? (
-          <span className="inline-flex items-center gap-1 rounded border border-cyan-500/20 bg-cyan-500/8 px-1.5 py-0.5 text-[9px] text-cyan-300">
+          <span className="inline-flex items-center gap-1 rounded border border-cyan-500/20 bg-cyan-500/8 px-1.5 py-0.5 text-xs text-cyan-300">
             <Loader2 className="h-3 w-3 animate-spin" />
             Refreshing
           </span>
@@ -84,17 +87,17 @@ export default function SceneGalleryPanel({ onClose }: SceneGalleryPanelProps) {
                   </div>
                 ) : (
                   <div className="w-full h-16 rounded bg-slate-800/30 flex items-center justify-center">
-                    <Film className="w-4 h-4 text-slate-700" />
+                    <Film className="w-4 h-4 text-slate-400" />
                   </div>
                 )}
                 <p className={cn(
-                  'text-[10px] font-medium truncate',
+                  'text-sm font-medium truncate',
                   isActive ? 'text-amber-300' : 'text-slate-300',
                 )}>
                   {scene.name}
                 </p>
                 {scene.description && (
-                  <p className="text-[9px] text-slate-500 line-clamp-2">
+                  <p className="text-xs text-slate-400 line-clamp-2">
                     {scene.description.replace(/@\w+(\[[^\]]*\])?\s*/g, '').slice(0, 80)}
                   </p>
                 )}

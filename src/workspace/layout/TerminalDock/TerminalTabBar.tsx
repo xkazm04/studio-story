@@ -37,7 +37,7 @@ export default function TerminalTabBar() {
         onClick={() => createTab()}
         className={cn(
           'flex items-center justify-center w-7 h-7 rounded-t-md',
-          'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
+          'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
         )}
         title="New terminal tab"
       >
@@ -53,7 +53,7 @@ export default function TerminalTabBar() {
         onClick={toggleCollapsed}
         className={cn(
           'flex items-center justify-center w-7 h-7 rounded-md mb-0.5',
-          'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
+          'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50 transition-colors'
         )}
         title={isCollapsed ? 'Expand terminal' : 'Collapse terminal'}
       >

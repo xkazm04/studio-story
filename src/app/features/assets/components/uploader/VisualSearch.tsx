@@ -166,7 +166,7 @@ export default function VisualSearch({
                   <p className="text-sm font-medium text-slate-200 truncate">
                     {queryImage?.name}
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-sm text-slate-400 mt-1">
                     {matches.length} similar images found
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function VisualSearch({
                     e.stopPropagation();
                     handleClear();
                   }}
-                  className="text-slate-500 hover:text-slate-300"
+                  className="text-slate-400 hover:text-slate-300"
                 />
               </div>
             ) : (
@@ -190,7 +190,7 @@ export default function VisualSearch({
                 <p className="text-sm text-slate-300 mb-1">
                   Drop an image to search
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-sm text-slate-400">
                   Find visually similar images in your library
                 </p>
               </div>
@@ -238,7 +238,7 @@ export default function VisualSearch({
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <ImageIcon className="w-8 h-8 text-slate-600" />
+                            <ImageIcon className="w-8 h-8 text-slate-400" />
                           </div>
                         )}
                       </div>
@@ -246,7 +246,7 @@ export default function VisualSearch({
                       {/* Match badge */}
                       <div
                         className={clsx(
-                          'absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs font-medium',
+                          'absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-sm font-medium',
                           `bg-${config.color}-500/20 text-${config.color}-400`
                         )}
                         style={{
@@ -259,10 +259,10 @@ export default function VisualSearch({
 
                       {/* Info overlay */}
                       <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-slate-900/90 to-transparent">
-                        <p className="text-xs text-slate-200 truncate">
+                        <p className="text-sm text-slate-200 truncate">
                           {asset.name}
                         </p>
-                        <p className="text-[10px] text-slate-400">
+                        <p className="text-sm text-slate-400">
                           {config.label}
                         </p>
                       </div>
@@ -277,9 +277,9 @@ export default function VisualSearch({
           {!isSearching && queryPreview && matches.length === 0 && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center py-8">
-                <ImageIcon className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <ImageIcon className="w-10 h-10 text-slate-400 mx-auto mb-3" />
                 <p className="text-sm text-slate-400">No similar images found</p>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-sm text-slate-400 mt-1">
                   Try uploading more images to your library
                 </p>
               </div>
@@ -337,9 +337,9 @@ export default function VisualSearch({
           {!isLoadingStyles && styleGroups.length === 0 && (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center py-8">
-                <Palette className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <Palette className="w-10 h-10 text-slate-400 mx-auto mb-3" />
                 <p className="text-sm text-slate-400">No style groups yet</p>
-                <p className="text-xs text-slate-500 mt-1 mb-4">
+                <p className="text-sm text-slate-400 mt-1 mb-4">
                   Upload more images and click Reanalyze
                 </p>
                 <Button
@@ -385,26 +385,26 @@ function StyleGroupCard({ group, assets, onSelectAsset }: StyleGroupCardProps) {
 
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-medium text-slate-200">{group.name}</h4>
-          <p className="text-xs text-slate-400 truncate">{group.description}</p>
+          <p className="text-sm text-slate-400 truncate">{group.description}</p>
         </div>
 
-        <span className="text-xs text-slate-500 px-2 py-1 bg-slate-800 rounded">
+        <span className="text-sm text-slate-400 px-2 py-1 bg-slate-800 rounded">
           {group.assetIds.length} images
         </span>
       </div>
 
       {/* Characteristics */}
       <div className="px-3 pb-2 flex flex-wrap gap-1">
-        <span className="px-2 py-0.5 rounded text-xs bg-slate-800 text-slate-400">
+        <span className="px-2 py-0.5 rounded text-sm bg-slate-800 text-slate-400">
           {group.characteristics.brightnessLevel}
         </span>
-        <span className="px-2 py-0.5 rounded text-xs bg-slate-800 text-slate-400">
+        <span className="px-2 py-0.5 rounded text-sm bg-slate-800 text-slate-400">
           {group.characteristics.aspectCategory}
         </span>
         {group.characteristics.dominantColors.slice(0, 3).map((color, i) => (
           <span
             key={i}
-            className="px-2 py-0.5 rounded text-xs flex items-center gap-1"
+            className="px-2 py-0.5 rounded text-sm flex items-center gap-1"
             style={{ backgroundColor: `${color}20` }}
           >
             <span
@@ -440,7 +440,7 @@ function StyleGroupCard({ group, assets, onSelectAsset }: StyleGroupCardProps) {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-4 h-4 text-slate-600" />
+                    <ImageIcon className="w-4 h-4 text-slate-400" />
                   </div>
                 )}
               </motion.div>
@@ -452,7 +452,7 @@ function StyleGroupCard({ group, assets, onSelectAsset }: StyleGroupCardProps) {
         {group.assetIds.length > 4 && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full mt-2 py-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+            className="w-full mt-2 py-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
           >
             {isExpanded
               ? 'Show less'

@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, Wand2, Loader2, Image as ImageIcon, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
+import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION, fmStagger } from '@/workspace/theme/tokens';
 
 interface PromptPreviewProps {
   prompt: string;
@@ -83,19 +84,19 @@ export function PromptPreview({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Prompt Display */}
       <div className="relative">
         <div
           className={cn(
-            'p-3 rounded-lg text-xs font-mono',
+            'p-3 rounded-lg text-sm font-mono',
             'bg-slate-800 border border-slate-700',
             'text-slate-300 whitespace-pre-wrap break-words',
             'min-h-[80px] max-h-[200px] overflow-y-auto'
           )}
         >
           {prompt || (
-            <span className="text-slate-500 italic">
+            <span className="text-slate-400 italic">
               Select options to build your prompt...
             </span>
           )}
@@ -124,7 +125,7 @@ export function PromptPreview({
 
       {/* Character Count */}
       {prompt && (
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-sm text-slate-400">
           <span>{prompt.length} characters</span>
           <span className={prompt.length > 1400 ? 'text-amber-400' : ''}>
             {Math.round((prompt.length / 1500) * 100)}% of limit
@@ -154,26 +155,25 @@ export function PromptPreview({
 
       {/* Error */}
       {error && (
-        <p className="text-xs text-red-400 text-center">{error}</p>
+        <p className="text-sm text-red-400 text-center">{error}</p>
       )}
 
       {/* Generated Images Grid */}
       <AnimatePresence>
         {generatedImages.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            {...FM_VARIANTS.fadeIn}
+            transition={FM_TRANSITION.normal}
             className="space-y-2"
           >
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-medium text-slate-300">
+              <h4 className={cn(TYPOGRAPHY.h2, 'text-slate-300')}>
                 Generated Images
               </h4>
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
               >
                 <RefreshCw className={cn('w-3 h-3', isGenerating && 'animate-spin')} />
                 Regenerate
@@ -184,9 +184,8 @@ export function PromptPreview({
               {generatedImages.map((image, index) => (
                 <motion.button
                   key={image.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
+                  {...FM_VARIANTS.fadeIn}
+                  transition={{ ...FM_TRANSITION.normal, ...fmStagger(index * 2) }}
                   onClick={() => handleSelectImage(image)}
                   className={cn(
                     'relative aspect-[4/3] rounded-lg overflow-hidden group',
@@ -206,7 +205,7 @@ export function PromptPreview({
                       'flex items-end justify-center pb-2'
                     )}
                   >
-                    <span className="text-xs text-white font-medium flex items-center gap-1">
+                    <span className="text-sm text-white font-medium flex items-center gap-1">
                       <ImageIcon className="w-3 h-3" />
                       Use this
                     </span>

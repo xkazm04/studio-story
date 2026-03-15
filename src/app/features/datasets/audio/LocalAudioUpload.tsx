@@ -38,11 +38,11 @@ const LocalAudioUpload = ({ audioFiles, setAudioFiles }: LocalAudioUploadProps) 
         />
         <label
           htmlFor="audio-file-upload"
-          className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer bg-gray-900 hover:bg-gray-800 transition-all duration-200"
+          className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer bg-slate-900 hover:bg-slate-800 transition-all duration-200"
         >
-          <Upload className="w-16 h-16 text-gray-500 mb-4" />
-          <p className="text-gray-300 font-medium mb-1">Click to upload audio files</p>
-          <p className="text-sm text-gray-500">MP3, WAV, M4A, OGG, FLAC, AAC</p>
+          <Upload className="w-16 h-16 text-slate-400 mb-4" />
+          <p className="text-slate-300 font-medium mb-1">Click to upload audio files</p>
+          <p className="text-sm text-slate-400">MP3, WAV, M4A, OGG, FLAC, AAC</p>
         </label>
       </div>
 
@@ -54,12 +54,12 @@ const LocalAudioUpload = ({ audioFiles, setAudioFiles }: LocalAudioUploadProps) 
           className="space-y-3"
         >
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-gray-300">
+            <h4 className="text-sm font-semibold text-slate-300">
               Selected Files ({audioFiles.length})
             </h4>
             <button
               onClick={() => setAudioFiles([])}
-              className="text-xs text-red-400 hover:text-red-300 transition-colors"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors"
             >
               Clear All
             </button>
@@ -72,20 +72,20 @@ const LocalAudioUpload = ({ audioFiles, setAudioFiles }: LocalAudioUploadProps) 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-4 bg-gray-900 border border-gray-700 rounded-lg hover:border-gray-600 transition-colors"
+                className="flex items-center justify-between p-4 bg-slate-900 border border-slate-700 rounded-lg hover:border-slate-600 transition-colors"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="flex-shrink-0">
                     <FileAudio className="w-5 h-5 text-purple-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-200 truncate font-medium">{file.name}</p>
+                    <p className="text-sm text-slate-200 truncate font-medium">{file.name}</p>
                     <div className="flex items-center gap-3 mt-1">
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-slate-400">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
-                      <span className="text-xs text-gray-600">•</span>
-                      <p className="text-xs text-gray-500 capitalize">
+                      <span className="text-sm text-slate-400">•</span>
+                      <p className="text-sm text-slate-400 capitalize">
                         {file.type.split('/')[1] || 'audio'}
                       </p>
                     </div>
@@ -94,7 +94,7 @@ const LocalAudioUpload = ({ audioFiles, setAudioFiles }: LocalAudioUploadProps) 
                 </div>
                 <button
                   onClick={() => removeFile(index)}
-                  className="ml-3 p-1 rounded hover:bg-gray-800 transition-colors flex-shrink-0"
+                  className="ml-3 p-1 rounded hover:bg-slate-800 transition-colors flex-shrink-0"
                 >
                   <XCircle className="w-5 h-5 text-red-400" />
                 </button>

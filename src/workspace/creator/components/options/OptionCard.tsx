@@ -37,7 +37,7 @@ export function OptionCard({ option, isSelected, onSelect }: OptionCardProps) {
           {option.name}
         </span>
         {option.description && (
-          <span className="text-xs text-slate-500 block truncate">{option.description}</span>
+          <span className="text-sm text-slate-400 block truncate">{option.description}</span>
         )}
       </div>
 

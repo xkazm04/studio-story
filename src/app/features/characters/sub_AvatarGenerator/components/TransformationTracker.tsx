@@ -179,7 +179,7 @@ const VisualChangeEditor: React.FC<VisualChangeEditorProps> = ({
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             placeholder="Attribute"
             className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700/50 rounded
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
           {showSuggestions && suggestions.length > 0 && (
@@ -190,7 +190,7 @@ const VisualChangeEditor: React.FC<VisualChangeEditorProps> = ({
                 <button
                   key={suggestion}
                   onClick={() => onChange({ ...change, attribute: suggestion })}
-                  className="w-full px-2 py-1 text-left font-mono text-xs text-slate-400 hover:bg-slate-700/50"
+                  className="w-full px-2 py-1 text-left font-mono text-sm text-slate-400 hover:bg-slate-700/50"
                 >
                   {suggestion}
                 </button>
@@ -207,17 +207,17 @@ const VisualChangeEditor: React.FC<VisualChangeEditorProps> = ({
             onChange={(e) => onChange({ ...change, from: e.target.value })}
             placeholder="From (optional)"
             className="flex-1 px-2 py-1 bg-slate-900/50 border border-slate-700/50 rounded
-                       font-mono text-[10px] text-slate-400 placeholder:text-slate-600
+                       font-mono text-sm text-slate-400 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
-          <span className="text-slate-600 text-xs">→</span>
+          <span className="text-slate-400 text-sm">→</span>
           <input
             type="text"
             value={change.to}
             onChange={(e) => onChange({ ...change, to: e.target.value })}
             placeholder="To"
             className="flex-1 px-2 py-1 bg-slate-900/50 border border-slate-700/50 rounded
-                       font-mono text-[10px] text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
         </div>
@@ -229,14 +229,14 @@ const VisualChangeEditor: React.FC<VisualChangeEditorProps> = ({
           onChange={(e) => onChange({ ...change, reason: e.target.value })}
           placeholder="Reason (optional)"
           className="w-full px-2 py-1 bg-slate-900/50 border border-slate-700/50 rounded
-                     font-mono text-[10px] text-slate-500 placeholder:text-slate-600
+                     font-mono text-sm text-slate-400 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         />
       </div>
 
       <button
         onClick={onDelete}
-        className="p-1 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
+        className="p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
       >
         <X size={14} />
       </button>
@@ -310,7 +310,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
       <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             transformation
           </h3>
         </div>
@@ -325,8 +325,8 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
                 onClick={() => onTypeChange(config.type)}
                 disabled={disabled}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-[10px] font-mono border transition-all',
-                  isSelected ? config.color : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm font-mono border transition-all',
+                  isSelected ? config.color : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600',
                   disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -345,7 +345,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
           disabled={disabled}
           placeholder="What caused this change?"
           className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                      disabled:opacity-50"
         />
@@ -369,10 +369,10 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
           onClick={() => onMilestoneChange(!isMilestone)}
           disabled={disabled}
           className={cn(
-            'flex items-center gap-1.5 px-2 py-1 rounded-lg border font-mono text-xs transition-colors',
+            'flex items-center gap-1.5 px-2 py-1 rounded-lg border font-mono text-sm transition-colors',
             isMilestone
               ? 'bg-yellow-500/20 border-yellow-500/40 text-yellow-400'
-              : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600',
+              : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600',
             disabled && 'opacity-50 cursor-not-allowed'
           )}
         >
@@ -391,12 +391,12 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
             <span className={cn('p-1 rounded', currentTypeConfig.color)}>
               {currentTypeConfig.icon}
             </span>
-            <span className="font-mono text-xs text-slate-300">{currentTypeConfig.label}</span>
+            <span className="font-mono text-sm text-slate-300">{currentTypeConfig.label}</span>
           </div>
           {expandedSection === 'type' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -419,12 +419,12 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
                       'flex flex-col items-center p-3 rounded-lg border transition-all text-center',
                       isSelected
                         ? config.color
-                        : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600',
+                        : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600',
                       disabled && 'opacity-50 cursor-not-allowed'
                     )}
                   >
                     <span className={isSelected ? '' : 'opacity-60'}>{config.icon}</span>
-                    <span className="font-mono text-[10px] mt-1">{config.label}</span>
+                    <span className="font-mono text-sm mt-1">{config.label}</span>
                   </button>
                 );
               })}
@@ -435,7 +435,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
 
       {/* Trigger Input */}
       <div className="mb-4">
-        <label className="block font-mono text-[10px] text-slate-500 uppercase mb-1">
+        <label className="block font-mono text-sm text-slate-400 uppercase mb-1">
           transformation_trigger
         </label>
         <input
@@ -445,7 +445,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
           disabled={disabled}
           placeholder="What caused this transformation?"
           className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                      disabled:opacity-50"
         />
@@ -459,14 +459,14 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
         >
           <div className="flex items-center gap-2">
             <Edit3 size={14} className="text-cyan-400" />
-            <span className="font-mono text-xs text-slate-300">
+            <span className="font-mono text-sm text-slate-300">
               Visual Changes ({visualChanges.length})
             </span>
           </div>
           {expandedSection === 'changes' ? (
-            <ChevronUp size={14} className="text-slate-500" />
+            <ChevronUp size={14} className="text-slate-400" />
           ) : (
-            <ChevronDown size={14} className="text-slate-500" />
+            <ChevronDown size={14} className="text-slate-400" />
           )}
         </button>
 
@@ -481,7 +481,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
               {/* Suggested changes */}
               {currentTypeConfig.suggestedChanges.length > 0 && (
                 <div className="p-2 bg-slate-800/20 rounded border border-slate-700/30">
-                  <span className="font-mono text-[9px] text-slate-600 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     quick_add
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -491,7 +491,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
                         onClick={() => addSuggestedChange(suggestion)}
                         disabled={disabled}
                         className="px-2 py-0.5 bg-slate-700/50 hover:bg-slate-600/50 rounded
-                                   text-[10px] font-mono text-slate-400 transition-colors"
+                                   text-sm font-mono text-slate-400 transition-colors"
                       >
                         + {suggestion}
                       </button>
@@ -517,8 +517,8 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
                 disabled={disabled}
                 className={cn(
                   'w-full flex items-center justify-center gap-2 p-2 rounded-lg border-2 border-dashed',
-                  'border-slate-700/50 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400',
-                  'font-mono text-xs transition-colors',
+                  'border-slate-700/50 hover:border-cyan-500/30 text-slate-400 hover:text-cyan-400',
+                  'font-mono text-sm transition-colors',
                   disabled && 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -538,7 +538,7 @@ const TransformationTracker: React.FC<TransformationTrackerProps> = ({
           className={cn(
             'w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg',
             'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400',
-            'font-mono text-xs transition-colors',
+            'font-mono text-sm transition-colors',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >

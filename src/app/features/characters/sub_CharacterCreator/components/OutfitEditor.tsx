@@ -102,6 +102,7 @@ const CONTEXT_TAG_SUGGESTIONS = [
 
 interface ClothingPieceEditorProps {
   label: string;
+  pieceKey: string;
   piece: ClothingPiece | undefined;
   onChange: (piece: ClothingPiece) => void;
   onClear: () => void;
@@ -109,6 +110,7 @@ interface ClothingPieceEditorProps {
 
 const ClothingPieceEditor: React.FC<ClothingPieceEditorProps> = ({
   label,
+  pieceKey,
   piece,
   onChange,
   onClear,
@@ -120,20 +122,20 @@ const ClothingPieceEditor: React.FC<ClothingPieceEditorProps> = ({
   };
 
   return (
-    <div className="border border-gray-700 rounded-lg overflow-hidden">
+    <div className="border border-slate-700 rounded-lg overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-3 bg-gray-800/50 hover:bg-gray-800 transition-colors"
+        className="w-full flex items-center justify-between p-3 bg-slate-800/50 hover:bg-slate-800 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <Shirt size={16} className="text-gray-400" />
+          <Shirt size={16} className="text-slate-400" />
           <span className="font-medium text-white">{label}</span>
           {piece?.item && (
-            <span className="text-xs text-gray-400">- {piece.item}</span>
+            <span className="text-sm text-slate-400">- {piece.item}</span>
           )}
         </div>
         <motion.span animate={{ rotate: isExpanded ? 180 : 0 }}>
-          <ChevronDown size={16} className="text-gray-400" />
+          <ChevronDown size={16} className="text-slate-400" />
         </motion.span>
       </button>
 
@@ -145,29 +147,29 @@ const ClothingPieceEditor: React.FC<ClothingPieceEditorProps> = ({
             exit={{ height: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-3 space-y-3 bg-gray-900/50">
+            <div className="p-3 space-y-3 bg-slate-900/50">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">Item</label>
+                  <label className="block text-sm text-slate-400 mb-1">Item</label>
                   <input
                     type="text"
                     value={piece?.item || ''}
                     onChange={(e) => handleChange('item', e.target.value)}
                     placeholder="e.g., Linen shirt"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500"
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">Material</label>
+                  <label className="block text-sm text-slate-400 mb-1">Material</label>
                   <input
                     type="text"
                     value={piece?.material || ''}
                     onChange={(e) => handleChange('material', e.target.value)}
                     placeholder="e.g., Linen"
-                    list="materials"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500"
+                    list={`${pieceKey}-materials`}
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500"
                   />
-                  <datalist id="materials">
+                  <datalist id={`${pieceKey}-materials`}>
                     {COMMON_MATERIALS.map(m => <option key={m} value={m} />)}
                   </datalist>
                 </div>
@@ -175,38 +177,38 @@ const ClothingPieceEditor: React.FC<ClothingPieceEditorProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">Color</label>
+                  <label className="block text-sm text-slate-400 mb-1">Color</label>
                   <input
                     type="text"
                     value={piece?.color || ''}
                     onChange={(e) => handleChange('color', e.target.value)}
                     placeholder="e.g., White"
-                    list="colors"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500"
+                    list={`${pieceKey}-colors`}
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500"
                   />
-                  <datalist id="colors">
+                  <datalist id={`${pieceKey}-colors`}>
                     {COMMON_COLORS.map(c => <option key={c} value={c} />)}
                   </datalist>
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">Pattern</label>
+                  <label className="block text-sm text-slate-400 mb-1">Pattern</label>
                   <input
                     type="text"
                     value={piece?.pattern || ''}
                     onChange={(e) => handleChange('pattern', e.target.value)}
                     placeholder="e.g., Striped"
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500"
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500"
                   />
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <label className="block text-xs text-gray-400 mb-1">Condition</label>
+                  <label className="block text-sm text-slate-400 mb-1">Condition</label>
                   <select
                     value={piece?.condition || 'worn'}
                     onChange={(e) => handleChange('condition', e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"
                   >
                     {CONDITIONS.map(c => (
                       <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -271,7 +273,7 @@ const TagInput: React.FC<TagInputProps> = ({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm text-gray-400">
+      <div className="flex items-center gap-2 text-sm text-slate-400">
         {icon}
         <span>{label}</span>
       </div>
@@ -281,7 +283,7 @@ const TagInput: React.FC<TagInputProps> = ({
         {tags.map(tag => (
           <span
             key={tag}
-            className="flex items-center gap-1 px-2 py-1 bg-purple-600/20 text-purple-300 rounded text-xs"
+            className="flex items-center gap-1 px-2 py-1 bg-purple-600/20 text-purple-300 rounded text-sm"
           >
             {tag}
             <button
@@ -301,7 +303,7 @@ const TagInput: React.FC<TagInputProps> = ({
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder || 'Type and press Enter'}
-        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500"
+        className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder-slate-500"
       />
 
       {/* Suggestions */}
@@ -311,7 +313,7 @@ const TagInput: React.FC<TagInputProps> = ({
             <button
               key={s}
               onClick={() => addTag(s)}
-              className="text-xs px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded transition-colors"
+              className="text-sm px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded transition-colors"
             >
               + {s}
             </button>
@@ -400,19 +402,19 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
   return (
     <div className={cn('flex flex-col h-full', className)}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-slate-700">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-white">
               {isEditing ? 'Edit Outfit' : 'Create Outfit'}
             </h2>
             {characterName && (
-              <p className="text-sm text-gray-400">For {characterName}</p>
+              <p className="text-sm text-slate-400">For {characterName}</p>
             )}
           </div>
           <button
             onClick={onCancel}
-            className="p-2 text-gray-400 hover:text-white transition-colors"
+            className="p-2 text-slate-400 hover:text-white transition-colors"
           >
             <X size={20} />
           </button>
@@ -428,7 +430,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                 'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 activeSection === section.id
                   ? 'bg-purple-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
+                  : 'bg-slate-800 text-slate-400 hover:text-white'
               )}
             >
               {section.icon}
@@ -445,7 +447,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
           <div className="space-y-4">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-slate-300 mb-1">
                 Outfit Name *
               </label>
               <input
@@ -453,13 +455,13 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                 value={formData.name || ''}
                 onChange={(e) => updateField('name', e.target.value)}
                 placeholder="e.g., Battle Armor"
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500"
               />
             </div>
 
             {/* Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Outfit Type
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -476,11 +478,11 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                       'p-3 rounded-lg border text-left transition-all',
                       formData.outfit_type === type.value
                         ? 'border-purple-500 bg-purple-900/20'
-                        : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+                        : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                     )}
                   >
                     <div className="text-sm font-medium text-white">{type.label}</div>
-                    <div className="text-xs text-gray-400">{type.description}</div>
+                    <div className="text-sm text-slate-400">{type.description}</div>
                   </button>
                 ))}
               </div>
@@ -488,7 +490,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-slate-300 mb-1">
                 Description
               </label>
               <textarea
@@ -496,21 +498,21 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="Describe this outfit..."
                 rows={3}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 resize-none"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 resize-none"
               />
             </div>
 
             {/* Default checkbox */}
-            <label className="flex items-center gap-3 p-3 bg-gray-800/50 border border-gray-700 rounded-lg cursor-pointer">
+            <label className="flex items-center gap-3 p-3 bg-slate-800/50 border border-slate-700 rounded-lg cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.is_default || false}
                 onChange={(e) => updateField('is_default', e.target.checked)}
-                className="rounded bg-gray-700 border-gray-600"
+                className="rounded bg-slate-700 border-slate-600"
               />
               <div>
                 <div className="text-sm font-medium text-white">Set as default outfit</div>
-                <div className="text-xs text-gray-400">
+                <div className="text-sm text-slate-400">
                   This will be the character's primary appearance
                 </div>
               </div>
@@ -518,7 +520,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
 
             {/* Style Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-slate-300 mb-1">
                 Style Notes
               </label>
               <textarea
@@ -526,14 +528,14 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                 onChange={(e) => updateClothingPiece('style_notes' as any, e.target.value as any)}
                 placeholder="Additional style details..."
                 rows={2}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 resize-none"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 resize-none"
               />
             </div>
 
             {/* Overall Condition & Formality */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Overall Condition
                 </label>
                 <select
@@ -544,7 +546,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                       clothing: { ...prev.clothing, overall_condition: e.target.value as OverallCondition },
                     }))
                   }
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                 >
                   {CONDITIONS.map(c => (
                     <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -552,7 +554,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Formality
                 </label>
                 <select
@@ -563,7 +565,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
                       clothing: { ...prev.clothing, formality: e.target.value as Formality },
                     }))
                   }
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
                 >
                   {FORMALITIES.map(f => (
                     <option key={f} value={f}>
@@ -581,36 +583,42 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
           <div className="space-y-3">
             <ClothingPieceEditor
               label="Top / Shirt"
+              pieceKey="top"
               piece={formData.clothing?.top}
               onChange={(p) => updateClothingPiece('top', p)}
               onClear={() => updateClothingPiece('top', undefined)}
             />
             <ClothingPieceEditor
               label="Bottom / Pants"
+              pieceKey="bottom"
               piece={formData.clothing?.bottom}
               onChange={(p) => updateClothingPiece('bottom', p)}
               onClear={() => updateClothingPiece('bottom', undefined)}
             />
             <ClothingPieceEditor
               label="Footwear"
+              pieceKey="footwear"
               piece={formData.clothing?.footwear}
               onChange={(p) => updateClothingPiece('footwear', p)}
               onClear={() => updateClothingPiece('footwear', undefined)}
             />
             <ClothingPieceEditor
               label="Outerwear / Cloak"
+              pieceKey="outerwear"
               piece={formData.clothing?.outerwear}
               onChange={(p) => updateClothingPiece('outerwear', p)}
               onClear={() => updateClothingPiece('outerwear', undefined)}
             />
             <ClothingPieceEditor
               label="Headwear"
+              pieceKey="headwear"
               piece={formData.clothing?.headwear}
               onChange={(p) => updateClothingPiece('headwear', p)}
               onClear={() => updateClothingPiece('headwear', undefined)}
             />
             <ClothingPieceEditor
               label="Handwear / Gloves"
+              pieceKey="handwear"
               piece={formData.clothing?.handwear}
               onChange={(p) => updateClothingPiece('handwear', p)}
               onClear={() => updateClothingPiece('handwear', undefined)}
@@ -661,21 +669,21 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
 
         {/* Prompt Preview */}
         {previewPrompt && (
-          <div className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
-            <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+          <div className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+            <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
               <Sparkles size={14} />
               <span>Generated Prompt Preview</span>
             </div>
-            <p className="text-sm text-gray-300 italic">"{previewPrompt}"</p>
+            <p className="text-sm text-slate-300 italic">"{previewPrompt}"</p>
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-700 flex justify-end gap-3">
+      <div className="p-4 border-t border-slate-700 flex justify-end gap-3">
         <button
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors"
         >
           Cancel
         </button>
@@ -686,7 +694,7 @@ const OutfitEditor: React.FC<OutfitEditorProps> = ({
             'flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors',
             isValid
               ? 'bg-purple-600 hover:bg-purple-700 text-white'
-              : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+              : 'bg-slate-700 text-slate-400 cursor-not-allowed'
           )}
         >
           <Save size={18} />

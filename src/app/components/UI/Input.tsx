@@ -19,9 +19,9 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' 
 }
 
 const sizeClasses: Record<InputSize, string> = {
-  sm: 'px-2.5 py-1.5 text-xs',
-  md: 'px-3 py-2 text-sm',
-  lg: 'px-3.5 py-2.5 text-base',
+  sm: 'px-2 py-1 text-sm',
+  md: 'px-2.5 py-1.5 text-sm',
+  lg: 'px-3 py-2 text-sm',
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -51,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium text-gray-300"
+            className="text-sm font-medium text-slate-300"
           >
             {label}
             {props.required && <span className="text-red-400 ml-1">*</span>}
@@ -60,7 +60,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             'inline-flex items-center gap-1 rounded-lg border bg-slate-950/60',
-            'transition-all outline-none text-white placeholder-gray-500',
+            'transition-all outline-none text-white placeholder-slate-500',
             'focus-within:border-cyan-500/60 focus-within:ring-1 focus-within:ring-cyan-500/60',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             hasError
@@ -70,7 +70,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         >
           {prefix && (
-            <span className="pl-2 text-xs text-slate-400 flex items-center gap-1">
+            <span className="pl-2 text-sm text-slate-400 flex items-center gap-1">
               {prefix}
             </span>
           )}
@@ -86,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {suffix && (
-            <span className="pr-2 text-xs text-slate-400 flex items-center gap-1">
+            <span className="pr-2 text-sm text-slate-400 flex items-center gap-1">
               {suffix}
             </span>
           )}
@@ -94,8 +94,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {(error || helperText) && (
           <span
             className={clsx(
-              'text-xs',
-              hasError ? 'text-red-400' : 'text-gray-500'
+              'text-sm',
+              hasError ? 'text-red-400' : 'text-slate-400'
             )}
           >
             {error || helperText}

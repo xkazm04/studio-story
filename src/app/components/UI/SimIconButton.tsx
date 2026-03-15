@@ -65,31 +65,31 @@ const variantColorClasses: Record<IconButtonVariant, Record<IconButtonColorSchem
   // Ghost: No background, minimal visual weight. Icon changes color on hover.
   ghost: {
     default: `
-      text-slate-500
+      text-slate-400
       hover:text-slate-300
       active:text-slate-200
       focus-visible:ring-slate-500/50
     `,
     success: `
-      text-slate-500
+      text-slate-400
       hover:text-green-400
       active:text-green-300
       focus-visible:ring-green-500/50
     `,
     danger: `
-      text-slate-500
+      text-slate-400
       hover:text-red-400
       active:text-red-300
       focus-visible:ring-red-500/50
     `,
     accent: `
-      text-slate-500
+      text-slate-400
       hover:text-cyan-400
       active:text-cyan-300
       focus-visible:ring-cyan-500/50
     `,
     processing: `
-      text-slate-500
+      text-slate-400
       hover:text-purple-400
       active:text-purple-300
       focus-visible:ring-purple-500/50
@@ -99,31 +99,31 @@ const variantColorClasses: Record<IconButtonVariant, Record<IconButtonColorSchem
   // Subtle: Background appears on hover. Common pattern for toolbar buttons.
   subtle: {
     default: `
-      text-slate-500
+      text-slate-400
       hover:text-slate-300 hover:bg-slate-800
       active:bg-slate-700
       focus-visible:ring-slate-500/50
     `,
     success: `
-      text-slate-500
+      text-slate-400
       hover:text-green-400 hover:bg-green-500/20
       active:bg-green-500/30
       focus-visible:ring-green-500/50
     `,
     danger: `
-      text-slate-500
+      text-slate-400
       hover:text-red-400 hover:bg-red-500/20
       active:bg-red-500/30
       focus-visible:ring-red-500/50
     `,
     accent: `
-      text-slate-500
+      text-slate-400
       hover:text-cyan-400 hover:bg-cyan-500/20
       active:bg-cyan-500/30
       focus-visible:ring-cyan-500/50
     `,
     processing: `
-      text-slate-500
+      text-slate-400
       hover:text-purple-400 hover:bg-purple-500/20
       active:bg-purple-500/30
       focus-visible:ring-purple-500/50

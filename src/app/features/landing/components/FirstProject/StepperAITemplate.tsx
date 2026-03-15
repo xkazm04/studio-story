@@ -55,7 +55,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
           >
             <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-lg p-4 border border-blue-500/30">
               <h3 className="text-lg font-semibold text-blue-300 mb-2">✨ AI-Powered Template Generator</h3>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm text-slate-300">
                 Describe your project and let AI create a complete template with characters, objectives, and story beats.
                 Save hours of planning!
               </p>
@@ -63,7 +63,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
 
             <div>
               <label htmlFor="genre" className="block text-sm font-medium mb-2 text-blue-300">
-                Genre <span className="text-gray-400">(Optional)</span>
+                Genre <span className="text-slate-400">(Optional)</span>
               </label>
               <input
                 id="genre"
@@ -71,7 +71,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
                 placeholder="e.g., Fantasy Adventure, Mystery, Sci-Fi..."
-                className="w-full p-3 rounded-lg bg-gray-800/50 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full p-3 rounded-lg bg-slate-800/50 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 data-testid="ai-template-genre-input"
               />
             </div>
@@ -86,12 +86,12 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your project idea in detail... What's the story about? Who are the main characters? What themes do you want to explore?"
                 rows={8}
-                className={`w-full p-3 rounded-lg bg-gray-800/50 border ${
+                className={`w-full p-3 rounded-lg bg-slate-800/50 border ${
                   description.length >= 10 ? 'border-green-700/40' : 'border-red-700/40'
                 } focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition-all`}
                 data-testid="ai-template-description-input"
               />
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-slate-400 mt-1">
                 {description.length} characters (minimum 10 required)
               </p>
             </div>
@@ -113,7 +113,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 className={`flex-1 py-3 rounded-lg font-medium transition-all ${
                   canGenerate && !isGenerating
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white'
-                    : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    : 'bg-slate-700 text-slate-400 cursor-not-allowed'
                 }`}
                 data-testid="generate-template-btn"
               >
@@ -132,14 +132,14 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
 
               <button
                 onClick={onSkip}
-                className="px-6 py-3 rounded-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-all"
+                className="px-6 py-3 rounded-lg font-medium bg-slate-700 hover:bg-slate-600 text-white transition-all"
                 data-testid="skip-ai-template-btn"
               >
                 Skip
               </button>
             </div>
 
-            <div className="text-xs text-gray-400 bg-gray-900/40 rounded-lg p-3 border border-gray-800">
+            <div className="text-xs text-slate-400 bg-slate-900/40 rounded-lg p-3 border border-slate-800">
               💡 <strong>Pro Tip:</strong> The more detailed your description, the better the AI can customize your template.
               Include character types, plot points, and themes for best results.
             </div>
@@ -156,12 +156,12 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-green-300">🎉 Template Generated!</h3>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-slate-300">
                     Based on: <strong>{generatedTemplate?.name}</strong>
                     {source === 'ai-enhanced' && ' (AI-Enhanced)'}
                   </p>
                   {matchScore !== null && matchScore !== undefined && (
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-slate-400 mt-1">
                       Match Score: {Math.round(matchScore)}%
                     </p>
                   )}
@@ -171,9 +171,9 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
 
             {generatedTemplate && (
               <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-                <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800">
+                <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800">
                   <h4 className="text-md font-semibold text-blue-300 mb-2">Template: {generatedTemplate.name}</h4>
-                  <p className="text-sm text-gray-300 mb-2">{generatedTemplate.description}</p>
+                  <p className="text-sm text-slate-300 mb-2">{generatedTemplate.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {generatedTemplate.keywords.slice(0, 5).map((keyword, idx) => (
                       <span
@@ -187,7 +187,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 </div>
 
                 {generatedTemplate.characters.length > 0 && (
-                  <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800">
+                  <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800">
                     <h4 className="text-md font-semibold text-purple-300 mb-3">
                       Characters ({generatedTemplate.characters.length})
                     </h4>
@@ -200,7 +200,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                                 ? 'bg-green-900/40 text-green-300'
                                 : char.type === 'antagonist'
                                 ? 'bg-red-900/40 text-red-300'
-                                : 'bg-gray-700 text-gray-300'
+                                : 'bg-slate-700 text-slate-300'
                             }`}
                           >
                             {char.type}
@@ -208,7 +208,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                           <div className="flex-1">
                             <p className="text-white font-medium">{char.name}</p>
                             {char.description && (
-                              <p className="text-gray-400 text-xs">{char.description}</p>
+                              <p className="text-slate-400 text-xs">{char.description}</p>
                             )}
                           </div>
                         </div>
@@ -218,7 +218,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 )}
 
                 {generatedTemplate.objectives.length > 0 && (
-                  <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800">
+                  <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800">
                     <h4 className="text-md font-semibold text-yellow-300 mb-3">
                       Objectives ({generatedTemplate.objectives.length})
                     </h4>
@@ -229,7 +229,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                           <div className="flex-1">
                             <p className="text-white text-sm font-medium">{obj.name}</p>
                             {obj.description && (
-                              <p className="text-gray-400 text-xs">{obj.description}</p>
+                              <p className="text-slate-400 text-xs">{obj.description}</p>
                             )}
                           </div>
                         </li>
@@ -239,7 +239,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                 )}
 
                 {generatedTemplate.beats.length > 0 && (
-                  <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800">
+                  <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800">
                     <h4 className="text-md font-semibold text-cyan-300 mb-3">
                       Story Beats ({generatedTemplate.beats.length})
                     </h4>
@@ -251,7 +251,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
                           </span>
                           <div className="flex-1">
                             <p className="text-white font-medium">{beat.name}</p>
-                            <p className="text-gray-400 text-xs">{beat.description}</p>
+                            <p className="text-slate-400 text-xs">{beat.description}</p>
                           </div>
                         </div>
                       ))}
@@ -261,7 +261,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
               </div>
             )}
 
-            <div className="flex gap-3 mt-4 pt-4 border-t border-gray-800">
+            <div className="flex gap-3 mt-4 pt-4 border-t border-slate-800">
               <button
                 onClick={handleAcceptTemplate}
                 className="flex-1 py-3 rounded-lg font-medium bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 text-white transition-all"
@@ -272,7 +272,7 @@ const StepperAITemplate = ({ projectType, onTemplateGenerated, onSkip }: Stepper
 
               <button
                 onClick={handleRegenerate}
-                className="px-6 py-3 rounded-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-all"
+                className="px-6 py-3 rounded-lg font-medium bg-slate-700 hover:bg-slate-600 text-white transition-all"
                 data-testid="regenerate-template-btn"
               >
                 ← Try Again

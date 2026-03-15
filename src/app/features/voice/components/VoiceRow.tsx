@@ -77,7 +77,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300">
+      <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 hover:border-slate-600/50 transition-all duration-300">
         {/* Main Row */}
         <div className="px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1">
@@ -85,27 +85,27 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               className={`h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 ${
                 isPlaying
                   ? 'bg-gradient-to-br from-emerald-600 to-emerald-800 animate-pulse'
-                  : 'bg-gradient-to-br from-gray-700 to-gray-800'
+                  : 'bg-gradient-to-br from-slate-700 to-slate-800'
               }`}
             >
               {isPlaying ? (
                 <AudioWaveform className="w-5 h-5 text-emerald-200" />
               ) : (
-                <Speaker className="w-5 h-5 text-gray-300" />
+                <Speaker className="w-5 h-5 text-slate-300" />
               )}
             </div>
 
             <div className="flex-1">
-              <h3 className="text-base font-semibold text-gray-100">{voice.name}</h3>
+              <h3 className="text-base font-semibold text-slate-100">{voice.name}</h3>
               {voice.description && (
-                <p className="text-sm text-gray-400 mt-1 line-clamp-1">{voice.description}</p>
+                <p className="text-sm text-slate-400 mt-1 line-clamp-1">{voice.description}</p>
               )}
               <div className="flex items-center gap-3 mt-1">
                 {voice.provider && (
-                  <span className="text-xs text-gray-500 capitalize">{voice.provider}</span>
+                  <span className="text-sm text-slate-400 capitalize">{voice.provider}</span>
                 )}
                 {voice.language && (
-                  <span className="text-xs text-gray-500">{voice.language}</span>
+                  <span className="text-sm text-slate-400">{voice.language}</span>
                 )}
               </div>
             </div>
@@ -119,7 +119,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               className={`p-2 rounded-lg transition-all duration-200 ${
                 showDescription
                   ? 'bg-purple-900 text-purple-200 border border-purple-600'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
               }`}
               title="AI-Enhanced Description"
             >
@@ -132,7 +132,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               className={`p-2 rounded-lg transition-all duration-200 ${
                 showConfig
                   ? 'bg-blue-900 text-blue-200 border border-blue-600'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
               }`}
               title="Voice Settings"
             >
@@ -174,7 +174,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="border-t border-gray-700/30"
+              className="border-t border-slate-700/30"
             >
               <VoiceDescription voice={voice} />
             </motion.div>
@@ -185,7 +185,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="border-t border-gray-700/30"
+              className="border-t border-slate-700/30"
             >
               <VoiceConfiguration voice={voice} />
             </motion.div>
@@ -218,17 +218,17 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gray-800 rounded-xl p-6 max-w-md mx-4 border border-gray-700"
+                className="bg-slate-800 rounded-xl p-6 max-w-md mx-4 border border-slate-700"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3 className="text-lg font-semibold text-gray-100 mb-2">Delete Voice</h3>
-                <p className="text-gray-400 mb-6">
+                <h3 className="ms-h3 mb-2">Delete Voice</h3>
+                <p className="text-slate-400 mb-6">
                   Are you sure you want to delete "{voice.name}"? This action cannot be undone.
                 </p>
                 <div className="flex items-center gap-3 justify-end">
                   <button
                     onClick={() => setShowConfirmDelete(false)}
-                    className="px-4 py-2 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 transition-colors"
+                    className="px-4 py-2 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 transition-colors"
                   >
                     Cancel
                   </button>

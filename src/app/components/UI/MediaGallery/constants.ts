@@ -44,7 +44,7 @@ export const colorClasses = {
     gradient: 'from-transparent via-orange-500/50 to-transparent',
   },
   gray: {
-    hover: 'hover:border-gray-500',
-    gradient: 'from-transparent via-gray-500/50 to-transparent',
+    hover: 'hover:border-slate-500',
+    gradient: 'from-transparent via-slate-500/50 to-transparent',
   },
 };

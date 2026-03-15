@@ -50,6 +50,7 @@ import {
 import type { LogEntry, ExecutionResult, InlineTerminalProps } from './types';
 import { buildSkillsPrompt } from './skills';
 import type { SkillId } from './skills';
+import { MCPConnectionIndicator } from './MCPConnectionIndicator';
 
 // ============ Icon & Color Maps ============
 
@@ -67,7 +68,7 @@ const LOG_COLORS: Record<LogEntry['type'], string> = {
   assistant: 'text-slate-200',
   tool_use: 'text-amber-400',
   tool_result: 'text-emerald-400',
-  system: 'text-slate-500',
+  system: 'text-slate-400',
   error: 'text-red-400',
 };
 
@@ -414,16 +415,18 @@ export default function InlineTerminal({
             animate={{ rotate: collapsed ? 0 : 90 }}
             transition={{ duration: 0.15 }}
           >
-            <ChevronRight className="w-3 h-3 text-slate-500" />
+            <ChevronRight className="w-3 h-3 text-slate-400" />
           </motion.div>
         )}
 
-        <Terminal className="w-3 h-3 text-slate-500" />
-        <span className="text-slate-400 font-medium text-[11px]">CLI</span>
+        <Terminal className="w-3 h-3 text-slate-400" />
+        <span className="text-slate-400 font-medium text-xs">CLI</span>
+
+        <MCPConnectionIndicator />
 
         {/* Skill Badge */}
         {skillLabel && isStreaming && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+          <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             {skillLabel}
           </span>
         )}
@@ -434,7 +437,7 @@ export default function InlineTerminal({
         {hasContent && !collapsed && (
           <button
             onClick={(e) => { e.stopPropagation(); setShowDetails(!showDetails); }}
-            className="text-slate-500 hover:text-slate-300 transition-colors"
+            className="text-slate-400 hover:text-slate-300 transition-colors"
             title={showDetails ? 'Hide details' : 'Show details'}
           >
             {showDetails ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
@@ -477,7 +480,7 @@ export default function InlineTerminal({
             {showDetails && (
               <div
                 ref={logsContainerRef}
-                className="overflow-y-auto px-3 py-1.5 space-y-0.5 font-mono text-[11px]"
+                className="overflow-y-auto px-3 py-1.5 space-y-0.5 font-mono text-xs"
                 style={{ maxHeight: heightStyle }}
               >
                 {logs.map((log) => {
@@ -492,7 +495,7 @@ export default function InlineTerminal({
                         )}
                         {log.content.slice(0, 300)}
                         {log.content.length > 300 && (
-                          <span className="text-slate-600">...</span>
+                          <span className="text-slate-400">...</span>
                         )}
                       </span>
                     </div>
@@ -513,10 +516,10 @@ export default function InlineTerminal({
             {/* Result Action Bar */}
             {isComplete && hasResultText && (
               <div className="flex items-center gap-2 px-3 py-1.5 border-t border-slate-800/60 bg-slate-900/40">
-                <span className="text-[10px] text-emerald-400/80 font-medium">Done</span>
+                <span className="text-xs text-emerald-400/80 font-medium">Done</span>
 
                 {lastResult?.usage && (
-                  <span className="text-[10px] text-slate-500 font-mono">
+                  <span className="text-xs text-slate-400 font-mono">
                     {lastResult.usage.inputTokens + lastResult.usage.outputTokens} tokens
                   </span>
                 )}
@@ -526,7 +529,7 @@ export default function InlineTerminal({
                 <button
                   onClick={(e) => { e.stopPropagation(); handleCopy(); }}
                   className={cn(
-                    'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium transition-colors',
+                    'flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium transition-colors',
                     copied
                       ? 'bg-emerald-500/20 text-emerald-300'
                       : 'bg-slate-800 text-slate-300 hover:bg-slate-700',
@@ -539,7 +542,7 @@ export default function InlineTerminal({
                 {onInsert && (
                   <button
                     onClick={(e) => { e.stopPropagation(); handleInsert(); }}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 transition-colors"
+                    className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 transition-colors"
                   >
                     Insert
                   </button>

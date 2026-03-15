@@ -105,7 +105,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm text-gray-400">
+      <div className="flex items-center gap-2 text-sm text-slate-400">
         {icon}
         <span>{label}</span>
       </div>
@@ -118,7 +118,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm transition-all',
               value === option.value
                 ? 'bg-purple-600/20 border-purple-500 text-purple-300'
-                : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-white'
+                : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-white'
             )}
           >
             <span>{option.icon}</span>
@@ -150,7 +150,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
     ? 'text-green-400 bg-green-600/20'
     : score >= 40
       ? 'text-yellow-400 bg-yellow-600/20'
-      : 'text-gray-400 bg-gray-600/20';
+      : 'text-slate-400 bg-slate-600/20';
 
   return (
     <motion.div
@@ -159,20 +159,20 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       transition={{ delay: rank * 0.1 }}
       onClick={onSelect}
       className={cn(
-        'relative p-4 bg-gray-800/50 border rounded-lg cursor-pointer transition-all',
+        'relative p-4 bg-slate-800/50 border rounded-lg cursor-pointer transition-all',
         isSelected
           ? 'border-purple-500 bg-purple-900/20'
-          : 'border-gray-700 hover:border-gray-600'
+          : 'border-slate-700 hover:border-slate-600'
       )}
     >
       {/* Rank Badge */}
-      <div className="absolute -top-2 -left-2 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+      <div className="absolute -top-2 -left-2 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold text-white">
         {rank + 1}
       </div>
 
       <div className="flex items-start gap-4">
         {/* Thumbnail */}
-        <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0">
           {outfit.thumbnail_url ? (
             <img
               src={outfit.thumbnail_url}
@@ -180,7 +180,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
               className="w-full h-full object-cover rounded-lg"
             />
           ) : (
-            <Shirt size={24} className="text-gray-500" />
+            <Shirt size={24} className="text-slate-400" />
           )}
         </div>
 
@@ -188,12 +188,12 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h4 className="font-medium text-white truncate">{outfit.name}</h4>
-            <span className={cn('px-2 py-0.5 rounded text-xs font-medium', scoreColor)}>
+            <span className={cn('px-2 py-0.5 rounded text-sm font-medium', scoreColor)}>
               {score}%
             </span>
           </div>
 
-          <p className="text-xs text-gray-400 capitalize mb-2">
+          <p className="text-sm text-slate-400 capitalize mb-2">
             {outfit.outfit_type} outfit
           </p>
 
@@ -203,7 +203,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
               {matchReasons.slice(0, 3).map((reason, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-1.5 text-xs text-gray-400"
+                  className="flex items-center gap-1.5 text-sm text-slate-400"
                 >
                   <Check size={12} className="text-green-400" />
                   <span>{reason}</span>
@@ -270,14 +270,14 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
   return (
     <div className={cn('flex flex-col h-full', className)}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-700">
+      <div className="p-4 border-b border-slate-700">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-purple-600/20 rounded-lg">
             <Sparkles size={20} className="text-purple-400" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-white">Outfit Recommender</h2>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-slate-400">
               Find the perfect outfit for any scene
             </p>
           </div>
@@ -285,8 +285,8 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
       </div>
 
       {/* Context Selection */}
-      <div className="p-4 space-y-4 border-b border-gray-700">
-        <h3 className="text-sm font-medium text-gray-300">Scene Context</h3>
+      <div className="p-4 space-y-4 border-b border-slate-700">
+        <h3 className="text-sm font-medium text-slate-300">Scene Context</h3>
 
         <ContextSelector
           label="Location"
@@ -328,13 +328,13 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500" />
           </div>
         ) : outfits.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
             <Shirt size={48} className="mb-4 opacity-50" />
             <p className="text-lg">No outfits available</p>
             <p className="text-sm">Create some outfits in the wardrobe first</p>
           </div>
         ) : !hasContext ? (
-          <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
             <Info size={48} className="mb-4 opacity-50" />
             <p className="text-lg">Set the scene context above</p>
             <p className="text-sm">Select location, weather, time, or activity</p>
@@ -353,7 +353,7 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
                   <span className="text-sm font-medium text-purple-300">Top Recommendation</span>
                 </div>
                 <p className="text-white font-medium">{topRecommendation.outfit.name}</p>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-slate-400 mt-1">
                   {topRecommendation.score}% match • {topRecommendation.matchReasons[0]}
                 </p>
                 <button
@@ -368,7 +368,7 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
 
             {/* All Recommendations */}
             <div className="space-y-3">
-              <h4 className="text-sm font-medium text-gray-300">
+              <h4 className="text-sm font-medium text-slate-300">
                 All Matches ({recommendations.length})
               </h4>
 
@@ -400,11 +400,11 @@ const ContextRecommender: React.FC<ContextRecommenderProps> = ({
         <motion.div
           initial={{ y: 100 }}
           animate={{ y: 0 }}
-          className="p-4 border-t border-gray-700 bg-gray-900/90"
+          className="p-4 border-t border-slate-700 bg-slate-900/90"
         >
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <span className="text-gray-400">Selected: </span>
+              <span className="text-slate-400">Selected: </span>
               <span className="text-white font-medium">
                 {outfits.find(o => o.id === selectedOutfitId)?.name}
               </span>

@@ -105,7 +105,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ stackId, onUndo }) => {
         {history.length > 0 && (
           <button
             onClick={onUndo}
-            className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-sm bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Undo
@@ -116,9 +116,9 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ stackId, onUndo }) => {
       <div className="flex-1 overflow-y-auto p-2">
         {history.length === 0 ? (
           <div className="text-center py-8">
-            <History className="w-8 h-8 mx-auto mb-2 text-slate-600" />
-            <p className="text-sm text-slate-500">No history yet</p>
-            <p className="text-xs text-slate-600 mt-1">
+            <History className="w-8 h-8 mx-auto mb-2 text-slate-400" />
+            <p className="text-sm text-slate-400">No history yet</p>
+            <p className="text-sm text-slate-400 mt-1">
               Changes will appear here
             </p>
           </div>
@@ -128,13 +128,13 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ stackId, onUndo }) => {
               <div
                 key={entry.id}
                 className={cn(
-                  'px-3 py-2 rounded text-xs',
+                  'px-3 py-2 rounded text-sm',
                   index === 0 ? 'bg-blue-500/10 text-blue-300' : 'text-slate-400'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span className="capitalize">{entry.action}</span>
-                  <span className="text-slate-500">
+                  <span className="text-slate-400">
                     {entry.timestamp.toLocaleTimeString()}
                   </span>
                 </div>
@@ -552,7 +552,7 @@ const ImageEditor: React.FC = () => {
           </div>
 
           {/* Upload */}
-          <label className="flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded cursor-pointer transition-colors">
+          <label className="flex items-center gap-1 px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-200 rounded cursor-pointer transition-colors">
             <Upload className="w-3.5 h-3.5" />
             Open Image
             <input
@@ -564,7 +564,7 @@ const ImageEditor: React.FC = () => {
           </label>
 
           {/* Mode indicator */}
-          <div className="flex items-center gap-1 px-2 py-1 bg-slate-700/50 rounded text-xs">
+          <div className="flex items-center gap-1 px-2 py-1 bg-slate-700/50 rounded text-sm">
             {editorMode === 'selection' && (
               <>
                 <MousePointer2 className="w-3.5 h-3.5 text-blue-400" />
@@ -589,7 +589,7 @@ const ImageEditor: React.FC = () => {
         <div className="flex items-center gap-2">
           {/* Processing indicator */}
           {isProcessing && (
-            <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/10 rounded text-xs text-blue-300">
+            <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/10 rounded text-sm text-blue-300">
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               Processing...
             </div>
@@ -599,7 +599,7 @@ const ImageEditor: React.FC = () => {
           <button
             onClick={() => setAutoPreview(!autoPreview)}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors',
+              'flex items-center gap-1 px-2 py-1 rounded text-sm transition-colors',
               autoPreview
                 ? 'bg-green-500/20 text-green-300'
                 : 'bg-slate-700 text-slate-400'
@@ -615,7 +615,7 @@ const ImageEditor: React.FC = () => {
             onClick={() => setShowOriginal(!showOriginal)}
             disabled={!processedImageData}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors',
+              'flex items-center gap-1 px-2 py-1 rounded text-sm transition-colors',
               showOriginal
                 ? 'bg-blue-500/20 text-blue-300'
                 : 'bg-slate-700 text-slate-400',
@@ -635,7 +635,7 @@ const ImageEditor: React.FC = () => {
             >
               <ZoomOut className="w-4 h-4" />
             </button>
-            <span className="text-xs text-slate-300 w-12 text-center font-mono">
+            <span className="text-sm text-slate-300 w-12 text-center font-mono">
               {Math.round(zoom * 100)}%
             </span>
             <button
@@ -663,7 +663,7 @@ const ImageEditor: React.FC = () => {
             onClick={handleDownload}
             disabled={!processedImageData}
             className={cn(
-              'flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors',
+              'flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors',
               !processedImageData && 'opacity-50 cursor-not-allowed'
             )}
           >
@@ -709,9 +709,9 @@ const ImageEditor: React.FC = () => {
         ) : (
           <div className="flex-1 flex items-center justify-center bg-slate-950">
             <div className="text-center">
-              <ImageIcon className="w-16 h-16 mx-auto mb-4 text-slate-700" />
+              <ImageIcon className="w-16 h-16 mx-auto mb-4 text-slate-400" />
               <h3 className="text-lg font-medium text-slate-400 mb-2">No Image Loaded</h3>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-slate-400 mb-4">
                 Upload an image to start editing
               </p>
               <label className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg cursor-pointer transition-colors">

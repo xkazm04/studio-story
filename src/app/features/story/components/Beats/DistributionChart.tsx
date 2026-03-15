@@ -11,19 +11,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
   BarChart3,
-  PieChart,
   AlertTriangle,
   CheckCircle2,
   Info,
   ChevronDown,
-  TrendingUp,
-  TrendingDown,
-  Minus,
   Sparkles,
   Target,
   Heart,
   Tag,
 } from 'lucide-react';
+import { DATA_VIZ, chartAnimations } from './dataVizTheme';
+import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import {
   type BeatCategory,
   type EmotionType,
@@ -51,6 +49,39 @@ const CATEGORY_COLORS: Record<BeatCategory, string> = {
   transition: '#6B7280',
   setup: '#10B981',
   payoff: '#3B82F6',
+};
+
+// Function tag colors — grouped by narrative role
+const FUNCTION_COLORS: Record<string, string> = {
+  // Structural (reds/oranges)
+  inciting_incident: '#EF4444',
+  first_plot_point: '#F97316',
+  midpoint: '#F59E0B',
+  all_is_lost: '#DC2626',
+  climax: '#E11D48',
+  resolution: '#10B981',
+  // Craft (blues/greens)
+  setup: '#3B82F6',
+  payoff: '#22D3EE',
+  foreshadowing: '#6366F1',
+  callback: '#818CF8',
+  plant: '#34D399',
+  consequence: '#14B8A6',
+  // Character (purples/pinks)
+  introduction: '#A855F7',
+  character_moment: '#C084FC',
+  arc_turning_point: '#EC4899',
+  transformation: '#F472B6',
+  // Pacing (ambers/yellows)
+  tension_builder: '#F59E0B',
+  tension_release: '#84CC16',
+  breather: '#A3E635',
+  accelerator: '#FBBF24',
+  // World & Theme (teals/slates)
+  world_establishment: '#2DD4BF',
+  theme_statement: '#67E8F9',
+  theme_exploration: '#06B6D4',
+  theme_reinforcement: '#0EA5E9',
 };
 
 interface DistributionChartProps {
@@ -261,23 +292,23 @@ function HorizontalBarChart({
           key={item.label}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: index * 0.05 }}
+          transition={{ delay: chartAnimations.stagger(index) }}
           className="flex items-center gap-2"
         >
-          <span className="text-xs text-slate-400 w-20 truncate capitalize">
+          <span className={cn(DATA_VIZ.labelText, 'w-20 truncate capitalize')}>
             {item.label.replace('_', ' ')}
           </span>
-          <div className="flex-1 h-4 bg-slate-800 rounded-full overflow-hidden">
+          <div className={cn('flex-1 h-4 rounded-full overflow-hidden', DATA_VIZ.barTrackBg)}>
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${(item.value / maxValue) * 100}%` }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+              transition={BEAT_ANIMATIONS.slow}
               className="h-full rounded-full"
               style={{ backgroundColor: colorFn(item.label) }}
             />
           </div>
-          <span className="text-xs text-slate-300 w-12 text-right">
-            {item.value} <span className="text-slate-500">({Math.round(item.percentage)}%)</span>
+          <span className={cn(DATA_VIZ.valueText, 'w-12 text-right')}>
+            {item.value} <span className={DATA_VIZ.labelText}>({Math.round(item.percentage)}%)</span>
           </span>
         </motion.div>
       ))}
@@ -321,7 +352,7 @@ function BalanceGauge({ score }: { score: number }) {
             strokeLinecap="round"
             initial={{ strokeDasharray: '0 176' }}
             animate={{ strokeDasharray: `${(score / 100) * 176} 176` }}
-            transition={{ duration: 1, ease: 'easeOut' }}
+            transition={BEAT_ANIMATIONS.slow}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -331,8 +362,8 @@ function BalanceGauge({ score }: { score: number }) {
         </div>
       </div>
       <div>
-        <div className="text-sm font-medium text-slate-200">{getLabel()}</div>
-        <div className="text-xs text-slate-500">Balance Score</div>
+        <div className={DATA_VIZ.headingText}>{getLabel()}</div>
+        <div className={DATA_VIZ.labelText}>Balance Score</div>
       </div>
     </div>
   );
@@ -368,9 +399,9 @@ function RecommendationCard({ recommendation }: { recommendation: BalanceRecomme
       <div className="flex items-start gap-2">
         {getIcon()}
         <div className="flex-1">
-          <div className="text-xs text-slate-200">{recommendation.message}</div>
+          <div className={DATA_VIZ.valueText}>{recommendation.message}</div>
           {recommendation.suggestion && (
-            <div className="text-[10px] text-slate-500 mt-1">{recommendation.suggestion}</div>
+            <div className={cn(DATA_VIZ.labelText, 'mt-1')}>{recommendation.suggestion}</div>
           )}
         </div>
       </div>
@@ -416,24 +447,24 @@ export default function DistributionChart({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-cyan-400" />
-          <span className="text-sm font-medium text-slate-200">Beat Distribution</span>
+          <span className={DATA_VIZ.headingText}>Beat Distribution</span>
         </div>
         <BalanceGauge score={analysis.balanceScore} />
       </div>
 
       {/* Stats summary */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="p-2 bg-slate-800/50 rounded-lg text-center">
-          <div className="text-lg font-bold text-cyan-400">{totalBeats}</div>
-          <div className="text-[10px] text-slate-500">Total Beats</div>
+      <div className="flex flex-wrap gap-2">
+        <div className="min-w-[80px] flex-1 p-2 bg-slate-800/50 rounded-lg text-center">
+          <div className="text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold text-cyan-400">{totalBeats}</div>
+          <div className={cn(DATA_VIZ.labelText, 'text-[clamp(0.625rem,1vw,0.75rem)]')}>Total Beats</div>
         </div>
-        <div className="p-2 bg-slate-800/50 rounded-lg text-center">
-          <div className="text-lg font-bold text-emerald-400">{classifiedCount}</div>
-          <div className="text-[10px] text-slate-500">Classified</div>
+        <div className="min-w-[80px] flex-1 p-2 bg-slate-800/50 rounded-lg text-center">
+          <div className="text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold text-emerald-400">{classifiedCount}</div>
+          <div className={cn(DATA_VIZ.labelText, 'text-[clamp(0.625rem,1vw,0.75rem)]')}>Classified</div>
         </div>
-        <div className="p-2 bg-slate-800/50 rounded-lg text-center">
-          <div className="text-lg font-bold text-slate-400">{unclassifiedCount}</div>
-          <div className="text-[10px] text-slate-500">Unclassified</div>
+        <div className="min-w-[80px] flex-1 p-2 bg-slate-800/50 rounded-lg text-center">
+          <div className="text-[clamp(0.875rem,1.5vw,1.125rem)] font-bold text-slate-400">{unclassifiedCount}</div>
+          <div className={cn(DATA_VIZ.labelText, 'text-[clamp(0.625rem,1vw,0.75rem)]')}>Unclassified</div>
         </div>
       </div>
 
@@ -444,7 +475,7 @@ export default function DistributionChart({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors border-b-2 -mb-px',
+              'flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px',
               activeTab === tab.id
                 ? 'border-cyan-400 text-cyan-400'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -452,7 +483,7 @@ export default function DistributionChart({
           >
             <tab.icon className="w-3.5 h-3.5" />
             {tab.label}
-            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-700 text-[10px]">
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-700 text-sm">
               {tab.count}
             </span>
           </button>
@@ -468,6 +499,7 @@ export default function DistributionChart({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={BEAT_ANIMATIONS.quick}
             >
               {analysis.categoryDistribution.length > 0 ? (
                 <HorizontalBarChart
@@ -480,7 +512,7 @@ export default function DistributionChart({
                   colorFn={(label) => CATEGORY_COLORS[label as BeatCategory] || '#6B7280'}
                 />
               ) : (
-                <div className="flex items-center justify-center h-32 text-sm text-slate-500">
+                <div className="flex items-center justify-center h-32 text-sm text-slate-400">
                   No beats classified yet
                 </div>
               )}
@@ -493,6 +525,7 @@ export default function DistributionChart({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={BEAT_ANIMATIONS.quick}
             >
               {analysis.emotionDistribution.length > 0 ? (
                 <HorizontalBarChart
@@ -505,7 +538,7 @@ export default function DistributionChart({
                   colorFn={(label) => getEmotion(label as EmotionType)?.color || '#6B7280'}
                 />
               ) : (
-                <div className="flex items-center justify-center h-32 text-sm text-slate-500">
+                <div className="flex items-center justify-center h-32 text-sm text-slate-400">
                   No emotional markers added yet
                 </div>
               )}
@@ -518,6 +551,7 @@ export default function DistributionChart({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={BEAT_ANIMATIONS.quick}
             >
               {analysis.functionDistribution.length > 0 ? (
                 <HorizontalBarChart
@@ -527,10 +561,10 @@ export default function DistributionChart({
                     percentage: f.percentage,
                   }))}
                   maxValue={maxFunctionCount}
-                  colorFn={() => '#06B6D4'}
+                  colorFn={(label) => FUNCTION_COLORS[label] || '#6B7280'}
                 />
               ) : (
-                <div className="flex items-center justify-center h-32 text-sm text-slate-500">
+                <div className="flex items-center justify-center h-32 text-sm text-slate-400">
                   No function tags assigned yet
                 </div>
               )}
@@ -543,14 +577,14 @@ export default function DistributionChart({
       {showRecommendations && analysis.recommendations.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <div className={cn('flex items-center gap-2', DATA_VIZ.labelText, 'font-medium')}>
               <Sparkles className="w-3.5 h-3.5" />
               Recommendations ({analysis.recommendations.length})
             </div>
             {analysis.recommendations.length > 3 && (
               <button
                 onClick={() => setShowAllRecommendations(!showAllRecommendations)}
-                className="text-[10px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                className="text-sm text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
               >
                 {showAllRecommendations ? 'Show less' : 'Show all'}
                 <ChevronDown className={cn(
@@ -574,7 +608,7 @@ export default function DistributionChart({
       {showRecommendations && analysis.recommendations.length === 0 && classifiedCount > 0 && (
         <div className="flex items-center gap-2 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs text-emerald-400">
+          <span className="text-sm text-emerald-400">
             Your beat distribution looks well balanced!
           </span>
         </div>

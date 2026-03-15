@@ -1,7 +1,8 @@
 'use client';
 
 import { lazy, Suspense, useCallback, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import { useProjectStore } from "@/app/store/slices/projectSlice";
 import { useAppShellStore, StorySubtab } from "@/app/store/appShellStore";
 import { Tabs, type TabItem } from "@/app/components/UI";
@@ -329,11 +330,13 @@ function StoryTerminalWrapper() {
 
 function StoryTabContent({ activeTab }: { activeTab: string }) {
     return (
+        <AnimatePresence mode="wait">
         <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={BEAT_ANIMATIONS.standard}
             className="h-full"
         >
             {activeTab === "ai-terminal" && <StoryTerminalWrapper />}
@@ -346,6 +349,7 @@ function StoryTabContent({ activeTab }: { activeTab: string }) {
             {activeTab === "story-script" && <StoryScript />}
             {activeTab === "story-setup" && <CenterStory />}
         </motion.div>
+        </AnimatePresence>
     );
 }
 
@@ -373,7 +377,7 @@ const StoryFeature = () => {
                     <CommandPaletteRegistration />
                     <CommandPalette />
                     <div className="flex flex-col items-center h-full max-w-[2000px] w-full relative px-4 pt-3 pb-4 text-sm text-slate-200">
-                        <div className="w-full mb-2 px-2 py-1 bg-amber-900/30 border border-amber-500/30 rounded text-xs text-amber-400 text-center">
+                        <div className="w-full mb-2 px-2 py-1 bg-amber-900/30 border border-amber-500/30 rounded text-sm text-amber-400 text-center">
                             Demo Mode: Using hardcoded mock data (no project selected) • Press Ctrl+K for commands
                         </div>
                         <div className="w-full h-full flex flex-col">

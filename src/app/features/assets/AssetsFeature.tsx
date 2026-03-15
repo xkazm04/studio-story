@@ -72,7 +72,7 @@ const AssetsFeature = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`relative flex flex-col items-center justify-center gap-2 px-4 py-2.5 rounded-lg
-                transition-all duration-150 min-w-[110px] text-[11px]
+                transition-all duration-150 min-w-[110px] text-sm
                 ${
                   isActive
                     ? 'bg-cyan-600/20 text-slate-50 border border-cyan-500/40 shadow-[0_0_0_1px_rgba(8,145,178,0.28)]'

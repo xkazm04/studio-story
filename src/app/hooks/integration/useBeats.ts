@@ -134,7 +134,11 @@ export const beatApi = {
             });
         }
 
-        if (!actId) return useApiGet<Beat[]>('', false);
+        if (!actId) return useQuery<Beat[]>({
+            queryKey: ['beats-act', 'none'],
+            queryFn: async () => [],
+            enabled: false,
+        });
         const url = `${BEATS_URL}?actId=${actId}`;
         return useApiGet<Beat[]>(url, enabled && !!actId);
     },

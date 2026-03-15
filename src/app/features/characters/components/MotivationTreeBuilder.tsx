@@ -133,10 +133,10 @@ const StrengthBar: React.FC<{ strength: number; onChange?: (value: number) => vo
           max={100}
           value={strength}
           onChange={(e) => onChange(parseInt(e.target.value) || 0)}
-          className="w-10 bg-transparent border border-slate-700 rounded px-1 text-[10px] font-mono text-slate-400"
+          className="w-10 bg-transparent border border-slate-700 rounded px-1 text-sm font-mono text-slate-400"
         />
       ) : (
-        <span className="text-[10px] font-mono text-slate-500 w-6">{strength}</span>
+        <span className="text-sm font-mono text-slate-400 w-6">{strength}</span>
       )}
     </div>
   );
@@ -182,13 +182,13 @@ const MotivationNode: React.FC<MotivationNodeProps> = ({
         {/* Drag handle */}
         {!readOnly && (
           <div className="opacity-0 group-hover:opacity-100 transition-opacity cursor-grab">
-            <Grip size={12} className="text-slate-600" />
+            <Grip size={12} className="text-slate-400" />
           </div>
         )}
 
         {/* Level indicator */}
         <span className={cn(
-          'flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border',
+          'flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
           levelConfig.color
         )}>
           {levelConfig.icon}
@@ -202,9 +202,9 @@ const MotivationNode: React.FC<MotivationNodeProps> = ({
         {/* Awareness indicator */}
         <span title={motivation.isAwareOf ? 'Character is aware' : 'Character is unaware'}>
           {motivation.isAwareOf ? (
-            <Eye size={12} className="text-slate-500" />
+            <Eye size={12} className="text-slate-400" />
           ) : (
-            <EyeOff size={12} className="text-slate-600" />
+            <EyeOff size={12} className="text-slate-400" />
           )}
         </span>
 
@@ -216,21 +216,21 @@ const MotivationNode: React.FC<MotivationNodeProps> = ({
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={() => onAddChild(motivation.id)}
-              className="p-1 rounded hover:bg-cyan-500/20 text-slate-500 hover:text-cyan-400 transition-colors"
+              className="p-1 rounded hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-colors"
               title="Add child motivation"
             >
               <Plus size={12} />
             </button>
             <button
               onClick={() => onEdit(motivation)}
-              className="p-1 rounded hover:bg-slate-700/50 text-slate-500 hover:text-slate-300 transition-colors"
+              className="p-1 rounded hover:bg-slate-700/50 text-slate-400 hover:text-slate-300 transition-colors"
               title="Edit motivation"
             >
               <Edit3 size={12} />
             </button>
             <button
               onClick={() => onDelete(motivation.id)}
-              className="p-1 rounded hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
+              className="p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
               title="Delete motivation"
             >
               <Trash2 size={12} />
@@ -242,7 +242,7 @@ const MotivationNode: React.FC<MotivationNodeProps> = ({
       {/* Description on hover */}
       {motivation.description && (
         <div
-          className="hidden group-hover:block px-3 py-1 text-[10px] font-mono text-slate-500 bg-slate-800/20"
+          className="hidden group-hover:block px-3 py-1 text-sm font-mono text-slate-400 bg-slate-800/20"
           style={{ paddingLeft: `${indentPx + 48}px` }}
         >
           {motivation.description}
@@ -287,12 +287,12 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
   return (
     <div className="p-4 bg-slate-800/60 rounded-lg border border-slate-700/50 space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+        <h4 className="font-mono text-sm uppercase tracking-wide text-slate-300">
           {motivation ? 'edit_motivation' : 'new_motivation'}
         </h4>
         <button
           onClick={onCancel}
-          className="p-1 rounded hover:bg-slate-700/50 text-slate-500"
+          className="p-1 rounded hover:bg-slate-700/50 text-slate-400"
         >
           <X size={14} />
         </button>
@@ -300,7 +300,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
 
       {/* Label */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Label *
         </label>
         <input
@@ -309,14 +309,14 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
           onChange={(e) => setLabel(e.target.value)}
           placeholder="e.g., Protect family at all costs"
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-sm text-slate-200 placeholder:text-slate-600
+                     font-mono text-sm text-slate-200 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Description
         </label>
         <textarea
@@ -325,7 +325,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
           placeholder="Why does this motivation exist? What drives it?"
           rows={2}
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
         />
       </div>
@@ -333,14 +333,14 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
       {/* Level and Strength */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Level
           </label>
           <select
             value={level}
             onChange={(e) => setLevel(e.target.value as MotivationLevel)}
             className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           >
             {Object.entries(LEVEL_CONFIG).map(([key, config]) => (
@@ -349,7 +349,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
           </select>
         </div>
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Strength
           </label>
           <div className="flex items-center gap-2">
@@ -361,7 +361,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
               onChange={(e) => setStrength(parseInt(e.target.value))}
               className="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="font-mono text-xs text-slate-400 w-8">{strength}</span>
+            <span className="font-mono text-sm text-slate-400 w-8">{strength}</span>
           </div>
         </div>
       </div>
@@ -369,17 +369,17 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
       {/* Awareness toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block">
+          <label className="font-mono text-sm text-slate-400 uppercase block">
             Character Awareness
           </label>
-          <p className="font-mono text-[10px] text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Is the character aware of this motivation?
           </p>
         </div>
         <button
           onClick={() => setIsAwareOf(!isAwareOf)}
           className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono text-xs transition-colors',
+            'flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono text-sm transition-colors',
             isAwareOf
               ? 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400'
               : 'bg-slate-800/40 border-slate-700/50 text-slate-400'
@@ -392,7 +392,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
 
       {/* Source */}
       <div>
-        <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+        <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
           Source/Origin
         </label>
         <input
@@ -401,7 +401,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
           onChange={(e) => setSource(e.target.value)}
           placeholder="e.g., Childhood trauma, mentor's influence"
           className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300 placeholder:text-slate-600
+                     font-mono text-sm text-slate-300 placeholder:text-slate-400
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         />
       </div>
@@ -409,7 +409,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
       {/* Related fears and desires */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Related Fears (comma-separated)
           </label>
           <input
@@ -418,12 +418,12 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
             onChange={(e) => setRelatedFears(e.target.value)}
             placeholder="Loss, failure, betrayal"
             className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
         </div>
         <div>
-          <label className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <label className="font-mono text-sm text-slate-400 uppercase block mb-1">
             Related Desires (comma-separated)
           </label>
           <input
@@ -432,7 +432,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
             onChange={(e) => setRelatedDesires(e.target.value)}
             placeholder="Safety, love, recognition"
             className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
         </div>
@@ -443,7 +443,7 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
         <button
           onClick={onCancel}
           className="px-3 py-1.5 rounded-lg bg-slate-800/40 text-slate-400
-                     hover:bg-slate-700/60 font-mono text-xs transition-colors"
+                     hover:bg-slate-700/60 font-mono text-sm transition-colors"
         >
           Cancel
         </button>
@@ -451,10 +451,10 @@ const MotivationEditor: React.FC<MotivationEditorProps> = ({
           onClick={handleSave}
           disabled={!label.trim()}
           className={cn(
-            'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-xs transition-colors',
+            'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-sm transition-colors',
             label.trim()
               ? 'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400'
-              : 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
           )}
         >
           <Save size={12} />
@@ -648,10 +648,10 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               motivation_tree
             </h3>
-            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {stats.total} motivations
             </span>
           </div>
@@ -666,7 +666,7 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
               <span className={cn('flex items-center', config.color.split(' ')[0])}>
                 {config.icon}
               </span>
-              <span className="font-mono text-[10px] text-slate-400">
+              <span className="font-mono text-sm text-slate-400">
                 {config.label}: {stats.byLevel[level as MotivationLevel]}
               </span>
             </div>
@@ -686,7 +686,7 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
             <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               motivation_tree
             </h3>
-            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-500">
+            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {stats.total} motivations
             </span>
           </div>
@@ -699,7 +699,7 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
               }}
               className="flex items-center gap-1 px-2 py-1 rounded
                          bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400
-                         font-mono text-xs transition-colors"
+                         font-mono text-sm transition-colors"
             >
               <Plus size={12} />
               <span>add_root</span>
@@ -716,13 +716,13 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
               title={config.description}
             >
               <span className={cn(
-                'flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border',
+                'flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
                 config.color
               )}>
                 {config.icon}
                 <span>{config.label}</span>
               </span>
-              <span className="font-mono text-xs text-slate-500">
+              <span className="font-mono text-sm text-slate-400">
                 {stats.byLevel[level as MotivationLevel]}
               </span>
             </div>
@@ -759,10 +759,10 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
             {renderMotivations(tree.rootMotivations)}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400">
             <Target size={32} className="mb-3 opacity-50" />
             <p className="font-mono text-sm mb-1">No motivations defined</p>
-            <p className="font-mono text-xs text-slate-600">
+            <p className="font-mono text-sm text-slate-400">
               Add motivations to build the character's psychology
             </p>
             {!readOnly && (
@@ -773,7 +773,7 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
                 }}
                 className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg
                            bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400
-                           font-mono text-xs transition-colors"
+                           font-mono text-sm transition-colors"
               >
                 <Plus size={14} />
                 <span>Add First Motivation</span>
@@ -786,10 +786,10 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
       {/* Legend */}
       <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-800/30">
         <div className="flex items-center gap-2 mb-2">
-          <AlertTriangle size={12} className="text-slate-500" />
-          <span className="font-mono text-[10px] text-slate-500 uppercase">Level Guide</span>
+          <AlertTriangle size={12} className="text-slate-400" />
+          <span className="font-mono text-sm text-slate-400 uppercase">Level Guide</span>
         </div>
-        <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
+        <div className="grid grid-cols-2 gap-2 text-sm font-mono">
           {Object.entries(LEVEL_CONFIG).map(([level, config]) => (
             <div key={level} className="flex items-start gap-2">
               <span className={cn('flex-shrink-0 mt-0.5', config.color.split(' ')[0])}>
@@ -797,7 +797,7 @@ const MotivationTreeBuilder: React.FC<MotivationTreeBuilderProps> = ({
               </span>
               <div>
                 <span className="text-slate-400">{config.label}:</span>
-                <span className="text-slate-600 ml-1">{config.description}</span>
+                <span className="text-slate-400 ml-1">{config.description}</span>
               </div>
             </div>
           ))}

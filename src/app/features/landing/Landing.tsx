@@ -45,7 +45,7 @@ const Landing: React.FC<Props> = ({
 
 
   return (
-      <div className={`bg-dark-base text-gray-200 min-h-screen overflow-x-hidden z-10 ${inter.className}`} data-testid="landing-page">
+      <div className={`bg-dark-base text-slate-200 min-h-screen overflow-x-hidden z-10 ${inter.className}`} data-testid="landing-page">
         <BackgroundPattern numLines={15} colorScheme="mixed" />
         <div className='absolute top-0 opacity-10 z-0'>
           <LogoSvg size={244} color={'white'} />

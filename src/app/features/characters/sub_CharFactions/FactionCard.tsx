@@ -5,13 +5,41 @@
 
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Eye } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { Faction } from '@/app/types/Faction';
 import { characterApi } from '@/app/api/characters';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
+
+/** Simple string hash -> 0-1 range values for deterministic pattern generation */
+function nameHash(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) {
+    h = ((h << 5) - h + name.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+function generatePattern(name: string, color: string): string {
+  const h = nameHash(name);
+  const angle1 = h % 360;
+  const angle2 = (h * 7) % 360;
+  const size = 12 + (h % 16); // 12-27px
+  const variant = h % 3;
+
+  if (variant === 0) {
+    // Diagonal stripes
+    return `repeating-linear-gradient(${angle1}deg, ${color}18 0px, ${color}18 ${size / 3}px, transparent ${size / 3}px, transparent ${size}px)`;
+  } else if (variant === 1) {
+    // Conic burst
+    return `conic-gradient(from ${angle1}deg at ${30 + (h % 40)}% ${30 + ((h * 3) % 40)}%, ${color}20 0deg, transparent 60deg, ${color}12 120deg, transparent 180deg, ${color}18 240deg, transparent 300deg, ${color}20 360deg)`;
+  } else {
+    // Cross-hatch
+    return `repeating-linear-gradient(${angle1}deg, ${color}14 0px, transparent ${size / 2}px, transparent ${size}px), repeating-linear-gradient(${angle2}deg, ${color}14 0px, transparent ${size / 2}px, transparent ${size}px)`;
+  }
+}
 
 interface FactionCardProps {
   faction: Faction;
@@ -33,10 +61,14 @@ const FactionCard: React.FC<FactionCardProps> = ({ faction, onSelect, isNew = fa
   const secondaryColor = faction.branding?.secondary_color;
   const accentColor = faction.branding?.accent_color;
 
+  const patternBg = useMemo(() => {
+    const color = primaryColor || '#64748b';
+    return generatePattern(faction.name, color);
+  }, [faction.name, primaryColor]);
+
   return (
     <motion.div
       layout
-      whileHover={{ y: -4 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => onSelect(faction)}
       className={cn('relative group cursor-pointer rounded-lg border overflow-hidden transition-all duration-200 bg-slate-900/80 backdrop-blur-sm hover:bg-slate-800/80',
@@ -46,6 +78,12 @@ const FactionCard: React.FC<FactionCardProps> = ({ faction, onSelect, isNew = fa
       )}
       style={{
         borderColor: primaryColor && !isNew ? `${primaryColor}40` : undefined,
+      }}
+      whileHover={{
+        y: -4,
+        boxShadow: primaryColor
+          ? `0 8px 24px ${primaryColor}1A`
+          : '0 8px 24px rgba(100,116,139,0.1)',
       }}
     >
       {/* Glow effect for new factions */}
@@ -84,12 +122,12 @@ const FactionCard: React.FC<FactionCardProps> = ({ faction, onSelect, isNew = fa
           <div
             className="w-14 h-14 rounded-lg mb-4 flex items-center justify-center text-xl font-bold relative overflow-hidden border"
             style={{
-              backgroundColor: primaryColor ? `${primaryColor}15` : 'rgb(30 41 59 / 0.8)',
+              background: `${patternBg}, ${primaryColor ? `${primaryColor}15` : 'rgb(30 41 59 / 0.8)'}`,
               color: primaryColor || 'rgb(148 163 184)',
               borderColor: primaryColor ? `${primaryColor}30` : 'rgb(51 65 85 / 0.5)',
             }}
           >
-            <span className="font-mono">{faction.name.charAt(0).toUpperCase()}</span>
+            <span className="font-mono relative z-10">{faction.name.charAt(0).toUpperCase()}</span>
           </div>
         )}
 
@@ -98,14 +136,14 @@ const FactionCard: React.FC<FactionCardProps> = ({ faction, onSelect, isNew = fa
 
         {/* Description */}
         {faction.description && (
-          <p className="text-xs text-slate-400 mb-4 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-slate-400 mb-4 line-clamp-2 leading-relaxed">
             {faction.description}
           </p>
         )}
 
         {/* Stats */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wide text-slate-500">
+          <div className="flex items-center gap-1.5 font-mono text-sm uppercase tracking-wide text-slate-400">
             <Users size={12} />
             <span>{memberCount} members</span>
           </div>
@@ -114,7 +152,7 @@ const FactionCard: React.FC<FactionCardProps> = ({ faction, onSelect, isNew = fa
               e.stopPropagation();
               onSelect(faction);
             }}
-            className="flex items-center gap-1 px-2 py-1 rounded-md font-mono text-[10px] uppercase tracking-wide
+            className="flex items-center gap-1 px-2 py-1 rounded-md font-mono text-sm uppercase tracking-wide
                        text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10
                        transition-all duration-200 opacity-0 group-hover:opacity-100"
           >

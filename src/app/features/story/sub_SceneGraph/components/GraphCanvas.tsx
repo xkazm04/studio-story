@@ -41,7 +41,7 @@ export interface GraphCanvasProps {
  */
 function ManuscriptGridBackground() {
   return (
-    <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-zinc-950 to-gray-950">
+    <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-zinc-950 to-slate-950">
       {/* Notebook ruled lines */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.04]" preserveAspectRatio="none">
         <defs>

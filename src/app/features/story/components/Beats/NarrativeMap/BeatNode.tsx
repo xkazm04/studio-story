@@ -88,7 +88,7 @@ const BeatNode = ({
     : 'from-blue-500/20 to-purple-500/10 border-blue-500/50';
 
   const selectedStyle = isSelected
-    ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-950'
+    ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-950'
     : '';
 
   return (
@@ -119,11 +119,11 @@ const BeatNode = ({
       >
         {/* Drag Handle */}
         <div className="absolute -left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <GripVertical className="h-4 w-4 text-gray-500" />
+          <GripVertical className="h-4 w-4 text-slate-400" />
         </div>
 
         {/* Beat Number Badge */}
-        <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-xs font-bold text-gray-300">
+        <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-sm font-bold text-slate-300">
           {(beat.order || 0) + 1}
         </div>
 
@@ -132,7 +132,7 @@ const BeatNode = ({
           {beat.completed ? (
             <CheckCircle2 className="h-6 w-6 text-green-400" />
           ) : (
-            <Circle className="h-6 w-6 text-gray-600" />
+            <Circle className="h-6 w-6 text-slate-400" />
           )}
         </div>
 
@@ -140,7 +140,7 @@ const BeatNode = ({
         <div className="absolute top-2 right-2">
           <span
             className={`
-              text-[10px] px-2 py-0.5 rounded-full font-medium
+              text-sm px-2 py-0.5 rounded-full font-medium
               ${
                 beat.type === 'story'
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
@@ -154,11 +154,11 @@ const BeatNode = ({
 
         {/* Beat Content */}
         <div className="mt-2">
-          <h3 className="text-sm font-semibold text-gray-100 truncate" title={beat.name}>
+          <h3 className="text-sm font-semibold text-slate-100 truncate" title={beat.name}>
             {beat.name}
           </h3>
           {beat.description && (
-            <p className="text-xs text-gray-400 mt-1 line-clamp-2" title={beat.description}>
+            <p className="text-sm text-slate-400 mt-1 line-clamp-2" title={beat.description}>
               {beat.description}
             </p>
           )}
@@ -166,8 +166,8 @@ const BeatNode = ({
 
         {/* Dependency Count */}
         {dependencies.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-gray-700/50">
-            <div className="text-[10px] text-gray-500 flex items-center gap-1">
+          <div className="mt-2 pt-2 border-t border-slate-700/50">
+            <div className="text-sm text-slate-400 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-blue-400/50" />
               {dependencies.length} connection{dependencies.length !== 1 ? 's' : ''}
             </div>
@@ -177,7 +177,7 @@ const BeatNode = ({
         {/* Duration Indicator */}
         {beat.estimated_duration && (
           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-            <div className="text-[10px] px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700 text-gray-400 whitespace-nowrap">
+            <div className="text-sm px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 whitespace-nowrap">
               ~{beat.estimated_duration} min
             </div>
           </div>

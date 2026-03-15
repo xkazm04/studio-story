@@ -110,7 +110,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
             <BookOpen size={24} className="text-purple-500" />
             <div>
               <h3 className="text-lg font-semibold text-white">Lore Repository</h3>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-slate-400">
                 {filteredLore.length} of {loreEntries.length} entries
               </p>
             </div>
@@ -129,7 +129,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
         {/* Search bar */}
         <div className="relative">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             size={18}
           />
           <input
@@ -137,20 +137,20 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search lore entries, summaries, and tags..."
-            className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             data-testid="lore-search-input"
           />
         </div>
 
         {/* Category filters */}
         <div className="flex items-center gap-2 flex-wrap">
-          <Filter size={16} className="text-gray-500" />
+          <Filter size={16} className="text-slate-400" />
           <button
             onClick={() => setSelectedCategory(null)}
             className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-colors',
               selectedCategory === null
                 ? 'bg-purple-600 text-white'
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
             )}
             data-testid="category-filter-all"
           >
@@ -163,7 +163,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
               className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                 selectedCategory === key
                   ? 'bg-purple-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
               )}
               data-testid={`category-filter-${key}`}
             >
@@ -175,7 +175,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
         {/* Tag filters */}
         {allTags.length > 0 && (
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
               <Tag size={14} />
               <span>Filter by tags:</span>
             </div>
@@ -186,10 +186,10 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                   <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={cn('px-3 py-1.5 rounded-full text-xs font-medium transition-all',
+                    className={cn('px-3 py-1.5 rounded-full text-sm font-medium transition-all',
                       isSelected
                         ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white border border-purple-500'
-                        : 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700'
+                        : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
                     )}
                     data-testid={`tag-filter-${tag}`}
                   >
@@ -204,7 +204,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
 
         {/* Active filters display */}
         {(selectedCategory || selectedTags.length > 0) && (
-          <div className="flex items-center gap-2 text-xs text-gray-400">
+          <div className="flex items-center gap-2 text-sm text-slate-400">
             <span>Active filters:</span>
             {selectedCategory && (
               <span className="px-2 py-1 bg-purple-600/30 rounded">
@@ -246,7 +246,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ delay: index * 0.05, duration: 0.3 }}
               >
-                <div className="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
+                <div className="bg-slate-900 rounded-lg border border-slate-800 overflow-hidden">
                   {/* Colored top border */}
                   <div className={cn('h-1 bg-gradient-to-r', gradient)} />
 
@@ -257,7 +257,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                         <div className="flex items-center gap-2 mb-2">
                           <Scroll size={18} className="text-purple-400" />
                           <span
-                            className={cn('px-2 py-0.5 bg-gradient-to-r bg-opacity-20 rounded text-xs font-medium text-white', gradient)}
+                            className={cn('px-2 py-0.5 bg-gradient-to-r bg-opacity-20 rounded text-sm font-medium text-white', gradient)}
                           >
                             {categoryLabels[lore.category]}
                           </span>
@@ -265,7 +265,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                         <h4 className="text-xl font-semibold text-white mb-1">
                           {lore.title}
                         </h4>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-sm text-slate-400">
                           Created {formatDate(lore.created_at)}
                           {lore.updated_at && ` • Updated ${formatDate(lore.updated_at)}`}
                         </div>
@@ -273,7 +273,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                       {isLeader && onEditLore && (
                         <button
                           onClick={() => onEditLore(lore.id)}
-                          className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
+                          className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-white"
                         >
                           <Edit size={18} />
                         </button>
@@ -301,7 +301,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
                           animate={{
                             opacity: isExpanded ? 1 : 0.9,
                           }}
-                          className={cn('text-gray-300 leading-relaxed whitespace-pre-wrap',
+                          className={cn('text-slate-300 leading-relaxed whitespace-pre-wrap',
                             !isExpanded && 'line-clamp-3'
                           )}
                         >
@@ -311,7 +311,7 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
 
                       {/* Gradient fade for collapsed state */}
                       {!isExpanded && (
-                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-900 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-slate-900 to-transparent" />
                       )}
                     </motion.div>
 
@@ -349,8 +349,8 @@ const LoreRepository: React.FC<LoreRepositoryProps> = ({
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <BookOpen size={48} className="mx-auto mb-4 text-gray-600 opacity-50" />
-          <p className="text-gray-500">
+          <BookOpen size={48} className="mx-auto mb-4 text-slate-400 opacity-50" />
+          <p className="text-slate-400">
             {searchTerm || selectedCategory
               ? 'No lore entries match your search'
               : 'No lore entries yet'}

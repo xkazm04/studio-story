@@ -8,6 +8,7 @@ import { NextRequest } from 'next/server';
 import {
   getExecution,
   startExecution,
+  subscribeExecutionEvents,
   type CLIExecutionEvent,
 } from '@/lib/claude-terminal/cli-service';
 import { type CLIEvent, encodeEvent } from '@/cli/protocol';
@@ -143,67 +144,37 @@ export async function GET(request: NextRequest) {
         }
       };
 
-      // Track retry attempts for execution not found
-      let executionNotFoundCount = 0;
-      const maxNotFoundRetries = 30;
+      const execution = getExecution(activeExecutionId!);
+      if (!execution) {
+        sendEvent({ type: 'error', data: { error: 'Execution not found' }, timestamp: Date.now() });
+        controller.close();
+        return;
+      }
 
-      // Poll for new events
-      const pollInterval = setInterval(() => {
-        if (isStreamClosed) {
-          clearInterval(pollInterval);
-          return;
-        }
-
-        const execution = getExecution(activeExecutionId!);
-        if (!execution) {
-          executionNotFoundCount++;
-
-          if (executionNotFoundCount < maxNotFoundRetries) {
-            return;
-          }
-
-          clearInterval(pollInterval);
-          sendEvent({
-            type: 'error',
-            data: { error: 'Execution not found' },
-            timestamp: Date.now(),
-          });
-          controller.close();
-          return;
-        }
-
-        executionNotFoundCount = 0;
-
-        // Send new events
-        const newEvents = execution.events.slice(lastEventIndex);
-        for (const event of newEvents) {
-          const converted = convertEvent(event);
-          if (!converted) continue;
-
-          sendEvent(converted);
-
-          if (event.type === 'result' || event.type === 'error') {
-            isStreamClosed = true;
-            clearInterval(pollInterval);
-            controller.close();
-            return;
-          }
-        }
-        lastEventIndex = execution.events.length;
-
-        // Check if execution is complete
-        if (execution.status !== 'running') {
-          if (!isStreamClosed) {
-            const finalEvent: CLIEvent = execution.status === 'completed'
-              ? { type: 'result', data: { sessionId: execution.sessionId }, timestamp: Date.now() }
-              : { type: 'error', data: { error: `Execution ${execution.status}` }, timestamp: Date.now() };
-            sendEvent(finalEvent);
-          }
+      const existingEvents = execution.events.slice(lastEventIndex);
+      for (const event of existingEvents) {
+        const converted = convertEvent(event);
+        if (!converted) continue;
+        sendEvent(converted);
+        if (event.type === 'result' || event.type === 'error') {
           isStreamClosed = true;
-          clearInterval(pollInterval);
+          controller.close();
+          return;
+        }
+      }
+      lastEventIndex = execution.events.length;
+
+      const unsubscribe = subscribeExecutionEvents(activeExecutionId!, (event) => {
+        if (isStreamClosed) return;
+        const converted = convertEvent(event);
+        if (!converted) return;
+        sendEvent(converted);
+        if (event.type === 'result' || event.type === 'error') {
+          isStreamClosed = true;
+          unsubscribe?.();
           controller.close();
         }
-      }, 100);
+      });
 
       // Heartbeat to keep connection alive
       const heartbeatInterval = setInterval(() => {
@@ -218,6 +189,7 @@ export async function GET(request: NextRequest) {
         } catch {
           isStreamClosed = true;
           clearInterval(heartbeatInterval);
+          unsubscribe?.();
         }
       }, 15000);
     },

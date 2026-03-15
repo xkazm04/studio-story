@@ -19,16 +19,16 @@ export function FormSection({
   className,
 }: FormSectionProps) {
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={cn('space-y-1.5', className)}>
       <label className={cn(
-        'block font-mono text-[10px] uppercase tracking-wider text-slate-400',
+        'block font-mono text-xs uppercase tracking-wider text-slate-300',
         required && 'pl-2 border-l-2 border-cyan-500/30'
       )}>
         {label}
         {required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {description && (
-        <p className="text-[10px] text-slate-500">{description}</p>
+        <p className="text-sm text-slate-400">{description}</p>
       )}
       {children}
     </div>

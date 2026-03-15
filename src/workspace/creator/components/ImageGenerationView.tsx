@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Loader2, X, CheckSquare, Square, Trash2,
-  ZoomIn, AlertCircle, Save, CheckCheck, XCircle,
+  ZoomIn, AlertCircle, Save, CheckCheck, XCircle, Columns2,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { ConfirmationModal } from '@/app/components/UI/ConfirmationModal';
 import {
   useCreatorImageStore,
   selectGenerationProgress,
@@ -91,13 +92,13 @@ function ImageThumbnail({
       ) : image.status === 'failed' ? (
         <div className="flex flex-col items-center justify-center h-full gap-1">
           <AlertCircle className="w-5 h-5 text-red-400" />
-          <span className="text-[9px] text-red-400 px-2 text-center">
+          <span className="text-xs text-red-400 px-2 text-center">
             {image.error || 'Failed'}
           </span>
         </div>
       ) : (
         <div className="flex items-center justify-center h-full">
-          <Loader2 className="w-5 h-5 text-slate-500 animate-spin" />
+          <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
         </div>
       )}
     </div>
@@ -137,8 +138,111 @@ function ZoomModal({
           <X className="w-3.5 h-3.5 text-slate-300" />
         </button>
         <div className="mt-2 px-1">
-          <p className="text-[10px] text-slate-500 line-clamp-2">{image.prompt}</p>
+          <p className="text-xs text-slate-400 line-clamp-2">{image.prompt}</p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Comparison Slider ───────────────────────────────────
+
+function ComparisonSlider({
+  imageA,
+  imageB,
+  onClose,
+}: {
+  imageA: GeneratedImage;
+  imageB: GeneratedImage;
+  onClose: () => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [splitPercent, setSplitPercent] = useState(50);
+  const isDragging = useRef(false);
+
+  const updateSplit = useCallback((clientX: number) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSplitPercent(pct);
+  }, []);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    isDragging.current = true;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    updateSplit(e.clientX);
+  }, [updateSplit]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    updateSplit(e.clientX);
+  }, [updateSplit]);
+
+  const handlePointerUp = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-50 bg-black/90 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 shrink-0">
+        <div className="flex items-center gap-3 text-xs text-slate-400">
+          <span className="text-cyan-400">A</span>
+          <span className="truncate max-w-[200px]">{imageA.prompt.slice(0, 60)}...</span>
+          <span className="text-slate-600">|</span>
+          <span className="text-amber-400">B</span>
+          <span className="truncate max-w-[200px]">{imageB.prompt.slice(0, 60)}...</span>
+        </div>
+        <button onClick={onClose} className="p-1 hover:bg-slate-800 rounded transition-colors">
+          <X className="w-4 h-4 text-slate-400" />
+        </button>
+      </div>
+
+      {/* Comparison area */}
+      <div
+        ref={containerRef}
+        className="flex-1 relative overflow-hidden select-none cursor-col-resize"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
+        {/* Image B (full, behind) */}
+        <img
+          src={imageB.imageUrl}
+          alt="Image B"
+          className="absolute inset-0 w-full h-full object-contain"
+          draggable={false}
+        />
+
+        {/* Image A (clipped by slider) */}
+        <div
+          className="absolute inset-0"
+          style={{ clipPath: `inset(0 ${100 - splitPercent}% 0 0)` }}
+        >
+          <img
+            src={imageA.imageUrl}
+            alt="Image A"
+            className="w-full h-full object-contain"
+            draggable={false}
+          />
+        </div>
+
+        {/* Slider handle */}
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-white/80 pointer-events-none"
+          style={{ left: `${splitPercent}%` }}
+        >
+          {/* Handle grip */}
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+            <Columns2 className="w-4 h-4 text-slate-800" />
+          </div>
+        </div>
+
+        {/* Labels */}
+        <div className="absolute top-3 left-3 px-2 py-0.5 bg-black/60 rounded text-xs text-cyan-400 font-medium pointer-events-none">A</div>
+        <div className="absolute top-3 right-3 px-2 py-0.5 bg-black/60 rounded text-xs text-amber-400 font-medium pointer-events-none">B</div>
       </div>
     </div>
   );
@@ -162,6 +266,9 @@ export default function ImageGenerationView({
   const composedPrompt = useCreatorCharacterStore(selectComposedPrompt);
 
   const [zoomedImage, setZoomedImage] = useState<GeneratedImage | null>(null);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+  const [isComparing, setIsComparing] = useState(false);
 
   const tabImages = images.filter((img) => img.tab === tab);
 
@@ -340,16 +447,15 @@ export default function ImageGenerationView({
 
   // ─── Save Selected + Delete Rest ──────────────────────
 
-  const handleSaveSelectedAndDeleteRest = useCallback(async () => {
+  const handleSaveSelectedAndDeleteRest = useCallback(() => {
+    const selected = selectSelectedImages(useCreatorImageStore.getState());
+    if (selected.length === 0) return;
+    setIsSaveModalOpen(true);
+  }, []);
+
+  const confirmSaveSelectedAndDeleteRest = useCallback(async () => {
     const selected = selectSelectedImages(useCreatorImageStore.getState());
     const unselected = selectUnselectedImages(useCreatorImageStore.getState());
-
-    if (selected.length === 0) return;
-
-    const confirmed = window.confirm(
-      `Save ${selected.length} image(s) and delete ${unselected.length} from Leonardo?`
-    );
-    if (!confirmed) return;
 
     // Delete unselected from Leonardo
     const idsToDelete = unselected
@@ -377,6 +483,31 @@ export default function ImageGenerationView({
 
     useCreatorImageStore.getState().clearImages();
   }, [onImageSaved]);
+
+  const handleDiscardAll = useCallback(() => {
+    setIsDiscardModalOpen(true);
+  }, []);
+
+  const confirmDiscardAll = useCallback(async () => {
+    const allImages = useCreatorImageStore.getState().images;
+    const idsToDelete = allImages
+      .map((img) => img.generationId)
+      .filter(Boolean);
+
+    if (idsToDelete.length > 0) {
+      try {
+        await fetch('/api/ai/generate-images', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ generationIds: idsToDelete }),
+        });
+      } catch {
+        // best-effort
+      }
+    }
+
+    useCreatorImageStore.getState().clearImages();
+  }, []);
 
   // ─── Auto-start generation on mount if in multi-generate mode ──
 
@@ -409,9 +540,9 @@ export default function ImageGenerationView({
       {/* Progress bar */}
       {(viewMode === 'multi-generate' || isGenerating) && (
         <div className="px-3 py-2 border-b border-slate-800/40 shrink-0">
-          <div className="flex items-center justify-between text-[10px] mb-1">
+          <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-slate-400">Generating images...</span>
-            <span className="text-slate-500">
+            <span className="text-slate-400">
               {progress.completed}/{progress.total} complete
               {progress.failed > 0 && `, ${progress.failed} failed`}
             </span>
@@ -438,37 +569,46 @@ export default function ImageGenerationView({
         <div className="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/40 shrink-0">
           <button
             onClick={() => useCreatorImageStore.getState().selectAll()}
-            className="flex items-center gap-1 px-2 py-0.5 text-[10px] text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
+            className="flex items-center gap-1 px-2 py-0.5 text-xs text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
           >
             <CheckCheck className="w-3 h-3" />
             All
           </button>
           <button
             onClick={() => useCreatorImageStore.getState().deselectAll()}
-            className="flex items-center gap-1 px-2 py-0.5 text-[10px] text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded transition-colors"
+            className="flex items-center gap-1 px-2 py-0.5 text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded transition-colors"
           >
             <XCircle className="w-3 h-3" />
             None
           </button>
-          <span className="text-[10px] text-slate-600 flex-1 text-right">
+          {selectedImages.length === 2 && (
+            <button
+              onClick={() => setIsComparing(true)}
+              className="flex items-center gap-1 px-2 py-0.5 text-xs text-cyan-400 hover:bg-cyan-500/10 rounded transition-colors"
+            >
+              <Columns2 className="w-3 h-3" />
+              Compare
+            </button>
+          )}
+          <span className="text-xs text-slate-400 flex-1 text-right">
             {selectedImages.length} selected
           </span>
           <button
             onClick={handleSaveSelectedAndDeleteRest}
             disabled={selectedImages.length === 0}
             className={cn(
-              'flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors',
+              'flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors',
               selectedImages.length > 0
                 ? 'bg-amber-600/80 text-white hover:bg-amber-500'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                : 'bg-slate-800 text-slate-400 cursor-not-allowed'
             )}
           >
             <Save className="w-3 h-3" />
             Save Selected
           </button>
           <button
-            onClick={() => useCreatorImageStore.getState().clearImages()}
-            className="flex items-center gap-1 px-2 py-0.5 text-[10px] text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+            onClick={handleDiscardAll}
+            className="flex items-center gap-1 px-2 py-0.5 text-xs text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
           >
             <X className="w-3 h-3" />
             Discard All
@@ -495,8 +635,8 @@ export default function ImageGenerationView({
           </div>
         ) : !isGenerating ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <AlertCircle className="w-6 h-6 text-slate-600 mb-2" />
-            <p className="text-xs text-slate-500">No images generated yet</p>
+            <AlertCircle className="w-6 h-6 text-slate-400 mb-2" />
+            <p className="text-sm text-slate-400">No images generated yet</p>
           </div>
         ) : null}
       </div>
@@ -517,6 +657,69 @@ export default function ImageGenerationView({
       {/* Zoom modal */}
       {zoomedImage && (
         <ZoomModal image={zoomedImage} onClose={() => setZoomedImage(null)} />
+      )}
+
+      {/* Save Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onConfirm={confirmSaveSelectedAndDeleteRest}
+        title="Save Selected Images"
+        message={
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-slate-300">
+              You are about to save {selectedImages.length} image(s) and discard {unselectedImages.length}. The discarded images will be permanently deleted.
+            </p>
+            
+            {selectedImages.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-amber-500 mb-2">Keeping:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedImages.map(img => (
+                    <div key={img.id} className="w-12 h-12 rounded-md overflow-hidden border-2 border-amber-500">
+                      <img src={img.imageUrl} alt="Selected" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {unselectedImages.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-red-400 mb-2">Discarding:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {unselectedImages.map(img => (
+                    <div key={img.id} className="w-12 h-12 rounded-md overflow-hidden border-2 border-red-500/50 opacity-60">
+                      <img src={img.imageUrl} alt="Discarding" className="w-full h-full object-cover grayscale" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        }
+        confirmText="Save & Delete"
+        type="warning"
+      />
+
+      {/* Discard All Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscardAll}
+        title="Discard All Images"
+        message={`This will permanently delete all ${tabImages.length} generated image(s) from Leonardo. This action cannot be undone.`}
+        confirmText="Discard All"
+        type="danger"
+      />
+
+      {/* Comparison Slider */}
+      {isComparing && selectedImages.length === 2 && (
+        <ComparisonSlider
+          imageA={selectedImages[0]}
+          imageB={selectedImages[1]}
+          onClose={() => setIsComparing(false)}
+        />
       )}
     </div>
   );

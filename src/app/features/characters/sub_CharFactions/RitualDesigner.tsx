@@ -136,14 +136,14 @@ const RitualCard: React.FC<{
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="font-medium text-white">{ritual.name}</h4>
-                <span className={cn('text-xs px-2 py-0.5 rounded-full border', frequencyColor)}>
+                <span className={cn('text-sm px-2 py-0.5 rounded-full border', frequencyColor)}>
                   {frequencyConfig.label}
                 </span>
               </div>
               <p className="text-sm text-slate-400 mt-1">{ritual.description}</p>
 
               {/* Quick info row */}
-              <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+              <div className="flex items-center gap-4 mt-2 text-sm text-slate-400">
                 {ritual.participants && (
                   <span className="flex items-center gap-1">
                     <Users size={12} />
@@ -168,10 +168,10 @@ const RitualCard: React.FC<{
 
           {!readOnly && (
             <div className="flex items-center gap-1">
-              <button onClick={onEdit} className="p-1.5 text-slate-500 hover:text-cyan-400">
+              <button onClick={onEdit} className="p-1.5 text-slate-400 hover:text-cyan-400">
                 <Edit3 size={14} />
               </button>
-              <button onClick={onDelete} className="p-1.5 text-slate-500 hover:text-red-400">
+              <button onClick={onDelete} className="p-1.5 text-slate-400 hover:text-red-400">
                 <Trash2 size={14} />
               </button>
             </div>
@@ -181,7 +181,7 @@ const RitualCard: React.FC<{
         {/* Expand toggle */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 mt-3 text-xs text-slate-500 hover:text-slate-300"
+          className="flex items-center gap-1 mt-3 text-sm text-slate-400 hover:text-slate-300"
         >
           {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           {expanded ? 'Hide details' : 'Show ritual steps & details'}
@@ -199,7 +199,7 @@ const RitualCard: React.FC<{
             <div className="p-4 space-y-4 bg-slate-800/30">
               {/* Purpose */}
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1 flex items-center gap-1">
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1 flex items-center gap-1">
                   <Heart size={10} className="text-red-400" />
                   Purpose
                 </p>
@@ -209,14 +209,14 @@ const RitualCard: React.FC<{
               {/* Steps */}
               {ritual.steps.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-2 flex items-center gap-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-2 flex items-center gap-1">
                     <List size={10} className="text-cyan-400" />
                     Ritual Steps
                   </p>
                   <ol className="space-y-2">
                     {ritual.steps.map((step, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-slate-700 text-slate-400 rounded-full text-[10px] font-medium">
+                        <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-slate-700 text-slate-400 rounded-full text-sm font-medium">
                           {i + 1}
                         </span>
                         <span className="text-slate-300">{step}</span>
@@ -229,7 +229,7 @@ const RitualCard: React.FC<{
               {/* Required Items */}
               {ritual.required_items && ritual.required_items.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1 flex items-center gap-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1 flex items-center gap-1">
                     <Package size={10} className="text-amber-400" />
                     Required Items
                   </p>
@@ -237,7 +237,7 @@ const RitualCard: React.FC<{
                     {ritual.required_items.map((item, i) => (
                       <span
                         key={i}
-                        className="text-xs px-2 py-0.5 bg-slate-700 text-slate-300 rounded"
+                        className="text-sm px-2 py-0.5 bg-slate-700 text-slate-300 rounded"
                       >
                         {item}
                       </span>
@@ -248,7 +248,7 @@ const RitualCard: React.FC<{
 
               {/* Significance */}
               <div>
-                <p className="text-[10px] uppercase text-slate-600 font-medium mb-1 flex items-center gap-1">
+                <p className="text-sm uppercase text-slate-400 font-medium mb-1 flex items-center gap-1">
                   <BookOpen size={10} className="text-purple-400" />
                   Significance
                 </p>
@@ -258,24 +258,24 @@ const RitualCard: React.FC<{
               {/* Origin Story */}
               {ritual.origin_story && (
                 <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/30">
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Origin Story
                   </p>
-                  <p className="text-xs text-slate-400 italic">{ritual.origin_story}</p>
+                  <p className="text-sm text-slate-400 italic">{ritual.origin_story}</p>
                 </div>
               )}
 
               {/* Related Values */}
               {ritual.related_values.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Reinforces Values
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {ritual.related_values.map((value, i) => (
                       <span
                         key={i}
-                        className="text-[10px] px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded"
+                        className="text-sm px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded"
                       >
                         {value}
                       </span>
@@ -510,7 +510,7 @@ const RitualEditorModal: React.FC<RitualEditorModalProps> = ({
               {formData.required_items?.map((item, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-slate-700 text-slate-300 rounded"
+                  className="inline-flex items-center gap-1 text-sm px-2 py-1 bg-slate-700 text-slate-300 rounded"
                 >
                   {item}
                   <button
@@ -551,7 +551,7 @@ const RitualEditorModal: React.FC<RitualEditorModalProps> = ({
                   key={i}
                   className="flex items-center gap-2 text-sm bg-slate-800/50 px-3 py-2 rounded border border-slate-700/30"
                 >
-                  <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-slate-700 text-slate-400 rounded-full text-[10px] font-medium">
+                  <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-slate-700 text-slate-400 rounded-full text-sm font-medium">
                     {i + 1}
                   </span>
                   <span className="flex-1 text-slate-300">{step}</span>
@@ -560,7 +560,7 @@ const RitualEditorModal: React.FC<RitualEditorModalProps> = ({
                       type="button"
                       onClick={() => handleMoveStep(i, 'up')}
                       disabled={i === 0}
-                      className="p-1 text-slate-500 hover:text-white disabled:opacity-30"
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
                     >
                       <ChevronUp size={12} />
                     </button>
@@ -568,14 +568,14 @@ const RitualEditorModal: React.FC<RitualEditorModalProps> = ({
                       type="button"
                       onClick={() => handleMoveStep(i, 'down')}
                       disabled={i === formData.steps.length - 1}
-                      className="p-1 text-slate-500 hover:text-white disabled:opacity-30"
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
                     >
                       <ChevronDown size={12} />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleRemoveStep(i)}
-                      className="p-1 text-slate-500 hover:text-red-400"
+                      className="p-1 text-slate-400 hover:text-red-400"
                     >
                       <X size={12} />
                     </button>
@@ -626,7 +626,7 @@ const RitualEditorModal: React.FC<RitualEditorModalProps> = ({
                       type="button"
                       onClick={() => toggleValue(value)}
                       className={cn(
-                        'text-xs px-3 py-1.5 rounded-lg border transition-colors',
+                        'text-sm px-3 py-1.5 rounded-lg border transition-colors',
                         isSelected
                           ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300'
                           : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
@@ -803,7 +803,7 @@ const RitualDesigner: React.FC<RitualDesignerProps> = ({
           </div>
           <div>
             <h3 className="font-medium text-white">Rituals & Ceremonies</h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-sm text-slate-400">
               {rituals.length} ritual{rituals.length !== 1 ? 's' : ''} defined
             </p>
           </div>
@@ -822,14 +822,14 @@ const RitualDesigner: React.FC<RitualDesignerProps> = ({
 
       {/* Frequency Overview */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="flex items-center gap-1 text-xs text-slate-500">
+        <span className="flex items-center gap-1 text-sm text-slate-400">
           <Filter size={12} />
           Filter:
         </span>
         <button
           onClick={() => setFrequencyFilter('all')}
           className={cn(
-            'text-xs px-2 py-1 rounded border transition-colors',
+            'text-sm px-2 py-1 rounded border transition-colors',
             frequencyFilter === 'all'
               ? 'bg-slate-600 border-slate-500 text-white'
               : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
@@ -845,7 +845,7 @@ const RitualDesigner: React.FC<RitualDesignerProps> = ({
               key={freq}
               onClick={() => setFrequencyFilter(freq)}
               className={cn(
-                'text-xs px-2 py-1 rounded border transition-colors',
+                'text-sm px-2 py-1 rounded border transition-colors',
                 frequencyFilter === freq
                   ? FREQUENCY_COLORS[freq]
                   : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
@@ -872,7 +872,7 @@ const RitualDesigner: React.FC<RitualDesignerProps> = ({
         </AnimatePresence>
 
         {filteredRituals.length === 0 && (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 text-slate-400">
             <Flame className="mx-auto mb-2 opacity-50" size={32} />
             <p className="text-sm">
               {frequencyFilter === 'all'
@@ -900,7 +900,7 @@ const RitualDesigner: React.FC<RitualDesignerProps> = ({
                   onClick={() => handleGenerateRitual(freq)}
                   disabled={cli.isRunning || generatingFrequency !== null}
                   className={cn(
-                    'flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50',
+                    'flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50',
                     FREQUENCY_COLORS[freq]
                   )}
                 >

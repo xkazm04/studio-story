@@ -171,7 +171,7 @@ export function OrphanView({
             </div>
             <div>
               <h2 className="text-lg font-medium text-slate-100">Orphan Assets</h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-sm text-slate-400">
                 {orphanCount} unused asset{orphanCount !== 1 ? 's' : ''} found
               </p>
             </div>
@@ -231,7 +231,7 @@ export function OrphanView({
               key={age}
               onClick={() => setFilterAge(age)}
               className={clsx(
-                'px-3 py-1 rounded-full text-xs font-medium transition-colors',
+                'px-3 py-1 rounded-full text-sm font-medium transition-colors',
                 filterAge === age
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                   : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:text-slate-200'
@@ -250,7 +250,7 @@ export function OrphanView({
           <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-800/50">
             <button
               onClick={selectedIds.size === filteredOrphans.length ? deselectAll : selectAll}
-              className="flex items-center gap-2 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 transition-colors"
             >
               {selectedIds.size === filteredOrphans.length ? (
                 <CheckSquare className="w-4 h-4 text-cyan-400" />
@@ -260,7 +260,7 @@ export function OrphanView({
               {selectedIds.size === filteredOrphans.length ? 'Deselect All' : 'Select All'}
             </button>
             {selectedIds.size > 0 && (
-              <span className="text-xs text-slate-500">
+              <span className="text-sm text-slate-400">
                 {selectedIds.size} selected
               </span>
             )}
@@ -312,9 +312,9 @@ export function OrphanView({
                     {orphan.assetName}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-slate-500">{orphan.assetType}</span>
-                    <span className="text-slate-600">•</span>
-                    <span className={clsx('text-xs', getAgeColor(orphan.daysSinceCreation))}>
+                    <span className="text-sm text-slate-400">{orphan.assetType}</span>
+                    <span className="text-slate-400">•</span>
+                    <span className={clsx('text-sm', getAgeColor(orphan.daysSinceCreation))}>
                       <Calendar className="w-3 h-3 inline mr-1" />
                       {formatAge(orphan.daysSinceCreation)}
                     </span>

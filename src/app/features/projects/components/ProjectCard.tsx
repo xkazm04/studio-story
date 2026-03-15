@@ -57,7 +57,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
-      className="group relative bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-6 cursor-pointer hover:bg-gray-800 hover:border-blue-500/50 transition-all duration-300"
+      className="group relative bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800 hover:border-blue-500/50 transition-all duration-300"
       data-testid={`project-card-${project.id}`}
       tabIndex={0}
       role="button"
@@ -68,11 +68,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <Folder size={24} className="text-blue-500" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+          <h3 className="ms-h3 mb-2 group-hover:text-blue-400 transition-colors">
             {project.name}
           </h3>
           {project.description && (
-            <p className="text-sm text-gray-400 line-clamp-2">
+            <p className="text-sm text-slate-400 line-clamp-2">
               {project.description}
             </p>
           )}
@@ -90,7 +90,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm rounded-lg flex items-center justify-center gap-4 pointer-events-auto"
+            className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-lg flex items-center justify-center gap-4 pointer-events-auto"
             data-testid={`project-overlay-${project.id}`}
           >
             {/* Edit Button */}
@@ -100,7 +100,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               transition={{ delay: 0.05 }}
               onClick={handleEdit}
               onKeyDown={(e) => handleKeyDown(e, 'edit')}
-              className="group/btn p-4 bg-blue-600/80 hover:bg-blue-600 rounded-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              className="group/btn p-4 bg-blue-600/80 hover:bg-blue-600 rounded-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
               aria-label={`Edit project ${project.name}`}
               data-testid={`project-edit-btn-${project.id}`}
               tabIndex={0}
@@ -115,7 +115,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               transition={{ delay: 0.1 }}
               onClick={handleDelete}
               onKeyDown={(e) => handleKeyDown(e, 'delete')}
-              className="group/btn p-4 bg-red-600/80 hover:bg-red-600 rounded-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              className="group/btn p-4 bg-red-600/80 hover:bg-red-600 rounded-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900"
               aria-label={`Delete project ${project.name}`}
               data-testid={`project-delete-btn-${project.id}`}
               tabIndex={0}

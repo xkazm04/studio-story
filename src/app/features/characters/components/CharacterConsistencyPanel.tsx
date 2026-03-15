@@ -101,7 +101,7 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
         <button
           onClick={handleAnalyze}
           disabled={analyzeConsistency.isPending || !selectedProject}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg text-sm font-medium transition-colors"
           data-testid="analyze-consistency-btn"
         >
           {analyzeConsistency.isPending ? (
@@ -122,17 +122,17 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
       {report && (
         <div className="space-y-4">
           {/* Consistency Score */}
-          <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
             <ColoredBorder color={getScoreBorderColor(report.consistency_score)} />
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="text-sm font-medium text-gray-400">Overall Consistency Score</h4>
+                <h4 className="text-sm font-medium text-slate-400">Overall Consistency Score</h4>
                 <p className={cn('text-4xl font-bold', getScoreColor(report.consistency_score))}>
                   {report.consistency_score}
-                  <span className="text-xl text-gray-500">/100</span>
+                  <span className="text-xl text-slate-400">/100</span>
                 </p>
               </div>
-              <div className="text-right text-sm text-gray-400">
+              <div className="text-right text-sm text-slate-400">
                 <div>Analyzed: {report.analyzed_sources.beats_count} beats</div>
                 <div>{report.analyzed_sources.scenes_count} scenes</div>
                 <div>{report.analyzed_sources.traits_count} traits</div>
@@ -143,25 +143,25 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
             <div className="grid grid-cols-4 gap-3">
               {report.critical_issues > 0 && (
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                  <div className="text-xs text-red-400 mb-1">Critical</div>
+                  <div className="text-sm text-red-400 mb-1">Critical</div>
                   <div className="text-2xl font-bold text-red-400">{report.critical_issues}</div>
                 </div>
               )}
               {report.high_issues > 0 && (
                 <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
-                  <div className="text-xs text-orange-400 mb-1">High</div>
+                  <div className="text-sm text-orange-400 mb-1">High</div>
                   <div className="text-2xl font-bold text-orange-400">{report.high_issues}</div>
                 </div>
               )}
               {report.medium_issues > 0 && (
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
-                  <div className="text-xs text-yellow-400 mb-1">Medium</div>
+                  <div className="text-sm text-yellow-400 mb-1">Medium</div>
                   <div className="text-2xl font-bold text-yellow-400">{report.medium_issues}</div>
                 </div>
               )}
               {report.low_issues > 0 && (
                 <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                  <div className="text-xs text-blue-400 mb-1">Low</div>
+                  <div className="text-sm text-blue-400 mb-1">Low</div>
                   <div className="text-2xl font-bold text-blue-400">{report.low_issues}</div>
                 </div>
               )}
@@ -171,7 +171,7 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
           {/* Issues List */}
           {report.issues.length > 0 ? (
             <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-gray-300">
+              <h4 className="text-sm font-semibold text-slate-300">
                 Detected Issues ({report.total_issues})
               </h4>
               {report.issues.map((issue) => (
@@ -186,13 +186,13 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
               ))}
             </div>
           ) : (
-            <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-8 text-center">
+            <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-8 text-center">
               <ColoredBorder color="green" />
               <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
               <h4 className="text-lg font-semibold text-white mb-2">
                 No Consistency Issues Found
               </h4>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-slate-400">
                 {characterName} appears to be consistently portrayed across all analyzed content.
               </p>
             </div>
@@ -202,19 +202,19 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
 
       {/* Empty State */}
       {!report && !analyzeConsistency.isPending && (
-        <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-8 text-center">
+        <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-8 text-center">
           <ColoredBorder color="blue" />
-          <Shield className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <Shield className="w-12 h-12 text-slate-400 mx-auto mb-3" />
           <h4 className="text-lg font-semibold text-white mb-2">
             Character Consistency Checker
           </h4>
-          <p className="text-sm text-gray-400 mb-4 max-w-md mx-auto">
+          <p className="text-sm text-slate-400 mb-4 max-w-md mx-auto">
             Analyze {characterName}'s portrayal across beats, scenes, and traits to detect inconsistencies in personality, motivations, speech patterns, and behavior.
           </p>
           <button
             onClick={handleAnalyze}
             disabled={!selectedProject}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg text-sm font-medium transition-colors"
             data-testid="start-analysis-btn"
           >
             <Sparkles className="w-4 h-4" />

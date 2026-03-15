@@ -123,7 +123,7 @@ export default function DuplicateWarning({
               </div>
               <span
                 className={clsx(
-                  'text-xs font-medium',
+                  'text-sm font-medium',
                   isExactMatch ? 'text-red-400' : 'text-amber-400'
                 )}
               >
@@ -135,7 +135,7 @@ export default function DuplicateWarning({
             <div className="mt-3 flex flex-wrap gap-2">
               <span
                 className={clsx(
-                  'px-2 py-1 rounded text-xs font-medium',
+                  'px-2 py-1 rounded text-sm font-medium',
                   isExactMatch
                     ? 'bg-red-500/20 text-red-300'
                     : 'bg-amber-500/20 text-amber-300'
@@ -144,7 +144,7 @@ export default function DuplicateWarning({
                 {result.matchType === 'exact' ? 'Exact Match' : 'Near Duplicate'}
               </span>
               {result.existingAssetId && (
-                <span className="px-2 py-1 rounded text-xs bg-slate-700/50 text-slate-300">
+                <span className="px-2 py-1 rounded text-sm bg-slate-700/50 text-slate-300">
                   Asset ID: {result.existingAssetId.slice(0, 8)}...
                 </span>
               )}
@@ -158,7 +158,7 @@ export default function DuplicateWarning({
             variant="ghost"
             size="sm"
             onClick={handleDismiss}
-            className="text-slate-500 hover:text-slate-300"
+            className="text-slate-400 hover:text-slate-300"
           />
         </div>
 
@@ -240,7 +240,7 @@ export function DuplicateIndicator({
     return (
       <span
         className={clsx(
-          'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium',
+          'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-medium',
           isExact
             ? 'bg-red-500/20 text-red-400'
             : 'bg-amber-500/20 text-amber-400',

@@ -9,6 +9,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collapse, NORMAL } from '@/lib/animations';
 import {
   Dna,
   Palette,
@@ -30,6 +31,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
 import { Label } from '@/app/components/UI/Label';
+import { Slider } from '@/app/components/UI/Slider';
 import {
   styleDNA,
   colorTheory,
@@ -148,45 +150,6 @@ const COLOR_HARMONIES: { value: ColorHarmony; label: string }[] = [
 // Sub-Components
 // ============================================================================
 
-interface SliderProps {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  disabled?: boolean;
-}
-
-function Slider({ label, value, onChange, min = 0, max = 100, disabled }: SliderProps) {
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-400">{label}</span>
-        <span className="text-[10px] text-slate-500 font-mono">{value}</span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
-        disabled={disabled}
-        className={cn(
-          'w-full h-1.5 rounded-full appearance-none cursor-pointer',
-          'bg-slate-700',
-          '[&::-webkit-slider-thumb]:appearance-none',
-          '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
-          '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500',
-          '[&::-webkit-slider-thumb]:cursor-pointer',
-          '[&::-webkit-slider-thumb]:transition-transform',
-          '[&::-webkit-slider-thumb]:hover:scale-125',
-          'disabled:opacity-50 disabled:cursor-not-allowed'
-        )}
-      />
-    </div>
-  );
-}
-
 interface SelectProps {
   value: string;
   onChange: (value: string) => void;
@@ -201,7 +164,7 @@ function Select({ value, onChange, options, disabled }: SelectProps) {
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
       className={cn(
-        'w-full px-2 py-1.5 text-xs rounded-md',
+        'w-full px-2 py-1.5 text-sm rounded-md',
         'bg-slate-800/60 border border-slate-700',
         'text-slate-200',
         'focus:outline-none focus:ring-1 focus:ring-cyan-500/50',
@@ -239,8 +202,8 @@ function ColorInput({ label, value, onChange, disabled }: ColorInputProps) {
         )}
       />
       <div className="flex-1">
-        <span className="text-[10px] text-slate-400">{label}</span>
-        <span className="text-[10px] text-slate-500 font-mono block">{value}</span>
+        <span className="text-sm text-slate-400">{label}</span>
+        <span className="text-sm text-slate-400 font-mono block">{value}</span>
       </div>
     </div>
   );
@@ -267,20 +230,21 @@ function Section({ id, title, icon, isExpanded, onToggle, children }: SectionPro
         )}
       >
         {isExpanded ? (
-          <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
         ) : (
-          <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         )}
         <span className="text-cyan-400">{icon}</span>
-        <span className="text-xs font-medium text-slate-200">{title}</span>
+        <span className="text-sm font-medium text-slate-200">{title}</span>
       </button>
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            variants={collapse}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={NORMAL}
             className="overflow-hidden"
           >
             <div className="p-3 space-y-3 border-t border-slate-800">{children}</div>
@@ -398,13 +362,13 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
           <span className="text-sm font-semibold text-slate-200">Style DNA</span>
         </div>
 
-        <p className="text-xs text-slate-400">
+        <p className="text-sm text-slate-400">
           Create a Style DNA profile to automatically apply consistent visual style across all your
           story&apos;s generated images.
         </p>
 
         <div className="space-y-2">
-          <Label className="text-xs text-slate-400">Start from a preset:</Label>
+          <Label className="text-sm text-slate-400">Start from a preset:</Label>
           <div className="grid grid-cols-2 gap-2">
             {presets.slice(0, 4).map((preset) => (
               <button
@@ -412,7 +376,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 onClick={() => handleCreateFromPreset(preset.id)}
                 disabled={disabled}
                 className={cn(
-                  'px-3 py-2 text-xs rounded-md text-left',
+                  'px-3 py-2 text-sm rounded-md text-left',
                   'bg-slate-800/50 border border-slate-700',
                   'hover:bg-slate-800 hover:border-cyan-500/30',
                   'transition-colors',
@@ -426,7 +390,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-slate-400">
           <div className="flex-1 h-px bg-slate-800" />
           <span>or</span>
           <div className="flex-1 h-px bg-slate-800" />
@@ -483,7 +447,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Wand2 className="w-3.5 h-3.5 text-purple-400" />
-          <span className="text-xs text-slate-300">Auto-inject style</span>
+          <span className="text-sm text-slate-300">Auto-inject style</span>
         </div>
         <button
           onClick={() => handleUpdateConfig({ autoInject: !activeConfig.autoInject })}
@@ -553,7 +517,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               disabled={disabled}
             />
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Harmony</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Harmony</Label>
               <Select
                 value={activeConfig.colorPalette.harmony}
                 onChange={(v) =>
@@ -581,7 +545,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         >
           <div className="space-y-3">
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Type</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Type</Label>
               <Select
                 value={activeConfig.lighting.type}
                 onChange={(v) =>
@@ -594,7 +558,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Direction</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Direction</Label>
               <Select
                 value={activeConfig.lighting.direction}
                 onChange={(v) =>
@@ -610,7 +574,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Time of Day</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Time of Day</Label>
               <Select
                 value={activeConfig.lighting.preferredTimeOfDay}
                 onChange={(v) =>
@@ -658,7 +622,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         >
           <div className="space-y-3">
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Primary Style</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Primary Style</Label>
               <Select
                 value={activeConfig.texture.primary}
                 onChange={(v) =>
@@ -713,7 +677,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         >
           <div className="space-y-3">
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Layout</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Layout</Label>
               <Select
                 value={activeConfig.composition.primaryLayout}
                 onChange={(v) =>
@@ -729,7 +693,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Aspect Ratio</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Aspect Ratio</Label>
               <Select
                 value={activeConfig.composition.aspectRatio}
                 onChange={(v) =>
@@ -745,7 +709,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Depth of Field</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Depth of Field</Label>
               <Select
                 value={activeConfig.composition.depthOfField}
                 onChange={(v) =>
@@ -786,7 +750,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         >
           <div className="space-y-3">
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Primary Mood</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Primary Mood</Label>
               <input
                 type="text"
                 value={activeConfig.mood.primary}
@@ -798,7 +762,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 disabled={disabled}
                 placeholder="e.g., dramatic, ethereal, cozy"
                 className={cn(
-                  'w-full px-2 py-1.5 text-xs rounded-md',
+                  'w-full px-2 py-1.5 text-sm rounded-md',
                   'bg-slate-800/60 border border-slate-700',
                   'text-slate-200 placeholder:text-slate-500',
                   'focus:outline-none focus:ring-1 focus:ring-cyan-500/50'
@@ -806,7 +770,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">Secondary Mood</Label>
+              <Label className="text-sm text-slate-400 mb-1 block">Secondary Mood</Label>
               <input
                 type="text"
                 value={activeConfig.mood.secondary || ''}
@@ -818,7 +782,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 disabled={disabled}
                 placeholder="Optional undertone"
                 className={cn(
-                  'w-full px-2 py-1.5 text-xs rounded-md',
+                  'w-full px-2 py-1.5 text-sm rounded-md',
                   'bg-slate-800/60 border border-slate-700',
                   'text-slate-200 placeholder:text-slate-500',
                   'focus:outline-none focus:ring-1 focus:ring-cyan-500/50'
@@ -826,30 +790,20 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">
-                Intensity: {activeConfig.mood.intensity}/5
-              </Label>
-              <input
-                type="range"
-                min={1}
-                max={5}
+              <Slider
+                label={`Intensity: ${activeConfig.mood.intensity}/5`}
                 value={activeConfig.mood.intensity}
-                onChange={(e) =>
+                onChange={(v) =>
                   handleUpdateConfig({
                     mood: {
                       ...activeConfig.mood,
-                      intensity: parseInt(e.target.value) as 1 | 2 | 3 | 4 | 5,
+                      intensity: v as 1 | 2 | 3 | 4 | 5,
                     },
                   })
                 }
+                min={1}
+                max={5}
                 disabled={disabled}
-                className={cn(
-                  'w-full h-1.5 rounded-full appearance-none cursor-pointer',
-                  'bg-slate-700',
-                  '[&::-webkit-slider-thumb]:appearance-none',
-                  '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
-                  '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500'
-                )}
               />
             </div>
           </div>
@@ -865,7 +819,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         >
           <div className="space-y-3">
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">
+              <Label className="text-sm text-slate-400 mb-1 block">
                 Style Keywords (comma-separated)
               </Label>
               <textarea
@@ -882,7 +836,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 placeholder="cinematic, moody, detailed..."
                 rows={2}
                 className={cn(
-                  'w-full px-2 py-1.5 text-xs rounded-md resize-none',
+                  'w-full px-2 py-1.5 text-sm rounded-md resize-none',
                   'bg-slate-800/60 border border-slate-700',
                   'text-slate-200 placeholder:text-slate-500',
                   'focus:outline-none focus:ring-1 focus:ring-cyan-500/50'
@@ -890,7 +844,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">
+              <Label className="text-sm text-slate-400 mb-1 block">
                 Avoid Keywords (comma-separated)
               </Label>
               <textarea
@@ -907,7 +861,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 placeholder="blurry, distorted..."
                 rows={2}
                 className={cn(
-                  'w-full px-2 py-1.5 text-xs rounded-md resize-none',
+                  'w-full px-2 py-1.5 text-sm rounded-md resize-none',
                   'bg-slate-800/60 border border-slate-700',
                   'text-slate-200 placeholder:text-slate-500',
                   'focus:outline-none focus:ring-1 focus:ring-cyan-500/50'
@@ -915,7 +869,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
               />
             </div>
             <div>
-              <Label className="text-[10px] text-slate-400 mb-1 block">
+              <Label className="text-sm text-slate-400 mb-1 block">
                 Artistic Influences (comma-separated)
               </Label>
               <textarea
@@ -932,7 +886,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
                 placeholder="Studio Ghibli, Moebius..."
                 rows={2}
                 className={cn(
-                  'w-full px-2 py-1.5 text-xs rounded-md resize-none',
+                  'w-full px-2 py-1.5 text-sm rounded-md resize-none',
                   'bg-slate-800/60 border border-slate-700',
                   'text-slate-200 placeholder:text-slate-500',
                   'focus:outline-none focus:ring-1 focus:ring-cyan-500/50'
@@ -948,7 +902,7 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => setShowPreview(!showPreview)}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200"
           >
             {showPreview ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
             Style Preview
@@ -975,14 +929,16 @@ export function StyleDNAPanel({ projectId, onStyleChange, disabled = false }: St
         <AnimatePresence>
           {showPreview && previewText && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              variants={collapse}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={NORMAL}
               className="overflow-hidden"
             >
               <div
                 className={cn(
-                  'p-2 text-[10px] text-slate-400 rounded-md',
+                  'p-2 text-sm text-slate-400 rounded-md',
                   'bg-slate-800/30 border border-slate-800',
                   'font-mono leading-relaxed'
                 )}

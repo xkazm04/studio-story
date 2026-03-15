@@ -53,7 +53,7 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
                     type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="bg-gray-800/70 text-white px-3 py-2 rounded-md w-full border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="bg-slate-800/70 text-white px-3 py-2 rounded-md w-full border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') handleRename();
                         if (e.key === 'Escape') {
@@ -87,7 +87,7 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
                             e.stopPropagation();
                             setIsRenaming(true);
                         }}
-                        className="p-2 rounded-full transition-all duration-200 hover:bg-gray-700/30 group"
+                        className="p-2 rounded-full transition-all duration-200 hover:bg-slate-700/30 group"
                         title="Rename Project"
                         data-testid={`rename-project-btn-${project.id}`}
                     >
@@ -103,7 +103,7 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
                             e.stopPropagation();
                             setShowDeleteModal(true);
                         }}
-                        className="p-2 rounded-full transition-all duration-200 hover:bg-gray-700/30 group"
+                        className="p-2 rounded-full transition-all duration-200 hover:bg-slate-700/30 group"
                         title="Delete Project"
                         data-testid={`delete-project-btn-${project.id}`}
                     >
@@ -119,10 +119,10 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
                     setShowOverlay(false);
                     setIsRenaming(false);
                 }}
-                className="p-2 rounded-full hover:bg-gray-700/30 transition-all duration-200 group"
+                className="p-2 rounded-full hover:bg-slate-700/30 transition-all duration-200 group"
                 title="Close"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:scale-110 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:scale-110 transition-transform">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -133,9 +133,9 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
     {/* Delete Confirmation Modal */}
     {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowDeleteModal(false)} data-testid="delete-confirmation-modal">
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 max-w-md" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-xl font-semibold text-white mb-4">Delete Project</h3>
-                <p className="text-gray-300 mb-6">
+                <p className="text-slate-300 mb-6">
                     Are you sure you want to delete &quot;{project.name}&quot;? This action cannot be undone.
                 </p>
                 <div className="flex justify-end gap-3">
@@ -144,7 +144,7 @@ const LandingCardHeader = ({ project, isRenaming, setIsRenaming, setShowOverlay,
                             e.stopPropagation();
                             setShowDeleteModal(false);
                         }}
-                        className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition"
+                        className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
                         data-testid="cancel-delete-btn"
                     >
                         Cancel

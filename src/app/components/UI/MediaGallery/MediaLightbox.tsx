@@ -49,7 +49,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
               e.stopPropagation();
               onNavigate('prev');
             }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-gray-900/80 hover:bg-gray-800 text-white rounded-full transition-colors z-10"
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full transition-colors z-10"
             aria-label="Previous media"
             data-testid="lightbox-prev-btn"
           >
@@ -63,7 +63,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
               e.stopPropagation();
               onNavigate('next');
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-gray-900/80 hover:bg-gray-800 text-white rounded-full transition-colors z-10"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full transition-colors z-10"
             aria-label="Next media"
             data-testid="lightbox-next-btn"
           >
@@ -74,7 +74,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-3 bg-gray-900/80 hover:bg-gray-800 text-white rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 p-3 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full transition-colors z-10"
           aria-label="Close lightbox"
           data-testid="lightbox-close-btn"
         >
@@ -87,7 +87,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-gray-900 rounded-lg border border-gray-800 max-w-5xl w-full max-h-[90vh] overflow-auto relative"
+          className="bg-slate-900 rounded-lg border border-slate-800 max-w-5xl w-full max-h-[90vh] overflow-auto relative"
         >
           {/* Colored Borders */}
           <div className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r ${gradientClass}`} />
@@ -102,7 +102,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
                 <h3 className="text-xl font-bold text-white mb-2">
                   {media.description || media.alt}
                 </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-slate-400">
                   <span className="flex items-center gap-1">
                     {media.type === 'image' ? <ImageIcon size={14} /> : <Video size={14} />}
                     {media.type}
@@ -117,7 +117,7 @@ const MediaLightbox: React.FC<MediaLightboxProps> = ({
             )}
 
             {/* Media Display */}
-            <div className="bg-gray-800 rounded-lg overflow-hidden">
+            <div className="bg-slate-800 rounded-lg overflow-hidden">
               {media.type === 'image' ? (
                 <img
                   src={media.url}

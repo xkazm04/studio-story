@@ -123,7 +123,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
   const SeverityBadge: React.FC<{ severity: 'high' | 'medium' | 'low' }> = ({ severity }) => (
     <span
       className={cn(
-        'px-1.5 py-0.5 text-[9px] font-medium rounded',
+        'px-1.5 py-0.5 text-sm font-medium rounded',
         severity === 'high' && 'bg-red-500/20 text-red-400',
         severity === 'medium' && 'bg-amber-500/20 text-amber-400',
         severity === 'low' && 'bg-slate-500/20 text-slate-400'
@@ -144,7 +144,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
     const { label, icon: Icon, color } = config[type];
 
     return (
-      <div className={cn('flex items-center gap-1 text-[10px]', color)}>
+      <div className={cn('flex items-center gap-1 text-sm', color)}>
         <Icon className="w-3 h-3" />
         {label}
       </div>
@@ -159,9 +159,9 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
   if (!coverageData) {
     return (
       <div className={cn('flex flex-col items-center justify-center py-12', className)}>
-        <Layers className="w-10 h-10 text-slate-600 mb-3" />
+        <Layers className="w-10 h-10 text-slate-400 mb-3" />
         <p className="text-sm text-slate-400">No coverage data available</p>
-        <p className="text-xs text-slate-600 mt-1">Run a simulation first</p>
+        <p className="text-sm text-slate-400 mt-1">Run a simulation first</p>
       </div>
     );
   }
@@ -186,7 +186,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
         {/* Coverage Summary */}
         <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 mb-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-slate-400">Narrative Coverage</span>
+            <span className="text-sm text-slate-400">Narrative Coverage</span>
             <span className={cn('text-lg font-bold', getCoverageColor(coverageData.coveragePercentage))}>
               {coverageData.coveragePercentage.toFixed(1)}%
             </span>
@@ -205,7 +205,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
               )}
             />
           </div>
-          <div className="flex justify-between mt-2 text-[10px] text-slate-500">
+          <div className="flex justify-between mt-2 text-sm text-slate-400">
             <span>{coverageData.visitedScenes} visited</span>
             <span>{coverageData.reachableScenes} reachable</span>
             <span>{coverageData.totalScenes} total</span>
@@ -218,19 +218,19 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
             <div className="text-lg font-semibold text-red-400">
               {coverageData.unreachableScenes.length}
             </div>
-            <div className="text-[9px] text-slate-500">Unreachable</div>
+            <div className="text-sm text-slate-400">Unreachable</div>
           </div>
           <div className="bg-slate-900/30 rounded-lg p-2 text-center">
             <div className="text-lg font-semibold text-amber-400">
               {coverageData.rarelyVisitedScenes.length}
             </div>
-            <div className="text-[9px] text-slate-500">Rarely Visited</div>
+            <div className="text-sm text-slate-400">Rarely Visited</div>
           </div>
           <div className="bg-slate-900/30 rounded-lg p-2 text-center">
             <div className="text-lg font-semibold text-slate-400">
               {coverageData.neverVisitedScenes.length}
             </div>
-            <div className="text-[9px] text-slate-500">Never Visited</div>
+            <div className="text-sm text-slate-400">Never Visited</div>
           </div>
         </div>
       </div>
@@ -239,13 +239,13 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
       <div className="shrink-0 px-3 py-2 border-b border-slate-800">
         <div className="flex items-center gap-2 mb-2">
           <div className="relative flex-1">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search scenes..."
-              className="w-full pl-7 pr-2 py-1 bg-slate-900/50 border border-slate-800 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="w-full pl-7 pr-2 py-1 bg-slate-900/50 border border-slate-800 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
               key={option.value}
               onClick={() => setFilter(option.value as FilterType)}
               className={cn(
-                'px-2 py-1 text-[10px] rounded transition-colors',
+                'px-2 py-1 text-sm rounded transition-colors',
                 filter === option.value
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                   : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300'
@@ -282,12 +282,12 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
           >
             <div className="flex items-center gap-2">
               <BarChart2 className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-medium text-slate-300">Depth Distribution</span>
+              <span className="text-sm font-medium text-slate-300">Depth Distribution</span>
             </div>
             {expandedSection === 'depth' ? (
-              <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             ) : (
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             )}
           </button>
           <AnimatePresence>
@@ -319,7 +319,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
                           );
                         })}
                     </div>
-                    <div className="flex justify-between text-[9px] text-slate-500">
+                    <div className="flex justify-between text-sm text-slate-400">
                       <span>Depth 0</span>
                       <span>Depth {Math.max(...coverageData.depthDistribution.keys())}</span>
                     </div>
@@ -327,8 +327,8 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
                       {Array.from(coverageData.depthDistribution.entries())
                         .sort((a, b) => a[0] - b[0])
                         .map(([depth, count]) => (
-                          <div key={depth} className="flex justify-between text-[10px]">
-                            <span className="text-slate-500">Depth {depth}:</span>
+                          <div key={depth} className="flex justify-between text-sm">
+                            <span className="text-slate-400">Depth {depth}:</span>
                             <span className="text-slate-400">{count} scenes</span>
                           </div>
                         ))}
@@ -348,15 +348,15 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
           >
             <div className="flex items-center gap-2">
               <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-xs font-medium text-slate-300">Content Issues</span>
-              <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded">
+              <span className="text-sm font-medium text-slate-300">Content Issues</span>
+              <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-sm rounded">
                 {filteredIssues.length}
               </span>
             </div>
             {expandedSection === 'issues' ? (
-              <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             ) : (
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             )}
           </button>
           <AnimatePresence>
@@ -371,7 +371,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
                   {filteredIssues.length === 0 ? (
                     <div className="text-center py-4">
                       <CheckCircle2 className="w-8 h-8 text-green-500/50 mx-auto mb-2" />
-                      <p className="text-xs text-slate-500">No issues found</p>
+                      <p className="text-sm text-slate-400">No issues found</p>
                     </div>
                   ) : (
                     filteredIssues.map((issue, index) => (
@@ -384,7 +384,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
                         className="w-full bg-slate-900/50 border border-slate-800 rounded-lg p-2.5 text-left hover:border-cyan-500/30 transition-colors"
                       >
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <span className="text-xs text-slate-300 truncate flex-1">
+                          <span className="text-sm text-slate-300 truncate flex-1">
                             {issue.sceneName}
                           </span>
                           <SeverityBadge severity={issue.severity} />
@@ -392,7 +392,7 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
                         <div className="flex items-center justify-between">
                           <TypeBadge type={issue.type} />
                           {issue.detail && (
-                            <span className="text-[9px] text-slate-600">{issue.detail}</span>
+                            <span className="text-sm text-slate-400">{issue.detail}</span>
                           )}
                         </div>
                       </motion.button>
@@ -409,9 +409,9 @@ export const CoverageReport: React.FC<CoverageReportProps> = ({
           <div className="bg-slate-900/30 border border-slate-800 rounded-lg p-3 mt-4">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-medium text-slate-300">Recommendations</span>
+              <span className="text-sm font-medium text-slate-300">Recommendations</span>
             </div>
-            <ul className="space-y-1.5 text-[10px] text-slate-500">
+            <ul className="space-y-1.5 text-sm text-slate-400">
               {coverageData.unreachableScenes.length > 0 && (
                 <li className="flex items-start gap-1.5">
                   <span className="text-red-400 mt-0.5">•</span>

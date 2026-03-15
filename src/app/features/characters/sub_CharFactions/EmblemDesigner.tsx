@@ -81,7 +81,7 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
     <div className="space-y-6">
       {/* Emblem Style Selection */}
       <div>
-        <h4 className="text-sm font-medium text-gray-300 mb-4">Select Emblem Style</h4>
+        <h4 className="text-sm font-medium text-slate-300 mb-4">Select Emblem Style</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {EMBLEM_STYLES.map((style) => {
             const IconComponent = style.icon;
@@ -94,17 +94,17 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
                 className={cn('relative p-4 rounded-lg border-2 transition-all',
                   selectedStyle === style.id
                     ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                    : 'border-slate-700 bg-slate-800 hover:border-slate-600'
                 )}
               >
                 <div className="flex flex-col items-center text-center space-y-2">
                   <IconComponent
                     size={32}
-                    className={selectedStyle === style.id ? 'text-blue-400' : 'text-gray-400'}
+                    className={selectedStyle === style.id ? 'text-blue-400' : 'text-slate-400'}
                   />
                   <div>
                     <div className="font-medium text-white">{style.name}</div>
-                    <div className="text-xs text-gray-400 mt-1">{style.description}</div>
+                    <div className="text-sm text-slate-400 mt-1">{style.description}</div>
                   </div>
                 </div>
                 {selectedStyle === style.id && (
@@ -127,13 +127,13 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+          className="bg-slate-800 rounded-lg p-4 border border-slate-700"
         >
-          <label className="block text-sm font-medium text-gray-300 mb-3">
+          <label className="block text-sm font-medium text-slate-300 mb-3">
             Upload Custom Emblem
           </label>
           <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg cursor-pointer transition-colors">
+            <label className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg cursor-pointer transition-colors">
               <Upload size={16} />
               Choose Image
               <input
@@ -144,7 +144,7 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
                 className="hidden"
               />
             </label>
-            <span className="text-sm text-gray-400">Max 5MB, PNG/JPG/SVG</span>
+            <span className="text-sm text-slate-400">Max 5MB, PNG/JPG/SVG</span>
           </div>
           {uploadError && (
             <div className="mt-2 text-sm text-red-400">{uploadError}</div>
@@ -153,9 +153,9 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
       )}
 
       {/* Live Preview */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-medium text-gray-300 flex items-center gap-2">
+          <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             Emblem Preview
           </h4>
@@ -166,11 +166,11 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
             className={cn('flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all',
               physicsEnabled
                 ? 'bg-green-600 hover:bg-green-700 text-white'
-                : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
             )}
           >
             {physicsEnabled ? <Pause size={14} /> : <Play size={14} />}
-            <span className="text-xs font-medium">
+            <span className="text-sm font-medium">
               {physicsEnabled ? 'Stop Physics' : 'Start Physics'}
             </span>
           </button>
@@ -185,7 +185,7 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
             className="mb-4"
           >
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-gray-400 mr-2">Animation:</span>
+              <span className="text-sm text-slate-400 mr-2">Animation:</span>
               {ANIMATION_MODES.map((mode) => {
                 const IconComponent = mode.icon;
                 return (
@@ -194,10 +194,10 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
                     type="button"
                     onClick={() => setAnimationMode(mode.id)}
                     data-testid={`animation-mode-${mode.id}-btn`}
-                    className={cn('flex items-center gap-1.5 px-2 py-1 rounded text-xs transition-all',
+                    className={cn('flex items-center gap-1.5 px-2 py-1 rounded text-sm transition-all',
                       animationMode === mode.id
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                     )}
                     title={mode.description}
                   >
@@ -228,7 +228,7 @@ const EmblemDesigner: React.FC<EmblemDesignerProps> = ({
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-400">
             {physicsEnabled
               ? 'Move your mouse over the emblem to interact with it'
               : 'Emblem will be displayed on faction cards and member profiles'}

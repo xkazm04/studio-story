@@ -50,24 +50,24 @@ const ActList: React.FC<ActListProps> = ({
   const ActListComponent = () => (
     <motion.div
       ref={actsListRef}
-      className="bg-gray-900 rounded-lg shadow-xl border border-gray-700 min-w-[300px] max-h-[400px] overflow-y-auto"
+      className="bg-slate-900 rounded-lg shadow-xl border border-slate-700 min-w-[300px] max-h-[400px] overflow-y-auto"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
     >
-      <div className="p-3 border-b border-gray-700 flex justify-between items-center bg-gray-800 sticky top-0 z-10">
+      <div className="p-3 border-b border-slate-700 flex justify-between items-center bg-slate-800 sticky top-0 z-10">
         <span className="text-sm font-semibold text-white">Project Acts</span>
         <div className="flex gap-2">
           <button
             onClick={handleAddAct}
-            className="p-1.5 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
             title="Add Act"
           >
             <Plus size={16} />
           </button>
           <button
             onClick={() => setShowActsList(false)}
-            className="p-1.5 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
             title="Close"
           >
             <X size={16} />

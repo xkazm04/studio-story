@@ -154,13 +154,13 @@ export function EditableDataTable<T extends Record<string, any>>({
 
   const tableContent = (
     <div
-      className={clsx('w-full overflow-hidden rounded-lg border border-gray-800', className)}
+      className={clsx('w-full overflow-hidden rounded-lg border border-slate-800', className)}
       data-testid={testId}
     >
       {/* Header */}
       {showHeader && (
         <div className={clsx(
-          'flex py-2 px-3 border-b bg-gray-900/50 border-gray-800 text-gray-300 text-xs font-medium',
+          'flex py-2 px-3 border-b bg-slate-900/50 border-slate-800 text-slate-300 text-xs font-medium',
           headerClassName
         )}>
           {draggable && <div className="w-8" />}
@@ -170,7 +170,7 @@ export function EditableDataTable<T extends Record<string, any>>({
                 type="checkbox"
                 checked={selectedRows.size === data.length && data.length > 0}
                 onChange={handleSelectAll}
-                className="w-4 h-4 rounded border-gray-700 text-blue-600 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
                 data-testid={`${testId}-select-all`}
               />
             </div>
@@ -189,9 +189,9 @@ export function EditableDataTable<T extends Record<string, any>>({
       )}
 
       {/* Body */}
-      <div className="bg-gray-950">
+      <div className="bg-slate-950">
         {data.length === 0 && !isAddingNew ? (
-          <div className="py-12 text-center text-gray-400" data-testid={`${testId}-empty`}>
+          <div className="py-12 text-center text-slate-400" data-testid={`${testId}-empty`}>
             {emptyIcon && <div className="mb-3 flex justify-center">{emptyIcon}</div>}
             <p>{emptyMessage}</p>
           </div>
@@ -202,7 +202,7 @@ export function EditableDataTable<T extends Record<string, any>>({
                 {...provided.droppableProps}
                 ref={provided.innerRef}
                 className={clsx(
-                  snapshot.isDraggingOver ? 'bg-gray-900/30' : '',
+                  snapshot.isDraggingOver ? 'bg-slate-900/30' : '',
                   'transition-colors duration-200'
                 )}
               >
@@ -284,7 +284,7 @@ export function EditableDataTable<T extends Record<string, any>>({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-gray-800"
+              className="border-t border-slate-800"
             >
               {renderAddForm(
                 async (newData) => {
@@ -302,9 +302,9 @@ export function EditableDataTable<T extends Record<string, any>>({
 
       {/* Footer */}
       {showFooter && (
-        <div className="py-2 px-3 border-t border-gray-800 text-xs font-medium bg-gray-900/30">
+        <div className="py-2 px-3 border-t border-slate-800 text-xs font-medium bg-slate-900/30">
           <div className="flex justify-between items-center">
-            <span className="text-gray-400">
+            <span className="text-slate-400">
               Total: {data.length}
               {selectedRows.size > 0 && ` (${selectedRows.size} selected)`}
             </span>

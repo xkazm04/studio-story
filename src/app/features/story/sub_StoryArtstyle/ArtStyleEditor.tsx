@@ -6,16 +6,20 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { fadeInUp, NORMAL } from '@/lib/animations';
 import { Palette, Save, Check, Dna, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
+import { EmptyState } from '@/app/components/UI/EmptyState';
 import { ArtStylePresetSelector } from './components/ArtStylePresetSelector';
 import { ArtStyleExtractor } from './components/ArtStyleExtractor';
 import { StyleDNAPanel } from './components/StyleDNAPanel';
 import { MoodAdapter } from './components/MoodAdapter';
 import { SceneTypeRules } from './components/SceneTypeRules';
 import { VariationPreview } from './components/VariationPreview';
+import { ColorHarmonyPalette } from './components/ColorHarmonyPalette';
 import { ArtStyleSource } from './types';
 import type { StyleDNAConfig } from '@/lib/style';
 import {
@@ -117,6 +121,8 @@ export default function ArtStyleEditor({
     }
   }, []);
 
+  const queryClient = useQueryClient();
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -130,12 +136,15 @@ export default function ArtStyleEditor({
             : null,
       };
 
-      // Call API to save (mock for now - would need actual endpoint)
-      // await fetch(`/api/projects/${projectId}/art-style`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
+      // Call API to save
+      await fetch(`/api/projects/${projectId}/art-style`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      // Optimistic update via React Query invalidation
+      queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
 
       onSave?.(data);
       setSavedRecently(true);
@@ -157,8 +166,10 @@ export default function ArtStyleEditor({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={fadeInUp}
+      initial="initial"
+      animate="animate"
+      transition={NORMAL}
       className="space-y-6"
     >
       {/* Header */}
@@ -167,8 +178,8 @@ export default function ArtStyleEditor({
           <Palette className="w-5 h-5 text-cyan-400" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-100">Story Art Style</h2>
-          <p className="text-xs text-slate-500">
+          <h2 className="ms-h3">Story Art Style</h2>
+          <p className="ms-caption">
             This style applies to all scene images in your story
           </p>
         </div>
@@ -179,7 +190,7 @@ export default function ArtStyleEditor({
         <button
           onClick={() => setActiveTab('preset')}
           className={cn(
-            'flex-1 px-2 py-2 text-xs font-medium rounded-md transition-all',
+            'flex-1 px-2 py-2 text-sm font-medium rounded-md transition-all',
             activeTab === 'preset'
               ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -190,7 +201,7 @@ export default function ArtStyleEditor({
         <button
           onClick={() => setActiveTab('custom')}
           className={cn(
-            'flex-1 px-2 py-2 text-xs font-medium rounded-md transition-all',
+            'flex-1 px-2 py-2 text-sm font-medium rounded-md transition-all',
             activeTab === 'custom'
               ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -201,7 +212,7 @@ export default function ArtStyleEditor({
         <button
           onClick={() => setActiveTab('dna')}
           className={cn(
-            'flex-1 px-2 py-2 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1',
+            'flex-1 px-2 py-2 text-sm font-medium rounded-md transition-all flex items-center justify-center gap-1',
             activeTab === 'dna'
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -213,7 +224,7 @@ export default function ArtStyleEditor({
         <button
           onClick={() => setActiveTab('evolution')}
           className={cn(
-            'flex-1 px-2 py-2 text-xs font-medium rounded-md transition-all flex items-center justify-center gap-1',
+            'flex-1 px-2 py-2 text-sm font-medium rounded-md transition-all flex items-center justify-center gap-1',
             activeTab === 'evolution'
               ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
@@ -279,26 +290,23 @@ export default function ArtStyleEditor({
           </div>
         )}
         {activeTab === 'evolution' && !variationConfig && (
-          <div className="p-6 rounded-lg bg-slate-800/30 border border-slate-700 text-center">
-            <Sparkles className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-xs text-slate-400">
-              Create a Style DNA configuration first to enable style evolution
-            </p>
-            <Button
-              onClick={() => setActiveTab('dna')}
-              variant="secondary"
-              size="sm"
-              className="mt-3"
-            >
-              Go to Style DNA
-            </Button>
-          </div>
+          <EmptyState
+            icon={<Sparkles />}
+            iconSize="sm"
+            title="Create a Style DNA configuration first to enable style evolution"
+            action={{ label: 'Go to Style DNA', onClick: () => setActiveTab('dna') }}
+            variant="compact"
+            className="p-6 rounded-lg bg-slate-800/30 border border-slate-700"
+          />
         )}
       </div>
 
+      {/* Color Harmony Palette */}
+      <ColorHarmonyPalette disabled={isSaving} />
+
       {/* Save Button */}
       <div className="flex items-center justify-between pt-4 border-t border-slate-800">
-        <div className="text-xs text-slate-500">
+        <div className="text-sm text-slate-400">
           {hasChanges ? 'Unsaved changes' : 'No changes'}
         </div>
         <Button

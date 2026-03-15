@@ -158,7 +158,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-600">
+            <div className="w-full h-full flex items-center justify-center text-slate-400">
               <Image size={20} />
             </div>
           )}
@@ -207,7 +207,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               className="w-full h-full object-cover transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-600">
+            <div className="w-full h-full flex items-center justify-center text-slate-400">
               <Image size={24} />
             </div>
           )}
@@ -227,7 +227,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
             <div className="flex items-center gap-2 flex-wrap">
               {/* Transformation type badge */}
               <span className={cn(
-                'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border',
+                'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
                 config.color
               )}>
                 {config.icon}
@@ -235,7 +235,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               </span>
 
               {/* Age stage */}
-              <span className="px-1.5 py-0.5 bg-slate-700/50 rounded text-[10px] font-mono text-slate-400">
+              <span className="px-1.5 py-0.5 bg-slate-700/50 rounded text-sm font-mono text-slate-400">
                 {AGE_STAGE_LABELS[milestone.age_stage]}
                 {milestone.estimated_age && ` (${milestone.estimated_age}y)`}
               </span>
@@ -244,7 +244,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
             {/* Expand toggle */}
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="p-1 rounded hover:bg-slate-700/50 text-slate-500 transition-colors"
+              className="p-1 rounded hover:bg-slate-700/50 text-slate-400 transition-colors"
             >
               {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
@@ -257,13 +257,13 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
 
           {/* Transformation trigger */}
           {milestone.transformation_trigger && (
-            <p className="font-mono text-xs text-slate-400 line-clamp-1 mb-2">
+            <p className="font-mono text-sm text-slate-400 line-clamp-1 mb-2">
               {milestone.transformation_trigger}
             </p>
           )}
 
           {/* Story position */}
-          <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
+          <div className="flex items-center gap-2 text-sm font-mono text-slate-400">
             {milestone.story_position.act_title && (
               <span className="flex items-center gap-1">
                 <MapPin size={10} />
@@ -293,10 +293,10 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               {/* Description */}
               {milestone.description && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     description
                   </span>
-                  <p className="font-mono text-xs text-slate-400">
+                  <p className="font-mono text-sm text-slate-400">
                     {milestone.description}
                   </p>
                 </div>
@@ -305,14 +305,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               {/* Visual changes */}
               {milestone.visual_changes.length > 0 && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     visual_changes
                   </span>
                   <div className="flex flex-wrap gap-1">
                     {milestone.visual_changes.map((change, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-slate-700/50 rounded text-[10px] font-mono text-slate-400"
+                        className="px-2 py-0.5 bg-slate-700/50 rounded text-sm font-mono text-slate-400"
                         title={change.from ? `${change.from} → ${change.to}` : change.to}
                       >
                         {change.attribute}: {change.to}
@@ -325,14 +325,14 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               {/* Tags */}
               {milestone.tags.length > 0 && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     tags
                   </span>
                   <div className="flex flex-wrap gap-1">
                     {milestone.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/20 rounded text-[10px] font-mono text-cyan-400"
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/20 rounded text-sm font-mono text-cyan-400"
                       >
                         <Tag size={8} />
                         {tag}
@@ -345,10 +345,10 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
               {/* Notes */}
               {milestone.notes && (
                 <div>
-                  <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+                  <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                     notes
                   </span>
-                  <p className="font-mono text-xs text-slate-500 italic">
+                  <p className="font-mono text-sm text-slate-400 italic">
                     {milestone.notes}
                   </p>
                 </div>
@@ -356,12 +356,12 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
 
               {/* Timestamps */}
               <div className="flex items-center gap-4 pt-2 border-t border-slate-700/30">
-                <span className="flex items-center gap-1 text-[10px] font-mono text-slate-600">
+                <span className="flex items-center gap-1 text-sm font-mono text-slate-400">
                   <Calendar size={10} />
                   Created: {new Date(milestone.created_at).toLocaleDateString()}
                 </span>
                 {milestone.updated_at !== milestone.created_at && (
-                  <span className="text-[10px] font-mono text-slate-600">
+                  <span className="text-sm font-mono text-slate-400">
                     Updated: {new Date(milestone.updated_at).toLocaleDateString()}
                   </span>
                 )}
@@ -375,7 +375,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                       onClick={() => onSetActive(milestone.id)}
                       className="flex items-center gap-1 px-2 py-1 rounded
                                  bg-green-500/10 hover:bg-green-500/20 text-green-400
-                                 font-mono text-[10px] transition-colors"
+                                 font-mono text-sm transition-colors"
                     >
                       <Check size={12} />
                       <span>Set Active</span>
@@ -386,7 +386,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                       onClick={() => onEdit(milestone)}
                       className="flex items-center gap-1 px-2 py-1 rounded
                                  bg-slate-700/40 hover:bg-slate-700/60 text-slate-400
-                                 font-mono text-[10px] transition-colors"
+                                 font-mono text-sm transition-colors"
                     >
                       <Edit3 size={12} />
                       <span>Edit</span>
@@ -397,7 +397,7 @@ const MilestoneCard: React.FC<MilestoneCardProps> = ({
                       onClick={() => onDelete(milestone.id)}
                       className="flex items-center gap-1 px-2 py-1 rounded
                                  bg-red-500/10 hover:bg-red-500/20 text-red-400
-                                 font-mono text-[10px] transition-colors"
+                                 font-mono text-sm transition-colors"
                     >
                       <Trash2 size={12} />
                       <span>Delete</span>

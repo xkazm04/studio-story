@@ -20,7 +20,7 @@ const colorMap: Record<SectionColor, { bg: string; border: string; text: string 
   yellow: { bg: 'bg-yellow-600', border: 'border-yellow-500', text: 'text-yellow-400' },
   orange: { bg: 'bg-orange-600', border: 'border-orange-500', text: 'text-orange-400' },
   pink: { bg: 'bg-pink-600', border: 'border-pink-500', text: 'text-pink-400' },
-  gray: { bg: 'bg-gray-600', border: 'border-gray-500', text: 'text-gray-400' },
+  gray: { bg: 'bg-slate-600', border: 'border-slate-500', text: 'text-slate-400' },
 };
 
 /**
@@ -63,8 +63,8 @@ export function FormStepper({
                     isActive
                       ? cn(colors.bg, 'border-transparent text-white shadow-lg')
                       : isCompleted || isPast
-                      ? cn('bg-gray-800', colors.border, colors.text)
-                      : 'bg-gray-800 border-gray-600 text-gray-500'
+                      ? cn('bg-slate-800', colors.border, colors.text)
+                      : 'bg-slate-800 border-slate-600 text-slate-400'
                   )}
                 >
                   {isCompleted ? (
@@ -77,12 +77,12 @@ export function FormStepper({
                 {/* Step Label */}
                 <span
                   className={cn(
-                    'mt-2 text-xs font-medium transition-colors duration-200',
+                    'mt-2 text-sm font-medium transition-colors duration-200',
                     isActive
                       ? 'text-white'
                       : isCompleted || isPast
                       ? colors.text
-                      : 'text-gray-500'
+                      : 'text-slate-400'
                   )}
                 >
                   {section.title}
@@ -103,7 +103,7 @@ export function FormStepper({
                 <div
                   className={cn(
                     'flex-1 h-0.5 mx-2 rounded-full transition-colors duration-200',
-                    isPast ? colors.bg : 'bg-gray-700'
+                    isPast ? colors.bg : 'bg-slate-700'
                   )}
                 />
               )}
@@ -120,15 +120,15 @@ export function FormStepper({
           className={cn(
             'flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors',
             canGoBack
-              ? 'bg-gray-700 hover:bg-gray-600 text-white'
-              : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              ? 'bg-slate-700 hover:bg-slate-600 text-white'
+              : 'bg-slate-800 text-slate-400 cursor-not-allowed'
           )}
         >
           <ChevronLeft size={16} />
           Previous
         </button>
 
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-slate-400">
           Step {currentStep + 1} of {sections.length}
         </span>
 
@@ -139,7 +139,7 @@ export function FormStepper({
             'flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors',
             canGoForward
               ? 'bg-blue-600 hover:bg-blue-700 text-white'
-              : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+              : 'bg-slate-800 text-slate-400 cursor-not-allowed'
           )}
         >
           Next

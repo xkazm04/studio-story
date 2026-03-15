@@ -78,7 +78,7 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <ImageOff className="w-5 h-5 text-slate-600" />
+              <ImageOff className="w-5 h-5 text-slate-400" />
             </div>
           )}
         </div>
@@ -90,9 +90,9 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
             <span
               className={`w-2 h-2 rounded-full ${typeColor}`}
             />
-            <span className="text-xs text-slate-500 capitalize">{asset.type}</span>
+            <span className="text-sm text-slate-400 capitalize">{asset.type}</span>
             {asset.subcategory && (
-              <span className="text-xs text-slate-600">{asset.subcategory}</span>
+              <span className="text-sm text-slate-400">{asset.subcategory}</span>
             )}
           </div>
         </div>
@@ -104,7 +104,7 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
             title={`Used in ${referenceCount} place(s)`}
           >
             <Link2 className="w-3 h-3 text-cyan-400" />
-            <span className="text-[10px] font-medium text-cyan-400">{referenceCount}</span>
+            <span className="text-sm font-medium text-cyan-400">{referenceCount}</span>
           </div>
         )}
 
@@ -147,7 +147,7 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ImageOff className="w-8 h-8 text-slate-700" />
+            <ImageOff className="w-8 h-8 text-slate-400" />
           </div>
         )}
       </div>
@@ -162,7 +162,7 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
           title={`Used in ${referenceCount} place(s)`}
         >
           <Link2 className="w-2.5 h-2.5 text-cyan-400" />
-          <span className="text-[9px] font-medium text-cyan-400">{referenceCount}</span>
+          <span className="text-sm font-medium text-cyan-400">{referenceCount}</span>
         </div>
       )}
 
@@ -197,8 +197,8 @@ function AssetGridItem({ asset, viewMode, index }: AssetGridItemProps) {
       >
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-slate-100 truncate">{asset.name}</p>
-          <p className="text-[10px] text-slate-400 truncate capitalize">{asset.subcategory || asset.type}</p>
+          <p className="text-sm font-medium text-slate-100 truncate">{asset.name}</p>
+          <p className="text-sm text-slate-400 truncate capitalize">{asset.subcategory || asset.type}</p>
         </div>
 
         {/* Quick actions */}

@@ -44,3 +44,6 @@ next-env.d.ts
 
 # story signals
 .story/
+
+# GSD planning docs
+.planning/

@@ -249,7 +249,7 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium text-gray-300 flex items-center gap-1.5"
+            className="text-sm font-medium text-slate-300 flex items-center gap-1.5"
           >
             {label}
             {props.required && <span className="text-red-400 ml-1">*</span>}
@@ -276,13 +276,13 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             className={clsx(
-              'bg-gray-900/50 border rounded-lg text-white placeholder-gray-500',
+              'bg-slate-900/50 border rounded-lg text-white placeholder-slate-500',
               'transition-all outline-none',
               'focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               hasError
                 ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/50'
-                : 'border-gray-600/50',
+                : 'border-slate-600/50',
               isLoading && 'pr-10',
               sizeClasses[size],
               fullWidth && 'w-full',
@@ -303,7 +303,7 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
         {showDropdown && suggestions.length > 0 && (
           <div
             ref={dropdownRef}
-            className="absolute top-full left-0 right-0 mt-1 z-50 bg-gray-900/95 backdrop-blur-sm border border-gray-600/50 rounded-lg shadow-xl overflow-hidden"
+            className="absolute top-full left-0 right-0 mt-1 z-50 bg-slate-900/95 backdrop-blur-sm border border-slate-600/50 rounded-lg shadow-xl overflow-hidden"
             data-testid="suggestions-dropdown"
           >
             {suggestions.map((suggestion, index) => (
@@ -314,7 +314,7 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={clsx(
                   'w-full text-left px-4 py-3 transition-colors',
-                  'border-b border-gray-700/50 last:border-b-0',
+                  'border-b border-slate-700/50 last:border-b-0',
                   'hover:bg-cyan-500/10 focus:bg-cyan-500/10',
                   selectedIndex === index && 'bg-cyan-500/10',
                   'focus:outline-none'
@@ -325,18 +325,18 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
                   <Check
                     className={clsx(
                       'w-4 h-4 mt-0.5 flex-shrink-0',
-                      selectedIndex === index ? 'text-cyan-400' : 'text-gray-600'
+                      selectedIndex === index ? 'text-cyan-400' : 'text-slate-400'
                     )}
                   />
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-white text-sm mb-1">
                       {suggestion.name}
                     </div>
-                    <div className="text-xs text-gray-400 mb-1">
+                    <div className="text-xs text-slate-400 mb-1">
                       {suggestion.description}
                     </div>
                     {suggestion.reasoning && (
-                      <div className="text-xs text-gray-500 italic">
+                      <div className="text-xs text-slate-400 italic">
                         {suggestion.reasoning}
                       </div>
                     )}
@@ -351,7 +351,7 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
           <span
             className={clsx(
               'text-xs',
-              hasError ? 'text-red-400' : 'text-gray-500'
+              hasError ? 'text-red-400' : 'text-slate-400'
             )}
           >
             {error || helperText}

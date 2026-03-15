@@ -66,7 +66,7 @@ const CharacterAbout: React.FC<CharacterAboutProps> = ({ characterId }) => {
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <h2 className="font-mono text-sm uppercase tracking-wide text-slate-300">// character_traits</h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             generate or edit individual trait sections
           </p>
         </div>
@@ -88,7 +88,7 @@ const CharacterAbout: React.FC<CharacterAboutProps> = ({ characterId }) => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="flex items-center gap-1.5 font-mono text-xs text-red-400"
+                className="flex items-center gap-1.5 font-mono text-sm text-red-400"
               >
                 <AlertCircle size={12} />
                 {error}
@@ -100,7 +100,7 @@ const CharacterAbout: React.FC<CharacterAboutProps> = ({ characterId }) => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="flex items-center gap-1.5 font-mono text-xs text-emerald-400"
+                className="flex items-center gap-1.5 font-mono text-sm text-emerald-400"
               >
                 <Check size={12} />
                 traits_generated_successfully
@@ -127,7 +127,7 @@ const CharacterAbout: React.FC<CharacterAboutProps> = ({ characterId }) => {
               key={section.id}
               onClick={() => setActiveSection(index)}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-xs transition-all duration-200',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-sm transition-all duration-200',
                 isActive
                   ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                   : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'

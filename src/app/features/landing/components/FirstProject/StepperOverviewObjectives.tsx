@@ -38,12 +38,12 @@ const StepperOverviewObjectives = ({ objectives, setObjectives }: Props) => {
                 <label className="block text-sm font-medium text-blue-300">
                     Project Objectives
                 </label>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-slate-400">
                     {objectives.filter(o => o.name.trim()).length}/10 objectives
                 </div>
             </div>
 
-            <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 grow overflow-y-auto max-h-[250px]">
+            <div className="bg-slate-900/60 rounded-lg p-4 border border-slate-800 grow overflow-y-auto max-h-[250px]">
                 <AnimatePresence>
                     {objectives.map((objective, index) => (
                         <motion.div
@@ -63,8 +63,8 @@ const StepperOverviewObjectives = ({ objectives, setObjectives }: Props) => {
                                     value={objective.name}
                                     onChange={(e) => handleObjectiveChange(objective.id, e.target.value)}
                                     placeholder={index === objectives.length - 1 ? "Add new objective..." : "Enter objective..."}
-                                    className={`grow p-2 z-10 rounded-lg bg-gray-800/50 border ${
-                                        objective.name ? 'border-green-700/40' : 'border-gray-700 border-opacity-30'
+                                    className={`grow p-2 z-10 rounded-lg bg-slate-800/50 border ${
+                                        objective.name ? 'border-green-700/40' : 'border-slate-700 border-opacity-30'
                                     } focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm transition-all duration-200`}
                                 />
 

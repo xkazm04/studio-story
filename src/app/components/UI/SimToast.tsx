@@ -139,7 +139,7 @@ export function Toast({
           <button
             onClick={onHide}
             data-testid={`${testId}-dismiss-btn`}
-            className="ml-1 text-slate-500 hover:text-slate-300 transition-colors"
+            className="ml-1 text-slate-400 hover:text-slate-300 transition-colors"
             aria-label="Dismiss"
           >
             <X size={12} />

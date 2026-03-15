@@ -14,8 +14,8 @@ interface PresenceIndicatorProps {
 }
 
 const sizeClasses = {
-  sm: 'w-6 h-6 text-[10px]',
-  md: 'w-8 h-8 text-xs',
+  sm: 'w-6 h-6 text-sm',
+  md: 'w-8 h-8 text-sm',
   lg: 'w-10 h-10 text-sm',
 };
 
@@ -47,7 +47,7 @@ export function PresenceIndicator({
         data-testid="presence-indicator-empty"
       >
         <Users className="w-3.5 h-3.5" />
-        <span className="text-xs">No active users</span>
+        <span className="text-sm">No active users</span>
       </div>
     );
   }
@@ -134,7 +134,7 @@ export function PresenceIndicator({
           className={clsx(
             'flex items-center gap-1.5 px-2 py-1 rounded-md',
             'bg-slate-900/40 border border-slate-700/60',
-            'text-slate-300 text-xs font-medium'
+            'text-slate-300 text-sm font-medium'
           )}
           data-testid="presence-count"
         >
@@ -164,7 +164,7 @@ export function CompactPresence({ sessions, className }: CompactPresenceProps) {
       className={clsx(
         'flex items-center gap-1.5 px-2 py-1 rounded-md',
         'bg-emerald-500/10 border border-emerald-500/30',
-        'text-emerald-400 text-xs font-medium',
+        'text-emerald-400 text-sm font-medium',
         className
       )}
       data-testid="compact-presence"
@@ -232,7 +232,7 @@ export function UserPresenceBadge({
             {session.user_name || 'User'}
           </div>
           {session.active_view && (
-            <div className="text-xs text-slate-400 truncate">
+            <div className="text-sm text-slate-400 truncate">
               Viewing: {session.active_view}
             </div>
           )}

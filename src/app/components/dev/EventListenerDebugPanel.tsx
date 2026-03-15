@@ -95,18 +95,18 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
 
   return (
     <motion.div
-      className="fixed bottom-4 right-4 w-96 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl overflow-hidden z-50"
+      className="fixed bottom-4 right-4 w-96 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl overflow-hidden z-50"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-3 bg-gray-800 border-b border-gray-700 cursor-pointer hover:bg-gray-750 transition-colors"
+        className="flex items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700 cursor-pointer hover:bg-slate-750 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-2">
-          <Radio size={16} className={stats.active > 0 ? 'text-green-500 animate-pulse' : 'text-gray-500'} />
+          <Radio size={16} className={stats.active > 0 ? 'text-green-500 animate-pulse' : 'text-slate-400'} />
           <span className="font-semibold text-white text-sm">
             Event Listener Guard
           </span>
@@ -118,7 +118,7 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
         </div>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
         />
       </div>
 
@@ -134,19 +134,19 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
           >
             <div className="p-4 max-h-96 overflow-y-auto">
               {/* Component Info */}
-              <div className="mb-4 pb-4 border-b border-gray-700">
-                <p className="text-xs text-gray-400 mb-2">Component: <span className="text-white font-medium">{componentName}</span></p>
+              <div className="mb-4 pb-4 border-b border-slate-700">
+                <p className="text-xs text-slate-400 mb-2">Component: <span className="text-white font-medium">{componentName}</span></p>
                 <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-gray-800 rounded p-2">
-                    <p className="text-xs text-gray-400">Active</p>
+                  <div className="bg-slate-800 rounded p-2">
+                    <p className="text-xs text-slate-400">Active</p>
                     <p className="text-lg font-bold text-green-400">{stats.active}</p>
                   </div>
-                  <div className="bg-gray-800 rounded p-2">
-                    <p className="text-xs text-gray-400">Added</p>
+                  <div className="bg-slate-800 rounded p-2">
+                    <p className="text-xs text-slate-400">Added</p>
                     <p className="text-lg font-bold text-blue-400">{stats.totalAdded}</p>
                   </div>
-                  <div className="bg-gray-800 rounded p-2">
-                    <p className="text-xs text-gray-400">Removed</p>
+                  <div className="bg-slate-800 rounded p-2">
+                    <p className="text-xs text-slate-400">Removed</p>
                     <p className="text-lg font-bold text-purple-400">{stats.totalRemoved}</p>
                   </div>
                 </div>
@@ -155,10 +155,10 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
               {/* No Listeners State */}
               {stats.active === 0 ? (
                 <div className="text-center py-6">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 text-gray-500 mb-3">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 text-slate-400 mb-3">
                     <Radio size={20} />
                   </div>
-                  <p className="text-sm text-gray-400">No active event listeners</p>
+                  <p className="text-sm text-slate-400">No active event listeners</p>
                 </div>
               ) : (
                 <>
@@ -168,7 +168,7 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
                       <AlertCircle size={16} className="text-yellow-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-xs font-medium text-yellow-500">Potential Memory Leak</p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           Added/Removed count mismatch detected
                         </p>
                       </div>
@@ -177,20 +177,20 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
 
                   {/* Listeners Tree View */}
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
                       Active Listeners by Type
                     </p>
                     {Object.entries(listenersByType).map(([eventType, listeners]) => (
-                      <div key={eventType} className="border border-gray-700 rounded-lg overflow-hidden">
+                      <div key={eventType} className="border border-slate-700 rounded-lg overflow-hidden">
                         {/* Event Type Header */}
                         <div
-                          className="flex items-center justify-between px-3 py-2 bg-gray-800 cursor-pointer hover:bg-gray-750 transition-colors"
+                          className="flex items-center justify-between px-3 py-2 bg-slate-800 cursor-pointer hover:bg-slate-750 transition-colors"
                           onClick={() => toggleEventType(eventType)}
                         >
                           <div className="flex items-center gap-2">
                             <ChevronDown
                               size={14}
-                              className={`text-gray-400 transition-transform ${
+                              className={`text-slate-400 transition-transform ${
                                 expandedEventTypes.has(eventType) ? 'rotate-180' : ''
                               }`}
                             />
@@ -211,25 +211,25 @@ const EventListenerDebugPanel: React.FC<EventListenerDebugPanelProps> = ({
                               transition={{ duration: 0.2 }}
                               className="overflow-hidden"
                             >
-                              <div className="px-3 py-2 bg-gray-900 space-y-2">
+                              <div className="px-3 py-2 bg-slate-900 space-y-2">
                                 {listeners.map((listener) => (
                                   <div
                                     key={listener.id}
-                                    className="p-2 bg-gray-800 rounded text-xs space-y-1"
+                                    className="p-2 bg-slate-800 rounded text-xs space-y-1"
                                   >
                                     <div className="flex items-center justify-between">
-                                      <span className="text-gray-400">Target:</span>
-                                      <span className="text-white font-mono text-[10px]">
+                                      <span className="text-slate-400">Target:</span>
+                                      <span className="text-white font-mono text-xs">
                                         {formatTargetName(listener.target)}
                                       </span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                      <span className="text-gray-400">Added:</span>
-                                      <span className="text-gray-300">{formatTimeAgo(listener.addedAt)}</span>
+                                      <span className="text-slate-400">Added:</span>
+                                      <span className="text-slate-300">{formatTimeAgo(listener.addedAt)}</span>
                                     </div>
                                     {listener.capture && (
                                       <div className="flex items-center justify-between">
-                                        <span className="text-gray-400">Capture:</span>
+                                        <span className="text-slate-400">Capture:</span>
                                         <span className="text-yellow-400">true</span>
                                       </div>
                                     )}

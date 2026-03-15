@@ -90,7 +90,7 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
             >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                     {/* Scene Number */}
-                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-700/50 text-cyan-400 flex-shrink-0">
+                    <span className="text-sm font-mono px-2 py-0.5 rounded bg-slate-700/50 text-cyan-400 flex-shrink-0">
                         {sceneNumber}
                     </span>
 
@@ -102,19 +102,19 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                     {/* Badges */}
                     <div className="flex items-center gap-2 flex-shrink-0">
                         {scene.location && (
-                            <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">
+                            <span className="flex items-center gap-1 text-sm px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">
                                 <MapPin className="w-3 h-3" />
                                 {scene.location}
                             </span>
                         )}
                         {hasDialogue && (
-                            <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">
+                            <span className="flex items-center gap-1 text-sm px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">
                                 <MessageSquare className="w-3 h-3" />
                                 Dialogue
                             </span>
                         )}
                         {wordCount > 0 && (
-                            <span className="text-xs text-slate-500">
+                            <span className="text-sm text-slate-400">
                                 {wordCount} words
                             </span>
                         )}
@@ -125,7 +125,7 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                     animate={{ rotate: isExpanded ? 180 : 0 }}
                     transition={{ duration: 0.15 }}
                 >
-                    <ChevronDown className="w-4 h-4 text-slate-500" />
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
                 </motion.div>
             </button>
 
@@ -142,7 +142,7 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                             {/* Scene Description/Action */}
                             {scene.description && (
                                 <div className="pl-4 border-l-2 border-slate-700">
-                                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">
+                                    <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
                                         Description
                                     </p>
                                     <p className="text-sm text-slate-300 leading-relaxed">
@@ -154,7 +154,7 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                             {/* Scene Content with Dialogue Highlighting */}
                             {scene.content && (
                                 <div className="pl-4 border-l-2 border-cyan-500/50">
-                                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">
+                                    <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
                                         Content
                                     </p>
                                     <p className="text-sm text-slate-200 leading-relaxed font-serif">
@@ -172,11 +172,11 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                                         ) : (
                                             <User className="w-4 h-4 text-purple-400" />
                                         )}
-                                        <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider">
+                                        <span className="text-sm font-semibold text-purple-400 uppercase tracking-wider">
                                             {scene.speaker || (scene.speaker_type === 'narrator' ? 'Narrator' : 'Character')}
                                         </span>
                                         {scene.speaker_type && (
-                                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">
+                                            <span className="text-sm px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">
                                                 {scene.speaker_type}
                                             </span>
                                         )}
@@ -192,8 +192,8 @@ function SceneItemStudio({ scene, sceneNumber, viewMode }: {
                             {/* Empty State */}
                             {!scene.description && !scene.content && !hasDialogue && (
                                 <div className="py-4 text-center">
-                                    <FileText className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-                                    <p className="text-xs text-slate-500">No content yet</p>
+                                    <FileText className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                                    <p className="text-sm text-slate-400">No content yet</p>
                                 </div>
                             )}
                         </div>
@@ -253,15 +253,15 @@ export default function ActItemStudio({
                             Act {actIndex + 1}: {act.name}
                         </h3>
                         <div className="flex items-center gap-3 mt-0.5">
-                            <span className="text-xs text-slate-500">
+                            <span className="text-sm text-slate-400">
                                 {sortedScenes.length} {sortedScenes.length === 1 ? 'scene' : 'scenes'}
                             </span>
-                            <span className="text-xs text-slate-600">•</span>
-                            <span className="text-xs text-slate-500">
+                            <span className="text-sm text-slate-400">•</span>
+                            <span className="text-sm text-slate-400">
                                 {actStats.words.toLocaleString()} words
                             </span>
-                            <span className="text-xs text-slate-600">•</span>
-                            <span className="text-xs text-slate-500 flex items-center gap-1">
+                            <span className="text-sm text-slate-400">•</span>
+                            <span className="text-sm text-slate-400 flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 ~{actStats.minutes} min
                             </span>
@@ -273,7 +273,7 @@ export default function ActItemStudio({
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
                 >
-                    <ChevronDown className="w-5 h-5 text-slate-500" />
+                    <ChevronDown className="w-5 h-5 text-slate-400" />
                 </motion.div>
             </button>
 
@@ -311,7 +311,7 @@ export default function ActItemStudio({
                                 </div>
                             ) : (
                                 <div className="py-6 text-center">
-                                    <p className="text-xs text-slate-500 italic">
+                                    <p className="text-sm text-slate-400 italic">
                                         No scenes in this act yet
                                     </p>
                                 </div>

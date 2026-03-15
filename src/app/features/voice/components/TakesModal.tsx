@@ -77,7 +77,7 @@ export default function TakesModal({
           <div className="flex-1" />
           <button
             onClick={onClose}
-            className="p-1 text-slate-500 hover:text-slate-300 transition-colors"
+            className="p-1 text-slate-400 hover:text-slate-300 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -85,8 +85,8 @@ export default function TakesModal({
 
         {/* Line Preview */}
         <div className="px-4 py-2.5 border-b border-slate-800/30 bg-slate-950/30 shrink-0">
-          <span className="text-[11px] text-slate-500 block mb-1">Line</span>
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <span className="text-sm text-slate-400 block mb-1">Line</span>
+          <p className="text-sm text-slate-300 leading-relaxed">
             <span className="font-semibold text-orange-400">{line.character}:</span>{' '}
             &ldquo;{line.text.length > 120 ? `${line.text.slice(0, 120)}...` : line.text}&rdquo;
           </p>
@@ -94,7 +94,7 @@ export default function TakesModal({
 
         {/* Emotion Picker */}
         <div className="px-4 py-3 border-b border-slate-800/30 shrink-0">
-          <span className="text-[11px] font-medium text-slate-400 mb-2 block">
+          <span className="text-sm font-medium text-slate-400 mb-2 block">
             Select emotions ({selectedEmotions.size} selected)
           </span>
           <div className="grid grid-cols-6 gap-1.5">
@@ -121,8 +121,8 @@ export default function TakesModal({
                     isActive ? 'scale-110' : 'opacity-50'
                   )} />
                   <span className={cn(
-                    'text-[9px] font-medium',
-                    isActive ? 'text-orange-400' : 'text-slate-500'
+                    'text-sm font-medium',
+                    isActive ? 'text-orange-400' : 'text-slate-400'
                   )}>
                     {emo.label}
                   </span>
@@ -135,11 +135,11 @@ export default function TakesModal({
         {/* Delivery + Intensity */}
         <div className="px-4 py-2.5 border-b border-slate-800/30 shrink-0 flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-500">Delivery</span>
+            <span className="text-sm text-slate-400">Delivery</span>
             <select
               value={delivery}
               onChange={(e) => setDelivery(e.target.value)}
-              className="h-6 px-2 bg-slate-800/60 border border-slate-700/40 rounded text-[11px] text-slate-300
+              className="h-6 px-2 bg-slate-800/60 border border-slate-700/40 rounded text-sm text-slate-300
                 focus:outline-none focus:border-orange-500/40"
             >
               {DELIVERY_PRESETS.map((p) => (
@@ -149,7 +149,7 @@ export default function TakesModal({
           </div>
 
           <div className="flex items-center gap-2 flex-1">
-            <span className="text-[11px] text-slate-500">Intensity</span>
+            <span className="text-sm text-slate-400">Intensity</span>
             <input
               type="range"
               min={10}
@@ -160,7 +160,7 @@ export default function TakesModal({
                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
                 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-400"
             />
-            <span className="text-[11px] text-orange-400 font-mono w-8 text-right">{intensity}%</span>
+            <span className="text-sm text-orange-400 font-mono w-8 text-right">{intensity}%</span>
           </div>
         </div>
 
@@ -169,7 +169,7 @@ export default function TakesModal({
           {isGenerating ? (
             <button
               onClick={cancel}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium
                 bg-red-600/80 text-white hover:bg-red-500 transition-colors"
             >
               Cancel Generation
@@ -179,9 +179,9 @@ export default function TakesModal({
               onClick={handleGenerate}
               disabled={selectedEmotions.size === 0}
               className={cn(
-                'w-full flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-medium transition-all',
+                'w-full flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all',
                 selectedEmotions.size === 0
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-500 hover:to-amber-500'
               )}
             >
@@ -212,9 +212,9 @@ export default function TakesModal({
               onClick={handleUseSelected}
               disabled={selectedTakeIdx < 0}
               className={cn(
-                'w-full flex items-center justify-center gap-1.5 py-2.5 rounded-md text-xs font-medium transition-all',
+                'w-full flex items-center justify-center gap-1.5 py-2.5 rounded-md text-sm font-medium transition-all',
                 selectedTakeIdx < 0
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                   : 'bg-emerald-600/80 text-white hover:bg-emerald-500'
               )}
             >

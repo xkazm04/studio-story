@@ -61,7 +61,7 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters }) => {
           <button
             onClick={() => setSelectedFaction(null)}
             className={cn(
-              'px-2.5 py-1 rounded-md font-mono text-xs uppercase tracking-wide transition-all duration-200',
+              'px-2.5 py-1 rounded-md font-mono text-sm uppercase tracking-wide transition-all duration-200',
               selectedFaction === null
                 ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                 : 'text-slate-400 border border-slate-700/50 hover:text-slate-200 hover:bg-slate-800/50'
@@ -74,7 +74,7 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters }) => {
               key={faction.id}
               onClick={() => setSelectedFaction(faction.id)}
               className={cn(
-                'px-2.5 py-1 rounded-md font-mono text-xs uppercase tracking-wide transition-all duration-200',
+                'px-2.5 py-1 rounded-md font-mono text-sm uppercase tracking-wide transition-all duration-200',
                 selectedFaction === faction.id
                   ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                   : 'text-slate-400 border border-slate-700/50 hover:text-slate-200 hover:bg-slate-800/50'
@@ -86,7 +86,7 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters }) => {
           <button
             onClick={() => setSelectedFaction('independent')}
             className={cn(
-              'px-2.5 py-1 rounded-md font-mono text-xs uppercase tracking-wide transition-all duration-200',
+              'px-2.5 py-1 rounded-md font-mono text-sm uppercase tracking-wide transition-all duration-200',
               selectedFaction === 'independent'
                 ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                 : 'text-slate-400 border border-slate-700/50 hover:text-slate-200 hover:bg-slate-800/50'
@@ -99,7 +99,7 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters }) => {
         {/* Create Button */}
         <button
           onClick={() => setIsCreating(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm
                      bg-cyan-600 hover:bg-cyan-500 text-white
                      transition-all duration-200 shadow-sm hover:shadow-md"
         >
@@ -151,11 +151,11 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters }) => {
       {/* Empty State */}
       {displayedCharacters.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <Users className="w-10 h-10 text-slate-600" />
-          <span className="font-mono text-xs text-slate-500">// no_characters_found</span>
+          <Users className="w-10 h-10 text-slate-400" />
+          <span className="font-mono text-sm text-slate-400">// no_characters_found</span>
           <button
             onClick={() => setIsCreating(true)}
-            className="mt-2 text-xs text-cyan-400 hover:text-cyan-300 font-mono hover:underline"
+            className="mt-2 text-sm text-cyan-400 hover:text-cyan-300 font-mono hover:underline"
           >
             create_first_character
           </button>

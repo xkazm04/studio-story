@@ -8,6 +8,7 @@ import { cn } from '@/app/lib/utils';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { Scene } from '@/app/types/Scene';
+import { ConfirmationModal } from '@/app/components/UI/ConfirmationModal';
 
 const ScenesList: React.FC = () => {
   const { selectedProject, selectedAct, selectedSceneId, setSelectedSceneId } = useProjectStore();
@@ -20,6 +21,7 @@ const ScenesList: React.FC = () => {
   const [editingSceneId, setEditingSceneId] = useState<string | null>(null);
   const [newSceneName, setNewSceneName] = useState('');
   const [localScenes, setLocalScenes] = useState<Scene[]>(scenes);
+  const [sceneToDelete, setSceneToDelete] = useState<Scene | null>(null);
 
   // Update local scenes when query data changes
   useEffect(() => {
@@ -57,11 +59,16 @@ const ScenesList: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this scene?')) return;
+  const handleDelete = (scene: Scene) => {
+    setSceneToDelete(scene);
+  };
+
+  const confirmDelete = async () => {
+    if (!sceneToDelete) return;
 
     try {
-      await sceneApi.deleteScene(id);
+      await sceneApi.deleteScene(sceneToDelete.id);
+      setSceneToDelete(null);
       refetch();
     } catch (error) {
       console.error('Error deleting scene:', error);
@@ -88,7 +95,7 @@ const ScenesList: React.FC = () => {
 
   if (!localScenes || localScenes.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-slate-400">
         <p>No scenes yet. Add your first scene below.</p>
       </div>
     );
@@ -101,7 +108,7 @@ const ScenesList: React.FC = () => {
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className="space-y-2 py-3 bg-gray-900/20 rounded-lg"
+            className="space-y-2 py-3 bg-slate-900/20 rounded-lg"
           >
             {localScenes.map((scene: Scene, index: number) => (
               <Draggable key={scene.id} draggableId={scene.id} index={index}>
@@ -113,10 +120,10 @@ const ScenesList: React.FC = () => {
                   >
                     <motion.div
                       className={cn(
-                        'flex justify-between items-center px-4 py-2 mx-2 rounded-lg cursor-pointer transition-all',
+                        'group flex justify-between items-center px-4 py-2 mx-2 rounded-lg cursor-pointer transition-all',
                         selectedSceneId === scene.id
                           ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
-                          : 'bg-gray-800 text-gray-200 hover:bg-gray-700',
+                          : 'bg-slate-800 text-slate-200 hover:bg-slate-700',
                         snapshot.isDragging && 'shadow-2xl scale-105 opacity-80'
                       )}
                       onContextMenu={(e) => {
@@ -136,7 +143,7 @@ const ScenesList: React.FC = () => {
                           if (e.key === 'Enter') confirmRename(scene.id);
                           if (e.key === 'Escape') setEditingSceneId(null);
                         }}
-                        className="flex-1 bg-gray-900 border border-gray-600 px-2 py-1 rounded text-white outline-none"
+                        className="flex-1 bg-slate-900 border border-slate-600 px-2 py-1 rounded text-white outline-none"
                         autoFocus
                         onClick={(e) => e.stopPropagation()}
                       />
@@ -148,7 +155,7 @@ const ScenesList: React.FC = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(scene.id);
+                        handleDelete(scene);
                       }}
                       className="ml-2 p-1.5 hover:bg-red-600/50 rounded transition-colors opacity-0 group-hover:opacity-100"
                     >
@@ -163,6 +170,16 @@ const ScenesList: React.FC = () => {
           </div>
         )}
       </Droppable>
+
+      <ConfirmationModal
+        isOpen={!!sceneToDelete}
+        onClose={() => setSceneToDelete(null)}
+        onConfirm={confirmDelete}
+        title="Delete Scene"
+        message={`Are you sure you want to delete "${sceneToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        type="danger"
+      />
     </DragDropContext>
   );
 };

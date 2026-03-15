@@ -37,7 +37,7 @@ const SelectionGroup: React.FC<SelectionGroupProps> = ({
   disabled,
 }) => (
   <div className="space-y-2">
-    <h4 className="font-mono text-xs uppercase tracking-wide text-slate-400">
+    <h4 className="font-mono text-sm uppercase tracking-wide text-slate-400">
       // {title}
     </h4>
     <div className="flex flex-wrap gap-1.5">
@@ -51,7 +51,7 @@ const SelectionGroup: React.FC<SelectionGroupProps> = ({
             whileHover={{ scale: disabled ? 1 : 1.02 }}
             whileTap={{ scale: disabled ? 1 : 0.98 }}
             className={cn(
-              'px-2.5 py-1.5 rounded-md font-mono text-xs transition-all duration-200',
+              'px-2.5 py-1.5 rounded-md font-mono text-sm transition-all duration-200',
               isSelected
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
                 : 'bg-slate-800/60 text-slate-400 border border-slate-700/50 hover:text-slate-200 hover:border-slate-600',

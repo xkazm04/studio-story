@@ -9,6 +9,7 @@
 import { useState, useCallback } from 'react';
 import { Scene } from '@/app/types/Scene';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
 import { Check, X } from 'lucide-react';
 
 interface ChoiceFormProps {
@@ -41,11 +42,11 @@ export function ChoiceForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-4 bg-slate-800/80 border border-slate-700/70 rounded-lg space-y-4 backdrop-blur-sm"
+      className="p-4 bg-slate-800/80 border border-slate-700/70 rounded-lg space-y-6 backdrop-blur-sm"
     >
       {/* Label Input */}
       <div>
-        <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5 uppercase tracking-wide">
+        <label className={cn('block mb-1.5 uppercase tracking-wide', TYPOGRAPHY.h3, 'font-mono')}>
           choice_label
         </label>
         <input
@@ -65,7 +66,7 @@ export function ChoiceForm({
 
       {/* Target Scene Select */}
       <div>
-        <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5 uppercase tracking-wide">
+        <label className={cn('block mb-1.5 uppercase tracking-wide', TYPOGRAPHY.h3, 'font-mono')}>
           target_scene
         </label>
         <select
@@ -85,7 +86,7 @@ export function ChoiceForm({
             </option>
           ))}
         </select>
-        <p className="mt-1 text-xs text-slate-500 font-mono">
+        <p className="mt-1 text-sm text-slate-400 font-mono">
           // leave empty to set target later
         </p>
       </div>
@@ -96,7 +97,7 @@ export function ChoiceForm({
           type="button"
           onClick={onCancel}
           className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-mono font-medium',
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-mono font-medium',
             'bg-slate-700/80 hover:bg-slate-600 text-slate-300',
             'border border-slate-600/50 transition-colors'
           )}
@@ -108,7 +109,7 @@ export function ChoiceForm({
           type="submit"
           disabled={!label.trim()}
           className={cn(
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-mono font-medium uppercase tracking-wide',
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-mono font-medium uppercase tracking-wide',
             'bg-cyan-600 hover:bg-cyan-500 text-white',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'transition-colors shadow-sm'

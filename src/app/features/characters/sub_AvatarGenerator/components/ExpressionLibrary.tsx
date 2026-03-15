@@ -290,7 +290,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
       <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             expression
           </h3>
         </div>
@@ -304,7 +304,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
                 onClick={() => handleExpressionClick(expression)}
                 disabled={disabled}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-xs transition-all',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm transition-all',
                   isSelected
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300'
                     : 'bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:border-slate-600',
@@ -331,7 +331,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
             expression_library
           </h3>
           {selectedExpression && (
-            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-sm">
               {selectedExpression.name}
             </span>
           )}
@@ -350,7 +350,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
       {/* Search and Filter */}
       <div className="flex items-center gap-2 mb-4">
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
@@ -358,7 +358,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
             placeholder="Search expressions..."
             disabled={disabled}
             className="w-full pl-8 pr-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                        disabled:opacity-50"
           />
@@ -369,7 +369,7 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
           onChange={(e) => setFilterCategory(e.target.value as ExpressionCategory | 'all')}
           disabled={disabled}
           className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300
+                     font-mono text-sm text-slate-300
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                      disabled:opacity-50"
         >
@@ -418,13 +418,13 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
                       {expression.label}
                     </span>
                     <span className={cn(
-                      'px-1.5 py-0.5 rounded text-[10px] font-mono border',
+                      'px-1.5 py-0.5 rounded text-sm font-mono border',
                       categoryConfig.color
                     )}>
                       {expression.category}
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500 mt-0.5 truncate">
+                  <p className="text-sm text-slate-400 mt-0.5 truncate">
                     {expression.description}
                   </p>
                 </div>
@@ -453,13 +453,13 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <span className={expression.color}>{expression.icon}</span>
                 <span className={cn(
-                  'font-mono text-xs uppercase tracking-wide',
+                  'font-mono text-sm uppercase tracking-wide',
                   isSelected ? 'text-cyan-400' : 'text-slate-300'
                 )}>
                   {expression.label}
                 </span>
               </div>
-              <p className="font-mono text-[10px] text-slate-500 leading-relaxed line-clamp-2">
+              <p className="font-mono text-sm text-slate-400 leading-relaxed line-clamp-2">
                 {expression.description}
               </p>
             </motion.button>
@@ -477,10 +477,10 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
             className="mt-4 pt-4 border-t border-slate-700/50"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-mono text-xs text-slate-400 uppercase">
+              <span className="font-mono text-sm text-slate-400 uppercase">
                 intensity: {intensity}%
               </span>
-              <span className="font-mono text-xs text-slate-500">
+              <span className="font-mono text-sm text-slate-400">
                 {getIntensityModifier(intensity)}
               </span>
             </div>
@@ -505,10 +505,10 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
                   onClick={() => onIntensityChange(preset.value)}
                   disabled={disabled}
                   className={cn(
-                    'px-2 py-1 rounded font-mono text-[10px] uppercase transition-colors',
+                    'px-2 py-1 rounded font-mono text-sm uppercase transition-colors',
                     intensity === preset.value
                       ? 'bg-cyan-500/20 text-cyan-400'
-                      : 'bg-slate-800/40 text-slate-500 hover:text-slate-300',
+                      : 'bg-slate-800/40 text-slate-400 hover:text-slate-300',
                     disabled && 'opacity-50 cursor-not-allowed'
                   )}
                 >
@@ -519,10 +519,10 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
 
             {/* Preview of prompt modifier */}
             <div className="mt-3 p-2 bg-slate-800/40 rounded border border-slate-700/30">
-              <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+              <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
                 prompt_modifier
               </span>
-              <p className="font-mono text-[10px] text-slate-400">
+              <p className="font-mono text-sm text-slate-400">
                 {buildExpressionPrompt(selectedExpression, intensity)}
               </p>
             </div>
@@ -532,9 +532,9 @@ const ExpressionLibrary: React.FC<ExpressionLibraryProps> = ({
 
       {/* Empty state */}
       {filteredExpressions.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-8 text-slate-400">
           <Search size={24} className="mb-2 opacity-50" />
-          <p className="font-mono text-xs">No expressions found</p>
+          <p className="font-mono text-sm">No expressions found</p>
         </div>
       )}
     </div>

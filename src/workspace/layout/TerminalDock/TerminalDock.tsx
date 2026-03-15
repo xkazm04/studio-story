@@ -7,6 +7,7 @@ import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useWorkspaceComposition } from '../../hooks/useWorkspaceComposition';
 import { extractBaseName, useCLIDataSync } from '../../hooks/useCLIDataSync';
 import { useWorkflowHintStore } from '../../store/workflowHintStore';
+import { useAgentStore } from '@/agents/store/agentStore';
 import { cn } from '@/app/lib/utils';
 import CompactTerminal from '@/cli/CompactTerminal';
 import TerminalTabBar from './TerminalTabBar';
@@ -27,6 +28,7 @@ export default function TerminalDock() {
   const showPanels = useWorkspaceStore((s) => s.showPanels);
   const getPanelByType = useWorkspaceStore((s) => s.getPanelByType);
   const recordTool = useWorkflowHintStore((s) => s.recordTool);
+  const recordToolEvent = useAgentStore((s) => s.recordToolEvent);
   const { handleToolUse: handleWorkspaceToolUse } = useWorkspaceComposition();
   const { trackToolUse, flush } = useCLIDataSync();
 
@@ -39,6 +41,10 @@ export default function TerminalDock() {
 
       const baseName = extractBaseName(toolName);
       recordTool(baseName);
+
+      // Forward to Gemini advisor observer (if connected)
+      recordToolEvent(baseName, toolInput);
+
       const hintedPanels = TOOL_PANEL_HINTS[baseName];
       if (hintedPanels?.length) {
         const missingPanels = hintedPanels.filter((directive) => !getPanelByType(directive.type));
@@ -49,7 +55,7 @@ export default function TerminalDock() {
 
       return handleWorkspaceToolUse(toolName, toolInput);
     },
-    [trackToolUse, recordTool, getPanelByType, showPanels, handleWorkspaceToolUse]
+    [trackToolUse, recordTool, recordToolEvent, getPanelByType, showPanels, handleWorkspaceToolUse]
   );
 
   // Flush accumulated query invalidations when CLI execution completes
@@ -61,7 +67,7 @@ export default function TerminalDock() {
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col border-t border-slate-800/60 bg-slate-950/95">
+    <div data-terminal-dock className="flex h-full min-h-0 flex-col border-t border-slate-800/60 bg-slate-950/95">
       {/* Horizontally centered dock */}
       <div className="mx-auto flex h-full min-h-0 w-full max-w-350 flex-col px-2 md:px-3">
         {/* Tab bar — always visible */}
@@ -86,6 +92,8 @@ export default function TerminalDock() {
                     sceneId={selectedSceneId || undefined}
                     title={tab.label}
                     className="h-full border-0 rounded-none"
+                    currentExecutionId={tab.executionId || null}
+                    currentStoredTaskId={null}
                     onToolUse={handleToolUse}
                     onExecutionComplete={handleExecutionComplete}
                   />

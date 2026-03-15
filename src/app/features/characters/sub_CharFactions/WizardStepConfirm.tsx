@@ -132,13 +132,13 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
           <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
           <div>
             <div className="font-medium">Failed to create faction</div>
-            <div className="text-xs text-red-300 mt-1">{error}</div>
+            <div className="text-sm text-red-300 mt-1">{error}</div>
           </div>
         </motion.div>
       )}
 
       {/* Summary */}
-      <div className="p-5 bg-gray-800 rounded-lg border border-gray-700">
+      <div className="p-5 bg-slate-800 rounded-lg border border-slate-700">
         <h4 className="text-lg font-semibold text-white mb-4">What will be created:</h4>
         <div className="space-y-3">
           <div className="flex items-center gap-3">
@@ -147,7 +147,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Faction Profile</p>
-              <p className="text-xs text-gray-400">{faction.name} - {faction.type}</p>
+              <p className="text-sm text-slate-400">{faction.name} - {faction.type}</p>
             </div>
           </div>
 
@@ -157,7 +157,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Branding & Colors</p>
-              <p className="text-xs text-gray-400">
+              <p className="text-sm text-slate-400">
                 Custom color scheme and emblem style
               </p>
             </div>
@@ -169,7 +169,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Lore Entries</p>
-              <p className="text-xs text-gray-400">{faction.lore.length} entries covering history and culture</p>
+              <p className="text-sm text-slate-400">{faction.lore.length} entries covering history and culture</p>
             </div>
           </div>
 
@@ -179,7 +179,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Timeline Events</p>
-              <p className="text-xs text-gray-400">{faction.timeline_events.length} key moments in faction history</p>
+              <p className="text-sm text-slate-400">{faction.timeline_events.length} key moments in faction history</p>
             </div>
           </div>
 
@@ -189,7 +189,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Achievements</p>
-              <p className="text-xs text-gray-400">{faction.achievements.length} notable accomplishments</p>
+              <p className="text-sm text-slate-400">{faction.achievements.length} notable accomplishments</p>
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-4 bg-gray-800 rounded-lg border border-gray-700"
+          className="p-4 bg-slate-800 rounded-lg border border-slate-700"
         >
           <div className="flex items-center gap-3 mb-3">
             <Loader2 className="text-purple-400 animate-spin" size={20} />
@@ -212,7 +212,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
                 key={idx}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 text-xs text-gray-400"
+                className="flex items-center gap-2 text-sm text-slate-400"
               >
                 <CheckCircle2 size={12} className="text-green-400" />
                 {step}
@@ -228,7 +228,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
           type="button"
           onClick={onBack}
           disabled={isCreating}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-800 disabled:text-gray-600 text-gray-300 rounded-lg font-medium transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-800 disabled:text-slate-400 text-slate-300 rounded-lg font-medium transition-colors flex items-center gap-2"
           data-testid="back-to-preview-btn"
         >
           <ChevronLeft size={16} />
@@ -238,7 +238,7 @@ const WizardStepConfirm: React.FC<WizardStepConfirmProps> = ({
           type="button"
           onClick={handleCreate}
           disabled={isCreating}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-700 disabled:to-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-all"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-all"
           data-testid="create-faction-btn"
         >
           {isCreating ? (

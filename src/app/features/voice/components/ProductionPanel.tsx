@@ -316,11 +316,11 @@ export default function ProductionPanel({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-slate-100 flex items-center gap-2">
+          <h2 className="ms-h2 flex items-center gap-2">
             <FileAudio className="w-6 h-6 text-emerald-400" />
             Voice Production
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="ms-caption mt-1">
             Generate audiobook content from your story
           </p>
         </div>
@@ -342,28 +342,28 @@ export default function ProductionPanel({
         <div className="p-4 rounded-lg bg-slate-900/60 border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <List className="w-4 h-4" />
-            <span className="text-xs">Acts</span>
+            <span className="text-sm">Acts</span>
           </div>
           <span className="text-lg font-semibold text-slate-100">{acts.length}</span>
         </div>
         <div className="p-4 rounded-lg bg-slate-900/60 border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <FileAudio className="w-4 h-4" />
-            <span className="text-xs">Scenes</span>
+            <span className="text-sm">Scenes</span>
           </div>
           <span className="text-lg font-semibold text-slate-100">{scenes.length}</span>
         </div>
         <div className="p-4 rounded-lg bg-slate-900/60 border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <Users className="w-4 h-4" />
-            <span className="text-xs">Voices</span>
+            <span className="text-sm">Voices</span>
           </div>
           <span className="text-lg font-semibold text-slate-100">{voices.length}</span>
         </div>
         <div className="p-4 rounded-lg bg-slate-900/60 border border-slate-800/50">
           <div className="flex items-center gap-2 text-slate-400 mb-1">
             <Clock className="w-4 h-4" />
-            <span className="text-xs">Est. Duration</span>
+            <span className="text-sm">Est. Duration</span>
           </div>
           <span className="text-lg font-semibold text-slate-100">
             {formatDuration(chapters.reduce((sum, c) => sum + c.totalDuration, 0))}
@@ -384,7 +384,7 @@ export default function ProductionPanel({
               <h3 className="text-sm font-medium text-slate-200 mb-4">Export Settings</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1.5">Format</label>
+                  <label className="block text-sm text-slate-400 mb-1.5">Format</label>
                   <select
                     value={selectedFormat}
                     onChange={(e) => setSelectedFormat(e.target.value as AudioFormat)}
@@ -399,7 +399,7 @@ export default function ProductionPanel({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1.5">Quality</label>
+                  <label className="block text-sm text-slate-400 mb-1.5">Quality</label>
                   <select
                     value={selectedQuality}
                     onChange={(e) => setSelectedQuality(e.target.value)}
@@ -519,7 +519,7 @@ export default function ProductionPanel({
                     <span className="text-sm font-medium text-slate-200">
                       Chapter {actIndex + 1}: {act.name}
                     </span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-sm text-slate-400">
                       {actScenes.length} scenes
                     </span>
                   </div>
@@ -527,7 +527,7 @@ export default function ProductionPanel({
                   <div className="flex items-center gap-3">
                     {chapter && (
                       <>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-sm text-slate-400">
                           {formatDuration(chapter.totalDuration)}
                         </span>
                         {chapter.status === 'completed' && (
@@ -558,7 +558,7 @@ export default function ProductionPanel({
                               className="flex items-center justify-between px-3 py-2 rounded-md bg-slate-900/30"
                             >
                               <div className="flex items-center gap-3">
-                                <span className="text-xs text-slate-500 w-6">
+                                <span className="text-sm text-slate-400 w-6">
                                   {sceneIndex + 1}.
                                 </span>
                                 <span className="text-sm text-slate-300">{scene.name}</span>
@@ -567,10 +567,10 @@ export default function ProductionPanel({
                               <div className="flex items-center gap-2">
                                 {result && (
                                   <>
-                                    <span className="text-xs text-slate-500">
+                                    <span className="text-sm text-slate-400">
                                       {result.dialogueLines.length} lines
                                     </span>
-                                    <span className="text-xs text-slate-500">
+                                    <span className="text-sm text-slate-400">
                                       {formatDuration(result.totalDuration)}
                                     </span>
                                   </>
@@ -619,10 +619,10 @@ export default function ProductionPanel({
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-slate-400">
+                  <span className="text-sm text-slate-400">
                     {chapter.scenes.length} scenes
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-sm text-slate-400">
                     {formatDuration(chapter.totalDuration)}
                   </span>
                   <CheckCircle className="w-4 h-4 text-emerald-400" />

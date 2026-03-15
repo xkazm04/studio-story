@@ -124,7 +124,7 @@ export default function StoryLeftPanel() {
             <h3 className="text-sm font-semibold text-slate-100 truncate">
               {selectedProject?.name || 'Story'}
             </h3>
-            <p className="text-[10px] text-slate-500">Story Overview</p>
+            <p className="text-sm text-slate-400">Story Overview</p>
           </div>
         </div>
 
@@ -159,8 +159,8 @@ export default function StoryLeftPanel() {
         {/* Art Style Row */}
         <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/60 border border-slate-800/70">
           <Palette className="w-3.5 h-3.5 text-purple-400" />
-          <span className="text-[11px] text-slate-400">Art Style:</span>
-          <span className="text-[11px] text-slate-200 font-medium">Adventure Journal</span>
+          <span className="text-sm text-slate-400">Art Style:</span>
+          <span className="text-sm text-slate-200 font-medium">Adventure Journal</span>
         </div>
       </div>
 
@@ -182,16 +182,16 @@ export default function StoryLeftPanel() {
                   'w-2 h-2 rounded-full',
                   currentScene.id === firstSceneId ? 'bg-cyan-500' : 'bg-emerald-500'
                 )} />
-                <h4 className="text-xs font-medium text-slate-200 truncate flex-1">
+                <h4 className="text-sm font-medium text-slate-200 truncate flex-1">
                   {currentScene.name}
                 </h4>
                 {currentScene.id === firstSceneId && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-600/20 text-cyan-400 uppercase tracking-wider">
+                  <span className="text-sm px-1.5 py-0.5 rounded bg-cyan-600/20 text-cyan-400 uppercase tracking-wider">
                     Start
                   </span>
                 )}
               </div>
-              <p className="text-[10px] text-slate-500 line-clamp-2">
+              <p className="text-sm text-slate-400 line-clamp-2">
                 {currentScene.description || currentScene.content?.slice(0, 100) || 'No description'}
               </p>
             </div>
@@ -200,8 +200,8 @@ export default function StoryLeftPanel() {
             {parentScenes.length > 0 && (
               <div className="p-3 border-b border-slate-800/70">
                 <div className="flex items-center gap-1.5 mb-2">
-                  <CornerLeftUp className="w-3 h-3 text-slate-500" />
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider">Coming From</span>
+                  <CornerLeftUp className="w-3 h-3 text-slate-400" />
+                  <span className="text-sm text-slate-400 uppercase tracking-wider">Coming From</span>
                 </div>
                 <div className="space-y-1">
                   {parentScenes.map((parent) => (
@@ -213,10 +213,10 @@ export default function StoryLeftPanel() {
                       <div className="flex items-center gap-2">
                         <ArrowLeft className="w-3 h-3 text-purple-400 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[11px] text-slate-300 truncate font-medium">{parent.name}</p>
-                          <p className="text-[9px] text-slate-500 truncate">via: {parent.choiceLabel}</p>
+                          <p className="text-sm text-slate-300 truncate font-medium">{parent.name}</p>
+                          <p className="text-sm text-slate-400 truncate">via: {parent.choiceLabel}</p>
                         </div>
-                        <ChevronRight className="w-3 h-3 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </button>
                   ))}
@@ -227,9 +227,9 @@ export default function StoryLeftPanel() {
             {/* Scene Choices (Going To) */}
             <div className="flex-1 overflow-y-auto p-3">
               <div className="flex items-center gap-1.5 mb-2">
-                <ArrowRight className="w-3 h-3 text-slate-500" />
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider">Choices</span>
-                <span className="text-[10px] text-slate-600 ml-auto">{currentChoices.length}</span>
+                <ArrowRight className="w-3 h-3 text-slate-400" />
+                <span className="text-sm text-slate-400 uppercase tracking-wider">Choices</span>
+                <span className="text-sm text-slate-400 ml-auto">{currentChoices.length}</span>
               </div>
 
               {currentChoices.length > 0 ? (
@@ -247,16 +247,16 @@ export default function StoryLeftPanel() {
                       )}
                     >
                       <div className="flex items-start gap-2">
-                        <span className="text-[9px] text-slate-600 font-mono mt-0.5 shrink-0">{idx + 1}</span>
+                        <span className="text-sm text-slate-400 font-mono mt-0.5 shrink-0">{idx + 1}</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[11px] text-slate-300 line-clamp-2">{choice.label}</p>
-                          <div className="flex items-center gap-1 mt-1 text-[10px] text-slate-500">
+                          <p className="text-sm text-slate-300 line-clamp-2">{choice.label}</p>
+                          <div className="flex items-center gap-1 mt-1 text-sm text-slate-400">
                             <ArrowRight className="w-2.5 h-2.5" />
                             <span className="truncate">{getTargetSceneName(choice.target_scene_id)}</span>
                           </div>
                         </div>
                         {choice.target_scene_id && (
-                          <ChevronRight className="w-3 h-3 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                          <ChevronRight className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                         )}
                       </div>
                     </button>
@@ -264,23 +264,23 @@ export default function StoryLeftPanel() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-6 text-center">
-                  <XCircle className="w-6 h-6 text-slate-700 mb-2" />
-                  <p className="text-[11px] text-slate-500">No choices defined</p>
-                  <p className="text-[10px] text-red-400/70 mt-1">Dead end scene</p>
+                  <XCircle className="w-6 h-6 text-slate-400 mb-2" />
+                  <p className="text-sm text-slate-400">No choices defined</p>
+                  <p className="text-sm text-red-400/70 mt-1">Dead end scene</p>
                 </div>
               )}
             </div>
 
             {/* Scene Validation */}
             <div className="p-3 border-t border-slate-800/70 bg-slate-900/30">
-              <div className="flex items-center justify-between text-[10px]">
-                <span className="text-slate-500">Content</span>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-400">Content</span>
                 <span className={currentScene.content ? 'text-emerald-400' : 'text-amber-400'}>
                   {currentScene.content ? 'Complete' : 'Missing'}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[10px] mt-1">
-                <span className="text-slate-500">Image</span>
+              <div className="flex items-center justify-between text-sm mt-1">
+                <span className="text-slate-400">Image</span>
                 <span className={currentScene.image_url ? 'text-emerald-400' : 'text-amber-400'}>
                   {currentScene.image_url ? 'Set' : 'Missing'}
                 </span>
@@ -296,8 +296,8 @@ export default function StoryLeftPanel() {
             className="flex-1 flex items-center justify-center p-4"
           >
             <div className="text-center">
-              <FileText className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-              <p className="text-xs text-slate-500">Select a scene to view details</p>
+              <FileText className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm text-slate-400">Select a scene to view details</p>
             </div>
           </motion.div>
         )}
@@ -334,7 +334,7 @@ function StatCard({
         {icon}
         <span className="text-lg font-semibold">{value}</span>
       </div>
-      <span className="text-[9px] text-slate-500 uppercase tracking-wider">{label}</span>
+      <span className="text-sm text-slate-400 uppercase tracking-wider">{label}</span>
     </div>
   );
 }

@@ -63,7 +63,7 @@ const WEATHER_OPTIONS: Array<{ value: SceneMetadata['weather']; label: string; i
   { value: 'rainy', label: 'Rainy', icon: <CloudRain className="w-3 h-3 text-blue-400" /> },
   { value: 'stormy', label: 'Stormy', icon: <CloudRain className="w-3 h-3 text-purple-400" /> },
   { value: 'snowy', label: 'Snowy', icon: <Snowflake className="w-3 h-3 text-cyan-300" /> },
-  { value: 'foggy', label: 'Foggy', icon: <Cloud className="w-3 h-3 text-slate-500" /> },
+  { value: 'foggy', label: 'Foggy', icon: <Cloud className="w-3 h-3 text-slate-400" /> },
   { value: 'windy', label: 'Windy', icon: <Wind className="w-3 h-3 text-teal-400" /> },
 ];
 
@@ -123,7 +123,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-1 px-2 py-1 rounded text-[10px] transition-colors',
+        'flex items-center gap-1 px-2 py-1 rounded text-sm transition-colors',
         selected
           ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
           : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300'
@@ -146,9 +146,9 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
           <span className="text-sm font-medium text-slate-200">Location & Setting</span>
         </div>
         {isExpanded ? (
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          <ChevronDown className="w-4 h-4 text-slate-400" />
         ) : (
-          <ChevronRight className="w-4 h-4 text-slate-500" />
+          <ChevronRight className="w-4 h-4 text-slate-400" />
         )}
       </button>
 
@@ -164,13 +164,13 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
               {/* Location */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                  <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                     Location
                   </span>
                   {!isEditingLocation && (
                     <button
                       onClick={() => setIsEditingLocation(true)}
-                      className="p-1 text-slate-500 hover:text-cyan-400 transition-colors"
+                      className="p-1 text-slate-400 hover:text-cyan-400 transition-colors"
                     >
                       <Edit2 className="w-3 h-3" />
                     </button>
@@ -184,7 +184,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                       value={editLocationName}
                       onChange={(e) => setEditLocationName(e.target.value)}
                       placeholder="Location name..."
-                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                       autoFocus
                     />
                     <textarea
@@ -192,19 +192,19 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                       onChange={(e) => setEditLocationDesc(e.target.value)}
                       placeholder="Description (optional)..."
                       rows={2}
-                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
                     />
                     <div className="flex items-center gap-1">
                       <button
                         onClick={handleSaveLocation}
-                        className="flex items-center gap-1 px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-[10px] hover:bg-cyan-500/30 transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-sm hover:bg-cyan-500/30 transition-colors"
                       >
                         <Check className="w-3 h-3" />
                         Save
                       </button>
                       <button
                         onClick={handleCancelLocation}
-                        className="flex items-center gap-1 px-2 py-1 bg-slate-800 text-slate-400 rounded text-[10px] hover:text-slate-300 transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 bg-slate-800 text-slate-400 rounded text-sm hover:text-slate-300 transition-colors"
                       >
                         <X className="w-3 h-3" />
                         Cancel
@@ -213,16 +213,16 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                   </div>
                 ) : location?.name ? (
                   <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-2">
-                    <div className="text-xs font-medium text-slate-200">{location.name}</div>
+                    <div className="text-sm font-medium text-slate-200">{location.name}</div>
                     {location.description && (
-                      <div className="text-[10px] text-slate-500 mt-1">{location.description}</div>
+                      <div className="text-sm text-slate-400 mt-1">{location.description}</div>
                     )}
                     {location.features && location.features.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {location.features.map((feature, i) => (
                           <span
                             key={i}
-                            className="px-1.5 py-0.5 bg-slate-700/50 text-slate-400 text-[9px] rounded"
+                            className="px-1.5 py-0.5 bg-slate-700/50 text-slate-400 text-sm rounded"
                           >
                             {feature}
                           </span>
@@ -233,7 +233,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                 ) : (
                   <button
                     onClick={() => setIsEditingLocation(true)}
-                    className="w-full px-3 py-2 border border-dashed border-slate-700 rounded text-[10px] text-slate-500 hover:text-slate-400 hover:border-slate-600 transition-colors"
+                    className="w-full px-3 py-2 border border-dashed border-slate-700 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
                   >
                     + Set location
                   </button>
@@ -243,8 +243,8 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
               {/* Time of Day */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Clock className="w-3 h-3 text-slate-500" />
-                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                  <Clock className="w-3 h-3 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                     Time of Day
                   </span>
                 </div>
@@ -264,8 +264,8 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
               {/* Weather */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Cloud className="w-3 h-3 text-slate-500" />
-                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                  <Cloud className="w-3 h-3 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                     Weather
                   </span>
                 </div>
@@ -285,8 +285,8 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
               {/* Temperature */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Thermometer className="w-3 h-3 text-slate-500" />
-                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                  <Thermometer className="w-3 h-3 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                     Temperature
                   </span>
                 </div>
@@ -304,7 +304,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
 
               {/* Mood */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                   Scene Mood
                 </span>
                 <input
@@ -312,13 +312,13 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                   value={metadata.mood || ''}
                   onChange={(e) => updateMetadata({ mood: e.target.value })}
                   placeholder="e.g., tense, romantic, mysterious..."
-                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                 />
               </div>
 
               {/* Custom Notes */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+                <span className="text-sm font-medium text-slate-400 uppercase tracking-wide">
                   Notes
                 </span>
                 <textarea
@@ -326,14 +326,14 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                   onChange={(e) => updateMetadata({ customNotes: e.target.value })}
                   placeholder="Additional scene notes..."
                   rows={2}
-                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
                 />
               </div>
 
               {/* Quick Summary */}
               {(metadata.timeOfDay || metadata.weather || location?.name) && (
                 <div className="pt-2 border-t border-slate-800">
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-sm text-slate-400">
                     <span className="text-slate-400">Setting: </span>
                     {[
                       metadata.timeOfDay && TIME_OF_DAY_OPTIONS.find(t => t.value === metadata.timeOfDay)?.label,

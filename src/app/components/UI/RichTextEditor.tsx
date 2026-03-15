@@ -27,12 +27,12 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
 
   const buttonClass = (isActive: boolean) =>
     clsx(
-      'p-2 rounded hover:bg-gray-700 transition-colors',
-      isActive ? 'bg-gray-700 text-cyan-400' : 'text-gray-400'
+      'p-2 rounded hover:bg-slate-700 transition-colors',
+      isActive ? 'bg-slate-700 text-cyan-400' : 'text-slate-400'
     );
 
   return (
-    <div className="flex items-center gap-1 p-2 border-b border-gray-800 bg-gray-900/50">
+    <div className="flex items-center gap-1 p-2 border-b border-slate-800 bg-slate-900/50">
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -53,7 +53,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
         <Italic size={16} />
       </button>
 
-      <div className="w-px h-6 bg-gray-700 mx-1" />
+      <div className="w-px h-6 bg-slate-700 mx-1" />
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -64,7 +64,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
         <Heading size={16} />
       </button>
 
-      <div className="w-px h-6 bg-gray-700 mx-1" />
+      <div className="w-px h-6 bg-slate-700 mx-1" />
 
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -139,7 +139,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [content, editor]);
 
   return (
-    <div className={clsx('relative bg-gray-900 rounded-lg border border-gray-800 overflow-hidden', className)}>
+    <div className={clsx('relative bg-slate-900 rounded-lg border border-slate-800 overflow-hidden', className)}>
       <ColoredBorder color={borderColor} />
 
       <MenuBar editor={editor} />

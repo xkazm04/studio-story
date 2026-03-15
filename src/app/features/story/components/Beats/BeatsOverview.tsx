@@ -11,7 +11,9 @@ import { Button } from "@/app/components/UI/Button";
 import ActRecommendations from "./ActRecommendations";
 import { RecommendationResponse } from "@/app/types/Recommendation";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutGrid, List, Map as MapIcon, CheckCircle2, Circle, Clock, Sparkles, Tags, GitBranch } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
+import { LayoutGrid, List, Map as MapIcon, CheckCircle2, Circle, Clock, Sparkles, Tags, GitBranch, GripVertical } from 'lucide-react';
 import NarrativeMap from './NarrativeMap';
 import { BeatFilterPanel, BeatFilters, filterBeats } from './BeatFilterPanel';
 import { cn } from '@/lib/utils';
@@ -32,6 +34,7 @@ export type BeatTableItem = {
     id: string;
     name: string;
     type: "act" | "story";
+    act_id?: string;
     description?: string;
     default_flag?: boolean;
     paragraph_id?: string;
@@ -50,10 +53,12 @@ function BeatCard({
     beat,
     index,
     onToggleCompletion,
+    dragHandleProps,
 }: {
     beat: BeatTableItem;
     index: number;
     onToggleCompletion: (id: string) => void;
+    dragHandleProps?: any;
 }) {
     const typeColors = {
         story: 'border-purple-500/40 bg-purple-500/5',
@@ -61,12 +66,12 @@ function BeatCard({
     };
 
     const statusBadge = beat.completed ? (
-        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
             <CheckCircle2 className="w-3 h-3" />
             Done
         </span>
     ) : (
-        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-500/20 text-slate-400 border border-slate-500/30">
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-medium bg-slate-500/20 text-slate-400 border border-slate-500/30">
             <Circle className="w-3 h-3" />
             Pending
         </span>
@@ -76,33 +81,47 @@ function BeatCard({
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.03 }}
+            transition={{ ...BEAT_ANIMATIONS.quick, delay: BEAT_ANIMATIONS.stagger(index) }}
             className={cn(
-                'group p-3 rounded-lg border transition-all cursor-pointer',
+                'group p-3 rounded-lg border transition-all text-left flex flex-col h-full',
                 'hover:shadow-lg hover:shadow-cyan-500/5',
                 typeColors[beat.type] || typeColors.act,
                 beat.completed && 'opacity-70'
             )}
-            onClick={() => onToggleCompletion(beat.id)}
         >
             <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
+                    {dragHandleProps && (
+                        <div 
+                            {...dragHandleProps} 
+                            className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-slate-300 py-1"
+                        >
+                            <GripVertical className="w-4 h-4" />
+                        </div>
+                    )}
                     <span className={cn(
-                        'w-6 h-6 rounded flex items-center justify-center text-xs font-bold',
+                        'w-6 h-6 rounded flex items-center justify-center text-sm font-bold shrink-0',
                         beat.type === 'story' ? 'bg-purple-500/20 text-purple-400' : 'bg-cyan-500/20 text-cyan-400'
                     )}>
-                        {index + 1}
+                        {beat.order !== undefined ? beat.order + 1 : index + 1}
                     </span>
-                    <h3 className="text-sm font-medium text-slate-100 truncate">{beat.name}</h3>
+                    <h3 className="text-sm font-medium text-slate-100 line-clamp-1">{beat.name}</h3>
                 </div>
-                {statusBadge}
+                <button
+                    type="button"
+                    aria-label={`Toggle beat: ${beat.name}`}
+                    className="cursor-pointer transition-transform hover:scale-105 active:scale-95 focus:outline-none shrink-0"
+                    onClick={() => onToggleCompletion(beat.id)}
+                >
+                    {statusBadge}
+                </button>
             </div>
 
             {beat.description && (
-                <p className="text-xs text-slate-400 line-clamp-2 mb-2">{beat.description}</p>
+                <p className="text-sm text-slate-400 line-clamp-2 mb-2 flex-1">{beat.description}</p>
             )}
 
-            <div className="flex items-center gap-3 text-[10px] text-slate-500">
+            <div className="flex items-center gap-3 text-sm text-slate-400 mt-auto pt-2">
                 <span className={cn(
                     'uppercase font-medium px-1.5 py-0.5 rounded',
                     beat.type === 'story' ? 'bg-purple-500/10 text-purple-400' : 'bg-cyan-500/10 text-cyan-400'
@@ -132,16 +151,22 @@ function BeatsProgressBar({ beats }: { beats: BeatTableItem[] }) {
     return (
         <div className="flex items-center gap-3 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
             <div className="flex-1">
-                <div className="flex items-center justify-between text-xs mb-1">
+                <div className="flex items-center justify-between text-sm mb-1">
                     <span className="text-slate-300 font-medium">Progress</span>
                     <span className="text-slate-400">{completed}/{total} beats</span>
                 </div>
-                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={total}
+                    aria-valuenow={completed}
+                    className="h-2 bg-slate-700 rounded-full overflow-hidden"
+                >
                     <motion.div
                         className="h-full bg-gradient-to-r from-cyan-500 to-emerald-500"
                         initial={{ width: 0 }}
                         animate={{ width: `${percent}%` }}
-                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                        transition={BEAT_ANIMATIONS.slow}
                     />
                 </div>
             </div>
@@ -153,6 +178,7 @@ function BeatsProgressBar({ beats }: { beats: BeatTableItem[] }) {
 }
 
 const BeatsOverview = () => {
+    const rootRef = useRef<HTMLDivElement>(null);
     const tableRef = useRef(null);
     const { selectedProject } = useProjectStore();
     const { data: backendBeats, isLoading, refetch: refreshBeats } = beatApi.useGetBeats(selectedProject?.id);
@@ -170,10 +196,37 @@ const BeatsOverview = () => {
     const [dependencies, setDependencies] = useState<Dependency[]>([]);
     const [selectedBeatId, setSelectedBeatId] = useState<string | null>(null);
     const [highlightChain, setHighlightChain] = useState<string[] | undefined>(undefined);
+    const shortcutModifier = useMemo(() => {
+        if (typeof navigator === 'undefined') return 'Cmd/Ctrl';
+        const isMac = /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
+        return isMac ? 'Cmd' : 'Ctrl';
+    }, []);
 
     useEffect(() => {
         setRightMode('beats');
     }, [setRightMode]);
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            const isMeta = event.metaKey || event.ctrlKey;
+            if (!isMeta) return;
+            if (!rootRef.current) return;
+            if (!rootRef.current.contains(document.activeElement)) return;
+            const keyMap: Record<string, typeof view> = {
+                '1': 'table',
+                '2': 'cards',
+                '3': 'map',
+                '4': 'taxonomy',
+                '5': 'dependencies',
+            };
+            const nextView = keyMap[event.key];
+            if (!nextView) return;
+            event.preventDefault();
+            setView(nextView);
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, []);
 
     useEffect(() => {
         if (backendBeats && backendBeats.length > 0) {
@@ -279,6 +332,28 @@ const BeatsOverview = () => {
         refreshBeats();
     };
 
+    const handleDragEndCards = (result: DropResult) => {
+        if (!result.destination) return;
+        const sourceIndex = result.source.index;
+        const destinationIndex = result.destination.index;
+        
+        if (sourceIndex === destinationIndex) return;
+
+        const beatId = filteredBeats[sourceIndex]?.id;
+        if (!beatId) return;
+
+        let newOrder = destinationIndex;
+        if (filteredBeats.length !== sortedBeats.length) {
+             const destBeat = filteredBeats[destinationIndex];
+             const realDestIndex = sortedBeats.findIndex(b => b.id === destBeat?.id);
+             if (realDestIndex !== -1) {
+                 newOrder = realDestIndex;
+             }
+        }
+        
+        handleReorder(beatId, newOrder);
+    };
+
     const filteredBeats = filterBeats(sortedBeats, filters);
 
     // Convert beats to summary format for dependency components
@@ -382,7 +457,7 @@ const BeatsOverview = () => {
     }
 
     return (
-        <div className="space-y-4 text-sm text-slate-200">
+        <div ref={rootRef} className="space-y-4 text-sm text-slate-200">
             {/* Recommendations Section */}
             <AnimatePresence>
                 {recommendations && (
@@ -412,51 +487,56 @@ const BeatsOverview = () => {
 
             {/* View Toggle */}
             <div className="flex justify-between items-center">
-                <div className="flex gap-1.5">
+                <div className="group flex gap-1.5">
                     <Button
                         size="sm"
                         variant={view === 'table' ? 'primary' : 'secondary'}
                         onClick={() => setView('table')}
                         icon={<List />}
+                        aria-keyshortcuts="Meta+1 Control+1"
                         data-testid="beats-table-view-btn"
                     >
-                        Overview
+                        Overview <kbd className="hidden group-hover:inline text-xs">{shortcutModifier}+1</kbd>
                     </Button>
                     <Button
                         size="sm"
                         variant={view === 'cards' ? 'primary' : 'secondary'}
                         onClick={() => setView('cards')}
                         icon={<LayoutGrid />}
+                        aria-keyshortcuts="Meta+2 Control+2"
                         data-testid="beats-cards-view-btn"
                     >
-                        Cards
+                        Cards <kbd className="hidden group-hover:inline text-xs">{shortcutModifier}+2</kbd>
                     </Button>
                     <Button
                         size="sm"
                         variant={view === 'map' ? 'primary' : 'secondary'}
                         onClick={() => setView('map')}
                         icon={<MapIcon />}
+                        aria-keyshortcuts="Meta+3 Control+3"
                         data-testid="beats-map-view-btn"
                     >
-                        Narrative Map
+                        Narrative Map <kbd className="hidden group-hover:inline text-xs">{shortcutModifier}+3</kbd>
                     </Button>
                     <Button
                         size="sm"
                         variant={view === 'taxonomy' ? 'primary' : 'secondary'}
                         onClick={() => setView('taxonomy')}
                         icon={<Tags />}
+                        aria-keyshortcuts="Meta+4 Control+4"
                         data-testid="beats-taxonomy-view-btn"
                     >
-                        Taxonomy
+                        Taxonomy <kbd className="hidden group-hover:inline text-xs">{shortcutModifier}+4</kbd>
                     </Button>
                     <Button
                         size="sm"
                         variant={view === 'dependencies' ? 'primary' : 'secondary'}
                         onClick={() => setView('dependencies')}
                         icon={<GitBranch />}
+                        aria-keyshortcuts="Meta+5 Control+5"
                         data-testid="beats-dependencies-view-btn"
                     >
-                        Dependencies
+                        Dependencies <kbd className="hidden group-hover:inline text-xs">{shortcutModifier}+5</kbd>
                     </Button>
                 </div>
             </div>
@@ -470,7 +550,7 @@ const BeatsOverview = () => {
                         isReordering={isReordering}
                     />
                     <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-400">
+                        <span className="text-sm text-slate-400">
                             {filteredBeats.length !== sortedBeats.length ? (
                                 <>Showing {filteredBeats.length} of {sortedBeats.length}</>
                             ) : (
@@ -487,35 +567,60 @@ const BeatsOverview = () => {
             ) : view === 'cards' ? (
                 <div className="space-y-4">
                     {/* Beat Cards Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                        {filteredBeats.length === 0 && sortedBeats.length === 0 ? (
-                            <div className="col-span-full py-12 text-center text-gray-400">
-                                <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-gray-600" />
-                                <p className="text-sm">No beats available</p>
-                                <p className="text-xs text-gray-500 mt-1">Create your first beat to get started</p>
-                            </div>
-                        ) : filteredBeats.length === 0 ? (
-                            <div className="col-span-full py-12 text-center text-gray-400">
-                                <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-gray-600" />
-                                <p className="text-sm">No beats match your filters</p>
-                                <p className="text-xs text-gray-500 mt-1">Try adjusting your search or filters</p>
-                            </div>
-                        ) : (
-                            filteredBeats.map((beat, index) => (
-                                <BeatCard
-                                    key={beat.id}
-                                    beat={beat}
-                                    index={index}
-                                    onToggleCompletion={toggleBeatCompletion}
-                                />
-                            ))
-                        )}
-                    </div>
+                    <DragDropContext onDragEnd={handleDragEndCards}>
+                        <Droppable droppableId="cards-grid" direction="horizontal" isDropDisabled={filteredBeats.length !== sortedBeats.length}>
+                            {(provided) => (
+                                <div 
+                                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                >
+                                    {filteredBeats.length === 0 && sortedBeats.length === 0 ? (
+                                        <div className="col-span-full py-12 text-center text-slate-400">
+                                            <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+                                            <p className="text-sm">No beats available</p>
+                                            <p className="text-sm text-slate-400 mt-1">Create your first beat to get started</p>
+                                        </div>
+                                    ) : filteredBeats.length === 0 ? (
+                                        <div className="col-span-full py-12 text-center text-slate-400">
+                                            <LayoutGrid className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+                                            <p className="text-sm">No beats match your filters</p>
+                                            <p className="text-sm text-slate-400 mt-1">Try adjusting your search or filters</p>
+                                        </div>
+                                    ) : (
+                                        filteredBeats.map((beat, index) => (
+                                            <Draggable key={beat.id} draggableId={beat.id} index={index} isDragDisabled={filteredBeats.length !== sortedBeats.length}>
+                                                {(provided, snapshot) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        style={{
+                                                            ...provided.draggableProps.style,
+                                                            opacity: snapshot.isDragging ? 0.8 : 1,
+                                                            zIndex: snapshot.isDragging ? 50 : 'auto',
+                                                        }}
+                                                    >
+                                                        <BeatCard
+                                                            beat={beat}
+                                                            index={index}
+                                                            onToggleCompletion={toggleBeatCompletion}
+                                                            dragHandleProps={provided.dragHandleProps}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))
+                                    )}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
 
                     {/* Footer */}
                     {sortedBeats.length > 0 && (
-                        <div className="border-t border-gray-800 pt-4 flex justify-between items-center">
-                            <span className="text-xs text-gray-400">
+                        <div className="border-t border-slate-800 pt-4 flex justify-between items-center">
+                            <span className="text-sm text-slate-400">
                                 {filteredBeats.length !== sortedBeats.length ? (
                                     <>Showing {filteredBeats.length} of {sortedBeats.length} beats</>
                                 ) : (
@@ -543,8 +648,8 @@ const BeatsOverview = () => {
                     {/* Classified Beats List */}
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-400">Beat Classifications</span>
-                            <span className="text-[10px] text-slate-500">
+                            <span className="text-sm font-medium text-slate-400">Beat Classifications</span>
+                            <span className="text-sm text-slate-400">
                                 {classifications.length} / {sortedBeats.length} classified
                             </span>
                         </div>
@@ -556,7 +661,7 @@ const BeatsOverview = () => {
                                         key={beat.id}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.02 }}
+                                        transition={{ ...BEAT_ANIMATIONS.quick, delay: BEAT_ANIMATIONS.stagger(index) }}
                                         className={cn(
                                             'flex items-center justify-between p-2 rounded-lg',
                                             'bg-slate-800/50 border border-slate-700/50',
@@ -564,10 +669,10 @@ const BeatsOverview = () => {
                                         )}
                                     >
                                         <div className="flex items-center gap-2 min-w-0">
-                                            <span className="text-xs text-slate-500 w-6">
+                                            <span className="text-sm text-slate-400 w-6">
                                                 {(beat.order || index) + 1}
                                             </span>
-                                            <span className="text-xs text-slate-200 truncate">
+                                            <span className="text-sm text-slate-200 truncate">
                                                 {beat.name}
                                             </span>
                                         </div>
@@ -585,8 +690,8 @@ const BeatsOverview = () => {
 
                     {/* Footer */}
                     {sortedBeats.length > 0 && (
-                        <div className="border-t border-gray-800 pt-4 flex justify-between items-center">
-                            <span className="text-xs text-gray-400">
+                        <div className="border-t border-slate-800 pt-4 flex justify-between items-center">
+                            <span className="text-sm text-slate-400">
                                 {filteredBeats.length !== sortedBeats.length ? (
                                     <>Showing {filteredBeats.length} of {sortedBeats.length} beats</>
                                 ) : (
@@ -606,7 +711,7 @@ const BeatsOverview = () => {
                     <div className="bg-slate-800/30 rounded-lg border border-slate-700/50 p-4">
                         <div className="flex items-center justify-between mb-3">
                             <h3 className="text-sm font-medium text-slate-200">Dependency Graph</h3>
-                            <div className="flex items-center gap-2 text-xs text-slate-400">
+                            <div className="flex items-center gap-2 text-sm text-slate-400">
                                 <span>{dependencies.length} dependencies</span>
                                 <span>•</span>
                                 <span>{causalityChains.length} chains</span>
@@ -659,8 +764,8 @@ const BeatsOverview = () => {
 
                     {/* Footer */}
                     {sortedBeats.length > 0 && (
-                        <div className="border-t border-gray-800 pt-4 flex justify-between items-center">
-                            <span className="text-xs text-gray-400">
+                        <div className="border-t border-slate-800 pt-4 flex justify-between items-center">
+                            <span className="text-sm text-slate-400">
                                 {sortedBeats.length} beats • {dependencies.length} dependencies
                             </span>
                             <BeatsTableAdd

@@ -36,7 +36,7 @@ const PromptPreview: React.FC<PromptPreviewProps> = ({
           <button
             onClick={onRecompose}
             disabled={isComposing}
-            className="flex items-center gap-1 px-2 py-1 rounded-md font-mono text-[10px] uppercase tracking-wide
+            className="flex items-center gap-1 px-2 py-1 rounded-md font-mono text-sm uppercase tracking-wide
                        text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10
                        transition-all duration-200 disabled:opacity-50"
           >
@@ -50,10 +50,10 @@ const PromptPreview: React.FC<PromptPreviewProps> = ({
       {artStyle && (
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-3 h-3 text-amber-400" />
-          <span className="font-mono text-[10px] uppercase tracking-wide text-amber-400/80">
+          <span className="font-mono text-sm uppercase tracking-wide text-amber-400/80">
             project_style:
           </span>
-          <span className="font-mono text-xs text-slate-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+          <span className="font-mono text-sm text-slate-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
             {artStyle.length > 50 ? artStyle.substring(0, 50) + '...' : artStyle}
           </span>
         </div>
@@ -67,7 +67,7 @@ const PromptPreview: React.FC<PromptPreviewProps> = ({
           className="flex items-center gap-2 py-4"
         >
           <div className="w-4 h-4 border-2 border-cyan-500/50 border-t-transparent rounded-full animate-spin" />
-          <span className="font-mono text-xs text-slate-500">composing_prompt...</span>
+          <span className="font-mono text-sm text-slate-400">composing_prompt...</span>
         </motion.div>
       ) : prompt ? (
         <motion.div
@@ -77,17 +77,17 @@ const PromptPreview: React.FC<PromptPreviewProps> = ({
           className="relative"
         >
           <div className="p-3 bg-slate-800/50 rounded-md border border-slate-700/30">
-            <p className="font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
+            <p className="font-mono text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
               {prompt}
             </p>
           </div>
-          <div className="absolute bottom-2 right-2 font-mono text-[9px] text-slate-600">
+          <div className="absolute bottom-2 right-2 font-mono text-sm text-slate-400">
             {prompt.length}/1500
           </div>
         </motion.div>
       ) : (
         <div className="py-4 text-center">
-          <span className="font-mono text-xs text-slate-500">
+          <span className="font-mono text-sm text-slate-400">
             // select_options_to_compose_prompt
           </span>
         </div>

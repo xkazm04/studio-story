@@ -128,10 +128,10 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-gray-900 rounded-lg border border-gray-800 p-6 max-w-md w-full"
+        className="bg-slate-900 rounded-lg border border-slate-800 p-6 max-w-md w-full"
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-white">Create Relationship</h3>
+          <h3 className="ms-h3">Create Relationship</h3>
           <div className="flex items-center gap-2">
             <IconButton
               icon={<Sparkles size={16} />}
@@ -145,7 +145,7 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-slate-400 hover:text-white transition-colors"
               data-testid="close-relationship-form-btn"
             >
               <X size={20} />
@@ -162,13 +162,13 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Character Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Character *
             </label>
             <select
               value={targetCharId}
               onChange={(e) => setTargetCharId(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
               <option value="">Select a character...</option>
@@ -182,7 +182,7 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
 
           {/* Relationship Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Relationship Type
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -195,7 +195,7 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
                     'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                     relType === type.value
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                   )}
                 >
                   {type.label}
@@ -206,7 +206,7 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
 
           {/* Event Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Event Date (Optional)
             </label>
             <input
@@ -214,20 +214,20 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
               placeholder="e.g., Before the story, Act 1, etc."
-              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Description *
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the relationship between these characters..."
-              className="w-full min-h-[100px] px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full min-h-[100px] px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               required
             />
           </div>
@@ -237,14 +237,14 @@ const CreateRelationshipForm: React.FC<CreateRelationshipFormProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !targetCharId || !description.trim()}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-colors"
             >
               {isSubmitting ? 'Creating...' : 'Create Relationship'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors"
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors"
             >
               Cancel
             </button>

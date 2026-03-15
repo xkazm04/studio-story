@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { slideInRight } from '@/lib/animations';
 import { Grid3X3, Sparkles } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { useCreatorUIStore } from '../../store/creatorUIStore';
@@ -20,7 +21,7 @@ export function OptionsList({ searchQuery }: OptionsListProps) {
 
   if (!activeCategory) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-slate-600 p-8">
+      <div className="flex flex-col items-center justify-center min-h-[300px] text-slate-400 p-8">
         <Grid3X3 size={32} className="mb-3 opacity-50" />
         <p className="text-sm text-center">Select a category from the left panel</p>
       </div>
@@ -48,15 +49,16 @@ export function OptionsList({ searchQuery }: OptionsListProps) {
   return (
     <motion.div
       key={activeCategory}
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
+      variants={slideInRight}
+      initial="initial"
+      animate="animate"
       className="p-3"
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs uppercase tracking-wider text-slate-500">
+        <span className="text-sm uppercase tracking-wider text-slate-400">
           {category.label} Options
         </span>
-        <span className="text-xs text-slate-600">{filtered.length}{hasCustom ? ' + 1 custom' : ''} available</span>
+        <span className="text-sm text-slate-400">{filtered.length}{hasCustom ? ' + 1 custom' : ''} available</span>
       </div>
 
       <div className="grid grid-cols-1 gap-2">
@@ -74,10 +76,10 @@ export function OptionsList({ searchQuery }: OptionsListProps) {
               <Sparkles className="w-4 h-4 text-amber-400" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-medium text-amber-300 mb-0.5">Custom Value</p>
-              <p className="text-[10px] text-slate-400 truncate">{sel.customPrompt}</p>
+              <p className="text-xs font-medium text-amber-300 mb-0.5">Custom Value</p>
+              <p className="text-xs text-slate-400 truncate">{sel.customPrompt}</p>
             </div>
-            <span className="text-[9px] text-slate-600 shrink-0">click to clear</span>
+            <span className="text-xs text-slate-400 shrink-0">click to clear</span>
           </button>
         )}
 
@@ -92,7 +94,7 @@ export function OptionsList({ searchQuery }: OptionsListProps) {
       </div>
 
       {filtered.length === 0 && !hasCustom && searchQuery && (
-        <p className="text-sm text-slate-600 text-center py-8">No matching options</p>
+        <p className="text-sm text-slate-400 text-center py-8">No matching options</p>
       )}
     </motion.div>
   );

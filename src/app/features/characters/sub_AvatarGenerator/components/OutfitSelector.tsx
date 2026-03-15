@@ -119,13 +119,13 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
             selectedOutfit && 'border-cyan-500/30 bg-cyan-500/5'
           )}
         >
-          <Shirt size={14} className={selectedOutfit ? 'text-cyan-400' : 'text-slate-500'} />
-          <span className="font-mono text-xs text-slate-300 truncate max-w-[100px]">
+          <Shirt size={14} className={selectedOutfit ? 'text-cyan-400' : 'text-slate-400'} />
+          <span className="font-mono text-sm text-slate-300 truncate max-w-[100px]">
             {selectedOutfit?.name || 'No outfit'}
           </span>
           <ChevronDown
             size={12}
-            className={cn('text-slate-500 transition-transform', isOpen && 'rotate-180')}
+            className={cn('text-slate-400 transition-transform', isOpen && 'rotate-180')}
           />
         </button>
 
@@ -145,7 +145,7 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
                   !selectedOutfit ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50'
                 )}
               >
-                <span className="font-mono text-xs">No specific outfit</span>
+                <span className="font-mono text-sm">No specific outfit</span>
                 {!selectedOutfit && <Check size={12} className="ml-auto" />}
               </button>
 
@@ -163,13 +163,13 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
                   )}
                 >
                   {outfit.is_default && <Star size={10} className="text-yellow-400" />}
-                  <span className="font-mono text-xs truncate flex-1">{outfit.name}</span>
+                  <span className="font-mono text-sm truncate flex-1">{outfit.name}</span>
                   {selectedOutfit?.id === outfit.id && <Check size={12} />}
                 </button>
               ))}
 
               {outfits.length === 0 && (
-                <div className="px-3 py-2 text-slate-500 font-mono text-xs">
+                <div className="px-3 py-2 text-slate-400 font-mono text-sm">
                   No outfits defined
                 </div>
               )}
@@ -186,12 +186,12 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             outfit_selection
           </h3>
         </div>
         {isLoading && (
-          <span className="text-[10px] font-mono text-slate-500">loading...</span>
+          <span className="text-sm font-mono text-slate-400">loading...</span>
         )}
       </div>
 
@@ -209,7 +209,7 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <Shirt size={20} className="text-slate-500" />
+                  <Shirt size={20} className="text-slate-400" />
                 </div>
               )}
             </div>
@@ -226,7 +226,7 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
               </div>
               <span
                 className={cn(
-                  'inline-block mt-1 px-1.5 py-0.5 text-[10px] font-mono rounded border',
+                  'inline-block mt-1 px-1.5 py-0.5 text-sm font-mono rounded border',
                   OUTFIT_TYPE_COLORS[selectedOutfitDetails.outfit_type] || 'bg-slate-700 text-slate-400'
                 )}
               >
@@ -236,8 +236,8 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
               {/* Context tags preview */}
               {selectedOutfitDetails.context_tags.length > 0 && (
                 <div className="flex items-center gap-1 mt-2">
-                  <Tag size={10} className="text-slate-500" />
-                  <span className="text-[10px] text-slate-500 truncate">
+                  <Tag size={10} className="text-slate-400" />
+                  <span className="text-sm text-slate-400 truncate">
                     {selectedOutfitDetails.context_tags.slice(0, 3).join(', ')}
                     {selectedOutfitDetails.context_tags.length > 3 && '...'}
                   </span>
@@ -251,11 +251,11 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
             <div className="mt-2 pt-2 border-t border-slate-700/50">
               <div className="flex items-center gap-1 mb-1">
                 <Sparkles size={10} className="text-cyan-400" />
-                <span className="text-[10px] font-mono text-slate-500 uppercase">
+                <span className="text-sm font-mono text-slate-400 uppercase">
                   prompt_fragment
                 </span>
               </div>
-              <p className="text-[10px] font-mono text-slate-400 italic line-clamp-2">
+              <p className="text-sm font-mono text-slate-400 italic line-clamp-2">
                 "{selectedOutfit.promptFragment}"
               </p>
             </div>
@@ -263,9 +263,9 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
         </div>
       ) : (
         <div className="mb-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50 text-center">
-          <Shirt size={24} className="mx-auto text-slate-600 mb-2" />
-          <p className="font-mono text-xs text-slate-500">No outfit selected</p>
-          <p className="font-mono text-[10px] text-slate-600 mt-1">
+          <Shirt size={24} className="mx-auto text-slate-400 mb-2" />
+          <p className="font-mono text-sm text-slate-400">No outfit selected</p>
+          <p className="font-mono text-sm text-slate-400 mt-1">
             Avatar will use default appearance
           </p>
         </div>
@@ -273,12 +273,12 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
 
       {/* Outfit Grid */}
       <div className="space-y-2">
-        <span className="font-mono text-[10px] text-slate-500 uppercase">available_outfits</span>
+        <span className="font-mono text-sm text-slate-400 uppercase">available_outfits</span>
 
         {outfits.length === 0 ? (
           <div className="p-4 text-center border border-dashed border-slate-700 rounded-lg">
-            <p className="font-mono text-xs text-slate-500">No outfits defined for this character</p>
-            <p className="font-mono text-[10px] text-slate-600 mt-1">
+            <p className="font-mono text-sm text-slate-400">No outfits defined for this character</p>
+            <p className="font-mono text-sm text-slate-400 mt-1">
               Create outfits in the Wardrobe Manager
             </p>
           </div>
@@ -298,9 +298,9 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
             >
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded bg-slate-700/50 flex items-center justify-center">
-                  <Shirt size={14} className="text-slate-500" />
+                  <Shirt size={14} className="text-slate-400" />
                 </div>
-                <span className="font-mono text-xs text-slate-400">None</span>
+                <span className="font-mono text-sm text-slate-400">None</span>
               </div>
             </button>
 
@@ -327,7 +327,7 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Shirt size={14} className="text-slate-500" />
+                        <Shirt size={14} className="text-slate-400" />
                       </div>
                     )}
                   </div>
@@ -336,11 +336,11 @@ const OutfitSelector: React.FC<OutfitSelectorProps> = ({
                       {outfit.is_default && (
                         <Star size={8} className="text-yellow-400 flex-shrink-0" />
                       )}
-                      <span className="font-mono text-xs text-slate-300 truncate">
+                      <span className="font-mono text-sm text-slate-300 truncate">
                         {outfit.name}
                       </span>
                     </div>
-                    <span className="font-mono text-[9px] text-slate-500">
+                    <span className="font-mono text-sm text-slate-400">
                       {outfit.outfit_type}
                     </span>
                   </div>

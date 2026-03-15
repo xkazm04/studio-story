@@ -710,12 +710,12 @@ const EditorCanvas: React.FC<EditorCanvasProps> = ({
       />
 
       {/* Zoom indicator */}
-      <div className="absolute bottom-4 left-4 px-2 py-1 bg-slate-900/80 rounded text-xs text-slate-300 font-mono">
+      <div className="absolute bottom-4 left-4 px-2 py-1 bg-slate-900/80 rounded text-sm text-slate-300 font-mono">
         {Math.round(zoom * 100)}%
       </div>
 
       {/* Image dimensions */}
-      <div className="absolute bottom-4 right-4 px-2 py-1 bg-slate-900/80 rounded text-xs text-slate-300 font-mono">
+      <div className="absolute bottom-4 right-4 px-2 py-1 bg-slate-900/80 rounded text-sm text-slate-300 font-mono">
         {canvasState.width} × {canvasState.height}
       </div>
     </div>

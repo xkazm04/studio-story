@@ -33,15 +33,15 @@ export interface EmptyStateProps {
 }
 
 const variantClasses: Record<EmptyStateVariant, string> = {
-  default: 'flex flex-col items-center justify-center py-12 gap-3',
-  compact: 'flex flex-col items-center justify-center py-8 gap-2',
-  centered: 'flex flex-col items-center justify-center h-full min-h-64 gap-3',
+  default: 'flex flex-col items-center justify-center py-6 gap-2',
+  compact: 'flex flex-col items-center justify-center py-4 gap-1.5',
+  centered: 'flex flex-col items-center justify-center h-full min-h-48 gap-2',
 };
 
 const iconSizeClasses: Record<EmptyStateIconSize, string> = {
-  sm: '[&>svg]:w-8 [&>svg]:h-8',
-  md: '[&>svg]:w-12 [&>svg]:h-12',
-  lg: '[&>svg]:w-16 [&>svg]:h-16',
+  sm: '[&>svg]:w-6 [&>svg]:h-6',
+  md: '[&>svg]:w-9 [&>svg]:h-9',
+  lg: '[&>svg]:w-12 [&>svg]:h-12',
 };
 
 function AnimatedWrapper({ animated, delay, children }: { animated: boolean; delay: number; children: ReactNode }) {
@@ -80,7 +80,7 @@ export function EmptyState({
     >
       {icon && (
         <AnimatedWrapper animated={animated} delay={0.1}>
-          <div className={cn('relative text-slate-500 mb-1', iconSizeClasses[iconSize])}>
+          <div className={cn('relative text-slate-400 mb-1', iconSizeClasses[iconSize])}>
             {glowColor && (
               <div
                 className="absolute inset-0 blur-3xl opacity-20 -z-10 scale-150 backdrop-blur-sm"
@@ -93,7 +93,7 @@ export function EmptyState({
       )}
       {monoLabel && (
         <AnimatedWrapper animated={animated} delay={0.15}>
-          <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">{monoLabel}</span>
+          <span className="font-mono text-xs uppercase tracking-wider text-slate-400">{monoLabel}</span>
         </AnimatedWrapper>
       )}
       <AnimatedWrapper animated={animated} delay={0.2}>
@@ -101,7 +101,7 @@ export function EmptyState({
       </AnimatedWrapper>
       {subtitle && (
         <AnimatedWrapper animated={animated} delay={0.25}>
-          <p className="text-xs text-slate-500 max-w-xs">{subtitle}</p>
+          <p className="text-sm text-slate-400 max-w-xs">{subtitle}</p>
         </AnimatedWrapper>
       )}
       {(action || secondaryAction) && (
@@ -111,14 +111,14 @@ export function EmptyState({
               action.variant === 'link' ? (
                 <button
                   onClick={action.onClick}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 hover:underline transition-colors mt-1"
+                  className="text-sm text-cyan-400 hover:text-cyan-300 hover:underline transition-colors mt-1"
                 >
                   {action.label}
                 </button>
               ) : animated ? (
                 <motion.button
                   onClick={action.onClick}
-                  className="mt-3 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 text-sm rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                  className="mt-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 text-sm rounded-lg font-medium transition-colors inline-flex items-center gap-1.5"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -128,7 +128,7 @@ export function EmptyState({
               ) : (
                 <button
                   onClick={action.onClick}
-                  className="mt-3 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 text-sm rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                  className="mt-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 text-sm rounded-lg font-medium transition-colors inline-flex items-center gap-1.5"
                 >
                   {action.icon && <span className="[&>svg]:w-4 [&>svg]:h-4">{action.icon}</span>}
                   {action.label}
@@ -138,7 +138,7 @@ export function EmptyState({
             {secondaryAction && (
               <button
                 onClick={secondaryAction.onClick}
-                className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
               >
                 {secondaryAction.label}
               </button>

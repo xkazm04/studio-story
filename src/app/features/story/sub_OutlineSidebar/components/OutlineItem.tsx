@@ -10,6 +10,7 @@ import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Scene } from '@/app/types/Scene';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
 import { Play, AlertTriangle, GitBranch, FileText, Image, Type, XCircle } from 'lucide-react';
 
 interface OutlineItemProps {
@@ -122,7 +123,7 @@ function OutlineItemComponent({
           <FileText
             className={cn(
               'w-3.5 h-3.5 transition-colors',
-              hasContent ? 'text-slate-400' : 'text-slate-600',
+              hasContent ? 'text-slate-400' : 'text-slate-400',
               'group-hover:text-slate-300'
             )}
           />
@@ -131,7 +132,7 @@ function OutlineItemComponent({
 
       {/* Scene Name */}
       <div className="flex-1 min-w-0">
-        <span className={cn('truncate text-sm font-medium', status.text)}>
+        <span className={cn(TYPOGRAPHY.h3, 'truncate', status.text)}>
           {scene.name || 'Untitled scene'}
         </span>
       </div>
@@ -141,13 +142,13 @@ function OutlineItemComponent({
         <Type
           className={cn(
             'w-3 h-3 transition-colors',
-            hasTitle ? 'text-emerald-400' : 'text-slate-600'
+            hasTitle ? 'text-emerald-400' : 'text-slate-400'
           )}
         />
         <Image
           className={cn(
             'w-3 h-3 transition-colors',
-            hasImage ? 'text-emerald-400' : 'text-slate-600'
+            hasImage ? 'text-emerald-400' : 'text-slate-400'
           )}
         />
       </div>
@@ -158,7 +159,7 @@ function OutlineItemComponent({
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className={cn(
-            'flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-mono font-medium',
+            'flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-sm font-mono font-medium',
             'transition-colors border',
             isSelected
               ? 'bg-cyan-800/50 text-cyan-300 border-cyan-500/30'
@@ -180,7 +181,7 @@ function OutlineItemComponent({
           <motion.span
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wide bg-cyan-900/50 text-cyan-400 rounded-md border border-cyan-500/30"
+            className={cn(TYPOGRAPHY.caption, 'px-1.5 py-0.5 font-mono font-bold uppercase tracking-wide bg-cyan-900/50 text-cyan-400 rounded-md border border-cyan-500/30')}
           >
             Start
           </motion.span>
@@ -189,7 +190,7 @@ function OutlineItemComponent({
           <motion.span
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wide bg-amber-900/50 text-amber-400 rounded-md border border-amber-500/30"
+            className={cn(TYPOGRAPHY.caption, 'px-1.5 py-0.5 font-mono font-bold uppercase tracking-wide bg-amber-900/50 text-amber-400 rounded-md border border-amber-500/30')}
           >
             Orphan
           </motion.span>
@@ -198,7 +199,7 @@ function OutlineItemComponent({
           <motion.span
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wide bg-red-900/50 text-red-400 rounded-md border border-red-500/30"
+            className={cn(TYPOGRAPHY.caption, 'px-1.5 py-0.5 font-mono font-bold uppercase tracking-wide bg-red-900/50 text-red-400 rounded-md border border-red-500/30')}
           >
             End
           </motion.span>

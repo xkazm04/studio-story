@@ -30,7 +30,7 @@ const FactionsList: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-gray-400">Loading factions...</div>
+        <div className="animate-pulse text-slate-400">Loading factions...</div>
       </div>
     );
   }
@@ -61,8 +61,8 @@ const FactionsList: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold text-white">Factions</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="ms-h2">Factions</h2>
+          <p className="ms-caption mt-1">
             Organize characters into factions and groups
           </p>
         </div>
@@ -78,11 +78,11 @@ const FactionsList: React.FC = () => {
       {/* Factions Grid */}
       {factions.length === 0 ? (
         <div className="text-center py-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-800/50 text-gray-400 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/50 text-slate-400 mb-4">
             <Plus size={28} />
           </div>
           <h3 className="text-lg text-white mb-2">No factions yet</h3>
-          <p className="text-gray-400 text-sm max-w-md mx-auto mb-6">
+          <p className="text-slate-400 text-sm max-w-md mx-auto mb-6">
             Create factions to organize your characters into groups, organizations, or allegiances.
           </p>
           <button

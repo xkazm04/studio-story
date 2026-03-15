@@ -69,7 +69,7 @@ export default function PacingControls({
             <Gauge className="w-4 h-4 text-cyan-400" />
             <label className="text-sm font-medium text-slate-200">Speech Rate</label>
           </div>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {getSpeedLabel(pacing.speed)} ({(pacing.speed * 100).toFixed(0)}%)
           </span>
         </div>
@@ -92,7 +92,7 @@ export default function PacingControls({
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
-                <span className="text-xs">{preset.label}</span>
+                <span className="text-sm">{preset.label}</span>
               </motion.button>
             );
           })}
@@ -106,7 +106,7 @@ export default function PacingControls({
           step={0.05}
           onChange={(value) => handleChange('speed', value)}
         />
-        <div className="flex justify-between text-[10px] text-slate-500">
+        <div className="flex justify-between text-sm text-slate-400">
           <span>0.5x</span>
           <span>1.0x</span>
           <span>2.0x</span>
@@ -123,8 +123,8 @@ export default function PacingControls({
         {/* Sentence pause */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400">Between Sentences</span>
-            <span className="text-xs text-slate-500">{pacing.pauseBetweenSentences}ms</span>
+            <span className="text-sm text-slate-400">Between Sentences</span>
+            <span className="text-sm text-slate-400">{pacing.pauseBetweenSentences}ms</span>
           </div>
           <Slider
             value={pacing.pauseBetweenSentences}
@@ -138,8 +138,8 @@ export default function PacingControls({
         {/* Clause pause */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400">Between Clauses</span>
-            <span className="text-xs text-slate-500">{pacing.pauseBetweenClauses}ms</span>
+            <span className="text-sm text-slate-400">Between Clauses</span>
+            <span className="text-sm text-slate-400">{pacing.pauseBetweenClauses}ms</span>
           </div>
           <Slider
             value={pacing.pauseBetweenClauses}
@@ -158,7 +158,7 @@ export default function PacingControls({
             <Waves className="w-4 h-4 text-purple-400" />
             <label className="text-sm font-medium text-slate-200">Natural Variation</label>
           </div>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm text-slate-400">
             {getVariationLabel(pacing.naturalVariation)}
           </span>
         </div>
@@ -170,7 +170,7 @@ export default function PacingControls({
           step={0.02}
           onChange={(value) => handleChange('naturalVariation', value)}
         />
-        <p className="text-[10px] text-slate-500">
+        <p className="text-sm text-slate-400">
           Adds subtle randomness to timing for more human-like delivery
         </p>
       </div>
@@ -181,7 +181,7 @@ export default function PacingControls({
           <Wind className="w-4 h-4 text-emerald-400" />
           <div>
             <span className="text-sm text-slate-200">Breath Pauses</span>
-            <p className="text-[10px] text-slate-500">Insert natural breathing sounds</p>
+            <p className="text-sm text-slate-400">Insert natural breathing sounds</p>
           </div>
         </div>
         <button
@@ -200,7 +200,7 @@ export default function PacingControls({
 
       {/* Preview Summary */}
       <div className="p-3 rounded-lg bg-slate-900/60 border border-slate-800/50">
-        <div className="text-xs text-slate-400 space-y-1">
+        <div className="text-sm text-slate-400 space-y-1">
           <div className="flex justify-between">
             <span>Speed:</span>
             <span className="text-slate-300">{getSpeedLabel(pacing.speed)}</span>

@@ -45,14 +45,14 @@ export default function ActItem({ act, actIndex, scenes }: ActItemProps) {
     >
       {/* Act Description */}
       {act.description && (
-        <div className="mb-3 pb-3 border-b border-gray-700/30">
-          <p className="text-sm text-gray-300 leading-relaxed">{act.description}</p>
+        <div className="mb-3 pb-3 border-b border-slate-700/30">
+          <p className="text-sm text-slate-300 leading-relaxed">{act.description}</p>
         </div>
       )}
 
       {/* Scenes List */}
       <div className="space-y-2">
-        <h4 className="text-xs font-semibold text-gray-400 mb-2">Scenes</h4>
+        <h4 className="text-sm font-semibold text-slate-400 mb-2">Scenes</h4>
         {sortedScenes.length > 0 ? (
           <div className="space-y-1.5">
             {sortedScenes.map((scene, sceneIdx) => (
@@ -64,7 +64,7 @@ export default function ActItem({ act, actIndex, scenes }: ActItemProps) {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-500 italic py-2">No scenes in this act</p>
+          <p className="text-sm text-slate-400 italic py-2">No scenes in this act</p>
         )}
       </div>
     </CollapsibleSection>

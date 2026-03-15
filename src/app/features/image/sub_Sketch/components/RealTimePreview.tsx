@@ -113,8 +113,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-400 capitalize">{progress.stage}</span>
-        <span className={cn('text-[10px]', getQualityColor(progress.currentQuality))}>
+        <span className="text-sm text-slate-400 capitalize">{progress.stage}</span>
+        <span className={cn('text-sm', getQualityColor(progress.currentQuality))}>
           {getQualityLabel(progress.currentQuality)}
         </span>
       </div>
@@ -127,7 +127,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
         />
       </div>
       {progress.estimatedTimeRemaining && (
-        <div className="flex items-center gap-1 text-[10px] text-slate-500">
+        <div className="flex items-center gap-1 text-sm text-slate-400">
           <Clock className="w-3 h-3" />
           <span>~{Math.ceil(progress.estimatedTimeRemaining / 1000)}s remaining</span>
         </div>
@@ -172,16 +172,16 @@ const PreviewImage: React.FC<PreviewImageProps> = ({
         className="w-full aspect-square object-cover bg-slate-900"
       />
 
-      {/* Overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+      {/* Overlay on hover — 150ms delay prevents flicker */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-150">
         <div className="absolute bottom-0 left-0 right-0 p-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <span className={cn('text-[10px]', getQualityColor(result.quality))}>
+              <span className={cn('text-sm', getQualityColor(result.quality))}>
                 {getQualityLabel(result.quality)}
               </span>
-              <span className="text-[10px] text-slate-500">•</span>
-              <span className={cn('text-[10px]', confidenceInfo.color)}>
+              <span className="text-sm text-slate-400">•</span>
+              <span className={cn('text-sm', confidenceInfo.color)}>
                 {Math.round(result.confidence * 100)}%
               </span>
             </div>
@@ -192,22 +192,24 @@ const PreviewImage: React.FC<PreviewImageProps> = ({
                   onPin();
                 }}
                 className={cn(
-                  'p-1 rounded transition-colors',
+                  'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
                   result.isPinned
                     ? 'text-yellow-400 bg-yellow-500/20'
                     : 'text-slate-400 hover:text-white'
                 )}
+                aria-label={result.isPinned ? 'Unpin result' : 'Pin result'}
               >
-                {result.isPinned ? <Pin className="w-3 h-3" /> : <PinOff className="w-3 h-3" />}
+                {result.isPinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onDownload();
                 }}
-                className="p-1 text-slate-400 hover:text-white rounded transition-colors"
+                className="p-2.5 text-slate-400 hover:text-white rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+                aria-label="Download result"
               >
-                <Download className="w-3 h-3" />
+                <Download className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -379,13 +381,13 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
   };
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col gap-3', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-medium text-slate-200">Real-Time Preview</span>
-          <div className={cn('flex items-center gap-1 text-[10px]', getStatusColor(status))}>
+          <span className="text-sm font-medium text-slate-200">Real-Time Preview</span>
+          <div className={cn('flex items-center gap-1 text-sm', getStatusColor(status))}>
             <StatusIcon />
             <span className="capitalize">{status}</span>
           </div>
@@ -394,7 +396,7 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
           <button
             onClick={() => setIsAutoEnabled(!isAutoEnabled)}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-2.5 rounded transition-colors',
               isAutoEnabled
                 ? 'bg-green-500/20 text-green-400'
                 : 'bg-slate-700/50 text-slate-400'
@@ -406,7 +408,7 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
           {status === 'generating' ? (
             <button
               onClick={handleCancel}
-              className="p-1.5 rounded bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+              className="p-2.5 rounded bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
               title="Cancel generation"
             >
               <Pause className="w-3.5 h-3.5" />
@@ -416,10 +418,10 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
               onClick={handleManualGenerate}
               disabled={!sketchCanvas || !prompt}
               className={cn(
-                'p-1.5 rounded transition-colors',
+                'p-2.5 rounded transition-colors',
                 sketchCanvas && prompt
                   ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'
-                  : 'bg-slate-700/50 text-slate-500 cursor-not-allowed'
+                  : 'bg-slate-700/50 text-slate-400 cursor-not-allowed'
               )}
               title="Generate now"
             >
@@ -445,14 +447,14 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
             <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-slate-900/90 to-transparent">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className={cn('text-xs', getQualityColor(selectedResult.quality))}>
+                  <span className={cn('text-sm', getQualityColor(selectedResult.quality))}>
                     {getQualityLabel(selectedResult.quality)}
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-sm text-slate-400">
                     {Math.round(selectedResult.confidence * 100)}% confidence
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                <div className="flex items-center gap-1 text-sm text-slate-400">
                   <Clock className="w-3 h-3" />
                   <span>{selectedResult.processingTime}ms</span>
                 </div>
@@ -461,8 +463,8 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
           </>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-            <Zap className="w-10 h-10 text-slate-700 mb-2" />
-            <p className="text-xs text-slate-500">
+            <Zap className="w-10 h-10 text-slate-400 mb-2" />
+            <p className="text-sm text-slate-400">
               {prompt ? 'Draw on the canvas to see real-time previews' : 'Add a prompt to enable preview generation'}
             </p>
           </div>
@@ -483,7 +485,7 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
                   alt="Current"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-slate-900/80 rounded text-[10px] text-slate-300">
+                <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-slate-900/80 rounded text-sm text-slate-300">
                   Current
                 </div>
               </div>
@@ -493,13 +495,14 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
                   alt="Comparison"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-900/80 rounded text-[10px] text-slate-300">
+                <div className="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-900/80 rounded text-sm text-slate-300">
                   Comparison
                 </div>
               </div>
               <button
                 onClick={() => setShowComparison(false)}
-                className="absolute top-2 right-2 p-1 bg-slate-900/80 rounded text-slate-300 hover:text-white"
+                className="absolute top-1 right-1 p-2.5 bg-slate-900/80 rounded text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+                aria-label="Close comparison"
               >
                 <EyeOff className="w-4 h-4" />
               </button>
@@ -512,12 +515,12 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
       {results.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider">
+            <span className="text-sm text-slate-400 uppercase tracking-wider">
               Results ({results.length})
             </span>
             <button
               onClick={handleClearResults}
-              className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+              className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
             >
               Clear
             </button>
@@ -541,14 +544,14 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
       {selectedResult && (
         <div className="flex items-center justify-between p-2 bg-slate-800/50 rounded-lg">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-[10px]">
+            <div className="flex items-center gap-1 text-sm">
               <TrendingUp className="w-3 h-3 text-green-400" />
               <span className="text-slate-400">Quality:</span>
               <span className={getQualityColor(selectedResult.quality)}>
                 {getQualityLabel(selectedResult.quality)}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-[10px]">
+            <div className="flex items-center gap-1 text-sm">
               <span className="text-slate-400">Seed:</span>
               <span className="text-slate-300 font-mono">
                 {selectedResult.metadata?.seed}
@@ -561,8 +564,9 @@ export const RealTimePreview: React.FC<RealTimePreviewProps> = ({
                 navigator.clipboard.writeText(String(selectedResult.metadata.seed));
               }
             }}
-            className="p-1 text-slate-400 hover:text-slate-200 transition-colors"
+            className="p-2.5 text-slate-400 hover:text-slate-200 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
             title="Copy seed"
+            aria-label="Copy seed"
           >
             <Copy className="w-3.5 h-3.5" />
           </button>

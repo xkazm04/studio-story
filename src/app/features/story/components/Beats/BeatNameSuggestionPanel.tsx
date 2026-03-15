@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Check, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { INTERACTIVE, BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 
 export interface BeatSuggestion {
   name: string;
@@ -34,18 +35,18 @@ export const BeatNameSuggestionPanel = ({
           initial={{ opacity: 0, y: position === 'below' ? -10 : 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: position === 'below' ? -10 : 10, scale: 0.95 }}
-          transition={{ duration: 0.15, ease: 'easeOut' }}
+          transition={BEAT_ANIMATIONS.micro}
           className={clsx(
             'absolute left-0 right-0 z-50',
             position === 'below' ? 'top-full mt-1' : 'bottom-full mb-1'
           )}
           data-testid="beat-suggestion-panel"
         >
-          <div className="bg-gray-900/95 backdrop-blur-sm border border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/10 overflow-hidden">
+          <div className="bg-slate-900/95 backdrop-blur-sm border border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/10 overflow-hidden">
             {isLoading ? (
               <div className="flex items-center gap-3 px-4 py-3" data-testid="beat-suggestion-loading">
                 <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-slate-400">
                   Generating suggestions...
                 </span>
               </div>
@@ -54,20 +55,20 @@ export const BeatNameSuggestionPanel = ({
                 <div className="px-3 py-2 bg-cyan-500/10 border-b border-cyan-500/20">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span className="text-xs font-medium text-cyan-300 uppercase tracking-wide">
+                    <span className="text-sm font-medium text-cyan-300 uppercase tracking-wide">
                       AI Suggestions
                     </span>
                   </div>
                 </div>
-                <div className="divide-y divide-gray-800">
+                <div className="divide-y divide-slate-800">
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
                       onClick={() => onSelect(suggestion)}
                       className={clsx(
-                        'w-full text-left px-4 py-3 transition-all',
-                        'hover:bg-cyan-500/10 focus:bg-cyan-500/15',
-                        'focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:ring-inset',
+                        'w-full text-left px-4 py-3',
+                        INTERACTIVE.accentHover,
+                        INTERACTIVE.focusRing,
                         'group'
                       )}
                       data-testid={`beat-suggestion-item-${index}`}
@@ -84,12 +85,12 @@ export const BeatNameSuggestionPanel = ({
                               {suggestion.name}
                             </h4>
                             {suggestion.reasoning && (
-                              <span className="text-xs text-gray-500 italic truncate">
+                              <span className="text-sm text-slate-400 italic truncate">
                                 {suggestion.reasoning}
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-400 leading-relaxed line-clamp-2">
+                          <p className="text-sm text-slate-400 leading-relaxed line-clamp-2">
                             {suggestion.description}
                           </p>
                         </div>
@@ -97,15 +98,15 @@ export const BeatNameSuggestionPanel = ({
                     </button>
                   ))}
                 </div>
-                <div className="px-3 py-2 bg-gray-800/50 border-t border-gray-800">
-                  <p className="text-xs text-gray-500 text-center">
+                <div className="px-3 py-2 bg-slate-800/50 border-t border-slate-800">
+                  <p className="text-sm text-slate-400 text-center">
                     Click a suggestion to use it, or keep typing to refine
                   </p>
                 </div>
               </div>
             ) : (
               <div className="px-4 py-3" data-testid="beat-suggestion-empty">
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-sm text-slate-400 text-center">
                   No suggestions available
                 </p>
               </div>

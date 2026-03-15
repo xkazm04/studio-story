@@ -127,7 +127,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-600">
+            <div className="w-full h-full flex items-center justify-center text-slate-400">
               <Image size={20} />
             </div>
           )}
@@ -164,7 +164,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
           ) : (
             <Check size={14} />
           )}
-          <span className="font-mono text-xs">{consistencyScore}%</span>
+          <span className="font-mono text-sm">{consistencyScore}%</span>
         </div>
 
         {/* Regenerate button */}
@@ -209,7 +209,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={viewMode === 'compact' ? 24 : 32} />
           </div>
         )}
@@ -217,7 +217,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
 
       {/* Score Badge */}
       <div className={cn(
-        'absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono border',
+        'absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
         getScoreColor(consistencyScore)
       )}>
         {needsRegeneration ? (
@@ -231,7 +231,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
       {/* Name and Info */}
       {viewMode !== 'compact' && (
         <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
-          <h4 className="font-mono text-xs text-white truncate">
+          <h4 className="font-mono text-sm text-white truncate">
             {character.characterName}
           </h4>
           {character.extractedFeatures && (
@@ -251,7 +251,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
       {/* Hover overlay for compact view */}
       {viewMode === 'compact' && (
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1">
-          <span className="font-mono text-[9px] text-white truncate w-full text-center">
+          <span className="font-mono text-sm text-white truncate w-full text-center">
             {character.characterName}
           </span>
         </div>
@@ -373,15 +373,15 @@ const CastPreview: React.FC<CastPreviewProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               cast
             </h3>
-            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {stats.total}
             </span>
           </div>
           <div className={cn(
-            'px-1.5 py-0.5 rounded text-[10px] font-mono border',
+            'px-1.5 py-0.5 rounded text-sm font-mono border',
             getScoreColor(stats.avgScore)
           )}>
             {stats.avgScore}%
@@ -401,7 +401,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           ))}
           {filteredCharacters.length > 10 && (
             <div className="aspect-square rounded-lg bg-slate-800/40 border border-slate-700/50
-                            flex items-center justify-center text-slate-500 font-mono text-xs">
+                            flex items-center justify-center text-slate-400 font-mono text-sm">
               +{filteredCharacters.length - 10}
             </div>
           )}
@@ -419,7 +419,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             cast_preview
           </h3>
-          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-500">
+          <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
             {stats.total} characters
           </span>
         </div>
@@ -439,7 +439,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
                   'p-1.5 rounded transition-colors',
                   viewMode === mode
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
               >
                 {icon}
@@ -452,7 +452,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
             <button
               onClick={onRegenerateAll}
               className="flex items-center gap-1 px-2 py-1 rounded bg-cyan-500/20
-                         hover:bg-cyan-500/30 text-cyan-400 text-xs font-mono transition-colors"
+                         hover:bg-cyan-500/30 text-cyan-400 text-sm font-mono transition-colors"
             >
               <Sparkles size={12} />
               <span>Regen {stats.needsWork}</span>
@@ -464,9 +464,9 @@ const CastPreview: React.FC<CastPreviewProps> = ({
       {/* Stats Bar */}
       <div className="flex items-center gap-4 mb-4 p-2 bg-slate-800/30 rounded-lg">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-slate-500 uppercase">avg_score</span>
+          <span className="font-mono text-sm text-slate-400 uppercase">avg_score</span>
           <span className={cn(
-            'px-1.5 py-0.5 rounded text-xs font-mono border',
+            'px-1.5 py-0.5 rounded text-sm font-mono border',
             getScoreColor(stats.avgScore)
           )}>
             {stats.avgScore}%
@@ -474,12 +474,12 @@ const CastPreview: React.FC<CastPreviewProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Check size={12} className="text-green-400" />
-          <span className="font-mono text-xs text-slate-400">{stats.consistent} consistent</span>
+          <span className="font-mono text-sm text-slate-400">{stats.consistent} consistent</span>
         </div>
         {stats.needsWork > 0 && (
           <div className="flex items-center gap-2">
             <AlertTriangle size={12} className="text-yellow-400" />
-            <span className="font-mono text-xs text-slate-400">{stats.needsWork} needs work</span>
+            <span className="font-mono text-sm text-slate-400">{stats.needsWork} needs work</span>
           </div>
         )}
       </div>
@@ -488,14 +488,14 @@ const CastPreview: React.FC<CastPreviewProps> = ({
       <div className="flex flex-wrap items-center gap-2 mb-4">
         {/* Search */}
         <div className="relative flex-1 min-w-48">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search characters..."
             className="w-full pl-8 pr-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
         </div>
@@ -505,7 +505,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           value={filterBy}
           onChange={(e) => setFilterBy(e.target.value as FilterBy)}
           className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                     font-mono text-xs text-slate-300
+                     font-mono text-sm text-slate-300
                      focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
         >
           <option value="all">All Characters</option>
@@ -519,7 +519,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortBy)}
             className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-xs text-slate-300
+                       font-mono text-sm text-slate-300
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           >
             <option value="name">Name</option>
@@ -572,10 +572,10 @@ const CastPreview: React.FC<CastPreviewProps> = ({
 
       {/* Empty state */}
       {!isLoading && filteredCharacters.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <Users size={32} className="mb-3 opacity-50" />
           <p className="font-mono text-sm mb-1">No characters found</p>
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             {characters.length > 0
               ? 'Try adjusting your filters'
               : 'Add characters to your project to see them here'}
@@ -589,15 +589,15 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-cyan-400" />
-              <span className="font-mono text-xs text-slate-400">
+              <span className="font-mono text-sm text-slate-400">
                 Style: {styleDefinition.name}
               </span>
               <span className="px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/30 rounded
-                             text-[10px] font-mono text-cyan-400">
+                             text-sm font-mono text-cyan-400">
                 {styleDefinition.artDirection}
               </span>
             </div>
-            <span className="font-mono text-[10px] text-slate-600">
+            <span className="font-mono text-sm text-slate-400">
               {styleDefinition.consistencyLevel} consistency
             </span>
           </div>

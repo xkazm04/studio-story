@@ -159,13 +159,13 @@ const EventCard: React.FC<{
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="font-medium text-white text-sm">{event.name}</h4>
-                <span className={cn('text-[10px] px-1.5 py-0.5 rounded border', typeColor)}>
+                <span className={cn('text-sm px-1.5 py-0.5 rounded border', typeColor)}>
                   {typeConfig.label}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">{event.date}</p>
+              <p className="text-sm text-slate-400 mt-0.5">{event.date}</p>
               {event.duration_days > 1 && (
-                <span className="text-[10px] text-slate-600">
+                <span className="text-sm text-slate-400">
                   ({event.duration_days} days)
                 </span>
               )}
@@ -174,21 +174,21 @@ const EventCard: React.FC<{
 
           {!readOnly && (
             <div className="flex items-center gap-1">
-              <button onClick={onEdit} className="p-1 text-slate-500 hover:text-cyan-400">
+              <button onClick={onEdit} className="p-1 text-slate-400 hover:text-cyan-400">
                 <Edit3 size={12} />
               </button>
-              <button onClick={onDelete} className="p-1 text-slate-500 hover:text-red-400">
+              <button onClick={onDelete} className="p-1 text-slate-400 hover:text-red-400">
                 <Trash2 size={12} />
               </button>
             </div>
           )}
         </div>
 
-        <p className="text-xs text-slate-400 mt-2 line-clamp-2">{event.description}</p>
+        <p className="text-sm text-slate-400 mt-2 line-clamp-2">{event.description}</p>
 
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-[10px] text-slate-500 hover:text-slate-300 mt-2"
+          className="text-sm text-slate-400 hover:text-slate-300 mt-2"
         >
           {expanded ? 'Show less' : 'Show more'}
         </button>
@@ -202,11 +202,11 @@ const EventCard: React.FC<{
             exit={{ opacity: 0, height: 0 }}
             className="border-t border-slate-700/50 overflow-hidden"
           >
-            <div className="p-3 space-y-3 bg-slate-800/30 text-xs">
+            <div className="p-3 space-y-3 bg-slate-800/30 text-sm">
               {/* Activities */}
               {event.activities.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Traditional Activities
                   </p>
                   <ul className="space-y-0.5">
@@ -224,14 +224,14 @@ const EventCard: React.FC<{
               <div className="grid grid-cols-2 gap-3">
                 {event.traditional_foods && event.traditional_foods.length > 0 && (
                   <div>
-                    <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                    <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                       Traditional Foods
                     </p>
                     <div className="flex flex-wrap gap-1">
                       {event.traditional_foods.map((food, i) => (
                         <span
                           key={i}
-                          className="px-1.5 py-0.5 bg-amber-500/10 text-amber-400 rounded text-[10px]"
+                          className="px-1.5 py-0.5 bg-amber-500/10 text-amber-400 rounded text-sm"
                         >
                           {food}
                         </span>
@@ -242,7 +242,7 @@ const EventCard: React.FC<{
 
                 {event.traditional_dress && (
                   <div>
-                    <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                    <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                       Traditional Dress
                     </p>
                     <p className="text-slate-400">{event.traditional_dress}</p>
@@ -251,7 +251,7 @@ const EventCard: React.FC<{
               </div>
 
               {/* Meta info */}
-              <div className="flex items-center gap-4 text-slate-500">
+              <div className="flex items-center gap-4 text-slate-400">
                 <span className="flex items-center gap-1">
                   <Users size={10} />
                   {event.public_or_private === 'public'
@@ -271,7 +271,7 @@ const EventCard: React.FC<{
               {/* Historical Significance */}
               {event.historical_significance && (
                 <div className="bg-slate-900/50 rounded p-2 border border-slate-700/30">
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-0.5">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-0.5">
                     Historical Significance
                   </p>
                   <p className="text-slate-400 italic">{event.historical_significance}</p>
@@ -281,14 +281,14 @@ const EventCard: React.FC<{
               {/* Related Rituals */}
               {event.related_rituals.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Associated Rituals
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {event.related_rituals.map((ritual, i) => (
                       <span
                         key={i}
-                        className="px-1.5 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded text-[10px]"
+                        className="px-1.5 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 rounded text-sm"
                       >
                         {ritual}
                       </span>
@@ -501,7 +501,7 @@ const EventEditorModal: React.FC<EventEditorModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveActivity(i)}
-                    className="text-slate-500 hover:text-red-400"
+                    className="text-slate-400 hover:text-red-400"
                   >
                     <X size={14} />
                   </button>
@@ -536,7 +536,7 @@ const EventEditorModal: React.FC<EventEditorModalProps> = ({
               {formData.traditional_foods?.map((food, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-amber-500/10 text-amber-400 rounded"
+                  className="inline-flex items-center gap-1 text-sm px-2 py-1 bg-amber-500/10 text-amber-400 rounded"
                 >
                   {food}
                   <button type="button" onClick={() => handleRemoveFood(i)} className="hover:text-red-400">
@@ -622,7 +622,7 @@ const EventEditorModal: React.FC<EventEditorModalProps> = ({
                       type="button"
                       onClick={() => toggleRitual(ritual)}
                       className={cn(
-                        'text-xs px-3 py-1.5 rounded-lg border transition-colors',
+                        'text-sm px-3 py-1.5 rounded-lg border transition-colors',
                         isSelected
                           ? 'bg-orange-500/20 border-orange-500/50 text-orange-300'
                           : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
@@ -810,7 +810,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
 
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1">Calendar Type</label>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Calendar Type</label>
             <select
               value={calendar.calendar_system}
               onChange={(e) => handleCalendarSettingsChange({ calendar_system: e.target.value })}
@@ -825,7 +825,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1">Year Begins</label>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Year Begins</label>
             <input
               type="text"
               value={calendar.year_start}
@@ -836,7 +836,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1">
+            <label className="block text-sm font-medium text-slate-400 mb-1">
               Seasons ({calendar.seasons.length})
             </label>
             <input
@@ -859,7 +859,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-medium text-white">Calendar Events</h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-sm text-slate-400">
             {calendar.events.length} event{calendar.events.length !== 1 ? 's' : ''} throughout the year
           </p>
         </div>
@@ -886,7 +886,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
                     {EVENT_TYPE_ICONS[type]}
                   </div>
                   <span className="text-sm font-medium text-white">{config.label}s</span>
-                  <span className="text-xs text-slate-500">({typeEvents.length})</span>
+                  <span className="text-sm text-slate-400">({typeEvents.length})</span>
                 </div>
 
                 {typeEvents.length > 0 ? (
@@ -904,7 +904,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
                     </AnimatePresence>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-600 italic pl-7">No {config.label.toLowerCase()}s yet</p>
+                  <p className="text-sm text-slate-400 italic pl-7">No {config.label.toLowerCase()}s yet</p>
                 )}
               </div>
             );
@@ -929,7 +929,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
                     onClick={() => handleGenerateEvent(type)}
                     disabled={cli.isRunning || generatingType !== null}
                     className={cn(
-                      'flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50',
+                      'flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50',
                       EVENT_TYPE_COLORS[type]
                     )}
                   >
@@ -978,7 +978,7 @@ const CulturalCalendar: React.FC<CulturalCalendarProps> = ({
             {calendar.observances.map((obs, i) => (
               <span
                 key={i}
-                className="text-[10px] px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded"
+                className="text-sm px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded"
               >
                 {obs}
               </span>

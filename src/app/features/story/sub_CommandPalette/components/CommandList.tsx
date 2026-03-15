@@ -8,6 +8,7 @@
 import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/workspace/theme/tokens';
 import { Command, CommandGroup, CATEGORY_LABELS, CATEGORY_ICONS } from '../types';
 
 interface CommandListProps {
@@ -44,7 +45,7 @@ export function CommandList({
     <div className="max-h-[300px] overflow-y-auto">
       {groups.map((group) => (
         <div key={group.category} className="py-1">
-          <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+          <div className={cn(TYPOGRAPHY.caption, 'px-3 py-1.5 font-semibold uppercase tracking-wider flex items-center gap-1.5')}>
             <span>{CATEGORY_ICONS[group.category]}</span>
             {group.label}
           </div>
@@ -66,7 +67,7 @@ export function CommandList({
       ))}
 
       {commands.length === 0 && (
-        <div className="py-8 text-center text-sm text-slate-500">
+        <div className="py-8 text-center text-sm text-slate-400">
           No commands found
         </div>
       )}
@@ -110,14 +111,15 @@ function CommandItem({ command, isSelected, onSelect, onHover }: CommandItemProp
       <div className="flex-1 min-w-0">
         <p
           className={cn(
-            'text-sm font-medium truncate',
+            TYPOGRAPHY.h3,
+            'truncate',
             isSelected ? 'text-cyan-300' : 'text-slate-200'
           )}
         >
           {command.label}
         </p>
         {command.description && (
-          <p className="text-xs text-slate-500 truncate">{command.description}</p>
+          <p className="text-sm text-slate-400 truncate">{command.description}</p>
         )}
       </div>
 
@@ -125,7 +127,7 @@ function CommandItem({ command, isSelected, onSelect, onHover }: CommandItemProp
       {command.shortcut && (
         <kbd
           className={cn(
-            'shrink-0 px-1.5 py-0.5 text-[10px] font-mono rounded',
+            'shrink-0 px-1.5 py-0.5 text-sm font-mono rounded',
             'bg-slate-800 border border-slate-700 text-slate-400'
           )}
         >

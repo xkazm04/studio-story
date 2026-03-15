@@ -70,7 +70,10 @@ export function serializeManifestsForLLM(): string {
         ...m.inputSchema.optional.map(p => `${p.name}? (${p.type})`),
       ].join(', ');
 
-      lines.push(`- **${m.type}** [${role}/${size}]: ${m.description}`);
+      const densities = m.densityModes
+        ? Object.keys(m.densityModes).join('/')
+        : 'full';
+      lines.push(`- **${m.type}** [${role}/${size}/${m.complexity}] densities=${densities}: ${m.description}`);
       if (props) lines.push(`  Props: ${props}`);
       lines.push(`  Use when: ${m.useCases.slice(0, 2).join('; ')}`);
       if (m.suggestedCompanions?.length) {
@@ -81,7 +84,8 @@ export function serializeManifestsForLLM(): string {
   }
 
   lines.push('## LAYOUTS');
-  lines.push('Available layouts: single, split-2, split-3, grid-4, primary-sidebar, triptych, studio');
+  lines.push('Available layouts: stack, single, split-2, split-3, grid-4, primary-sidebar, triptych, studio');
+  lines.push('- stack: Vertical column for mobile (<768px) — all panels stacked');
   lines.push('- single: One full-width panel');
   lines.push('- split-2: Two columns (wide primary + narrower companion)');
   lines.push('- split-3: Tall left primary + two stacked companions on the right');
@@ -89,6 +93,7 @@ export function serializeManifestsForLLM(): string {
   lines.push('- primary-sidebar: Wide primary + narrow sidebar');
   lines.push('- triptych: Three panels — narrow/wide/narrow');
   lines.push('- studio: Production layout with top toolbar, sidebars, center workspace, and bottom strip');
+  lines.push('Note: Viewport-aware — layouts auto-downgrade on narrow screens (stack<768, max split-2<1024, full>=1280)');
   lines.push('');
   lines.push('## COMPOSITION RULES');
   lines.push('- Default to 1-3 panels. Use 4+ only when user asks for multi-view comparison/workflow.');
@@ -96,6 +101,22 @@ export function serializeManifestsForLLM(): string {
   lines.push('- Use sidebar role only for compact/navigation panels (scene-list, scene-metadata, beats-sidebar, cast-sidebar, advisor, voice-performance).');
   lines.push('- Omit layout unless a specific arrangement is clearly required; let runtime auto-resolve.');
   lines.push('- Avoid replacing workspace if user is iterating in current panel context; prefer show/hide updates.');
+  lines.push('- High-complexity panels need wide slots; low-complexity panels are ideal for sidebars.');
+  lines.push('');
+  lines.push('## DENSITY MODES');
+  lines.push('Each panel supports up to 3 density modes: full, compact, micro.');
+  lines.push('- **full** — default, shows all features and controls');
+  lines.push('- **compact** — reduced UI, key info only, for secondary/sidebar slots');
+  lines.push('- **micro** — badge/chip view (~48px height), shows a single summary metric');
+  lines.push('Set density per panel in compose_workspace directives. Use compact for sidebars and supporting panels. Use micro for reference-only panels where minimal context suffices.');
+  lines.push('');
+  lines.push('## DATA SLICES');
+  lines.push('Pass dataSlice per panel to control what data it shows:');
+  lines.push('- entityId: specific entity to display (scene ID, character ID)');
+  lines.push('- filter: filter expression (e.g. "faction:villain", "scene-participants", "incomplete")');
+  lines.push('- view: which tab/view to show (e.g. "traits", "relationships", "dialogue", "image")');
+  lines.push('- highlight: entity IDs to visually highlight');
+  lines.push('- sort: sort order (e.g. "type", "name", "order")');
   lines.push('');
   lines.push('## ROLES');
   lines.push('Assign roles to panels: primary (main focus), secondary (supporting), tertiary (minor), sidebar (narrow navigation)');

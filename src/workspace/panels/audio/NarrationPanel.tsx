@@ -10,9 +10,11 @@ import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { useVoicesByProject } from '@/app/hooks/useVoices';
 import type { VoiceSettings, VoiceNarrationResult } from '@/app/features/voice/types';
+import type { PanelDensity } from '@/workspace/types';
 
 interface NarrationPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 const DEFAULT_SETTINGS: VoiceSettings = {
@@ -22,7 +24,7 @@ const DEFAULT_SETTINGS: VoiceSettings = {
   speed: 100,
 };
 
-export default function NarrationPanel({ onClose }: NarrationPanelProps) {
+export default function NarrationPanel({ onClose, density }: NarrationPanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id;
   const { data: characters = [] } = characterApi.useProjectCharacters(projectId ?? '', !!projectId);
@@ -36,7 +38,7 @@ export default function NarrationPanel({ onClose }: NarrationPanelProps) {
 
   if (!projectId) {
     return (
-      <PanelFrame title="Narration" icon={AudioLines} onClose={onClose} headerAccent="emerald">
+      <PanelFrame title="Narration" icon={AudioLines} onClose={onClose} headerAccent="emerald" density={density}>
         <PanelEmptyState
           icon={AudioLines}
           title="No project selected"
@@ -58,11 +60,12 @@ export default function NarrationPanel({ onClose }: NarrationPanelProps) {
       title="Narration"
       icon={AudioLines}
       onClose={onClose}
+      density={density}
       actions={
         <button
           type="button"
           onClick={() => setShowControls((v) => !v)}
-          className="rounded px-2 py-0.5 text-[9px] text-violet-300 transition-colors hover:bg-violet-500/12 hover:text-violet-200"
+          className="rounded px-2 py-0.5 text-xs text-violet-300 transition-colors hover:bg-violet-500/12 hover:text-violet-200"
         >
           {showControls ? 'Hide Controls' : 'Voice Settings'}
         </button>

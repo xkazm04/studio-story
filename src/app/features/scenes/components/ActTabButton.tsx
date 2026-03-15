@@ -22,7 +22,7 @@ const ActTabButton: React.FC<ActTabButtonProps> = ({ act, onSelect }) => {
         'relative px-4 py-2 rounded-lg text-sm font-medium transition-all',
         isSelected
           ? 'bg-blue-600 text-white shadow-lg'
-          : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-300'
+          : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

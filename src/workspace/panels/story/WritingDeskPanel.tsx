@@ -27,15 +27,18 @@ const TABS: { id: WritingTab; label: string; icon: React.ElementType }[] = [
   { id: 'image', label: 'Image', icon: ImageIcon },
 ];
 
+import type { PanelDensity } from '@/workspace/types';
+
 interface WritingDeskPanelProps {
   onClose?: () => void;
   onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
+  density?: PanelDensity;
 }
 
 function LazyFallback() {
   return (
     <div className="flex items-center justify-center h-full">
-      <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
+      <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
     </div>
   );
 }
@@ -76,14 +79,14 @@ function SceneImageTab({
           <>
             <button
               onClick={() => onTriggerSkill('image-prompt-compose', { sceneId })}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-emerald-600/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-600/25 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-600/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-600/25 transition-colors"
             >
               <ImageIcon className="w-3.5 h-3.5" />
               Generate from Scene
             </button>
             <button
               onClick={() => onTriggerSkill('cover-prompt', { sceneId })}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 border border-slate-700/50 hover:bg-slate-800/40 transition-colors"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 border border-slate-700/50 hover:bg-slate-800/40 transition-colors"
             >
               <RefreshCw className="w-3 h-3" />
               Cover
@@ -95,7 +98,7 @@ function SceneImageTab({
   );
 }
 
-export default function WritingDeskPanel({ onClose, onTriggerSkill }: WritingDeskPanelProps) {
+export default function WritingDeskPanel({ onClose, onTriggerSkill, density }: WritingDeskPanelProps) {
   const [activeTab, setActiveTab] = useState<WritingTab>('content');
   const { selectedProject, selectedSceneId } = useProjectStore();
   const projectId = selectedProject?.id ?? '';
@@ -122,11 +125,12 @@ export default function WritingDeskPanel({ onClose, onTriggerSkill }: WritingDes
       icon={PenTool}
       onClose={onClose}
       headerAccent="amber"
+      density={density}
       actions={
         onTriggerSkill ? (
           <button
             onClick={() => onTriggerSkill('scene-generation', { sceneId: selectedSceneId })}
-            className="text-[9px] px-1.5 py-0.5 text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
+            className="text-xs px-1.5 py-0.5 text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
           >
             Generate
           </button>
@@ -145,14 +149,14 @@ export default function WritingDeskPanel({ onClose, onTriggerSkill }: WritingDes
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-medium transition-colors',
+                'flex items-center gap-1.5 px-2.5 py-1 rounded text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-slate-800/70 text-slate-100'
-                  : 'text-slate-500 hover:bg-slate-800/30 hover:text-slate-300'
+                  : 'text-slate-400 hover:bg-slate-800/30 hover:text-slate-300'
               )}
             >
               <Icon className="w-3 h-3" />
-              {tab.label}
+              <span className="hidden @sm:inline">{tab.label}</span>
             </button>
           );
         })}

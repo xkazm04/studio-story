@@ -5,10 +5,11 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { PromptColumn, PromptOption, PromptDimension } from '../types';
 
 interface OptionSelectorProps {
@@ -29,6 +30,12 @@ export function OptionSelector({
   onSelect,
 }: OptionSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showTopFade, setShowTopFade] = useState(false);
+  const [showBottomFade, setShowBottomFade] = useState(false);
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
+  const bottomSentinelRef = useRef<HTMLDivElement>(null);
 
   const filteredOptions = useMemo(() => {
     if (!searchQuery.trim()) return column.options;
@@ -41,6 +48,48 @@ export function OptionSelector({
         option.tags.some((tag) => tag.toLowerCase().includes(query))
     );
   }, [column.options, searchQuery]);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === topSentinelRef.current) {
+            setShowTopFade(!entry.isIntersecting);
+          }
+          if (entry.target === bottomSentinelRef.current) {
+            setShowBottomFade(!entry.isIntersecting);
+          }
+        });
+      },
+      {
+        root: scrollContainerRef.current,
+        threshold: 0,
+      }
+    );
+
+    const top = topSentinelRef.current;
+    const bottom = bottomSentinelRef.current;
+
+    if (top) observer.observe(top);
+    if (bottom) observer.observe(bottom);
+
+    return () => observer.disconnect();
+  }, [isExpanded, filteredOptions.length]);
+
+  const maskStyle = useMemo(() => {
+    if (showTopFade && showBottomFade) {
+      return { maskImage: 'linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent)' };
+    }
+    if (showTopFade) {
+      return { maskImage: 'linear-gradient(to bottom, transparent, black 16px, black)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 16px, black)' };
+    }
+    if (showBottomFade) {
+      return { maskImage: 'linear-gradient(to bottom, black, black calc(100% - 16px), transparent)', WebkitMaskImage: 'linear-gradient(to bottom, black, black calc(100% - 16px), transparent)' };
+    }
+    return undefined;
+  }, [showTopFade, showBottomFade]);
 
   const handleSelect = (option: PromptOption) => {
     onSelect(column.id, option);
@@ -65,20 +114,20 @@ export function OptionSelector({
         <div className="flex items-center gap-2">
           <span className="text-lg">{column.icon}</span>
           <div>
-            <h3 className="text-sm font-semibold text-slate-100">{column.label}</h3>
+            <h3 className={TYPOGRAPHY.h2}>{column.label}</h3>
             {selectedOption ? (
-              <p className="text-xs text-cyan-400 flex items-center gap-1">
+              <p className="text-sm text-cyan-400 flex items-center gap-1">
                 <span>{selectedOption.icon}</span>
                 {selectedOption.label}
               </p>
             ) : (
-              <p className="text-xs text-slate-500">{column.description}</p>
+              <p className="text-sm text-slate-400">{column.description}</p>
             )}
           </div>
         </div>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
+          transition={FM_TRANSITION.normal}
         >
           <ChevronDown className="w-4 h-4 text-slate-400" />
         </motion.div>
@@ -88,23 +137,21 @@ export function OptionSelector({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            {...FM_VARIANTS.collapse}
+            transition={FM_TRANSITION.normal}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-2">
+            <div className="p-3 space-y-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={`Search ${column.label.toLowerCase()}...`}
                   className={cn(
-                    'w-full pl-8 pr-8 py-1.5 text-xs rounded-md',
+                    'w-full pl-8 pr-8 py-1.5 text-sm rounded-md',
                     'bg-slate-800 border border-slate-700',
                     'text-slate-200 placeholder:text-slate-500',
                     'focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500'
@@ -113,7 +160,7 @@ export function OptionSelector({
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -143,13 +190,14 @@ export function OptionSelector({
                         <div className="min-w-0 flex-1">
                           <p
                             className={cn(
-                              'text-xs font-medium truncate',
-                              isSelected ? 'text-cyan-300' : 'text-slate-200'
+                              TYPOGRAPHY.h3,
+                              'truncate',
+                              isSelected && 'text-cyan-300'
                             )}
                           >
                             {option.label}
                           </p>
-                          <p className="text-[10px] text-slate-500 line-clamp-1">
+                          <p className="text-sm text-slate-400 line-clamp-1">
                             {option.description}
                           </p>
                         </div>
@@ -163,7 +211,7 @@ export function OptionSelector({
               </div>
 
               {filteredOptions.length === 0 && (
-                <p className="text-xs text-slate-500 text-center py-2">
+                <p className="text-sm text-slate-400 text-center py-2">
                   No options match "{searchQuery}"
                 </p>
               )}

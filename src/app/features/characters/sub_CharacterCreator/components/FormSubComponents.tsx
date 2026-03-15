@@ -19,12 +19,12 @@ export function AIExtractionSection({ isRandomizing, onRandomize, onExtracted }:
       <div className="flex items-center justify-between mb-4">
         <div>
           <h4 className="font-semibold text-white mb-1">AI Image Extraction</h4>
-          <p className="text-xs text-gray-400">Extract character traits from an image</p>
+          <p className="text-sm text-slate-400">Extract character traits from an image</p>
         </div>
         <button
           onClick={onRandomize}
           disabled={isRandomizing}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-colors text-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-colors text-sm"
           title="Generate random character attributes"
         >
           {isRandomizing ? (
@@ -57,13 +57,13 @@ export function PromptSection({ prompt, onPromptChange, onRegenerate }: PromptSe
       <div className="flex items-center justify-between mb-2">
         <div>
           <h4 className="font-semibold text-white mb-1">AI Generation Prompt</h4>
-          <p className="text-xs text-gray-400">
+          <p className="text-sm text-slate-400">
             Auto-generated from form inputs. Edit manually or regenerate from template.
           </p>
         </div>
         <button
           onClick={onRegenerate}
-          className="flex items-center gap-2 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors text-xs"
+          className="flex items-center gap-2 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors text-sm"
           title="Regenerate prompt from all form inputs"
         >
           <Sparkles size={14} />
@@ -74,7 +74,7 @@ export function PromptSection({ prompt, onPromptChange, onRegenerate }: PromptSe
         value={prompt}
         onChange={(e) => onPromptChange(e.target.value)}
         placeholder="Prompt will be auto-generated as you fill the form..."
-        className="w-full min-h-[100px] px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm"
+        className="w-full min-h-[100px] px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm"
       />
     </SectionWrapper>
   );
@@ -102,7 +102,7 @@ export function SaveButton({ isSaving, saved, onSave }: SaveButtonProps) {
         <button
           onClick={onSave}
           disabled={isSaving}
-          className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 text-white rounded-lg font-medium transition-colors"
+          className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 text-white rounded-lg font-medium transition-colors"
         >
           <Save size={16} />
           {isSaving ? 'Saving...' : 'Save Appearance'}

@@ -101,7 +101,7 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
         <div className="border border-slate-800/50 rounded-lg p-3 bg-slate-900/30">
           <div className="flex items-center gap-2 mb-2">
             <Film className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-medium text-slate-300">
+            <span className="text-sm font-medium text-slate-300">
               Quick Generate from Scene
             </span>
           </div>
@@ -111,12 +111,12 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
 
       {/* Final Prompt Preview */}
       <div className="mb-6">
-        <label className="block text-xs font-medium text-slate-200 mb-2 tracking-tight">
+        <label className="block text-sm font-medium text-slate-200 mb-2 tracking-tight">
           Combined Prompt Preview
         </label>
-        <div className="bg-slate-950/80 rounded-lg p-3 min-h-[60px] text-slate-200 text-xs border border-slate-900/70">
+        <div className="bg-slate-950/80 rounded-lg p-3 min-h-[60px] text-slate-200 text-sm border border-slate-900/70">
           {getCombinedPrompt() || (
-            <span className="text-slate-500">Your prompt will appear here...</span>
+            <span className="text-slate-400">Your prompt will appear here...</span>
           )}
         </div>
       </div>
@@ -137,12 +137,12 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
               className="w-full flex items-center justify-between p-3 bg-slate-950/95 hover:bg-slate-900 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-slate-500" />
-                <span className="text-xs font-medium text-slate-100 tracking-tight">{section.label}</span>
-                <span className="text-[11px] text-slate-500">{section.description}</span>
+                <Icon className="w-4 h-4 text-slate-400" />
+                <span className="text-sm font-medium text-slate-100 tracking-tight">{section.label}</span>
+                <span className="text-sm text-slate-400">{section.description}</span>
               </div>
               {promptComponents[section.key] && (
-                <span className="text-xs text-green-500">✓ Filled</span>
+                <span className="text-sm text-green-500">✓ Filled</span>
               )}
             </button>
 
@@ -184,14 +184,14 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
         >
           <div className="flex items-center gap-2">
               {expandedSections.has('negative') ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               )}
-            <span className="text-xs font-medium text-slate-100 tracking-tight">Negative Prompt</span>
-            <span className="text-[11px] text-slate-500">Things to avoid</span>
+            <span className="text-sm font-medium text-slate-100 tracking-tight">Negative Prompt</span>
+            <span className="text-sm text-slate-400">Things to avoid</span>
           </div>
-          {negativePrompt && <span className="text-xs text-green-500">✓ Filled</span>}
+          {negativePrompt && <span className="text-sm text-green-500">✓ Filled</span>}
         </button>
 
         {expandedSections.has('negative') && (

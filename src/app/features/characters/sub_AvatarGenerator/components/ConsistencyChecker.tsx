@@ -158,7 +158,7 @@ const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, label, size = 'md' }) =>
             fill="none"
             stroke="currentColor"
             strokeWidth={strokeWidth}
-            className="text-slate-700"
+            className="text-slate-400"
           />
           {/* Score circle */}
           <circle
@@ -184,12 +184,12 @@ const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, label, size = 'md' }) =>
           })}>
             {score}
           </span>
-          <span className="font-mono text-[8px] text-slate-500 uppercase">
+          <span className="font-mono text-[8px] text-slate-400 uppercase">
             {getScoreGrade(score)}
           </span>
         </div>
       </div>
-      <span className="font-mono text-[10px] text-slate-500 mt-1">{label}</span>
+      <span className="font-mono text-sm text-slate-400 mt-1">{label}</span>
     </div>
   );
 };
@@ -226,7 +226,7 @@ const CharacterScoreRow: React.FC<CharacterScoreRowProps> = ({ score, onClick })
 
       {/* Character name */}
       <div className="flex-1 min-w-0">
-        <span className="font-mono text-xs text-slate-300 truncate block">
+        <span className="font-mono text-sm text-slate-300 truncate block">
           {score.characterName}
         </span>
       </div>
@@ -234,22 +234,22 @@ const CharacterScoreRow: React.FC<CharacterScoreRowProps> = ({ score, onClick })
       {/* Scores */}
       <div className="flex items-center gap-2">
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-xs', getScoreColor(score.colorScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.colorScore))}>
             {score.colorScore}
           </span>
-          <span className="font-mono text-[8px] text-slate-600">color</span>
+          <span className="font-mono text-[8px] text-slate-400">color</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-xs', getScoreColor(score.lightingScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.lightingScore))}>
             {score.lightingScore}
           </span>
-          <span className="font-mono text-[8px] text-slate-600">light</span>
+          <span className="font-mono text-[8px] text-slate-400">light</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-xs', getScoreColor(score.artStyleScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.artStyleScore))}>
             {score.artStyleScore}
           </span>
-          <span className="font-mono text-[8px] text-slate-600">style</span>
+          <span className="font-mono text-[8px] text-slate-400">style</span>
         </div>
       </div>
 
@@ -312,7 +312,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               consistency
             </h3>
           </div>
@@ -340,7 +340,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                 {report.overallConsistencyScore}%
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[10px] font-mono">
+            <div className="flex items-center gap-2 text-sm font-mono">
               {deviationCounts.high > 0 && (
                 <span className="text-red-400">{deviationCounts.high} high</span>
               )}
@@ -350,7 +350,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
             </div>
           </div>
         ) : (
-          <p className="font-mono text-[10px] text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Run analysis to check consistency
           </p>
         )}
@@ -380,7 +380,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
             )}
           >
             <RefreshCw size={12} className={isAnalyzing ? 'animate-spin' : ''} />
-            <span className="font-mono text-xs">
+            <span className="font-mono text-sm">
               {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
             </span>
           </button>
@@ -389,10 +389,10 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
 
       {/* No report state */}
       {!report && !isAnalyzing && (
-        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <Search size={32} className="mb-3 opacity-50" />
           <p className="font-mono text-sm mb-1">No analysis available</p>
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Run an analysis to check style consistency
           </p>
         </div>
@@ -421,10 +421,10 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                 key={mode}
                 onClick={() => setViewMode(mode)}
                 className={cn(
-                  'flex-1 px-3 py-1.5 rounded font-mono text-xs transition-colors',
+                  'flex-1 px-3 py-1.5 rounded font-mono text-sm transition-colors',
                   viewMode === mode
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
               >
                 {label}
@@ -465,7 +465,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                   <span className="font-mono text-2xl text-slate-300">
                     {report.characterScores.length}
                   </span>
-                  <span className="font-mono text-[10px] text-slate-500 block">
+                  <span className="font-mono text-sm text-slate-400 block">
                     Characters
                   </span>
                 </div>
@@ -473,7 +473,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                   <span className="font-mono text-2xl text-green-400">
                     {report.characterScores.filter(c => !c.needsRegeneration).length}
                   </span>
-                  <span className="font-mono text-[10px] text-green-400/70 block">
+                  <span className="font-mono text-sm text-green-400/70 block">
                     Consistent
                   </span>
                 </div>
@@ -481,7 +481,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                   <span className="font-mono text-2xl text-red-400">
                     {report.characterScores.filter(c => c.needsRegeneration).length}
                   </span>
-                  <span className="font-mono text-[10px] text-red-400/70 block">
+                  <span className="font-mono text-sm text-red-400/70 block">
                     Need Work
                   </span>
                 </div>
@@ -490,7 +490,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
               {/* Deviation Summary */}
               {report.deviations.length > 0 && (
                 <div className="p-3 bg-slate-800/30 rounded-lg border border-slate-700/30">
-                  <h4 className="font-mono text-[10px] text-slate-500 uppercase mb-2">
+                  <h4 className="font-mono text-sm text-slate-400 uppercase mb-2">
                     issues_by_severity
                   </h4>
                   <div className="flex gap-4">
@@ -501,7 +501,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                           <span className={cn('p-1 rounded border', config.color)}>
                             {config.icon}
                           </span>
-                          <span className="font-mono text-xs text-slate-400">
+                          <span className="font-mono text-sm text-slate-400">
                             {count} {config.label}
                           </span>
                         </div>
@@ -536,10 +536,10 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                     key={severity}
                     onClick={() => setFilterSeverity(severity)}
                     className={cn(
-                      'px-2 py-1 rounded font-mono text-[10px] transition-colors',
+                      'px-2 py-1 rounded font-mono text-sm transition-colors',
                       filterSeverity === severity
                         ? 'bg-cyan-500/20 text-cyan-400'
-                        : 'bg-slate-800/40 text-slate-500 hover:text-slate-300'
+                        : 'bg-slate-800/40 text-slate-400 hover:text-slate-300'
                     )}
                   >
                     {severity === 'all' ? 'All' : SEVERITY_CONFIG[severity].label}
@@ -550,9 +550,9 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
 
               {/* Deviation List */}
               {filteredDeviations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+                <div className="flex flex-col items-center justify-center py-8 text-slate-400">
                   <CheckCircle size={24} className="mb-2 text-green-400" />
-                  <p className="font-mono text-xs">No deviations found</p>
+                  <p className="font-mono text-sm">No deviations found</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -579,14 +579,14 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                               {severityConfig.icon}
                             </span>
                             <span className={typeConfig.color}>{typeConfig.icon}</span>
-                            <span className="font-mono text-xs text-slate-300">
+                            <span className="font-mono text-sm text-slate-300">
                               {deviation.characterName}
                             </span>
                           </div>
                           {isExpanded ? (
-                            <ChevronUp size={14} className="text-slate-500" />
+                            <ChevronUp size={14} className="text-slate-400" />
                           ) : (
-                            <ChevronDown size={14} className="text-slate-500" />
+                            <ChevronDown size={14} className="text-slate-400" />
                           )}
                         </button>
 
@@ -598,14 +598,14 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                               exit={{ opacity: 0, height: 0 }}
                               className="mt-2 pt-2 border-t border-slate-700/30"
                             >
-                              <p className="font-mono text-[10px] text-slate-400 mb-2">
+                              <p className="font-mono text-sm text-slate-400 mb-2">
                                 {deviation.description}
                               </p>
                               <div className="p-2 bg-slate-800/40 rounded">
-                                <span className="font-mono text-[9px] text-cyan-400 uppercase block mb-1">
+                                <span className="font-mono text-sm text-cyan-400 uppercase block mb-1">
                                   suggestion
                                 </span>
-                                <p className="font-mono text-[10px] text-slate-300">
+                                <p className="font-mono text-sm text-slate-300">
                                   {deviation.suggestion}
                                 </p>
                               </div>
@@ -624,9 +624,9 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
           {viewMode === 'recommendations' && (
             <div className="space-y-3">
               {report.recommendations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+                <div className="flex flex-col items-center justify-center py-8 text-slate-400">
                   <CheckCircle size={24} className="mb-2 text-green-400" />
-                  <p className="font-mono text-xs">No recommendations - styles are consistent!</p>
+                  <p className="font-mono text-sm">No recommendations - styles are consistent!</p>
                 </div>
               ) : (
                 report.recommendations.map((rec, index) => (
@@ -644,7 +644,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className={cn(
-                          'px-1.5 py-0.5 rounded text-[9px] font-mono uppercase',
+                          'px-1.5 py-0.5 rounded text-sm font-mono uppercase',
                           rec.type === 'regenerate'
                             ? 'bg-cyan-500/20 text-cyan-400'
                             : rec.type === 'adjust'
@@ -654,7 +654,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                           {rec.type}
                         </span>
                         <span className={cn(
-                          'px-1.5 py-0.5 rounded text-[9px] font-mono uppercase',
+                          'px-1.5 py-0.5 rounded text-sm font-mono uppercase',
                           rec.priority === 'high'
                             ? 'bg-red-500/20 text-red-400'
                             : rec.priority === 'medium'
@@ -668,14 +668,14 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
                         <button
                           onClick={() => onApplyRecommendation(rec)}
                           className="px-2 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30
-                                     text-cyan-400 font-mono text-[10px] transition-colors"
+                                     text-cyan-400 font-mono text-sm transition-colors"
                         >
                           Apply
                         </button>
                       )}
                     </div>
-                    <p className="font-mono text-xs text-slate-300">{rec.description}</p>
-                    <p className="font-mono text-[10px] text-slate-500 mt-1">
+                    <p className="font-mono text-sm text-slate-300">{rec.description}</p>
+                    <p className="font-mono text-sm text-slate-400 mt-1">
                       Affects {rec.characterIds.length} character{rec.characterIds.length !== 1 ? 's' : ''}
                     </p>
                   </div>
@@ -686,11 +686,11 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
 
           {/* Analysis timestamp */}
           <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between">
-            <span className="font-mono text-[10px] text-slate-600">
+            <span className="font-mono text-sm text-slate-400">
               Analyzed: {new Date(report.analyzedAt).toLocaleString()}
             </span>
             {styleDefinition && (
-              <span className="font-mono text-[10px] text-slate-600">
+              <span className="font-mono text-sm text-slate-400">
                 Style: {styleDefinition.name}
               </span>
             )}

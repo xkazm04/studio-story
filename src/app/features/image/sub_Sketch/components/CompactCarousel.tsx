@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
+import { interactive, staggerDelay } from "@/lib/animations";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ClaudePromptOptionV2 } from "../lib/promptMapClaudeV2";
 
@@ -35,14 +36,16 @@ export const CompactCarousel: React.FC<CompactCarouselProps> = ({
       {/* Scroll Buttons */}
       <button
         onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-800"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-800 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+        aria-label="Scroll left"
       >
         <ChevronLeft className="w-3 h-3 text-slate-300" />
       </button>
 
       <button
         onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-800"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-800 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+        aria-label="Scroll right"
       >
         <ChevronRight className="w-3 h-3 text-slate-300" />
       </button>
@@ -66,11 +69,13 @@ export const CompactCarousel: React.FC<CompactCarouselProps> = ({
               onClick={() => onSelect(option)}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.03 }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className={`flex-shrink-0 relative w-24 h-28 rounded-xl overflow-hidden transition-all group/card ${isSelected
-                  ? "ring-2 ring-white/40 shadow-lg"
+              transition={staggerDelay(index)}
+              whileHover={interactive.hoverLift}
+              whileTap={interactive.tapScale}
+              aria-label={`${option.label}${option.tags?.length ? ' — ' + option.tags.slice(0, 2).join(', ') : ''}`}
+              aria-pressed={isSelected}
+              className={`flex-shrink-0 relative w-24 h-28 rounded-xl overflow-hidden transition-all group/card focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${isSelected
+                  ? "ring-2 ring-white/40 ms-shadow-card"
                   : "ring-1 ring-slate-800/60 hover:ring-slate-700"
                 }`}
             >
@@ -88,14 +93,14 @@ export const CompactCarousel: React.FC<CompactCarouselProps> = ({
                 <div className={`text-3xl mb-1.5 ${isSelected ? "scale-110" : ""} transition-transform`}>
                   {option.visual.icon}
                 </div>
-                <div className="text-[10px] font-semibold text-white line-clamp-2 leading-tight">
+                <div className="text-sm font-semibold text-white line-clamp-2 leading-tight">
                   {option.label}
                 </div>
                 <div className="flex flex-wrap gap-0.5 mt-1 justify-center">
                   {option.tags.slice(0, 2).map((tag) => (
                     <span
                       key={tag}
-                      className="px-1 py-0.5 rounded text-[8px] bg-black/30 text-white/70"
+                      className="px-1 py-0.5 rounded text-xs bg-black/30 text-white/70"
                     >
                       {tag}
                     </span>

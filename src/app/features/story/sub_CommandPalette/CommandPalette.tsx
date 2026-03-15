@@ -9,6 +9,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command as CommandIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { useCommandPalette } from './CommandPaletteContext';
 import { CommandList } from './components/CommandList';
 import { Command } from './types';
@@ -103,17 +104,15 @@ export function CommandPalette() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={FM_TRANSITION.fast}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
             onClick={close}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
+            {...FM_VARIANTS.scaleIn}
+            transition={FM_TRANSITION.fast}
             className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-lg z-50"
           >
             <div
@@ -125,7 +124,7 @@ export function CommandPalette() {
             >
               {/* Search Input */}
               <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800">
-                <Search className="w-5 h-5 text-slate-500 shrink-0" />
+                <Search className="w-5 h-5 text-slate-400 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -141,12 +140,12 @@ export function CommandPalette() {
                   )}
                 />
                 <div className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-slate-800 border border-slate-700 text-slate-500">
+                  <kbd className="px-1.5 py-0.5 text-sm font-mono rounded bg-slate-800 border border-slate-700 text-slate-400">
                     esc
                   </kbd>
                   <button
                     onClick={close}
-                    className="p-1 rounded hover:bg-slate-800 text-slate-500 hover:text-slate-300"
+                    className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-300"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -162,7 +161,7 @@ export function CommandPalette() {
               />
 
               {/* Footer */}
-              <div className="px-4 py-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-600">
+              <div className="px-4 py-2 border-t border-slate-800 flex items-center justify-between text-sm text-slate-400">
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <kbd className="px-1 py-0.5 rounded bg-slate-800 border border-slate-700">↑↓</kbd>

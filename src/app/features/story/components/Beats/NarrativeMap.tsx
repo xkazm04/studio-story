@@ -11,7 +11,9 @@ import { beatDependenciesApi } from '@/app/hooks/integration/useBeatDependencies
 import { beatPacingApi } from '@/app/hooks/integration/useBeatPacing';
 import { useProjectStore } from '@/app/store/projectStore';
 import { Button } from '@/app/components/UI/Button';
-import { ZoomIn, ZoomOut, Maximize2, Grid3x3, Sparkles } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Grid3x3, Sparkles, Loader2 } from 'lucide-react';
+import { DATA_VIZ, ChartGrid } from './dataVizTheme';
+import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 
 interface NarrativeMapProps {
   beats: BeatTableItem[];
@@ -30,6 +32,7 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
   const [showGantt, setShowGantt] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
   const [showPacing, setShowPacing] = useState(false);
+  const [isAnalyzingPacing, setIsAnalyzingPacing] = useState(false);
   const [draggedBeat, setDraggedBeat] = useState<string | null>(null);
 
   // Fetch dependencies
@@ -147,10 +150,10 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-250px)] overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
+    <div className={`relative w-full h-[calc(100vh-250px)] overflow-hidden rounded-lg border ${DATA_VIZ.containerBorder} bg-slate-950`}>
       {/* Controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-        <div className="flex gap-2 bg-gray-900/80 backdrop-blur-sm rounded-lg p-2 border border-gray-800">
+        <div className={`flex gap-2 backdrop-blur-sm rounded-lg p-2 ${DATA_VIZ.controlBg} border ${DATA_VIZ.controlBorder}`}>
           <Button
             size="sm"
             variant="secondary"
@@ -180,7 +183,7 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
           </Button>
         </div>
 
-        <div className="flex gap-2 bg-gray-900/80 backdrop-blur-sm rounded-lg p-2 border border-gray-800">
+        <div className={`flex gap-2 backdrop-blur-sm rounded-lg p-2 ${DATA_VIZ.controlBg} border ${DATA_VIZ.controlBorder}`}>
           <Button
             size="sm"
             variant={showGrid ? 'primary' : 'secondary'}
@@ -193,17 +196,67 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
           <Button
             size="sm"
             variant={showPacing ? 'primary' : 'secondary'}
-            onClick={() => setShowPacing(!showPacing)}
+            onClick={async () => {
+              const willShow = !showPacing;
+              setShowPacing(willShow);
+              // Auto-generate LLM pacing suggestions when opening panel with no existing suggestions
+              if (willShow && pacingSuggestions.length === 0 && beats.length > 1 && selectedProject?.id && !isAnalyzingPacing) {
+                setIsAnalyzingPacing(true);
+                try {
+                  const res = await fetch('/api/ai/story-architect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      action: 'pacing',
+                      projectId: selectedProject.id,
+                      beats: beats.map((b) => ({
+                        id: b.id,
+                        name: b.name,
+                        description: b.description,
+                        order: b.order,
+                        estimated_duration: b.estimated_duration,
+                      })),
+                    }),
+                  });
+                  const data = await res.json();
+                  if (data.success && Array.isArray(data.suggestions)) {
+                    for (const s of data.suggestions) {
+                      const matchingBeat = beats.find((b) => b.id === s.beat_id);
+                      if (matchingBeat) {
+                        await beatPacingApi.createPacingSuggestion({
+                          project_id: selectedProject.id,
+                          beat_id: s.beat_id,
+                          suggestion_type: s.suggestion_type,
+                          suggested_order: s.suggested_order ?? undefined,
+                          suggested_duration: s.suggested_duration ?? undefined,
+                          reasoning: s.reasoning,
+                          confidence: s.confidence,
+                        });
+                      }
+                    }
+                  }
+                } catch (err) {
+                  console.error('Pacing analysis error:', err);
+                } finally {
+                  setIsAnalyzingPacing(false);
+                }
+              }
+            }}
+            disabled={isAnalyzingPacing}
             data-testid="narrative-map-toggle-pacing-btn"
-            title="Toggle AI Pacing Suggestions"
+            title="AI Pacing Analysis"
           >
-            <Sparkles className="h-4 w-4" />
+            {isAnalyzingPacing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="h-4 w-4" />
+            )}
           </Button>
         </div>
 
-        <div className="bg-gray-900/80 backdrop-blur-sm rounded-lg p-2 border border-gray-800 text-xs text-gray-400">
+        <div className={`backdrop-blur-sm rounded-lg p-2 ${DATA_VIZ.controlBg} border ${DATA_VIZ.controlBorder} ${DATA_VIZ.labelText}`}>
           <div>Zoom: {(zoom * 100).toFixed(0)}%</div>
-          <div className="text-[10px] mt-1">
+          <div className="text-sm mt-1">
             Alt+Drag to pan
             <br />
             Ctrl+Wheel to zoom
@@ -223,29 +276,15 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
           style={{
             transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
             transformOrigin: '0 0',
-            transition: isPanning ? 'none' : 'transform 0.1s ease-out',
+            transition: isPanning ? 'none' : `transform ${BEAT_ANIMATIONS.micro.duration}s cubic-bezier(${BEAT_ANIMATIONS.ease.join(',')})`,
           }}
           className="relative w-full h-full"
         >
           {/* Grid */}
           {showGrid && (
             <svg className="absolute inset-0 w-full h-full pointer-events-none">
-              <defs>
-                <pattern
-                  id="grid"
-                  width="50"
-                  height="50"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M 50 0 L 0 0 0 50"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.03)"
-                    strokeWidth="1"
-                  />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
+              <ChartGrid id="narrative-grid" variant="lines" />
+              <rect width="100%" height="100%" fill="url(#narrative-grid)" />
             </svg>
           )}
 
@@ -310,7 +349,7 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
       )}
 
       {/* AI Pacing Suggestions Panel */}
-      {showPacing && pacingSuggestions.length > 0 && (
+      {showPacing && (
         <PacingSuggestions
           suggestions={pacingSuggestions}
           beats={beats}

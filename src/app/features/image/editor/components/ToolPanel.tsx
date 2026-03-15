@@ -135,7 +135,7 @@ const ToolButton: React.FC<ToolButtonProps> = ({ tool, isActive, onClick }) => {
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         />
       )}
-      <span className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-xs text-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+      <span className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-sm text-slate-300 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
         {tool.label}
         {tool.shortcut && (
           <kbd className="ml-1 px-1 bg-slate-700 rounded text-slate-400">
@@ -157,7 +157,7 @@ interface ToolGroupProps {
 const ToolGroup: React.FC<ToolGroupProps> = ({ title, tools, activeTool, onToolChange }) => {
   return (
     <div className="space-y-1">
-      <span className="text-[10px] uppercase tracking-wider text-slate-500 px-2">
+      <span className="text-sm uppercase tracking-wider text-slate-400 px-2">
         {title}
       </span>
       <div className="flex flex-col gap-0.5">
@@ -191,7 +191,7 @@ const SelectionOptions: React.FC<SelectionOptionsProps> = ({
 
   return (
     <div className="space-y-3 p-3 bg-slate-800/50 rounded-lg">
-      <span className="text-xs font-medium text-slate-400">Selection Mode</span>
+      <span className="text-sm font-medium text-slate-400">Selection Mode</span>
       <div className="flex gap-1">
         {SELECTION_MODES.map(({ id, label, icon: Icon }) => (
           <button
@@ -212,7 +212,7 @@ const SelectionOptions: React.FC<SelectionOptionsProps> = ({
       <div className="flex flex-wrap gap-1 pt-2 border-t border-slate-700">
         <button
           onClick={() => onAction('selectAll')}
-          className="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded transition-colors"
+          className="px-2 py-1 text-sm bg-slate-700 hover:bg-slate-600 rounded transition-colors"
         >
           Select All
         </button>
@@ -220,10 +220,10 @@ const SelectionOptions: React.FC<SelectionOptionsProps> = ({
           onClick={() => onAction('deselect')}
           disabled={!hasSelection}
           className={cn(
-            'px-2 py-1 text-xs rounded transition-colors',
+            'px-2 py-1 text-sm rounded transition-colors',
             hasSelection
               ? 'bg-slate-700 hover:bg-slate-600'
-              : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800 text-slate-400 cursor-not-allowed'
           )}
         >
           Deselect
@@ -232,10 +232,10 @@ const SelectionOptions: React.FC<SelectionOptionsProps> = ({
           onClick={() => onAction('invert')}
           disabled={!hasSelection}
           className={cn(
-            'px-2 py-1 text-xs rounded transition-colors',
+            'px-2 py-1 text-sm rounded transition-colors',
             hasSelection
               ? 'bg-slate-700 hover:bg-slate-600'
-              : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800 text-slate-400 cursor-not-allowed'
           )}
         >
           Invert
@@ -244,10 +244,10 @@ const SelectionOptions: React.FC<SelectionOptionsProps> = ({
           onClick={() => onAction('feather')}
           disabled={!hasSelection}
           className={cn(
-            'px-2 py-1 text-xs rounded transition-colors',
+            'px-2 py-1 text-sm rounded transition-colors',
             hasSelection
               ? 'bg-slate-700 hover:bg-slate-600'
-              : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800 text-slate-400 cursor-not-allowed'
           )}
         >
           Feather
@@ -270,7 +270,7 @@ const TransformOptions: React.FC<TransformOptionsProps> = ({
 }) => {
   return (
     <div className="space-y-3 p-3 bg-slate-800/50 rounded-lg">
-      <span className="text-xs font-medium text-slate-400">Transform Options</span>
+      <span className="text-sm font-medium text-slate-400">Transform Options</span>
 
       <div className="space-y-2">
         <label className="flex items-center gap-2 cursor-pointer">
@@ -280,8 +280,8 @@ const TransformOptions: React.FC<TransformOptionsProps> = ({
             onChange={(e) => onConstraintsChange({ lockAspectRatio: e.target.checked })}
             className="rounded bg-slate-700 border-slate-600"
           />
-          <Lock className="w-3.5 h-3.5 text-slate-500" />
-          <span className="text-xs text-slate-300">Lock Aspect Ratio</span>
+          <Lock className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-sm text-slate-300">Lock Aspect Ratio</span>
         </label>
 
         <label className="flex items-center gap-2 cursor-pointer">
@@ -291,8 +291,8 @@ const TransformOptions: React.FC<TransformOptionsProps> = ({
             onChange={(e) => onConstraintsChange({ snapToGrid: e.target.checked })}
             className="rounded bg-slate-700 border-slate-600"
           />
-          <Magnet className="w-3.5 h-3.5 text-slate-500" />
-          <span className="text-xs text-slate-300">Snap to Grid</span>
+          <Magnet className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-sm text-slate-300">Snap to Grid</span>
         </label>
 
         <label className="flex items-center gap-2 cursor-pointer">
@@ -302,8 +302,8 @@ const TransformOptions: React.FC<TransformOptionsProps> = ({
             onChange={(e) => onConstraintsChange({ snapToAngles: e.target.checked })}
             className="rounded bg-slate-700 border-slate-600"
           />
-          <RotateCw className="w-3.5 h-3.5 text-slate-500" />
-          <span className="text-xs text-slate-300">Snap Angles (15°)</span>
+          <RotateCw className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-sm text-slate-300">Snap Angles (15°)</span>
         </label>
       </div>
 
@@ -334,13 +334,13 @@ const TransformOptions: React.FC<TransformOptionsProps> = ({
       <div className="flex gap-2 pt-2">
         <button
           onClick={() => onAction('reset')}
-          className="flex-1 px-2 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 rounded transition-colors"
+          className="flex-1 px-2 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 rounded transition-colors"
         >
           Reset
         </button>
         <button
           onClick={() => onAction('apply')}
-          className="flex-1 px-2 py-1.5 text-xs bg-blue-600 hover:bg-blue-500 rounded transition-colors"
+          className="flex-1 px-2 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 rounded transition-colors"
         >
           Apply
         </button>
@@ -469,7 +469,7 @@ export const ToolPanel: React.FC<ToolPanelProps> = ({
             'flex-1 p-2 rounded transition-colors',
             canUndo
               ? 'bg-slate-800 hover:bg-slate-700'
-              : 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800/50 text-slate-400 cursor-not-allowed'
           )}
           title="Undo (Ctrl+Z)"
         >
@@ -482,7 +482,7 @@ export const ToolPanel: React.FC<ToolPanelProps> = ({
             'flex-1 p-2 rounded transition-colors',
             canRedo
               ? 'bg-slate-800 hover:bg-slate-700'
-              : 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800/50 text-slate-400 cursor-not-allowed'
           )}
           title="Redo (Ctrl+Shift+Z)"
         >

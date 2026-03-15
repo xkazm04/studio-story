@@ -24,7 +24,7 @@ const CharRightPanel: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-2">
         <div className="w-5 h-5 border-2 border-cyan-500/50 border-t-transparent rounded-full animate-spin" />
-        <span className="font-mono text-xs text-slate-500">loading_characters...</span>
+        <span className="font-mono text-sm text-slate-400">loading_characters...</span>
       </div>
     );
   }
@@ -32,9 +32,9 @@ const CharRightPanel: React.FC = () => {
   if (!characters || characters.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-4 gap-2">
-        <Users className="w-10 h-10 text-slate-600" />
-        <span className="font-mono text-xs text-slate-500">// no_characters_yet</span>
-        <p className="text-[10px] text-slate-600 text-center">create in characters tab</p>
+        <Users className="w-10 h-10 text-slate-400" />
+        <span className="font-mono text-sm text-slate-400">// no_characters_yet</span>
+        <p className="text-sm text-slate-400 text-center">create in characters tab</p>
       </div>
     );
   }
@@ -54,7 +54,7 @@ const CharRightPanel: React.FC = () => {
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            <h2 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h2 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               characters ({filteredCharacters.length})
             </h2>
           </div>
@@ -66,14 +66,14 @@ const CharRightPanel: React.FC = () => {
         {/* Search */}
         {characters.length > 5 && (
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
               placeholder="search_characters..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-slate-900/80 border border-slate-700/50 rounded-md pl-8 pr-3 py-1.5
-                         font-mono text-xs text-slate-100 placeholder-slate-500
+                         font-mono text-sm text-slate-100 placeholder-slate-500
                          focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20
                          transition-all duration-200"
             />
@@ -84,7 +84,7 @@ const CharRightPanel: React.FC = () => {
       {/* Characters List */}
       <div className="flex-1 overflow-y-auto p-2 ms-scrollbar">
         {filteredCharacters.length === 0 ? (
-          <div className="text-center font-mono text-xs text-slate-500 mt-4">
+          <div className="text-center font-mono text-sm text-slate-400 mt-4">
             // no_matches_found
           </div>
         ) : (
@@ -109,7 +109,7 @@ const CharRightPanel: React.FC = () => {
                     {/* Avatar */}
                     <div
                       className={cn(
-                        'w-8 h-8 rounded-md flex items-center justify-center text-xs font-mono font-medium',
+                        'w-8 h-8 rounded-md flex items-center justify-center text-sm font-mono font-medium',
                         isSelected
                           ? 'bg-cyan-500/20 text-cyan-400'
                           : 'bg-slate-800/80 text-slate-400'
@@ -120,7 +120,7 @@ const CharRightPanel: React.FC = () => {
 
                     {/* Character Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-xs truncate">
+                      <div className="font-medium text-sm truncate">
                         {character.name}
                       </div>
                     </div>
@@ -129,10 +129,10 @@ const CharRightPanel: React.FC = () => {
                     {character.type && (
                       <span
                         className={cn(
-                          'font-mono text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded',
+                          'font-mono text-sm uppercase tracking-wide px-1.5 py-0.5 rounded',
                           isSelected
                             ? 'bg-cyan-500/20 text-cyan-400'
-                            : 'bg-slate-800/80 text-slate-500'
+                            : 'bg-slate-800/80 text-slate-400'
                         )}
                       >
                         {character.type}

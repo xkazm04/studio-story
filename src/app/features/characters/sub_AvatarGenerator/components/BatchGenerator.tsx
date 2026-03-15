@@ -25,10 +25,14 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  Shield,
+  RotateCcw,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { Expression, EXPRESSION_LIBRARY } from './ExpressionLibrary';
 import { Pose, Angle, POSE_PRESETS, ANGLE_PRESETS } from './PoseSelector';
+import type { StyleDefinition, CharacterStyleProfile, ClosedLoopConfig } from '../lib/styleEngine';
+import { DEFAULT_CLOSED_LOOP_CONFIG, calculateStyleDeviation, strengthenStylePrompt, evaluateGenerationResult } from '../lib/styleEngine';
 
 // ============================================================================
 // Types
@@ -45,6 +49,12 @@ export interface BatchItem {
   error?: string;
   startedAt?: string;
   completedAt?: string;
+  /** Closed-loop: number of retry attempts */
+  retryCount?: number;
+  /** Closed-loop: style deviation score (0-100, lower = better) */
+  deviationScore?: number;
+  /** Closed-loop: whether this item was auto-retried */
+  wasRetried?: boolean;
 }
 
 export type BatchItemStatus = 'pending' | 'generating' | 'completed' | 'failed' | 'cancelled';
@@ -55,11 +65,13 @@ export interface BatchProgress {
   failed: number;
   pending: number;
   generating: number;
+  retried: number;
 }
 
 export interface BatchGeneratorProps {
   basePrompt: string;
   characterId: string;
+  styleDefinition?: StyleDefinition;
   onBatchComplete?: (items: BatchItem[]) => void;
   onItemGenerated?: (item: BatchItem) => void;
   disabled?: boolean;
@@ -118,7 +130,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
     generating: { icon: <RefreshCw size={14} className="animate-spin" />, color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
     completed: { icon: <CheckCircle size={14} />, color: 'text-green-400', bg: 'bg-green-500/20' },
     failed: { icon: <XCircle size={14} />, color: 'text-red-400', bg: 'bg-red-500/20' },
-    cancelled: { icon: <Square size={14} />, color: 'text-slate-500', bg: 'bg-slate-600/20' },
+    cancelled: { icon: <Square size={14} />, color: 'text-slate-400', bg: 'bg-slate-600/20' },
   };
 
   const config = statusConfig[item.status];
@@ -154,7 +166,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Image size={24} className="text-slate-600" />
+            <Image size={24} className="text-slate-400" />
           </div>
         )}
       </div>
@@ -162,7 +174,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
       {/* Info */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <span className={cn('font-mono text-xs uppercase', item.expression.color)}>
+          <span className={cn('font-mono text-sm uppercase', item.expression.color)}>
             {item.expression.label}
           </span>
           <span className={cn('p-1 rounded', config.bg)}>
@@ -171,7 +183,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
         </div>
 
         {item.pose && (
-          <span className="font-mono text-[10px] text-slate-500">
+          <span className="font-mono text-sm text-slate-400">
             {item.pose.label}
           </span>
         )}
@@ -183,13 +195,37 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
               style={{ width: `${item.intensity}%` }}
             />
           </div>
-          <span className="font-mono text-[9px] text-slate-500">{item.intensity}%</span>
+          <span className="font-mono text-sm text-slate-400">{item.intensity}%</span>
         </div>
       </div>
 
+      {/* Deviation Score & Retry Badge */}
+      {(item.deviationScore !== undefined || item.wasRetried) && (
+        <div className="flex items-center gap-1.5 mt-1.5">
+          {item.deviationScore !== undefined && (
+            <span className={cn(
+              'px-1.5 py-0.5 rounded font-mono text-sm',
+              item.deviationScore <= 30
+                ? 'bg-green-500/20 text-green-400'
+                : item.deviationScore <= 60
+                  ? 'bg-amber-500/20 text-amber-400'
+                  : 'bg-red-500/20 text-red-400'
+            )}>
+              dev:{item.deviationScore}
+            </span>
+          )}
+          {item.wasRetried && (
+            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-mono text-sm">
+              <RotateCcw size={9} />
+              ×{item.retryCount}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Error */}
       {item.error && (
-        <div className="mt-2 p-1.5 bg-red-500/10 rounded text-[9px] text-red-400 font-mono">
+        <div className="mt-2 p-1.5 bg-red-500/10 rounded text-sm text-red-400 font-mono">
           {item.error}
         </div>
       )}
@@ -201,7 +237,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
             onClick={onRetry}
             disabled={disabled}
             className="flex-1 flex items-center justify-center gap-1 px-2 py-1 rounded
-                       bg-slate-700/60 hover:bg-slate-600 text-slate-300 text-[10px] font-mono
+                       bg-slate-700/60 hover:bg-slate-600 text-slate-300 text-sm font-mono
                        disabled:opacity-50 transition-colors"
           >
             <RefreshCw size={10} />
@@ -230,6 +266,7 @@ const BatchItemCard: React.FC<BatchItemCardProps> = ({
 const BatchGenerator: React.FC<BatchGeneratorProps> = ({
   basePrompt,
   characterId,
+  styleDefinition,
   onBatchComplete,
   onItemGenerated,
   disabled = false,
@@ -244,6 +281,11 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
   const [intensity, setIntensity] = useState(50);
   const [showConfig, setShowConfig] = useState(true);
 
+  // Closed-loop consistency state
+  const [closedLoopEnabled, setClosedLoopEnabled] = useState(false);
+  const [deviationThreshold, setDeviationThreshold] = useState(DEFAULT_CLOSED_LOOP_CONFIG.deviationThreshold);
+  const [maxRetries, setMaxRetries] = useState(DEFAULT_CLOSED_LOOP_CONFIG.maxRetries);
+
   // Computed
   const progress = useMemo<BatchProgress>(() => {
     return {
@@ -252,6 +294,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
       failed: batchItems.filter(i => i.status === 'failed').length,
       pending: batchItems.filter(i => i.status === 'pending').length,
       generating: batchItems.filter(i => i.status === 'generating').length,
+      retried: batchItems.filter(i => i.wasRetried).length,
     };
   }, [batchItems]);
 
@@ -299,36 +342,103 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
     setIsPaused(false);
     setShowConfig(false);
 
-    // Simulate batch generation (would call API in real implementation)
+    const closedLoopActive = closedLoopEnabled && styleDefinition;
+    const loopConfig: ClosedLoopConfig | null = closedLoopActive
+      ? { enabled: true, deviationThreshold, maxRetries, styleDefinition }
+      : null;
+
     for (let i = 0; i < items.length; i++) {
       if (isPaused) break;
 
       const item = items[i];
+      let currentAttempt = 0;
+      let accepted = false;
 
-      setBatchItems(prev => prev.map((it, idx) =>
-        idx === i ? { ...it, status: 'generating', startedAt: new Date().toISOString() } : it
-      ));
-
-      // Simulate generation delay (would be actual API call)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simulate success/failure (90% success rate)
-      const success = Math.random() > 0.1;
-
-      setBatchItems(prev => prev.map((it, idx) =>
-        idx === i
-          ? {
+      while (!accepted) {
+        setBatchItems(prev => prev.map((it, idx) =>
+          idx === i ? {
             ...it,
-            status: success ? 'completed' : 'failed',
-            imageUrl: success ? `https://picsum.photos/seed/${item.id}/512/512` : undefined,
-            error: success ? undefined : 'Generation failed',
-            completedAt: new Date().toISOString(),
-          }
-          : it
-      ));
+            status: 'generating',
+            startedAt: it.startedAt || new Date().toISOString(),
+            retryCount: currentAttempt,
+            wasRetried: currentAttempt > 0,
+          } : it
+        ));
 
-      if (success) {
-        onItemGenerated?.(items[i]);
+        // Simulate generation delay (would be actual API call)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Simulate success/failure (90% success rate)
+        const success = Math.random() > 0.1;
+
+        if (!success) {
+          setBatchItems(prev => prev.map((it, idx) =>
+            idx === i
+              ? { ...it, status: 'failed', error: 'Generation failed', completedAt: new Date().toISOString() }
+              : it
+          ));
+          break;
+        }
+
+        const imageUrl = `https://picsum.photos/seed/${item.id}-${currentAttempt}/512/512`;
+
+        // Closed-loop evaluation
+        if (loopConfig) {
+          const mockProfile: CharacterStyleProfile = {
+            characterId,
+            characterName: item.expression.label,
+            avatarUrl: imageUrl,
+            styleDeviationScore: 0,
+            extractedFeatures: {
+              dominantColors: loopConfig.styleDefinition.colorPalette.primaryColors.slice(0, 2),
+              colorHarmony: loopConfig.styleDefinition.colorPalette.harmonyType,
+              brightness: 50 + Math.random() * 30 - 15,
+              contrast: 50 + Math.random() * 30 - 15,
+              saturation: 50 + Math.random() * 30 - 15,
+              detectedArtStyle: [loopConfig.styleDefinition.artDirection],
+            },
+            lastAnalyzedAt: new Date().toISOString(),
+          };
+
+          const result = evaluateGenerationResult(mockProfile, loopConfig, currentAttempt);
+
+          if (result.accepted) {
+            accepted = true;
+            setBatchItems(prev => prev.map((it, idx) =>
+              idx === i
+                ? {
+                  ...it,
+                  status: 'completed',
+                  imageUrl,
+                  deviationScore: Math.round(result.deviationScore),
+                  retryCount: currentAttempt,
+                  wasRetried: currentAttempt > 0,
+                  completedAt: new Date().toISOString(),
+                }
+                : it
+            ));
+            onItemGenerated?.(items[i]);
+          } else {
+            // Retry with strengthened prompt
+            currentAttempt++;
+            // strengthenStylePrompt adjusts the prompt for next iteration
+            strengthenStylePrompt(basePrompt, loopConfig.styleDefinition, currentAttempt);
+          }
+        } else {
+          // No closed-loop — accept immediately
+          accepted = true;
+          setBatchItems(prev => prev.map((it, idx) =>
+            idx === i
+              ? {
+                ...it,
+                status: 'completed',
+                imageUrl,
+                completedAt: new Date().toISOString(),
+              }
+              : it
+          ));
+          onItemGenerated?.(items[i]);
+        }
       }
     }
 
@@ -381,7 +491,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
             batch_generator
           </h3>
           {batchItems.length > 0 && (
-            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-sm">
               {progress.completed}/{progress.total}
             </span>
           )}
@@ -408,7 +518,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
           >
             {/* Quick Presets */}
             <div className="mb-4">
-              <span className="font-mono text-xs text-slate-500 uppercase mb-2 block">
+              <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                 quick_presets
               </span>
               <div className="flex flex-wrap gap-2">
@@ -418,7 +528,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
                     onClick={() => applyPreset(preset)}
                     disabled={disabled || isRunning}
                     className={cn(
-                      'px-3 py-1.5 rounded-lg border font-mono text-xs transition-all',
+                      'px-3 py-1.5 rounded-lg border font-mono text-sm transition-all',
                       'bg-slate-800/40 border-slate-700/50 text-slate-300',
                       'hover:border-cyan-500/40 hover:bg-cyan-500/10',
                       (disabled || isRunning) && 'opacity-50 cursor-not-allowed'
@@ -433,10 +543,10 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
             {/* Expression Selection */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-xs text-slate-500 uppercase">
+                <span className="font-mono text-sm text-slate-400 uppercase">
                   select_expressions
                 </span>
-                <span className="font-mono text-xs text-slate-400">
+                <span className="font-mono text-sm text-slate-400">
                   {selectedExpressions.size} selected
                 </span>
               </div>
@@ -458,7 +568,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
                     >
                       <span className={exp.color}>{exp.icon}</span>
                       <span className={cn(
-                        'font-mono text-[9px] uppercase',
+                        'font-mono text-sm uppercase',
                         isSelected ? 'text-cyan-400' : 'text-slate-400'
                       )}>
                         {exp.label}
@@ -475,7 +585,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
             {/* Pose & Intensity */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <span className="font-mono text-xs text-slate-500 uppercase mb-2 block">
+                <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                   pose (optional)
                 </span>
                 <select
@@ -485,7 +595,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
                   )}
                   disabled={disabled || isRunning}
                   className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50
+                             font-mono text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500/50
                              disabled:opacity-50"
                 >
                   <option value="">No specific pose</option>
@@ -496,7 +606,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
               </div>
 
               <div>
-                <span className="font-mono text-xs text-slate-500 uppercase mb-2 block">
+                <span className="font-mono text-sm text-slate-400 uppercase mb-2 block">
                   intensity: {intensity}%
                 </span>
                 <input
@@ -513,6 +623,91 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
                 />
               </div>
             </div>
+
+            {/* Closed-Loop Consistency */}
+            {styleDefinition && (
+              <div className="mb-4 p-3 rounded-lg border border-slate-700/50 bg-slate-800/30">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="flex items-center gap-2 font-mono text-sm text-slate-300 uppercase">
+                    <Shield size={14} className="text-purple-400" />
+                    closed-loop consistency
+                  </label>
+                  <button
+                    onClick={() => setClosedLoopEnabled(!closedLoopEnabled)}
+                    disabled={disabled || isRunning}
+                    className={cn(
+                      'w-9 h-5 rounded-full transition-colors relative',
+                      closedLoopEnabled ? 'bg-purple-500' : 'bg-slate-600',
+                      (disabled || isRunning) && 'opacity-50 cursor-not-allowed'
+                    )}
+                  >
+                    <span className={cn(
+                      'absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform',
+                      closedLoopEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                    )} />
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {closedLoopEnabled && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden space-y-3 pt-2"
+                    >
+                      <p className="font-mono text-sm text-slate-400">
+                        Auto-evaluate each generation and retry if style deviation exceeds threshold.
+                      </p>
+                      <div>
+                        <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
+                          deviation threshold: {deviationThreshold}
+                        </span>
+                        <input
+                          type="range"
+                          min={10}
+                          max={80}
+                          value={deviationThreshold}
+                          onChange={(e) => setDeviationThreshold(Number(e.target.value))}
+                          disabled={disabled || isRunning}
+                          className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer
+                                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+                                     [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-400
+                                     disabled:opacity-50"
+                        />
+                        <div className="flex justify-between font-mono text-sm text-slate-500 mt-0.5">
+                          <span>strict (10)</span>
+                          <span>lenient (80)</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
+                          max retries: {maxRetries}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {[1, 2, 3].map(n => (
+                            <button
+                              key={n}
+                              onClick={() => setMaxRetries(n)}
+                              disabled={disabled || isRunning}
+                              className={cn(
+                                'flex-1 py-1.5 rounded font-mono text-sm transition-all',
+                                maxRetries === n
+                                  ? 'bg-purple-500/30 border border-purple-500/50 text-purple-300'
+                                  : 'bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:border-slate-600',
+                                (disabled || isRunning) && 'opacity-50 cursor-not-allowed'
+                              )}
+                            >
+                              {n}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Start Button */}
             <button
@@ -537,8 +732,8 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
       {batchItems.length > 0 && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-xs text-slate-500 uppercase">progress</span>
-            <span className="font-mono text-xs text-slate-400">
+            <span className="font-mono text-sm text-slate-400 uppercase">progress</span>
+            <span className="font-mono text-sm text-slate-400">
               {progress.completed} / {progress.total} completed
             </span>
           </div>
@@ -548,10 +743,13 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
               style={{ width: `${(progress.completed / progress.total) * 100}%` }}
             />
           </div>
-          <div className="flex items-center gap-4 mt-2 text-[10px] font-mono">
+          <div className="flex items-center gap-4 mt-2 text-sm font-mono">
             <span className="text-green-400">{progress.completed} done</span>
             <span className="text-red-400">{progress.failed} failed</span>
-            <span className="text-slate-500">{progress.pending} pending</span>
+            <span className="text-slate-400">{progress.pending} pending</span>
+            {progress.retried > 0 && (
+              <span className="text-purple-400">{progress.retried} retried</span>
+            )}
           </div>
         </div>
       )}
@@ -563,7 +761,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
             <button
               onClick={resumeBatch}
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                         bg-green-600 hover:bg-green-500 text-white font-mono text-xs uppercase"
+                         bg-green-600 hover:bg-green-500 text-white font-mono text-sm uppercase"
             >
               <Play size={14} />
               resume
@@ -572,7 +770,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
             <button
               onClick={pauseBatch}
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                         bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs uppercase"
+                         bg-amber-600 hover:bg-amber-500 text-white font-mono text-sm uppercase"
             >
               <Pause size={14} />
               pause
@@ -581,7 +779,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
           <button
             onClick={cancelBatch}
             className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                       bg-red-600 hover:bg-red-500 text-white font-mono text-xs uppercase"
+                       bg-red-600 hover:bg-red-500 text-white font-mono text-sm uppercase"
           >
             <Square size={14} />
             cancel
@@ -612,14 +810,14 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
           <button
             onClick={resetBatch}
             className="flex items-center gap-2 px-3 py-2 rounded-lg
-                       bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs uppercase"
+                       bg-slate-700 hover:bg-slate-600 text-white font-mono text-sm uppercase"
           >
             <RefreshCw size={14} />
             new batch
           </button>
           <button
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                       bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs uppercase"
+                       bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-sm uppercase"
           >
             <Download size={14} />
             export all ({completedItems.length})
@@ -635,7 +833,7 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
           className="flex items-center gap-2 mt-4 p-2 bg-amber-500/10 border border-amber-500/30 rounded"
         >
           <AlertTriangle size={14} className="text-amber-400 flex-shrink-0" />
-          <span className="font-mono text-[10px] text-amber-400/80">
+          <span className="font-mono text-sm text-amber-400/80">
             Large batches may take longer and use more API credits
           </span>
         </motion.div>

@@ -113,11 +113,11 @@ export default function AssetGroupedView({ assets }: AssetGroupedViewProps) {
               <div className="flex items-center gap-2">
                 <Icon className={`w-4 h-4 ${colorClass}`} />
                 <span className="text-sm font-medium text-slate-200">{type}</span>
-                <span className="text-xs text-slate-500 bg-slate-800/60 px-2 py-0.5 rounded-full">
+                <span className="text-sm text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded-full">
                   {items.length}
                 </span>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400
+              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400
                 group-hover:translate-x-0.5 transition-all" />
             </button>
 
@@ -127,7 +127,7 @@ export default function AssetGroupedView({ assets }: AssetGroupedViewProps) {
                 {items.slice(0, 12).map((asset) => (
                   <span
                     key={asset._id}
-                    className="text-xs text-slate-400 bg-slate-800/40 px-2 py-1 rounded
+                    className="text-sm text-slate-400 bg-slate-800/40 px-2 py-1 rounded
                       hover:text-slate-200 hover:bg-slate-700/40 cursor-default
                       transition-colors truncate max-w-[150px]"
                     title={asset.name}
@@ -138,7 +138,7 @@ export default function AssetGroupedView({ assets }: AssetGroupedViewProps) {
                 {items.length > 12 && (
                   <button
                     onClick={() => handleGroupClick(type)}
-                    className="text-xs text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded
+                    className="text-sm text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded
                       hover:bg-cyan-500/20 transition-colors"
                   >
                     +{items.length - 12} more
@@ -151,7 +151,7 @@ export default function AssetGroupedView({ assets }: AssetGroupedViewProps) {
       })}
 
       {groupedAssets.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
           <Box className="w-10 h-10 mb-3 opacity-40" />
           <p className="text-sm">No assets to display</p>
         </div>

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "story": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "dist/mcp-server/index.js"
+      ],
+      "env": {
+        "STORY_BASE_URL": "http://localhost:3001",
+        "STORY_PROJECT_ID": "38983c08-9eab-4e07-93c3-04191479b0bb",
+        "SUPABASE_URL": "https://kajrrkbrfdyecophtyfi.supabase.co",
+        "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthanJya2JyZmR5ZWNvcGh0eWZpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDcyNzUyNCwiZXhwIjoyMDc2MzAzNTI0fQ.skHrKkLM5QznleOjRXILAnPk0EfOvNJuyAqn3hveQXE"
+      }
+    }
+  }
+}

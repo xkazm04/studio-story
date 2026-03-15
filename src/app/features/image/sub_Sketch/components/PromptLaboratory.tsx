@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { interactive, staggerDelay } from "@/lib/animations";
 import { Beaker, Layers, Grid3x3, Zap, Settings, Sparkles, Maximize2, Minimize2 } from "lucide-react";
 import { VisualDNA } from "./VisualDNA";
 import { VibesMeter } from "./VibesMeter";
@@ -135,7 +136,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
       </div>
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between p-4 border-b border-white/5 bg-slate-950/50 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between p-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="relative group">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-lg blur opacity-40 group-hover:opacity-60 transition-opacity" />
@@ -147,7 +148,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
             <h1 className="text-lg font-bold tracking-tight text-white">
               Prompt Laboratory
             </h1>
-            <p className="text-xs text-slate-400 font-medium">
+            <p className="text-sm text-slate-400 font-medium">
               Next-Gen Visual Composition
             </p>
           </div>
@@ -157,31 +158,34 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
           <div className="hidden md:flex bg-slate-900/50 border border-white/5 rounded-lg p-1">
             <button
               onClick={() => setViewMode('laboratory')}
-              className={`p-2 rounded-md transition-all ${viewMode === 'laboratory'
-                  ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+              className={`p-3 rounded-md transition-all focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${viewMode === 'laboratory'
+                  ? 'bg-white/10 text-white ms-shadow-subtle'
+                  : 'text-slate-400 hover:text-slate-300'
                 }`}
               title="Laboratory Mode"
+              aria-label="Laboratory Mode"
             >
               <Beaker className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('carousel')}
-              className={`p-2 rounded-md transition-all ${viewMode === 'carousel'
-                  ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+              className={`p-3 rounded-md transition-all focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${viewMode === 'carousel'
+                  ? 'bg-white/10 text-white ms-shadow-subtle'
+                  : 'text-slate-400 hover:text-slate-300'
                 }`}
               title="Carousel Mode"
+              aria-label="Carousel Mode"
             >
               <Layers className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-md transition-all ${viewMode === 'grid'
-                  ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+              className={`p-3 rounded-md transition-all focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${viewMode === 'grid'
+                  ? 'bg-white/10 text-white ms-shadow-subtle'
+                  : 'text-slate-400 hover:text-slate-300'
                 }`}
               title="Grid Mode"
+              aria-label="Grid Mode"
             >
               <Grid3x3 className="w-4 h-4" />
             </button>
@@ -202,11 +206,11 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
       {/* Main Content */}
       <main className="relative z-10 flex-1 overflow-hidden flex flex-col md:flex-row">
         {/* Left Panel - Controls & DNA */}
-        <aside className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-y-auto custom-scrollbar p-4 flex flex-col gap-6">
+        <aside className="w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-white/5 bg-slate-900/30 backdrop-blur-sm overflow-y-auto custom-scrollbar p-3 flex flex-col gap-3">
 
           {/* Visual DNA & Vibes */}
-          <section className="space-y-4">
-            <div className="bg-slate-950/40 border border-white/5 rounded-xl p-4 shadow-xl">
+          <section className="space-y-3">
+            <div className="bg-slate-950/40 border border-white/5 rounded-xl p-3 ms-shadow-elevated">
               <VisualDNA
                 theme={selections.theme}
                 scene={selections.scene}
@@ -219,19 +223,20 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
           {/* Presets */}
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Presets</h3>
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Presets</h3>
             </div>
             <PresetGallery presets={PROMPT_PRESETS} onSelect={handlePresetSelect} />
           </section>
 
           {/* Prompt Output */}
           <section className="flex-1 flex flex-col justify-end min-h-[150px]">
-            <div className="bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/10 rounded-xl p-4 shadow-2xl relative group">
+            <div className="bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/10 rounded-xl p-3 ms-shadow-elevated relative group">
               <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={handleCopy}
-                  className="p-1.5 hover:bg-white/10 rounded-md text-slate-400 hover:text-white transition-colors"
+                  className="p-2.5 hover:bg-white/10 rounded-md text-slate-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
                   title="Copy to clipboard"
+                  aria-label="Copy prompt"
                 >
                   <Zap className="w-3.5 h-3.5" />
                 </button>
@@ -239,12 +244,12 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
 
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold text-slate-300">Live Prompt</span>
-                {copied && <span className="text-xs text-emerald-400 ml-auto font-medium">Copied!</span>}
+                <span className="text-sm font-semibold text-slate-300">Live Prompt</span>
+                {copied && <span className="text-sm text-emerald-400 ml-auto font-medium">Copied!</span>}
               </div>
 
               <div className="max-h-32 overflow-y-auto custom-scrollbar">
-                <p className={`text-sm leading-relaxed ${finalPrompt ? "text-slate-100" : "text-slate-600 italic"}`}>
+                <p className={`text-sm leading-relaxed ${finalPrompt ? "text-slate-100" : "text-slate-400 italic"}`}>
                   {finalPrompt || "Select options to generate a prompt..."}
                 </p>
               </div>
@@ -252,14 +257,14 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
               <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
                 <button
                   onClick={() => setUseKeywords(!useKeywords)}
-                  className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1.5"
+                  className="text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-1.5"
                 >
                   <Settings className="w-3 h-3" />
                   {useKeywords ? "Keywords Mode" : "Natural Language"}
                 </button>
                 <div className="flex gap-2">
-                  <span className="text-[10px] text-slate-600 font-mono">⌘R Random</span>
-                  <span className="text-[10px] text-slate-600 font-mono">⌘C Copy</span>
+                  <span className="text-sm text-slate-400 font-mono">⌘R Random</span>
+                  <span className="text-sm text-slate-400 font-mono">⌘C Copy</span>
                 </div>
               </div>
             </div>
@@ -267,7 +272,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
         </aside>
 
         {/* Right Panel - Laboratory Grid */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 bg-slate-950/20">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 md:p-3 bg-slate-950/20">
           <AnimatePresence mode="wait">
             {viewMode === 'laboratory' && (
               <motion.div
@@ -275,7 +280,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-1 xl:grid-cols-3 gap-6"
+                className="grid grid-cols-1 xl:grid-cols-3 gap-3"
               >
                 {CLAUDE_COLUMNS_V2.map((column, index) => {
                   const selected = selections[column.id];
@@ -286,16 +291,16 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                       key={column.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex flex-col gap-4"
+                      transition={staggerDelay(index)}
+                      className="flex flex-col gap-3"
                     >
                       <div className="flex items-center gap-3 pb-2 border-b border-white/5">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${column.gradient} flex items-center justify-center text-xl shadow-lg`}>
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${column.gradient} flex items-center justify-center text-xl ms-shadow-card`}>
                           {column.icon}
                         </div>
                         <div>
                           <h3 className="font-bold text-white">{column.label}</h3>
-                          <p className="text-xs text-slate-400">{options.length} elements</p>
+                          <p className="text-sm text-slate-400">{options.length} elements</p>
                         </div>
                       </div>
 
@@ -306,13 +311,13 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                             <motion.button
                               key={option.id}
                               onClick={() => handleSelect(column.id, option)}
-                              whileHover={{ scale: 1.02, translateY: -2 }}
-                              whileTap={{ scale: 0.98 }}
+                              whileHover={interactive.hoverLift}
+                              whileTap={interactive.tapScale}
                               className={`
                                                         relative aspect-[4/3] rounded-xl overflow-hidden group transition-all duration-300
                                                         ${isSelected
-                                  ? "ring-2 ring-white shadow-xl shadow-purple-500/20 z-10"
-                                  : "ring-1 ring-white/5 hover:ring-white/20 hover:shadow-lg"
+                                  ? "ring-2 ring-white ms-shadow-elevated shadow-purple-500/20 z-10"
+                                  : "ring-1 ring-white/5 hover:ring-white/20 hover:ms-shadow-card"
                                 }
                                                     `}
                             >
@@ -327,7 +332,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                                 <div className={`text-2xl mb-2 transition-transform duration-300 ${isSelected ? "scale-110 -translate-y-1" : "group-hover:scale-110 group-hover:-translate-y-1"}`}>
                                   {option.visual.icon}
                                 </div>
-                                <span className={`text-xs font-bold leading-tight ${isSelected ? "text-white" : "text-slate-300 group-hover:text-white"}`}>
+                                <span className={`text-sm font-bold leading-tight ${isSelected ? "text-white" : "text-slate-300 group-hover:text-white"}`}>
                                   {option.label}
                                 </span>
                               </div>
@@ -335,7 +340,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                               {isSelected && (
                                 <motion.div
                                   layoutId={`check-${column.id}`}
-                                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-sm"
+                                  className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-purple-600 flex items-center justify-center ms-shadow-subtle"
                                 >
                                   <Zap className="w-3 h-3 fill-current" />
                                 </motion.div>
@@ -364,7 +369,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                       <span className="text-xl">{column.icon}</span>
                       <h3 className="font-bold text-lg text-white">{column.label}</h3>
                     </div>
-                    <div className="bg-slate-900/40 border border-white/5 rounded-2xl p-4 backdrop-blur-sm">
+                    <div className="bg-slate-900/40 border border-white/5 rounded-2xl p-3 backdrop-blur-sm">
                       <CompactCarousel
                         options={dimensionOptionsV2[column.id]}
                         selected={selections[column.id]}
@@ -383,7 +388,7 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
               >
                 {Object.entries(dimensionOptionsV2).flatMap(([dimension, options]) =>
                   options.map((option) => {
@@ -394,13 +399,13 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
                       <motion.button
                         key={option.id}
                         onClick={() => handleSelect(dimension as ClaudePromptDimension, option)}
-                        whileHover={{ scale: 1.05, zIndex: 10 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={interactive.hoverScaleLarge}
+                        whileTap={interactive.tapScale}
                         layout
                         className={`
                                             relative aspect-square rounded-2xl overflow-hidden transition-all duration-300
                                             ${isSelected
-                            ? "ring-2 ring-white shadow-2xl shadow-purple-500/30"
+                            ? "ring-2 ring-white ms-shadow-elevated shadow-purple-500/30"
                             : "ring-1 ring-white/5 hover:ring-white/20"
                           }
                                         `}
@@ -410,11 +415,11 @@ export const PromptLaboratory: React.FC<PromptLaboratoryProps> = ({ onPromptChan
 
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
                           <div className="text-3xl mb-2 drop-shadow-lg">{option.visual.icon}</div>
-                          <span className="text-xs font-bold text-white drop-shadow-md line-clamp-2">{option.label}</span>
+                          <span className="text-sm font-bold text-white drop-shadow-md line-clamp-2">{option.label}</span>
                         </div>
 
                         {column && (
-                          <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-xs border border-white/10">
+                          <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-sm border border-white/10">
                             {column.icon}
                           </div>
                         )}

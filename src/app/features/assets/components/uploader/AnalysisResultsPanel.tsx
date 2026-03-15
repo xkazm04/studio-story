@@ -48,7 +48,7 @@ function AssetCard({ asset, index }: { asset: DetectedAsset; index: number }) {
           {asset.name}
         </h4>
         {asset.confidence && (
-          <span className="text-[10px] text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded">
+          <span className="text-sm text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded">
             {Math.round(asset.confidence * 100)}%
           </span>
         )}
@@ -56,15 +56,15 @@ function AssetCard({ asset, index }: { asset: DetectedAsset; index: number }) {
 
       {/* Description */}
       {asset.description && (
-        <p className="text-xs text-slate-400 line-clamp-2 mb-2">
+        <p className="text-sm text-slate-400 line-clamp-2 mb-2">
           {asset.description}
         </p>
       )}
 
       {/* Category badge */}
       <div className="flex items-center gap-1.5 mb-2">
-        <Package className="w-3 h-3 text-slate-500" />
-        <span className="text-[11px] text-slate-400">{asset.category}</span>
+        <Package className="w-3 h-3 text-slate-400" />
+        <span className="text-sm text-slate-400">{asset.category}</span>
       </div>
 
       {/* Tags */}
@@ -73,7 +73,7 @@ function AssetCard({ asset, index }: { asset: DetectedAsset; index: number }) {
           {asset.tags.slice(0, 4).map((tag, i) => (
             <span
               key={i}
-              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px]
+              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-sm
                 text-slate-400 bg-slate-800/60 rounded"
             >
               <Tag className="w-2.5 h-2.5" />
@@ -81,7 +81,7 @@ function AssetCard({ asset, index }: { asset: DetectedAsset; index: number }) {
             </span>
           ))}
           {asset.tags.length > 4 && (
-            <span className="text-[10px] text-slate-500">
+            <span className="text-sm text-slate-400">
               +{asset.tags.length - 4}
             </span>
           )}
@@ -107,11 +107,11 @@ function ModelSection({ result }: { result: AnalysisResult }) {
           <span className="text-sm font-medium text-slate-200 capitalize">
             {result.model}
           </span>
-          <span className="text-[10px] text-slate-500 bg-slate-800/60 px-1.5 py-0.5 rounded">
+          <span className="text-sm text-slate-400 bg-slate-800/60 px-1.5 py-0.5 rounded">
             {result.assets.length} detected
           </span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-slate-500">
+        <div className="flex items-center gap-1 text-sm text-slate-400">
           <Clock className="w-3 h-3" />
           {result.processingTime}ms
         </div>
@@ -121,7 +121,7 @@ function ModelSection({ result }: { result: AnalysisResult }) {
       {result.error && (
         <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-red-300">{result.error}</p>
+          <p className="text-sm text-red-300">{result.error}</p>
         </div>
       )}
 
@@ -136,7 +136,7 @@ function ModelSection({ result }: { result: AnalysisResult }) {
 
       {/* Empty state */}
       {result.assets.length === 0 && !result.error && (
-        <p className="text-xs text-slate-500 italic">No assets detected</p>
+        <p className="text-sm text-slate-400 italic">No assets detected</p>
       )}
     </div>
   );
@@ -162,15 +162,15 @@ function TagSuggestionsSection({ tags }: { tags: TagSuggestion[] }) {
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Tag className="w-4 h-4 text-cyan-400" />
-        <span className="text-xs font-medium text-slate-300">Suggested Tags</span>
-        <span className="text-[10px] text-slate-500">({tags.length})</span>
+        <span className="text-sm font-medium text-slate-300">Suggested Tags</span>
+        <span className="text-sm text-slate-400">({tags.length})</span>
       </div>
       <div className="flex flex-wrap gap-1.5">
         {displayTags.map((tag, i) => (
           <span
             key={i}
             className={clsx(
-              'inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium border',
+              'inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm font-medium border',
               tagCategoryColors[tag.category]
             )}
             title={`${tag.category} tag (${Math.round(tag.confidence * 100)}% confidence)`}
@@ -182,7 +182,7 @@ function TagSuggestionsSection({ tags }: { tags: TagSuggestion[] }) {
         {tags.length > 8 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-[11px] text-slate-400 hover:text-slate-200 px-2"
+            className="text-sm text-slate-400 hover:text-slate-200 px-2"
           >
             {showAll ? 'Show less' : `+${tags.length - 8} more`}
           </button>
@@ -198,7 +198,7 @@ function ColorAnalysisSection({ colors }: { colors: ColorAnalysis }) {
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Palette className="w-4 h-4 text-amber-400" />
-        <span className="text-xs font-medium text-slate-300">Color Analysis</span>
+        <span className="text-sm font-medium text-slate-300">Color Analysis</span>
       </div>
       <div className="flex flex-wrap items-center gap-3">
         {/* Color palette */}
@@ -214,15 +214,15 @@ function ColorAnalysisSection({ colors }: { colors: ColorAnalysis }) {
         </div>
         {/* Characteristics */}
         <div className="flex gap-2">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm bg-slate-800 text-slate-300">
             <Sun className="w-3 h-3" />
             {colors.brightness}
           </span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm bg-slate-800 text-slate-300">
             <ThermometerSun className="w-3 h-3" />
             {colors.temperature}
           </span>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm bg-slate-800 text-slate-300">
             <Palette className="w-3 h-3" />
             {colors.saturation}
           </span>
@@ -244,7 +244,7 @@ function QualitySection({ quality }: { quality: QualityAssessment }) {
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Gauge className="w-4 h-4 text-green-400" />
-        <span className="text-xs font-medium text-slate-300">Quality Assessment</span>
+        <span className="text-sm font-medium text-slate-300">Quality Assessment</span>
         <span className={clsx('text-sm font-bold', getScoreColor(quality.overall))}>
           {quality.overall}/100
         </span>
@@ -257,7 +257,7 @@ function QualitySection({ quality }: { quality: QualityAssessment }) {
           { label: 'Composition', value: quality.composition },
         ].map((item) => (
           <div key={item.label} className="flex flex-col gap-1">
-            <span className="text-[10px] text-slate-500">{item.label}</span>
+            <span className="text-sm text-slate-400">{item.label}</span>
             <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
@@ -276,7 +276,7 @@ function QualitySection({ quality }: { quality: QualityAssessment }) {
       {quality.issues.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {quality.issues.map((issue, i) => (
-            <span key={i} className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+            <span key={i} className="text-sm text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
               {issue}
             </span>
           ))}
@@ -285,7 +285,7 @@ function QualitySection({ quality }: { quality: QualityAssessment }) {
       {quality.recommendations.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {quality.recommendations.map((rec, i) => (
-            <span key={i} className="inline-flex items-center gap-1 text-[10px] text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">
+            <span key={i} className="inline-flex items-center gap-1 text-sm text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">
               <Lightbulb className="w-3 h-3" />
               {rec}
             </span>
@@ -302,28 +302,28 @@ function StyleSection({ style, metadata }: { style: FullAnalysisResult['styleAna
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Eye className="w-4 h-4 text-purple-400" />
-        <span className="text-xs font-medium text-slate-300">Style & Metadata</span>
+        <span className="text-sm font-medium text-slate-300">Style & Metadata</span>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] text-slate-500 block mb-1">Style</span>
-          <span className="text-xs text-slate-200">{style.style}</span>
+          <span className="text-sm text-slate-400 block mb-1">Style</span>
+          <span className="text-sm text-slate-200">{style.style}</span>
         </div>
         <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] text-slate-500 block mb-1">Mood</span>
-          <span className="text-xs text-slate-200">{style.mood}</span>
+          <span className="text-sm text-slate-400 block mb-1">Mood</span>
+          <span className="text-sm text-slate-200">{style.mood}</span>
         </div>
         <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] text-slate-500 block mb-1">Category</span>
-          <span className="text-xs text-slate-200">{metadata.category}</span>
+          <span className="text-sm text-slate-400 block mb-1">Category</span>
+          <span className="text-sm text-slate-200">{metadata.category}</span>
         </div>
         <div className="p-2 rounded-lg bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] text-slate-500 block mb-1">Suggested Name</span>
-          <span className="text-xs text-slate-200">{metadata.suggestedName}</span>
+          <span className="text-sm text-slate-400 block mb-1">Suggested Name</span>
+          <span className="text-sm text-slate-200">{metadata.suggestedName}</span>
         </div>
       </div>
       {metadata.description && (
-        <p className="text-[11px] text-slate-400 italic">
+        <p className="text-sm text-slate-400 italic">
           {metadata.description}
         </p>
       )}
@@ -363,7 +363,7 @@ export default function AnalysisResultsPanel({
                   <button
                     onClick={() => setActiveTab('ai')}
                     className={clsx(
-                      'px-2 py-1 rounded text-[10px] font-medium transition-colors',
+                      'px-2 py-1 rounded text-sm font-medium transition-colors',
                       activeTab === 'ai'
                         ? 'bg-cyan-500/20 text-cyan-400'
                         : 'text-slate-400 hover:text-slate-200'
@@ -374,7 +374,7 @@ export default function AnalysisResultsPanel({
                   <button
                     onClick={() => setActiveTab('enhanced')}
                     className={clsx(
-                      'px-2 py-1 rounded text-[10px] font-medium transition-colors',
+                      'px-2 py-1 rounded text-sm font-medium transition-colors',
                       activeTab === 'enhanced'
                         ? 'bg-purple-500/20 text-purple-400'
                         : 'text-slate-400 hover:text-slate-200'
@@ -415,7 +415,7 @@ export default function AnalysisResultsPanel({
                 />
 
                 {/* Processing time */}
-                <div className="flex items-center gap-1 text-[10px] text-slate-500 pt-2 border-t border-slate-800/50">
+                <div className="flex items-center gap-1 text-sm text-slate-400 pt-2 border-t border-slate-800/50">
                   <Clock className="w-3 h-3" />
                   Analyzed in {enhancedAnalysis.processingTime}ms
                 </div>

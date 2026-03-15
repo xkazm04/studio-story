@@ -26,7 +26,7 @@ function renderInline(text: string): React.ReactNode[] {
     const token = match[0];
     if (token.startsWith('`')) {
       parts.push(
-        <code key={match.index} className="bg-slate-800 text-amber-300 px-1 rounded text-[10px]">
+        <code key={match.index} className="bg-slate-800 text-amber-300 px-1 rounded text-xs">
           {token.slice(1, -1)}
         </code>
       );
@@ -76,7 +76,7 @@ export default function CLIMarkdown({ content }: { content: string }) {
     if (headingMatch) {
       const level = headingMatch[1].length;
       const text = headingMatch[2];
-      const sizeClass = level === 1 ? 'text-sm' : level === 2 ? 'text-xs' : 'text-[11px]';
+      const sizeClass = level === 1 ? 'text-sm' : level === 2 ? 'text-xs' : 'text-xs';
       elements.push(
         <div key={i} className={`${sizeClass} font-bold text-slate-100 mt-1.5 mb-0.5`}>
           {renderInline(text)}
@@ -90,7 +90,7 @@ export default function CLIMarkdown({ content }: { content: string }) {
     if (listMatch) {
       elements.push(
         <div key={i} className="flex gap-1.5 pl-2">
-          <span className="text-slate-500 shrink-0">&#8226;</span>
+          <span className="text-slate-400 shrink-0">&#8226;</span>
           <span>{renderInline(listMatch[1])}</span>
         </div>
       );
@@ -102,7 +102,7 @@ export default function CLIMarkdown({ content }: { content: string }) {
     if (numListMatch) {
       elements.push(
         <div key={i} className="flex gap-1.5 pl-2">
-          <span className="text-slate-500 shrink-0">{numListMatch[1]}.</span>
+          <span className="text-slate-400 shrink-0">{numListMatch[1]}.</span>
           <span>{renderInline(numListMatch[2])}</span>
         </div>
       );

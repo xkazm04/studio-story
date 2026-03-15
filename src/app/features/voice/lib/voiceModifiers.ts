@@ -21,7 +21,7 @@ export const EMOTIONS = [
   { type: 'anxious', label: 'Anxious', color: 'bg-amber-400' },
   { type: 'melancholy', label: 'Melancholy', color: 'bg-indigo-400' },
   { type: 'confident', label: 'Confident', color: 'bg-emerald-400' },
-  { type: 'whispered', label: 'Whisper', color: 'bg-gray-400' },
+  { type: 'whispered', label: 'Whisper', color: 'bg-slate-400' },
 ] as const;
 
 export const DELIVERY_PRESETS = [

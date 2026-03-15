@@ -7,10 +7,11 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Trash2, Eye, EyeOff, ChevronDown, FileText, Sparkles, Brain, Layers, Library, Plus, BarChart2, X } from 'lucide-react';
+import { Palette, Trash2, Eye, EyeOff, ChevronDown, FileText, Sparkles, Brain, Layers, Library, Plus, BarChart2, X, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { Button } from '@/app/components/UI/Button';
 
 import { OptionSelector } from './components/OptionSelector';
@@ -82,9 +83,20 @@ export default function PromptComposer({
   const [mode, setMode] = useState<ComposerMode>('image');
   const [selections, setSelections] = useState<SelectionState>({});
   const [copied, setCopied] = useState(false);
-  const [expandedColumn, setExpandedColumn] = useState<string | null>('style');
+  const [expandedColumns, setExpandedColumns] = useState<Set<string>>(new Set(['style']));
   const [showPreview, setShowPreview] = useState(true);
   const [showTemplates, setShowTemplates] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('promptComposerExpandedColumns');
+      if (stored) {
+        setExpandedColumns(new Set(JSON.parse(stored)));
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   // Template Library state
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
@@ -118,7 +130,26 @@ export default function PromptComposer({
   }, [onImageSelect]);
 
   const toggleColumn = useCallback((columnId: string) => {
-    setExpandedColumn((prev) => (prev === columnId ? null : columnId));
+    setExpandedColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(columnId)) {
+        next.delete(columnId);
+      } else {
+        next.add(columnId);
+      }
+      localStorage.setItem('promptComposerExpandedColumns', JSON.stringify(Array.from(next)));
+      return next;
+    });
+  }, []);
+
+  const handleToggleAllColumns = useCallback(() => {
+    setExpandedColumns((prev) => {
+      const next = prev.size === PROMPT_COLUMNS.length 
+        ? new Set<string>() 
+        : new Set(PROMPT_COLUMNS.map(c => c.id));
+      localStorage.setItem('promptComposerExpandedColumns', JSON.stringify(Array.from(next)));
+      return next;
+    });
   }, []);
 
   const handleApplyTemplate = useCallback((template: typeof PROMPT_TEMPLATES[0]) => {
@@ -186,10 +217,10 @@ export default function PromptComposer({
               )}
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-slate-100">
+              <h2 className={TYPOGRAPHY.h1}>
                 {mode === 'image' ? 'Image Prompt Builder' : mode === 'context' ? 'Context Composer' : 'Template Library'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className={TYPOGRAPHY.caption}>
                 {mode === 'image'
                   ? selectionCount > 0
                     ? `${selectionCount} option${selectionCount > 1 ? 's' : ''} selected`
@@ -204,13 +235,23 @@ export default function PromptComposer({
           <div className="flex items-center gap-2">
             {mode === 'image' && (
               <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleAllColumns}
+                  className="h-7 px-2 text-sm text-slate-400 hover:text-slate-300"
+                >
+                  <ChevronsUpDown className="w-3.5 h-3.5 mr-1" />
+                  {expandedColumns.size === PROMPT_COLUMNS.length ? 'Collapse All' : 'Expand All'}
+                </Button>
+
                 {/* Templates Dropdown */}
                 <div className="relative">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowTemplates(!showTemplates)}
-                    className="h-7 px-2 text-xs"
+                    className="h-7 px-2 text-sm"
                   >
                     <Sparkles className="w-3.5 h-3.5 mr-1" />
                     Templates
@@ -220,14 +261,12 @@ export default function PromptComposer({
                   <AnimatePresence>
                     {showTemplates && (
                       <motion.div
-                        initial={{ opacity: 0, y: -4, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -4, scale: 0.95 }}
-                        transition={{ duration: 0.15 }}
+                        {...FM_VARIANTS.slideInDown}
+                        transition={FM_TRANSITION.fast}
                         className="absolute right-0 top-full mt-1 z-20 w-64 py-1 bg-slate-800 border border-slate-700 rounded-lg shadow-xl"
                       >
                         <div className="px-3 py-2 border-b border-slate-700">
-                          <h4 className="text-xs font-medium text-slate-300">Quick Start Templates</h4>
+                          <h4 className={TYPOGRAPHY.h3}>Quick Start Templates</h4>
                         </div>
                         {PROMPT_TEMPLATES.map(template => (
                           <button
@@ -239,7 +278,7 @@ export default function PromptComposer({
                               <FileText className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                               <div className="min-w-0">
                                 <div className="text-sm font-medium text-slate-200">{template.name}</div>
-                                <div className="text-[10px] text-slate-500 truncate">{template.description}</div>
+                                <div className="text-sm text-slate-400 truncate">{template.description}</div>
                               </div>
                             </div>
                           </button>
@@ -253,7 +292,7 @@ export default function PromptComposer({
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowPreview(!showPreview)}
-                  className="h-7 px-2 text-xs"
+                  className="h-7 px-2 text-sm"
                 >
                   {showPreview ? (
                     <EyeOff className="w-3.5 h-3.5 mr-1" />
@@ -268,7 +307,7 @@ export default function PromptComposer({
                     variant="ghost"
                     size="sm"
                     onClick={handleClear}
-                    className="h-7 px-2 text-xs text-slate-400 hover:text-red-400"
+                    className="h-7 px-2 text-sm text-slate-400 hover:text-red-400"
                   >
                     <Trash2 className="w-3.5 h-3.5 mr-1" />
                     Clear
@@ -283,7 +322,7 @@ export default function PromptComposer({
                   variant="ghost"
                   size="sm"
                   onClick={handleCreateNewTemplate}
-                  className="h-7 px-2 text-xs"
+                  className="h-7 px-2 text-sm"
                 >
                   <Plus className="w-3.5 h-3.5 mr-1" />
                   New Template
@@ -294,7 +333,7 @@ export default function PromptComposer({
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowEffectiveness(!showEffectiveness)}
-                    className="h-7 px-2 text-xs"
+                    className="h-7 px-2 text-sm"
                   >
                     <BarChart2 className="w-3.5 h-3.5 mr-1" />
                     Metrics
@@ -311,10 +350,10 @@ export default function PromptComposer({
         <button
           onClick={() => setMode('image')}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors',
+            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-colors',
             mode === 'image'
               ? 'bg-cyan-600/10 text-cyan-400 border-b-2 border-cyan-500 -mb-px'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
           )}
         >
           <Palette className="w-3.5 h-3.5" />
@@ -323,10 +362,10 @@ export default function PromptComposer({
         <button
           onClick={() => setMode('context')}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors',
+            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-colors',
             mode === 'context'
               ? 'bg-purple-600/10 text-purple-400 border-b-2 border-purple-500 -mb-px'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
           )}
         >
           <Layers className="w-3.5 h-3.5" />
@@ -335,10 +374,10 @@ export default function PromptComposer({
         <button
           onClick={() => setMode('templates')}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors',
+            'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium transition-colors',
             mode === 'templates'
               ? 'bg-amber-600/10 text-amber-400 border-b-2 border-amber-500 -mb-px'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+              : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50'
           )}
         >
           <Library className="w-3.5 h-3.5" />
@@ -352,9 +391,8 @@ export default function PromptComposer({
           {mode === 'image' ? (
             <motion.div
               key="image-mode"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
+              {...FM_VARIANTS.slideInLeft}
+              transition={FM_TRANSITION.normal}
               className="h-full flex"
             >
               {/* Options Panel - flex grow/shrink based on preview */}
@@ -371,7 +409,7 @@ export default function PromptComposer({
                     key={column.id}
                     column={column}
                     selectedOption={selections[column.id]}
-                    isExpanded={expandedColumn === column.id}
+                    isExpanded={expandedColumns.has(column.id)}
                     loading={isGenerating}
                     onToggle={toggleColumn}
                     onSelect={handleSelect}
@@ -380,8 +418,8 @@ export default function PromptComposer({
 
                 {/* Tips */}
                 <div className="mt-4 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
-                  <h4 className="text-xs font-medium text-slate-300 mb-2">Tips</h4>
-                  <ul className="text-[10px] text-slate-500 space-y-1">
+                  <h4 className="text-sm font-medium text-slate-300 mb-2">Tips</h4>
+                  <ul className="text-sm text-slate-400 space-y-1">
                     <li>• Use templates for quick start presets</li>
                     <li>• Start with an art style for the overall look</li>
                     <li>• Add a setting to define the location</li>
@@ -423,11 +461,11 @@ export default function PromptComposer({
                       ) : (
                         <div className="h-full flex items-center justify-center text-center">
                           <div>
-                            <Palette className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-                            <p className="text-sm text-slate-500">
+                            <Palette className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                            <p className="text-sm text-slate-400">
                               Select options to build your prompt
                             </p>
-                            <p className="text-xs text-slate-600 mt-1">
+                            <p className="text-sm text-slate-400 mt-1">
                               Or use a template for quick start
                             </p>
                           </div>
@@ -441,9 +479,8 @@ export default function PromptComposer({
           ) : mode === 'context' ? (
             <motion.div
               key="context-mode"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
+              {...FM_VARIANTS.slideInLeft}
+              transition={FM_TRANSITION.normal}
               className="h-full"
             >
               <ContextBuilder
@@ -458,9 +495,8 @@ export default function PromptComposer({
           ) : (
             <motion.div
               key="templates-mode"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
+              {...FM_VARIANTS.slideInLeft}
+              transition={FM_TRANSITION.normal}
               className="h-full flex"
             >
               {/* Template Gallery */}
@@ -508,7 +544,7 @@ export default function PromptComposer({
                     {/* Template Details */}
                     <div className="flex-1 h-full border-r border-slate-800 overflow-y-auto">
                       <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center justify-between mb-3">
                           <h3 className="text-sm font-semibold text-slate-200">{selectedTemplate.name}</h3>
                           <Button
                             variant="ghost"
@@ -519,20 +555,20 @@ export default function PromptComposer({
                             <X className="w-4 h-4" />
                           </Button>
                         </div>
-                        <p className="text-xs text-slate-500 mb-4">{selectedTemplate.description}</p>
+                        <p className="text-sm text-slate-400 mb-3">{selectedTemplate.description}</p>
 
                         {/* Template Content Preview */}
-                        <div className="mb-4">
-                          <label className="text-[10px] font-medium text-slate-400 mb-1 block">Content</label>
-                          <pre className="p-3 bg-slate-900/50 border border-slate-800 rounded-lg text-[10px] text-slate-300 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                        <div className="mb-3">
+                          <label className="text-sm font-medium text-slate-400 mb-1 block">Content</label>
+                          <pre className="p-3 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-300 whitespace-pre-wrap max-h-48 overflow-y-auto">
                             {selectedTemplate.content}
                           </pre>
                         </div>
 
                         {/* Variables */}
                         {selectedTemplate.variables.length > 0 && (
-                          <div className="mb-4">
-                            <label className="text-[10px] font-medium text-slate-400 mb-1 block">
+                          <div className="mb-3">
+                            <label className="text-sm font-medium text-slate-400 mb-1 block">
                               Variables ({selectedTemplate.variables.length})
                             </label>
                             <div className="flex flex-wrap gap-1">
@@ -540,10 +576,10 @@ export default function PromptComposer({
                                 <span
                                   key={v.name}
                                   className={cn(
-                                    'px-1.5 py-0.5 text-[10px] rounded',
+                                    'px-1.5 py-0.5 text-sm rounded',
                                     v.required
                                       ? 'bg-cyan-500/20 text-cyan-300'
-                                      : 'bg-slate-800 text-slate-500'
+                                      : 'bg-slate-800 text-slate-400'
                                   )}
                                   title={v.description}
                                 >
@@ -559,7 +595,7 @@ export default function PromptComposer({
                           <Button
                             size="sm"
                             onClick={() => setIsCreatingTemplate(true)}
-                            className="flex-1 h-8 text-xs"
+                            className="flex-1 h-8 text-sm"
                           >
                             Edit Template
                           </Button>
@@ -567,7 +603,7 @@ export default function PromptComposer({
                             size="sm"
                             variant="secondary"
                             onClick={() => handleForkTemplate(selectedTemplate)}
-                            className="h-8 text-xs"
+                            className="h-8 text-sm"
                           >
                             Fork
                           </Button>

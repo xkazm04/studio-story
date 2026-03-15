@@ -98,7 +98,7 @@ const DefaultLoadingComponent: React.FC<{ height?: string }> = ({ height = 'h-64
       />
     </div>
     <motion.p
-      className="text-gray-400 text-sm"
+      className="text-slate-400 text-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
@@ -123,7 +123,7 @@ const DefaultErrorComponent: React.FC<{ error: Error; retry: () => void }> = ({ 
     </div>
     <div className="text-center space-y-2">
       <h3 className="text-lg font-semibold text-white">Failed to Load Component</h3>
-      <p className="text-sm text-gray-400 max-w-md">
+      <p className="text-sm text-slate-400 max-w-md">
         {error.message || 'An unexpected error occurred while loading the component.'}
       </p>
     </div>

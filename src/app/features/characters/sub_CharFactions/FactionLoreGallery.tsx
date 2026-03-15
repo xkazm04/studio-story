@@ -74,7 +74,7 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
           <h2 className="text-2xl font-bold text-white mb-2">
             History & Achievements
           </h2>
-          <p className="text-gray-400">
+          <p className="text-slate-400">
             Explore the rich history and accomplishments of {faction.name}
           </p>
         </div>
@@ -85,7 +85,7 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
           className={cn('flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
             storyMode
               ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
           )}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -96,7 +96,7 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
       </div>
 
       {/* Section navigation */}
-      <div className="flex gap-2 border-b border-gray-800">
+      <div className="flex gap-2 border-b border-slate-800">
         {sections.map((section) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
@@ -108,16 +108,16 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
               className={cn('relative flex items-center gap-2 px-6 py-3 font-medium transition-all',
                 isActive
                   ? `text-${section.color}-400`
-                  : 'text-gray-400 hover:text-gray-300'
+                  : 'text-slate-400 hover:text-slate-300'
               )}
             >
               <Icon size={18} />
               {section.label}
               <span
-                className={cn('ml-1 px-2 py-0.5 rounded text-xs',
+                className={cn('ml-1 px-2 py-0.5 rounded text-sm',
                   isActive
                     ? `bg-${section.color}-600/20 text-${section.color}-400`
-                    : 'bg-gray-800 text-gray-500'
+                    : 'bg-slate-800 text-slate-400'
                 )}
               >
                 {section.count}
@@ -147,7 +147,7 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
             transition={{ duration: 0.3 }}
           >
             {storyMode ? (
-              <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-8">
+              <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-8">
                 {/* Story mode presentation */}
                 <div className="max-w-3xl mx-auto">
                   <motion.div
@@ -158,7 +158,7 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
                     <h3 className="text-3xl font-bold text-white mb-4">
                       The Story of {faction.name}
                     </h3>
-                    <p className="text-gray-400">
+                    <p className="text-slate-400">
                       A journey through time and triumph
                     </p>
                   </motion.div>
@@ -173,13 +173,13 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
                         transition={{ delay: index * 0.5, duration: 0.8 }}
                         className="text-center"
                       >
-                        <div className="text-sm text-gray-500 mb-2">
+                        <div className="text-sm text-slate-400 mb-2">
                           {new Date(event.date).getFullYear()}
                         </div>
                         <h4 className="text-xl font-semibold text-white mb-3">
                           {event.title}
                         </h4>
-                        <p className="text-gray-300 leading-relaxed">
+                        <p className="text-slate-300 leading-relaxed">
                           {event.description}
                         </p>
                         {index < events.length - 1 && (
@@ -243,23 +243,23 @@ const FactionLoreGallery: React.FC<FactionLoreGalleryProps> = ({
         transition={{ delay: 0.3 }}
         className="grid grid-cols-3 gap-4"
       >
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-4 text-center">
+        <div className="bg-slate-900 rounded-lg border border-slate-800 p-4 text-center">
           <div className="text-3xl font-bold text-blue-400 mb-1">
             {events.length}
           </div>
-          <div className="text-sm text-gray-400">Historic Events</div>
+          <div className="text-sm text-slate-400">Historic Events</div>
         </div>
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-4 text-center">
+        <div className="bg-slate-900 rounded-lg border border-slate-800 p-4 text-center">
           <div className="text-3xl font-bold text-yellow-400 mb-1">
             {achievements.length}
           </div>
-          <div className="text-sm text-gray-400">Achievements</div>
+          <div className="text-sm text-slate-400">Achievements</div>
         </div>
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-4 text-center">
+        <div className="bg-slate-900 rounded-lg border border-slate-800 p-4 text-center">
           <div className="text-3xl font-bold text-purple-400 mb-1">
             {lore.length}
           </div>
-          <div className="text-sm text-gray-400">Lore Entries</div>
+          <div className="text-sm text-slate-400">Lore Entries</div>
         </div>
       </motion.div>
     </div>

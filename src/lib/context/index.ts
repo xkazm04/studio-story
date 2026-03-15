@@ -36,3 +36,14 @@ export {
   type PresenceAnalysis,
   type DialogueLine,
 } from './PresenceDetector';
+
+export {
+  differentialEngine,
+  DifferentialContextEngine,
+  type DiffSession,
+  type DiffAction,
+  type DiffElement,
+  type DifferentialResult,
+  type DiffStats,
+  type DiffConfig,
+} from './DifferentialContextEngine';

@@ -43,7 +43,7 @@ const CharacterAppearanceWithArchetypes: React.FC<CharacterAppearanceWithArchety
         <div className="flex items-center justify-between mb-2">
           <div>
             <h4 className="font-semibold text-white mb-1">Archetype Library</h4>
-            <p className="text-xs text-gray-400">
+            <p className="text-sm text-slate-400">
               Choose a pre-built character template to instantly populate all fields
             </p>
           </div>
@@ -57,7 +57,7 @@ const CharacterAppearanceWithArchetypes: React.FC<CharacterAppearanceWithArchety
             Browse Archetypes
           </button>
         </div>
-        <p className="text-sm text-gray-300">
+        <p className="text-sm text-slate-300">
           Select from curated character templates including heroes, villains, mentors, and more.
           Each archetype comes with complete appearance, backstory, and AI-generated prompts.
         </p>

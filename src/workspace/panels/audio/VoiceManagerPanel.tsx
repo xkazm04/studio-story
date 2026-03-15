@@ -6,16 +6,18 @@ import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState } from '../shared/PanelPrimitives';
 import VoiceList from '@/app/features/voice/components/VoiceList';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
+import type { PanelDensity } from '@/workspace/types';
 
 interface VoiceManagerPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
-export default function VoiceManagerPanel({ onClose }: VoiceManagerPanelProps) {
+export default function VoiceManagerPanel({ onClose, density }: VoiceManagerPanelProps) {
   const { selectedProject } = useProjectStore();
 
   return (
-    <PanelFrame title="Voices" icon={Mic} onClose={onClose} headerAccent="emerald">
+    <PanelFrame title="Voices" icon={Mic} onClose={onClose} headerAccent="emerald" density={density}>
       {selectedProject?.id ? (
         <VoiceList projectId={selectedProject.id} />
       ) : (

@@ -100,7 +100,7 @@ export function CharacterImageUpload({
         <Sparkles className="w-4 h-4 text-purple-400" />
         <h3 className="text-sm font-semibold text-white">Upload Character Portrait</h3>
       </div>
-      <p className="text-xs text-gray-400 mb-4">
+      <p className="text-sm text-slate-400 mb-4">
         Upload an image to automatically extract appearance details using AI
       </p>
 
@@ -127,7 +127,7 @@ export function CharacterImageUpload({
       </div>
 
       {compressionInfo && (
-        <p className="text-xs text-gray-500 mt-2">{compressionInfo}</p>
+        <p className="text-sm text-slate-400 mt-2">{compressionInfo}</p>
       )}
     </div>
   );
@@ -159,7 +159,7 @@ function DropzoneEmpty({
       exit="exit"
       className={cn(
         'absolute min-h-[250px] inset-0 border-2 border-dashed rounded-lg p-6 cursor-pointer flex flex-col items-center justify-center transition-colors',
-        isDragActive ? 'border-purple-500 bg-purple-500/10' : 'border-gray-700 hover:border-gray-600'
+        isDragActive ? 'border-purple-500 bg-purple-500/10' : 'border-slate-700 hover:border-slate-600'
       )}
       onClick={() => fileInputRef.current?.click()}
       onDrop={onDrop}
@@ -167,8 +167,8 @@ function DropzoneEmpty({
       onDragLeave={onDragLeave}
     >
       <ImagePlus className="h-12 w-12 text-purple-400 mb-2" />
-      <p className="text-gray-300 text-center text-sm">Drag & drop or click to select</p>
-      <p className="text-gray-500 text-center text-xs mt-1">Character portrait or reference image</p>
+      <p className="text-slate-300 text-center text-sm">Drag & drop or click to select</p>
+      <p className="text-slate-400 text-center text-sm mt-1">Character portrait or reference image</p>
       <input
         type="file"
         ref={fileInputRef}
@@ -199,13 +199,13 @@ function ImagePreview({ imageUrl, isCompressing, fileInputRef, onRemove }: Image
     >
       <button
         onClick={onRemove}
-        className="absolute top-2 right-2 bg-gray-900/80 hover:bg-gray-900 text-red-400 hover:text-red-300 rounded-full p-1.5 z-10 transition-all"
+        className="absolute top-2 right-2 bg-slate-900/80 hover:bg-slate-900 text-red-400 hover:text-red-300 rounded-full p-1.5 z-10 transition-all"
         title="Remove image"
       >
         <X size={16} />
       </button>
       <div
-        className="relative w-full h-full min-h-[250px] overflow-hidden rounded-lg cursor-pointer border border-gray-700"
+        className="relative w-full h-full min-h-[250px] overflow-hidden rounded-lg cursor-pointer border border-slate-700"
         onClick={() => fileInputRef.current?.click()}
         title="Change image"
       >

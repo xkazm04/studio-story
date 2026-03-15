@@ -59,6 +59,8 @@ interface RecommendationPanelProps {
   onAccept?: (recommendation: Recommendation) => void;
   onDismiss?: (recommendation: Recommendation) => void;
   onExpand?: (recommendation: Recommendation) => void;
+  onThumbsUp?: (recommendation: Recommendation) => void;
+  onThumbsDown?: (recommendation: Recommendation) => void;
   onClose?: () => void;
   onFilterChange?: (types: RecommendationType[]) => void;
   className?: string;
@@ -118,9 +120,12 @@ interface RecommendationCardProps {
   isExpanded: boolean;
   isAccepted: boolean;
   isDismissed: boolean;
+  thumbsState: 'up' | 'down' | null;
   onToggle: () => void;
   onAccept: () => void;
   onDismiss: () => void;
+  onThumbsUp: () => void;
+  onThumbsDown: () => void;
 }
 
 const RecommendationCard: React.FC<RecommendationCardProps> = ({
@@ -128,9 +133,12 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
   isExpanded,
   isAccepted,
   isDismissed,
+  thumbsState,
   onToggle,
   onAccept,
   onDismiss,
+  onThumbsUp,
+  onThumbsDown,
 }) => {
   const TypeIcon = TypeIcons[recommendation.type];
   const typeColor = TypeColors[recommendation.type];
@@ -144,49 +152,82 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -20 }}
       className={cn(
-        'rounded-lg border overflow-hidden transition-all',
+        'group/card rounded-lg border overflow-hidden transition-all',
         priorityColor,
         isAccepted && 'opacity-60 bg-emerald-500/5 border-emerald-500/30'
       )}
     >
       {/* Card Header */}
-      <button
-        onClick={onToggle}
-        className="w-full p-3 flex items-start gap-2.5 text-left hover:bg-slate-800/30 transition-colors"
-      >
-        {/* Type Icon */}
-        <div className={cn('w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0', typeColor)}>
-          <TypeIcon className="w-4 h-4" />
-        </div>
+      <div className="flex items-start">
+        <button
+          onClick={onToggle}
+          className="flex-1 p-3 flex items-start gap-2.5 text-left hover:bg-slate-800/30 transition-colors min-w-0"
+        >
+          {/* Type Icon */}
+          <div className={cn('w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0', typeColor)}>
+            <TypeIcon className="w-4 h-4" />
+          </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-0.5">
-            <h4 className="text-xs font-semibold text-slate-100 truncate">
-              {recommendation.title}
-            </h4>
-            {recommendation.priority === 'high' && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium">
-                HIGH
-              </span>
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <h4 className="text-xs font-semibold text-slate-100 truncate">
+                {recommendation.title}
+              </h4>
+              {recommendation.priority === 'high' && (
+                <span className="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium">
+                  HIGH
+                </span>
+              )}
+            </div>
+            {!isExpanded && (
+              <p className="text-xs text-slate-400 line-clamp-1">
+                {recommendation.description}
+              </p>
             )}
           </div>
-          {!isExpanded && (
-            <p className="text-[11px] text-slate-400 line-clamp-1">
-              {recommendation.description}
-            </p>
-          )}
-        </div>
 
-        {/* Expand Icon */}
-        <motion.div
-          animate={{ rotate: isExpanded ? 90 : 0 }}
-          transition={{ duration: 0.15 }}
-          className="flex-shrink-0 text-slate-500"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </motion.div>
-      </button>
+          {/* Expand Icon */}
+          <motion.div
+            animate={{ rotate: isExpanded ? 90 : 0 }}
+            transition={{ duration: 0.15 }}
+            className="flex-shrink-0 text-slate-400"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </motion.div>
+        </button>
+
+        {/* Thumbs feedback — visible on hover or when voted */}
+        <div className={cn(
+          'flex items-center gap-0.5 pr-2 pt-3 transition-opacity',
+          thumbsState ? 'opacity-100' : 'opacity-0 group-hover/card:opacity-100'
+        )}>
+          <button
+            onClick={(e) => { e.stopPropagation(); onThumbsUp(); }}
+            className={cn(
+              'p-1 rounded transition-colors',
+              thumbsState === 'up'
+                ? 'text-emerald-400 bg-emerald-500/20'
+                : 'text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10'
+            )}
+            title="Helpful"
+          >
+            <ThumbsUp className="w-3 h-3" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onThumbsDown(); }}
+            className={cn(
+              'p-1 rounded transition-colors',
+              thumbsState === 'down'
+                ? 'text-red-400 bg-red-500/20'
+                : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10'
+            )}
+            title="Not helpful"
+          >
+            <ThumbsDown className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
 
       {/* Expanded Content */}
       <AnimatePresence>
@@ -207,7 +248,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
               {/* Reason */}
               <div className="flex items-start gap-1.5">
                 <Lightbulb className="w-3 h-3 text-amber-400 flex-shrink-0 mt-0.5" />
-                <p className="text-[11px] text-slate-400 italic leading-relaxed">
+                <p className="text-xs text-slate-400 italic leading-relaxed">
                   {recommendation.reason}
                 </p>
               </div>
@@ -215,13 +256,13 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
               {/* Entity Preview */}
               {recommendation.entityPreview && (
                 <div className="p-2 rounded bg-slate-800/50 border border-slate-700/50">
-                  <div className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">
+                  <div className="text-xs text-slate-400 uppercase tracking-wide mb-1">
                     {recommendation.entityType}
                   </div>
                   <div className="text-xs text-slate-200 font-medium">
                     {recommendation.entityName}
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">
                     {recommendation.entityPreview}
                   </p>
                 </div>
@@ -230,16 +271,16 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
               {/* Metadata Tags */}
               <div className="flex flex-wrap gap-1.5">
                 <span className={cn(
-                  'text-[9px] px-1.5 py-0.5 rounded font-medium',
+                  'text-xs px-1.5 py-0.5 rounded font-medium',
                   typeColor
                 )}>
                   {recommendation.type}
                 </span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
+                <span className="text-xs px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
                   {SourceLabels[recommendation.source]}
                 </span>
                 {recommendation.confidence >= 0.8 && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                  <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
                     High confidence
                   </span>
                 )}
@@ -247,7 +288,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
               {/* Score Bar */}
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-500">Relevance</span>
+                <span className="text-xs text-slate-400">Relevance</span>
                 <div className="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
@@ -256,7 +297,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
                     className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
                   />
                 </div>
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-xs text-slate-400 font-mono">
                   {Math.round(recommendation.score * 100)}%
                 </span>
               </div>
@@ -380,6 +421,8 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
   onAccept,
   onDismiss,
   onExpand,
+  onThumbsUp,
+  onThumbsDown,
   onClose,
   onFilterChange,
   className,
@@ -387,6 +430,7 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [acceptedIds, setAcceptedIds] = useState<Set<string>>(new Set());
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const [thumbsMap, setThumbsMap] = useState<Map<string, 'up' | 'down'>>(new Map());
   const [filterTypes, setFilterTypes] = useState<RecommendationType[]>([]);
 
   // Filter recommendations
@@ -425,6 +469,32 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
     setDismissedIds(prev => new Set([...prev, recommendation.id]));
     onDismiss?.(recommendation);
   }, [onDismiss]);
+
+  const handleThumbsUp = useCallback((recommendation: Recommendation) => {
+    setThumbsMap(prev => {
+      const next = new Map(prev);
+      if (prev.get(recommendation.id) === 'up') {
+        next.delete(recommendation.id);
+      } else {
+        next.set(recommendation.id, 'up');
+      }
+      return next;
+    });
+    onThumbsUp?.(recommendation);
+  }, [onThumbsUp]);
+
+  const handleThumbsDown = useCallback((recommendation: Recommendation) => {
+    setThumbsMap(prev => {
+      const next = new Map(prev);
+      if (prev.get(recommendation.id) === 'down') {
+        next.delete(recommendation.id);
+      } else {
+        next.set(recommendation.id, 'down');
+      }
+      return next;
+    });
+    onThumbsDown?.(recommendation);
+  }, [onThumbsDown]);
 
   const handleFilterChange = useCallback((types: RecommendationType[]) => {
     setFilterTypes(types);
@@ -466,7 +536,7 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-semibold text-slate-100">{title}</h3>
-            <p className="text-[10px] text-slate-400">{subtitle}</p>
+            <p className="text-xs text-slate-400">{subtitle}</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -520,7 +590,7 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
                       : [...filterTypes, type]
                   )}
                   className={cn(
-                    'flex items-center gap-1 px-2 py-1 rounded-full text-[10px] transition-colors',
+                    'flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors',
                     filterTypes.includes(type)
                       ? TypeColors[type]
                       : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50'
@@ -528,7 +598,7 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
                 >
                   <TypeIcon className="w-3 h-3" />
                   <span className="capitalize">{type}</span>
-                  <span className="text-[9px] opacity-75">{count}</span>
+                  <span className="text-xs opacity-75">{count}</span>
                 </button>
               );
             })}
@@ -544,9 +614,12 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
               isExpanded={expandedId === rec.id}
               isAccepted={acceptedIds.has(rec.id)}
               isDismissed={dismissedIds.has(rec.id)}
+              thumbsState={thumbsMap.get(rec.id) || null}
               onToggle={() => handleToggle(rec.id)}
               onAccept={() => handleAccept(rec)}
               onDismiss={() => handleDismiss(rec)}
+              onThumbsUp={() => handleThumbsUp(rec)}
+              onThumbsDown={() => handleThumbsDown(rec)}
             />
           ))}
         </AnimatePresence>
@@ -555,12 +628,12 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
         {!isLoading && filteredRecommendations.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 px-4">
             <div className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center mb-3">
-              <Sparkles className="w-5 h-5 text-slate-500" />
+              <Sparkles className="w-5 h-5 text-slate-400" />
             </div>
             <h4 className="text-sm font-medium text-slate-400 text-center mb-1">
               No suggestions available
             </h4>
-            <p className="text-xs text-slate-500 text-center">
+            <p className="text-xs text-slate-400 text-center">
               {filterTypes.length > 0
                 ? 'Try adjusting your filters'
                 : 'Suggestions will appear as you work'}
@@ -571,7 +644,7 @@ export const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-800/80 bg-slate-900/30">
-        <div className="flex items-center justify-between text-[10px] text-slate-500">
+        <div className="flex items-center justify-between text-xs text-slate-400">
           <div className="flex items-center gap-1.5">
             <Sparkles className="w-3 h-3 text-cyan-500" />
             <span>

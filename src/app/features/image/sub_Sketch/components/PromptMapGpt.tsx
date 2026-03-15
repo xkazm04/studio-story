@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FAST } from "@/lib/animations";
 import { Sparkles, Filter, X } from "lucide-react";
 import {
   PROMPT_COLUMNS,
@@ -68,10 +69,10 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-cyan-400" />
           <div className="flex flex-col">
-            <span className="text-xs font-semibold tracking-tight text-slate-50">
+            <span className="text-sm font-semibold tracking-tight text-slate-50">
               GPT Prompt Map
             </span>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-sm text-slate-400">
               Pick one item per column to compose a rich image prompt.
             </span>
           </div>
@@ -81,7 +82,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
           <Button
             size="xs"
             variant="secondary"
-            className="text-[11px] px-2 py-1 h-7"
+            className="text-sm px-2 py-1 h-7"
             onClick={() => setShowFilter((v) => !v)}
           >
             <Filter className="w-3 h-3 mr-1" />
@@ -91,7 +92,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
             <Button
               size="xs"
               variant="ghost"
-              className="text-[11px] px-2 py-1 h-7"
+              className="text-sm px-2 py-1 h-7"
               onClick={() => {
                 navigator.clipboard.writeText(finalPrompt);
               }}
@@ -109,7 +110,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
             initial={{ opacity: 0, y: -4, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -4, height: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={FAST}
             className="overflow-hidden"
           >
             <div className="flex items-center gap-2 bg-slate-950/90 border border-slate-900/70 rounded-lg px-3 py-2">
@@ -124,9 +125,10 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="p-1 rounded hover:bg-slate-900 text-slate-400"
+                  className="p-2.5 rounded hover:bg-slate-900 text-slate-400 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+                  aria-label="Clear filter"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -163,12 +165,12 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span className={`w-1.5 h-1.5 rounded-full ${accentDot}`} />
-                  <span className="text-[11px] font-semibold tracking-tight text-slate-100">
+                  <span className="text-sm font-semibold tracking-tight text-slate-100">
                     {column.label}
                   </span>
                 </div>
                 {selected && (
-                  <span className="text-[10px] text-slate-500 truncate max-w-[120px]">
+                  <span className="text-sm text-slate-400 truncate max-w-[120px]">
                     {selected.label}
                   </span>
                 )}
@@ -177,7 +179,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
               {/* Option List */}
               <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
                 {options.length === 0 && (
-                  <div className="text-[11px] text-slate-500 italic py-1">
+                  <div className="text-sm text-slate-400 italic py-1">
                     No matches for this filter.
                   </div>
                 )}
@@ -188,7 +190,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
                       key={option.id}
                       type="button"
                       onClick={() => handleSelect(column.id, option)}
-                      className={`w-full text-left rounded-md px-2 py-1.5 transition-all text-[11px] leading-snug border
+                      className={`w-full text-left rounded-md px-2 py-1.5 transition-all text-sm leading-snug border
                         ${isActive
                           ? `${accentBorder} bg-slate-900/80 text-slate-50 shadow-[0_0_0_1px_rgba(8,145,178,0.28)]`
                           : "border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-900"}
@@ -196,7 +198,7 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
                     >
                       <div className="font-medium truncate">{option.label}</div>
                       {option.description && (
-                        <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                        <div className="text-sm text-slate-400 truncate mt-0.5">
                           {option.description}
                         </div>
                       )}
@@ -211,12 +213,12 @@ export const PromptMapGpt: React.FC<PromptMapGptProps> = ({ onPromptChange }) =>
 
       {/* Final Prompt Preview */}
       <div className="mt-1 bg-slate-950/95 border border-slate-900/70 rounded-lg p-2.5 flex items-start gap-2">
-        <span className="text-[11px] font-semibold text-slate-400 mt-0.5 whitespace-nowrap">
+        <span className="text-sm font-semibold text-slate-400 mt-0.5 whitespace-nowrap">
           Combined Prompt
         </span>
-        <div className="flex-1 text-[11px] text-slate-100 bg-slate-950/80 rounded-md px-2 py-1 border border-slate-900/70 min-h-[32px]">
+        <div className="flex-1 text-sm text-slate-100 bg-slate-950/80 rounded-md px-2 py-1 border border-slate-900/70 min-h-[32px]">
           {finalPrompt || (
-            <span className="text-slate-500">Select a theme, scene, and character to build a prompt.</span>
+            <span className="text-slate-400">Select a theme, scene, and character to build a prompt.</span>
           )}
         </div>
       </div>

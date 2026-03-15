@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -7,8 +8,8 @@ import {
     MessageSquare,
     MapPin,
     Check,
-    BarChart3,
 } from 'lucide-react';
+import { Tooltip } from '@/app/components/UI/Tooltip';
 
 interface ScriptStats {
     acts: number;
@@ -21,11 +22,63 @@ interface ScriptStats {
     completionRate: number;
 }
 
-interface ScriptStatisticsProps {
-    stats: ScriptStats;
+interface ActBreakdown {
+    actName: string;
+    words: number;
+    withDialogue: number;
+    withLocation: number;
+    withContent: number;
+    scenes: number;
 }
 
-export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
+interface ScriptStatisticsProps {
+    stats: ScriptStats;
+    actBreakdown?: ActBreakdown[];
+}
+
+// Mini sparkline bar chart for per-act distribution
+function Sparkline({
+    values,
+    actNames,
+    barColor,
+}: {
+    values: number[];
+    actNames: string[];
+    barColor: string;
+}) {
+    const maxVal = Math.max(...values, 1);
+
+    return (
+        <div className="flex items-end gap-px mt-2 h-5">
+            {values.map((val, i) => {
+                const heightPercent = (val / maxVal) * 100;
+                return (
+                    <Tooltip
+                        key={i}
+                        content={`${actNames[i]}: ${val}`}
+                        position="top"
+                    >
+                        <div
+                            className="flex-1 min-w-0 rounded-sm transition-all hover:opacity-80 cursor-default"
+                            style={{
+                                height: `${Math.max(heightPercent, 8)}%`,
+                                backgroundColor: barColor,
+                                opacity: heightPercent === 0 ? 0.2 : 1,
+                            }}
+                        />
+                    </Tooltip>
+                );
+            })}
+        </div>
+    );
+}
+
+export default function ScriptStatistics({ stats, actBreakdown }: ScriptStatisticsProps) {
+    const actNames = useMemo(
+        () => actBreakdown?.map(a => a.actName) ?? [],
+        [actBreakdown]
+    );
+
     const items = [
         {
             label: 'Total Words',
@@ -33,6 +86,8 @@ export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
             icon: FileText,
             color: 'text-cyan-400',
             bgColor: 'bg-cyan-500/10',
+            barColor: 'var(--ms-cyan, #06B6D4)',
+            sparkValues: actBreakdown?.map(a => a.words),
         },
         {
             label: 'With Dialogue',
@@ -40,6 +95,8 @@ export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
             icon: MessageSquare,
             color: 'text-purple-400',
             bgColor: 'bg-purple-500/10',
+            barColor: '#A855F7',
+            sparkValues: actBreakdown?.map(a => a.withDialogue),
         },
         {
             label: 'With Location',
@@ -47,6 +104,8 @@ export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
             icon: MapPin,
             color: 'text-amber-400',
             bgColor: 'bg-amber-500/10',
+            barColor: '#F59E0B',
+            sparkValues: actBreakdown?.map(a => a.withLocation),
         },
         {
             label: 'With Content',
@@ -54,6 +113,8 @@ export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
             icon: Check,
             color: 'text-emerald-400',
             bgColor: 'bg-emerald-500/10',
+            barColor: '#10B981',
+            sparkValues: actBreakdown?.map(a => a.withContent),
         },
     ];
 
@@ -73,9 +134,16 @@ export default function ScriptStatistics({ stats }: ScriptStatisticsProps) {
                         </div>
                         <div>
                             <p className="text-sm font-semibold text-white">{item.value}</p>
-                            <p className="text-[10px] text-slate-500">{item.label}</p>
+                            <p className="text-sm text-slate-400">{item.label}</p>
                         </div>
                     </div>
+                    {item.sparkValues && item.sparkValues.length > 1 && (
+                        <Sparkline
+                            values={item.sparkValues}
+                            actNames={actNames}
+                            barColor={item.barColor}
+                        />
+                    )}
                 </motion.div>
             ))}
         </div>

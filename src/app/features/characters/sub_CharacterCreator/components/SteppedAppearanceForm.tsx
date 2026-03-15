@@ -63,7 +63,7 @@ export function SteppedAppearanceForm({ characterId }: SteppedAppearanceFormProp
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-10">
-        <div className="text-sm text-gray-400">Loading appearance data...</div>
+        <div className="text-sm text-slate-400">Loading appearance data...</div>
       </div>
     );
   }
@@ -75,7 +75,7 @@ export function SteppedAppearanceForm({ characterId }: SteppedAppearanceFormProp
           <Palette size={18} />
           Physical Appearance
         </h3>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-slate-400">
           Define physical traits step by step or extract them from an image using AI
         </p>
       </div>
@@ -118,7 +118,7 @@ export function SteppedAppearanceForm({ characterId }: SteppedAppearanceFormProp
         onRegenerate={handleGenerateFullPrompt}
       />
 
-      <ImageGenerationPreview prompt={prompt} />
+      <ImageGenerationPreview prompt={prompt} characterId={characterId} />
       <AppearancePreview appearance={appearance} />
       <SaveButton isSaving={isSaving} saved={saved} onSave={handleSave} />
     </div>

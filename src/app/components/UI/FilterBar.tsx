@@ -47,8 +47,8 @@ export function FilterBar({
             onClick={() => onChange(opt.value)}
             className={cn(
               'flex items-center gap-1.5 font-medium transition-all duration-200',
-              size === 'sm' && 'px-2.5 py-1 text-xs',
-              size === 'md' && 'px-3 py-1.5 text-xs',
+              size === 'sm' && 'px-2 py-0.5 text-sm',
+              size === 'md' && 'px-2.5 py-1 text-sm',
               variant === 'pills' && [
                 'rounded-md',
                 isActive
@@ -67,8 +67,8 @@ export function FilterBar({
             {opt.label}
             {opt.count !== undefined && (
               <span className={cn(
-                'text-[10px] px-1.5 py-0.5 rounded-full',
-                isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-500'
+                'text-xs px-1.5 py-0.5 rounded-full',
+                isActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400'
               )}>
                 {opt.count}
               </span>

@@ -39,11 +39,14 @@ interface CliAppearanceUpdate {
   [categoryId: string]: { optionId?: number; customPrompt?: string };
 }
 
+import type { PanelDensity } from '@/workspace/types';
+
 interface CharacterCreatorPanelProps {
   characterId?: string;
   cliAppearanceUpdate?: CliAppearanceUpdate;
   onClose?: () => void;
   onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
+  density?: PanelDensity;
 }
 
 // ─── Left Category Menu (icon + label, grouped) ──────────
@@ -68,7 +71,7 @@ function LeftCategoryMenu() {
       {CATEGORY_GROUPS.map((group) => (
         <div key={group.id} className="mb-1.5">
           <div className="px-3 py-1.5">
-            <span className="text-[10px] uppercase tracking-widest text-slate-600 font-medium">
+            <span className="text-xs uppercase tracking-widest text-slate-400 font-medium">
               {group.label}
             </span>
           </div>
@@ -83,7 +86,7 @@ function LeftCategoryMenu() {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   className={cn(
-                    'w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all text-xs',
+                    'w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all text-sm',
                     isActive
                       ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/30 border border-transparent'
@@ -132,10 +135,10 @@ function CharacterViewport() {
           onClick={() => setViewportTab('avatar')}
           disabled={isMultiView}
           className={cn(
-            'px-2.5 py-1 rounded text-[10px] font-medium transition-all',
+            'px-2.5 py-1 rounded text-sm font-medium transition-all',
             viewportTab === 'avatar'
               ? 'bg-amber-500/15 text-amber-400'
-              : 'text-slate-500 hover:text-slate-300',
+              : 'text-slate-400 hover:text-slate-300',
             isMultiView && 'opacity-50 cursor-not-allowed'
           )}
         >
@@ -145,10 +148,10 @@ function CharacterViewport() {
           onClick={() => setViewportTab('fullbody')}
           disabled={isMultiView}
           className={cn(
-            'px-2.5 py-1 rounded text-[10px] font-medium transition-all',
+            'px-2.5 py-1 rounded text-sm font-medium transition-all',
             viewportTab === 'fullbody'
               ? 'bg-amber-500/15 text-amber-400'
-              : 'text-slate-500 hover:text-slate-300',
+              : 'text-slate-400 hover:text-slate-300',
             isMultiView && 'opacity-50 cursor-not-allowed'
           )}
         >
@@ -161,7 +164,7 @@ function CharacterViewport() {
               useCreatorImageStore.getState().clearImages();
               setViewMode('single');
             }}
-            className="ml-auto px-2 py-0.5 rounded text-[10px] text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="ml-auto px-2 py-0.5 rounded text-sm text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
           >
             Cancel
           </button>
@@ -194,17 +197,17 @@ function CharacterViewport() {
               <div className="w-14 h-14 rounded-2xl bg-slate-900/60 border border-amber-500/20 flex items-center justify-center">
                 <Loader2 className="w-7 h-7 text-amber-400 animate-spin" />
               </div>
-              <p className="text-xs text-slate-400">Generating character...</p>
+              <p className="text-sm text-slate-400">Generating character...</p>
             </div>
           ) : generationError ? (
             <div className="flex max-w-70 flex-col items-center gap-3 text-center">
               <div className="w-14 h-14 rounded-2xl bg-slate-900/60 border border-red-500/20 flex items-center justify-center">
                 <AlertCircle className="w-7 h-7 text-red-400" />
               </div>
-              <p className="text-xs text-red-400">{generationError}</p>
+              <p className="text-sm text-red-400">{generationError}</p>
               <button
                 onClick={() => setGenerationError(null)}
-                className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+                className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
               >
                 Dismiss
               </button>
@@ -225,13 +228,13 @@ function CharacterViewport() {
             <div className="flex flex-col items-center gap-3 text-center">
               <div className="relative">
                 <div className="w-16 h-16 rounded-2xl bg-slate-900/60 border border-slate-800/50 flex items-center justify-center">
-                  <UserCircle className="w-8 h-8 text-slate-600" />
+                  <UserCircle className="w-8 h-8 text-slate-400" />
                 </div>
                 <div className="absolute inset-0 w-16 h-16 rounded-2xl border border-amber-500/10 animate-pulse" />
               </div>
               <div>
-                <p className="text-xs text-slate-400 mb-0.5">Character Preview</p>
-                <p className="text-[10px] text-slate-600">Select options & generate</p>
+                <p className="text-sm text-slate-400 mb-0.5">Character Preview</p>
+                <p className="text-sm text-slate-400">Select options & generate</p>
               </div>
             </div>
           )}
@@ -309,15 +312,15 @@ function GenerateButton() {
         <button
           onClick={() => setShowMulti((v) => !v)}
           className={cn(
-            'flex items-center gap-1.5 text-[10px] transition-colors',
-            showMulti ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'
+            'flex items-center gap-1.5 text-sm transition-colors',
+            showMulti ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'
           )}
         >
           <Grid3X3 className="w-3 h-3" />
           Multi-generate
         </button>
         {showMulti && (
-          <span className="text-[10px] text-slate-600">{imageCount} images</span>
+          <span className="text-sm text-slate-400">{imageCount} images</span>
         )}
       </div>
 
@@ -352,7 +355,7 @@ function GenerateButton() {
             max={12}
             value={imageCount}
             onChange={(e) => setImageCount(Number(e.target.value))}
-            className="w-8 bg-slate-800/60 text-center text-[10px] text-slate-300 rounded border border-slate-700/50 outline-none"
+            className="w-8 bg-slate-800/60 text-center text-sm text-slate-300 rounded border border-slate-700/50 outline-none"
           />
         </div>
       )}
@@ -364,9 +367,9 @@ function GenerateButton() {
             onClick={handleQuickGenerate}
             disabled={busy || disabled}
             className={cn(
-              'flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 text-xs font-medium transition-all',
+              'flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 text-sm font-medium transition-all',
               busy || disabled
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                 : 'bg-slate-700/80 text-slate-200 hover:bg-slate-600/80'
             )}
           >
@@ -381,9 +384,9 @@ function GenerateButton() {
             onClick={handleMultiGenerate}
             disabled={busy || disabled}
             className={cn(
-              'flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 text-xs font-medium transition-all',
+              'flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 text-sm font-medium transition-all',
               busy || disabled
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
                 : 'bg-linear-to-r from-amber-600/90 to-orange-600/90 text-white hover:from-amber-500 hover:to-orange-500 shadow-lg shadow-amber-900/20'
             )}
           >
@@ -396,9 +399,9 @@ function GenerateButton() {
           onClick={handleQuickGenerate}
           disabled={busy || disabled}
           className={cn(
-            'w-full py-2 rounded-lg flex items-center justify-center gap-2 text-xs font-medium transition-all',
+            'w-full py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition-all',
             busy || disabled
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+              ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
               : 'bg-linear-to-r from-amber-600/90 to-orange-600/90 text-white hover:from-amber-500 hover:to-orange-500 shadow-lg shadow-amber-900/20'
           )}
         >
@@ -438,21 +441,21 @@ function OptionsPanel() {
       {/* Search header */}
       <div className="px-3 py-2 border-b border-slate-800/40 shrink-0">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-medium text-slate-200">
+          <span className="text-sm font-medium text-slate-200">
             {category?.label ?? 'Select Category'}
           </span>
-          <span className="text-[10px] text-slate-600">
+          <span className="text-sm text-slate-400">
             {selectionCount} defined
           </span>
         </div>
         <div className="flex items-center gap-2 px-2 py-1 rounded bg-slate-900/60 border border-slate-800/50">
-          <Search className="w-3 h-3 text-slate-500" />
+          <Search className="w-3 h-3 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter options..."
-            className="flex-1 bg-transparent text-xs text-slate-200 outline-none placeholder-slate-600"
+            className="flex-1 bg-transparent text-sm text-slate-200 outline-none placeholder-slate-600"
           />
         </div>
       </div>
@@ -473,18 +476,18 @@ function OptionsPanel() {
       {/* Composed prompt + copy */}
       <div className="shrink-0 border-t border-slate-800/40 px-3 py-2">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">
             Composed Prompt
           </span>
           <button
             onClick={handleCopyPrompt}
-            className="text-[9px] px-1.5 py-0.5 text-slate-500 hover:text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
+            className="text-xs px-1.5 py-0.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
           >
             Copy
           </button>
         </div>
         <div className="p-2 bg-slate-900/40 rounded border border-slate-800/30 max-h-16 overflow-y-auto">
-          <p className="text-[10px] text-slate-400 leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-wrap">
             {composedPrompt}
           </p>
         </div>
@@ -505,6 +508,7 @@ export default function CharacterCreatorPanel({
   cliAppearanceUpdate,
   onClose,
   onTriggerSkill,
+  density,
 }: CharacterCreatorPanelProps) {
   const selectionCount = useCreatorCharacterStore(selectActiveSelectionCount);
   const setCharacterName = useCreatorCharacterStore((s) => s.setCharacterName);
@@ -539,17 +543,18 @@ export default function CharacterCreatorPanel({
       icon={Paintbrush}
       onClose={onClose}
       headerAccent="cyan"
+      density={density}
       actions={
         <div className="flex items-center gap-1">
           {onTriggerSkill && (
             <button
               onClick={() => onTriggerSkill('character-appearance', characterId ? { characterId } : undefined)}
-              className="text-[9px] px-1.5 py-0.5 text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
+              className="text-xs px-1.5 py-0.5 text-amber-400 hover:bg-amber-500/10 rounded transition-colors"
             >
               AI Design
             </button>
           )}
-          <span className="text-[9px] text-slate-600">
+          <span className="text-xs text-slate-400">
             {selectionCount}/14
           </span>
         </div>

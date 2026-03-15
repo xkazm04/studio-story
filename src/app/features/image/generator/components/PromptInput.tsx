@@ -111,7 +111,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
           onClick={() => setIsOpen(!isOpen)}
           disabled={loadingScenes || scenes.length === 0}
           className={`
-            px-3 py-1.5 rounded-md text-xs font-medium
+            px-3 py-1.5 rounded-md text-sm font-medium
             flex items-center gap-1.5 transition-colors
             ${
               selectedScene
@@ -137,7 +137,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
               <div className="max-h-64 overflow-y-auto p-2">
                 {Object.entries(scenesByAct).map(([actId, actScenes]) => (
                   <div key={actId} className="mb-2">
-                    <div className="text-xs font-medium text-slate-500 px-2 py-1">
+                    <div className="text-sm font-medium text-slate-400 px-2 py-1">
                       {getActName(actId)}
                     </div>
                     {actScenes
@@ -148,7 +148,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
                           onClick={() => handleSceneSelect(scene)}
                           disabled={isGenerating}
                           className={`
-                            w-full text-left px-2 py-1.5 rounded text-xs
+                            w-full text-left px-2 py-1.5 rounded text-sm
                             transition-colors hover:bg-slate-800
                             ${isGenerating ? 'opacity-50' : ''}
                             ${selectedScene?.id === scene.id ? 'bg-cyan-500/20 text-cyan-100' : 'text-slate-300'}
@@ -170,13 +170,13 @@ const PromptInput: React.FC<PromptInputProps> = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-slate-300">
+        <label className="text-sm font-medium text-slate-300">
           Quick Scene Select
         </label>
         {selectedScene && (
           <button
             onClick={clearSelection}
-            className="text-xs text-slate-500 hover:text-slate-400 flex items-center gap-1"
+            className="text-sm text-slate-400 hover:text-slate-400 flex items-center gap-1"
           >
             <X className="w-3 h-3" />
             Clear
@@ -203,7 +203,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
             {isGenerating ? (
               <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
             ) : (
-              <Film className="w-4 h-4 text-slate-500" />
+              <Film className="w-4 h-4 text-slate-400" />
             )}
             <span>
               {isGenerating
@@ -218,7 +218,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
             </span>
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-slate-500 transition-transform ${
+            className={`w-4 h-4 text-slate-400 transition-transform ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -235,7 +235,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
               <div className="max-h-72 overflow-y-auto">
                 {Object.entries(scenesByAct).map(([actId, actScenes]) => (
                   <div key={actId}>
-                    <div className="sticky top-0 bg-slate-800/90 backdrop-blur-sm text-xs font-semibold text-slate-400 px-3 py-2 border-b border-slate-700/50">
+                    <div className="sticky top-0 bg-slate-800/90 backdrop-blur-sm text-sm font-semibold text-slate-400 px-3 py-2 border-b border-slate-700/50">
                       {getActName(actId)}
                     </div>
                     {actScenes
@@ -260,7 +260,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
                             <div>
                               <div className="font-medium">{scene.name}</div>
                               {scene.description && (
-                                <div className="text-xs text-slate-500 mt-0.5 truncate max-w-[280px]">
+                                <div className="text-sm text-slate-400 mt-0.5 truncate max-w-[280px]">
                                   {scene.description}
                                 </div>
                               )}
@@ -278,7 +278,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
       </div>
 
       {selectedScene && (
-        <p className="text-xs text-slate-500">
+        <p className="text-sm text-slate-400">
           Prompt generated from scene context. You can edit it below.
         </p>
       )}

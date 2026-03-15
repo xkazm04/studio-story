@@ -8,6 +8,7 @@ import { SceneEditorProvider } from '@/contexts/SceneEditorContext';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { sceneChoiceApi } from '@/app/hooks/integration/useSceneChoices';
+import type { PanelDensity } from '@/workspace/types';
 
 const SceneGraph = lazy(
   () => import('@/app/features/story/sub_SceneGraph/SceneGraph')
@@ -15,9 +16,10 @@ const SceneGraph = lazy(
 
 interface StoryGraphPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
-export default function StoryGraphPanel({ onClose }: StoryGraphPanelProps) {
+export default function StoryGraphPanel({ onClose, density }: StoryGraphPanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id ?? '';
 
@@ -28,7 +30,7 @@ export default function StoryGraphPanel({ onClose }: StoryGraphPanelProps) {
 
   if (!projectId) {
     return (
-      <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet">
+      <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet" density={density}>
         <PanelEmptyState
           icon={GitBranch}
           title="No project selected"
@@ -40,7 +42,7 @@ export default function StoryGraphPanel({ onClose }: StoryGraphPanelProps) {
 
   if (scenes.length === 0) {
     return (
-      <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet">
+      <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet" density={density}>
         <PanelEmptyState
           icon={GitBranch}
           title="No scenes to map"
@@ -51,7 +53,7 @@ export default function StoryGraphPanel({ onClose }: StoryGraphPanelProps) {
   }
 
   return (
-    <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet">
+    <PanelFrame title="Story Graph" icon={GitBranch} onClose={onClose} headerAccent="violet" density={density}>
       <SceneEditorProvider
         projectId={projectId || 'preview'}
         firstSceneId={firstSceneId}
@@ -61,7 +63,7 @@ export default function StoryGraphPanel({ onClose }: StoryGraphPanelProps) {
         <Suspense
           fallback={
             <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
+              <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
             </div>
           }
         >

@@ -40,10 +40,10 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
         <div className="aspect-[3/4] rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-amber-500/50 border-t-transparent rounded-full animate-spin" />
-            <span className="font-mono text-xs text-slate-400">
+            <span className="font-mono text-sm text-slate-400">
               enhancing_to_final_quality...
             </span>
-            <span className="font-mono text-[10px] text-slate-500">
+            <span className="font-mono text-sm text-slate-400">
               768x1024
             </span>
           </div>
@@ -63,7 +63,7 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
               final_image
             </h3>
           </div>
-          <span className="font-mono text-[10px] text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+          <span className="font-mono text-sm text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
             high_quality
           </span>
         </div>
@@ -85,7 +85,7 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
           <div className="flex gap-2 mt-3">
             <button
               onClick={() => onAddToGallery(finalImage)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wide
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md font-mono text-sm uppercase tracking-wide
                          bg-cyan-600 hover:bg-cyan-500 text-white
                          transition-all duration-200"
             >
@@ -97,7 +97,7 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
               download={`character-${Date.now()}.png`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wide
+              className="flex items-center justify-center gap-2 px-3 py-2 rounded-md font-mono text-sm uppercase tracking-wide
                          bg-slate-700 hover:bg-slate-600 text-slate-200
                          transition-all duration-200"
             >
@@ -113,7 +113,7 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
   return (
     <div className="p-4 bg-slate-900/60 rounded-lg border border-slate-800/50">
       <div className="flex items-center gap-2 mb-4">
-        <Image className="w-4 h-4 text-slate-500" />
+        <Image className="w-4 h-4 text-slate-400" />
         <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
           final_image
         </h3>
@@ -129,13 +129,13 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="font-mono text-xs text-slate-400 text-center px-4">
+            <span className="font-mono text-sm text-slate-400 text-center px-4">
               ready to enhance selected sketch
             </span>
             <button
               onClick={onGenerate}
               disabled={!canGenerate}
-              className="flex items-center gap-2 px-4 py-2 rounded-md font-mono text-xs uppercase tracking-wide
+              className="flex items-center gap-2 px-4 py-2 rounded-md font-mono text-sm uppercase tracking-wide
                          bg-amber-600 hover:bg-amber-500 text-white
                          transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -145,8 +145,8 @@ const FinalPreview: React.FC<FinalPreviewProps> = ({
           </>
         ) : (
           <>
-            <Image className="w-10 h-10 text-slate-600" />
-            <span className="font-mono text-xs text-slate-500 text-center px-4">
+            <Image className="w-10 h-10 text-slate-400" />
+            <span className="font-mono text-sm text-slate-400 text-center px-4">
               // select_a_sketch_first
             </span>
           </>

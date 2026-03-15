@@ -63,7 +63,7 @@ export function Accordion({
               aria-expanded={isOpen}
               className={cn(
                 'w-full flex items-center justify-between transition-colors text-left',
-                size === 'sm' ? 'px-3 py-2' : 'px-4 py-3',
+                size === 'sm' ? 'px-2.5 py-1.5' : 'px-3 py-2',
                 'hover:bg-slate-800/60'
               )}
             >
@@ -71,18 +71,18 @@ export function Accordion({
                 {item.icon && (
                   <span className="[&>svg]:w-4 [&>svg]:h-4 text-slate-400 shrink-0">{item.icon}</span>
                 )}
-                <span className={cn('font-medium text-slate-200', size === 'sm' ? 'text-xs' : 'text-sm')}>
+                <span className={cn('font-medium text-slate-200', 'text-sm')}>
                   {item.title}
                 </span>
                 {item.badge && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-500">
+                  <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400">
                     {item.badge}
                   </span>
                 )}
               </div>
               <ChevronDown
                 className={cn(
-                  'w-4 h-4 text-slate-500 transition-transform duration-200',
+                  'w-4 h-4 text-slate-400 transition-transform duration-200',
                   isOpen && 'rotate-180'
                 )}
               />
@@ -98,7 +98,7 @@ export function Accordion({
                 >
                   <div className={cn(
                     'border-t border-slate-800/50',
-                    size === 'sm' ? 'px-3 py-2' : 'px-4 py-3',
+                    size === 'sm' ? 'px-2.5 py-1.5' : 'px-3 py-2',
                   )}>
                     {item.content}
                   </div>

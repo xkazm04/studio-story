@@ -9,6 +9,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collapse, NORMAL } from '@/lib/animations';
 import {
   Clapperboard,
   MessageSquare,
@@ -32,6 +33,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
 import { Label } from '@/app/components/UI/Label';
+import { Slider } from '@/app/components/UI/Slider';
 import {
   styleVariationManager,
   type SceneType,
@@ -76,7 +78,7 @@ const SCENE_TYPE_COLORS: Record<SceneType, string> = {
   romance: 'text-pink-400 bg-pink-500/20 border-pink-500/30',
   mystery: 'text-purple-400 bg-purple-500/20 border-purple-500/30',
   comedy: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30',
-  tragedy: 'text-gray-400 bg-gray-500/20 border-gray-500/30',
+  tragedy: 'text-slate-400 bg-slate-500/20 border-slate-500/30',
   battle: 'text-red-400 bg-red-500/20 border-red-500/30',
   flashback: 'text-amber-400 bg-amber-500/20 border-amber-500/30',
   dream: 'text-indigo-400 bg-indigo-500/20 border-indigo-500/30',
@@ -103,49 +105,6 @@ const ALL_SCENE_TYPES: SceneType[] = [
 // ============================================================================
 // Sub-Components
 // ============================================================================
-
-interface SliderProps {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  disabled?: boolean;
-}
-
-function Slider({ label, value, onChange, min = -50, max = 50, disabled }: SliderProps) {
-  const displayValue = value > 0 ? `+${value}` : value.toString();
-
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-400">{label}</span>
-        <span className={cn(
-          'text-[10px] font-mono',
-          value > 0 ? 'text-emerald-400' : value < 0 ? 'text-red-400' : 'text-slate-500'
-        )}>
-          {displayValue}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
-        disabled={disabled}
-        className={cn(
-          'w-full h-1.5 rounded-full appearance-none cursor-pointer',
-          'bg-slate-700',
-          '[&::-webkit-slider-thumb]:appearance-none',
-          '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
-          '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500',
-          'disabled:opacity-50 disabled:cursor-not-allowed'
-        )}
-      />
-    </div>
-  );
-}
 
 interface SceneTypeCardProps {
   sceneType: SceneType;
@@ -184,8 +143,9 @@ function SceneTypeCard({
       <div className="flex items-center gap-2 px-3 py-2">
         <button
           onClick={onToggleExpand}
-          className="text-slate-500 hover:text-slate-300"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-400 hover:text-slate-300"
           disabled={disabled}
+          aria-label={isExpanded ? 'Collapse rule' : 'Expand rule'}
         >
           {isExpanded ? (
             <ChevronDown className="w-3.5 h-3.5" />
@@ -207,8 +167,8 @@ function SceneTypeCard({
             {SCENE_TYPE_ICONS[sceneType]}
           </span>
           <div className="text-left">
-            <div className="text-xs font-medium text-slate-200">{rule.name}</div>
-            <div className="text-[9px] text-slate-500">Priority: {rule.priority}</div>
+            <div className="text-sm font-medium text-slate-200">{rule.name}</div>
+            <div className="text-sm text-slate-400">Priority: {rule.priority}</div>
           </div>
         </button>
 
@@ -218,12 +178,12 @@ function SceneTypeCard({
             onClick={onToggleEnabled}
             disabled={disabled}
             className={cn(
-              'p-1 rounded transition-colors',
+              'min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-colors',
               rule.enabled
                 ? 'text-emerald-400 hover:bg-emerald-500/20'
-                : 'text-slate-500 hover:bg-slate-700'
+                : 'text-slate-400 hover:bg-slate-700'
             )}
-            title={rule.enabled ? 'Disable rule' : 'Enable rule'}
+            aria-label={rule.enabled ? 'Disable rule' : 'Enable rule'}
           >
             {rule.enabled ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
           </button>
@@ -234,24 +194,30 @@ function SceneTypeCard({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            variants={collapse}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={NORMAL}
             className="overflow-hidden"
           >
             <div className="px-3 pb-3 space-y-3 border-t border-slate-700/50">
               {/* Description */}
-              <p className="text-[10px] text-slate-400 pt-2">{rule.description}</p>
+              <p className="text-sm text-slate-400 pt-2">{rule.description}</p>
 
               {/* Color Modifications */}
               <div className="space-y-2">
-                <Label className="text-[10px] text-slate-500">Color Modifications</Label>
+                <Label className="text-sm text-slate-400">Color Modifications</Label>
                 <Slider
                   label="Saturation"
                   value={rule.colorMods.saturation}
                   onChange={(v) => onUpdate({
                     colorMods: { ...rule.colorMods, saturation: v }
                   })}
+                  min={-50}
+                  max={50}
+                  showSign
+                  colorValue
                   disabled={disabled}
                 />
                 <Slider
@@ -260,6 +226,10 @@ function SceneTypeCard({
                   onChange={(v) => onUpdate({
                     colorMods: { ...rule.colorMods, brightness: v }
                   })}
+                  min={-50}
+                  max={50}
+                  showSign
+                  colorValue
                   disabled={disabled}
                 />
                 <Slider
@@ -268,29 +238,25 @@ function SceneTypeCard({
                   onChange={(v) => onUpdate({
                     colorMods: { ...rule.colorMods, contrast: v }
                   })}
+                  min={-50}
+                  max={50}
+                  showSign
+                  colorValue
                   disabled={disabled}
                 />
               </div>
 
               {/* Priority */}
               <div className="space-y-1">
-                <Label className="text-[10px] text-slate-500">Priority (higher overrides lower)</Label>
-                <input
-                  type="range"
+                <Label className="text-sm text-slate-400">Priority (higher overrides lower)</Label>
+                <Slider
+                  value={rule.priority}
+                  onChange={(v) => onUpdate({ priority: v })}
                   min={0}
                   max={5}
-                  value={rule.priority}
-                  onChange={(e) => onUpdate({ priority: parseInt(e.target.value) })}
                   disabled={disabled}
-                  className={cn(
-                    'w-full h-1.5 rounded-full appearance-none cursor-pointer',
-                    'bg-slate-700',
-                    '[&::-webkit-slider-thumb]:appearance-none',
-                    '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
-                    '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500'
-                  )}
                 />
-                <div className="flex justify-between text-[9px] text-slate-600">
+                <div className="flex justify-between text-sm text-slate-400">
                   <span>Low</span>
                   <span>High</span>
                 </div>
@@ -298,12 +264,12 @@ function SceneTypeCard({
 
               {/* Keywords */}
               <div className="space-y-1">
-                <Label className="text-[10px] text-slate-500">Style Keywords</Label>
+                <Label className="text-sm text-slate-400">Style Keywords</Label>
                 <div className="flex flex-wrap gap-1">
                   {rule.keywords.map((keyword, i) => (
                     <span
                       key={i}
-                      className="px-1.5 py-0.5 text-[9px] rounded bg-slate-700 text-slate-300"
+                      className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
                     >
                       {keyword}
                     </span>
@@ -313,12 +279,12 @@ function SceneTypeCard({
 
               {/* Composition Hints */}
               <div className="space-y-1">
-                <Label className="text-[10px] text-slate-500">Composition Hints</Label>
+                <Label className="text-sm text-slate-400">Composition Hints</Label>
                 <div className="flex flex-wrap gap-1">
                   {rule.compositionHints.map((hint, i) => (
                     <span
                       key={i}
-                      className="px-1.5 py-0.5 text-[9px] rounded bg-purple-500/20 text-purple-300"
+                      className="px-1.5 py-0.5 text-sm rounded bg-purple-500/20 text-purple-300"
                     >
                       {hint}
                     </span>
@@ -449,7 +415,7 @@ export function SceneTypeRules({
         <Clapperboard className="w-4 h-4 text-orange-400" />
         <span className="text-sm font-semibold text-slate-200">Scene Type Rules</span>
         {selectedSceneTypes.length > 0 && (
-          <span className="ml-auto px-2 py-0.5 text-[10px] rounded-full bg-cyan-500/20 text-cyan-400">
+          <span className="ml-auto px-2 py-0.5 text-sm rounded-full bg-cyan-500/20 text-cyan-400">
             {selectedSceneTypes.length} active
           </span>
         )}
@@ -467,7 +433,7 @@ export function SceneTypeRules({
               onClick={() => handleToggleSelect(type)}
               disabled={disabled || !rule?.enabled}
               className={cn(
-                'flex items-center gap-1 px-2 py-1 rounded-md border text-xs transition-all',
+                'flex items-center gap-1 px-2 py-1 min-h-[44px] rounded-md border text-sm transition-all',
                 isSelected
                   ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
                   : cn(SCENE_TYPE_COLORS[type], 'hover:opacity-80'),
@@ -485,9 +451,9 @@ export function SceneTypeRules({
       {activeRulesSummary && (
         <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-cyan-400">Active Rules Effect</span>
+            <span className="text-sm font-medium text-cyan-400">Active Rules Effect</span>
           </div>
-          <div className="flex gap-4 text-[10px]">
+          <div className="flex gap-4 text-sm">
             <div>
               <span className="text-slate-400">Saturation:</span>{' '}
               <span className={activeRulesSummary.combinedMods.saturation >= 0 ? 'text-emerald-400' : 'text-red-400'}>
@@ -509,12 +475,12 @@ export function SceneTypeRules({
           </div>
           <div className="flex flex-wrap gap-1 pt-1">
             {activeRulesSummary.keywords.slice(0, 6).map((kw, i) => (
-              <span key={i} className="px-1.5 py-0.5 text-[9px] rounded bg-cyan-500/20 text-cyan-300">
+              <span key={i} className="px-1.5 py-0.5 text-sm rounded bg-cyan-500/20 text-cyan-300">
                 {kw}
               </span>
             ))}
             {activeRulesSummary.keywords.length > 6 && (
-              <span className="text-[9px] text-cyan-400">+{activeRulesSummary.keywords.length - 6} more</span>
+              <span className="text-sm text-cyan-400">+{activeRulesSummary.keywords.length - 6} more</span>
             )}
           </div>
         </div>
@@ -522,7 +488,7 @@ export function SceneTypeRules({
 
       {/* Rules List */}
       <div className="space-y-2">
-        <div className="text-[10px] text-slate-500">All Scene Types (sorted by priority)</div>
+        <div className="text-sm text-slate-400">All Scene Types (sorted by priority)</div>
         {sortedRules.map(({ type, rule }) => (
           <SceneTypeCard
             key={type}

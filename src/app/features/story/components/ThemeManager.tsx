@@ -188,7 +188,7 @@ function ThemeDialog({
         <div className="p-4 space-y-4">
           {/* Name */}
           <div className="space-y-1.5">
-            <label className="text-xs text-slate-400 font-medium">Theme Name</label>
+            <label className="text-sm text-slate-400 font-medium">Theme Name</label>
             <input
               type="text"
               value={name}
@@ -202,7 +202,7 @@ function ThemeDialog({
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="text-xs text-slate-400 font-medium">Description</label>
+            <label className="text-sm text-slate-400 font-medium">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -216,7 +216,7 @@ function ThemeDialog({
 
           {/* Level */}
           <div className="space-y-1.5">
-            <label className="text-xs text-slate-400 font-medium">Theme Level</label>
+            <label className="text-sm text-slate-400 font-medium">Theme Level</label>
             <div className="grid grid-cols-3 gap-1">
               {(Object.entries(THEME_LEVELS) as [ThemeLevel, typeof THEME_LEVELS.primary][]).map(([levelKey, info]) => {
                 const Icon = info.icon;
@@ -233,7 +233,7 @@ function ThemeDialog({
                     style={{ color: level === levelKey ? info.color : '#94a3b8' }}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="text-[10px] font-medium">{info.label.split(' ')[0]}</span>
+                    <span className="text-sm font-medium">{info.label.split(' ')[0]}</span>
                   </button>
                 );
               })}
@@ -243,7 +243,7 @@ function ThemeDialog({
           {/* Parent theme (for secondary/motif) */}
           {level !== 'primary' && parentOptions.length > 0 && (
             <div className="space-y-1.5">
-              <label className="text-xs text-slate-400 font-medium">Parent Theme (optional)</label>
+              <label className="text-sm text-slate-400 font-medium">Parent Theme (optional)</label>
               <select
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value)}
@@ -260,7 +260,7 @@ function ThemeDialog({
 
           {/* Keywords */}
           <div className="space-y-1.5">
-            <label className="text-xs text-slate-400 font-medium">Keywords</label>
+            <label className="text-sm text-slate-400 font-medium">Keywords</label>
             <div className="flex flex-wrap gap-1 mb-2">
               {keywords.map((keyword) => (
                 <Badge key={keyword} variant="default" size="sm" icon={<Hash className="w-2.5 h-2.5" />} className="gap-1">
@@ -282,7 +282,7 @@ function ThemeDialog({
                 onKeyDown={(e) => e.key === 'Enter' && addKeyword(newKeyword)}
                 placeholder="Add keyword..."
                 className="flex-1 px-3 py-1.5 bg-slate-900/50 border border-slate-700 rounded-lg
-                  text-xs text-slate-200 placeholder-slate-500
+                  text-sm text-slate-200 placeholder-slate-500
                   focus:outline-none focus:border-cyan-500/50"
               />
               <button
@@ -297,12 +297,12 @@ function ThemeDialog({
             {/* Suggested keywords */}
             {suggestedKeywords.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-[10px] text-slate-500 mr-1">Suggestions:</span>
+                <span className="text-sm text-slate-400 mr-1">Suggestions:</span>
                 {suggestedKeywords.slice(0, 5).map((keyword) => (
                   <button
                     key={keyword}
                     onClick={() => addKeyword(keyword)}
-                    className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20"
+                    className="px-1.5 py-0.5 rounded text-sm bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20"
                   >
                     + {keyword}
                   </button>
@@ -313,7 +313,7 @@ function ThemeDialog({
 
           {/* Color */}
           <div className="space-y-1.5">
-            <label className="text-xs text-slate-400 font-medium">Color</label>
+            <label className="text-sm text-slate-400 font-medium">Color</label>
             <div className="flex flex-wrap gap-1">
               {PRESET_COLORS.map((presetColor) => (
                 <button
@@ -345,7 +345,7 @@ function ThemeDialog({
               'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
               name.trim()
                 ? 'bg-cyan-600 text-white hover:bg-cyan-500'
-                : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
             )}
           >
             {theme ? 'Save Changes' : 'Add Theme'}
@@ -420,13 +420,13 @@ function ThemeCard({
               {theme.keywords.slice(0, 3).map((keyword) => (
                 <span
                   key={keyword}
-                  className="text-[10px] px-1 py-0.5 rounded bg-slate-700/50 text-slate-400"
+                  className="text-sm px-1 py-0.5 rounded bg-slate-700/50 text-slate-400"
                 >
                   {keyword}
                 </span>
               ))}
               {theme.keywords.length > 3 && (
-                <span className="text-[10px] text-slate-500">
+                <span className="text-sm text-slate-400">
                   +{theme.keywords.length - 3}
                 </span>
               )}
@@ -555,7 +555,7 @@ export default function ThemeManager({
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-sm text-slate-400">
             <Layers className="w-3.5 h-3.5" />
             <span>{stats.total} themes</span>
           </div>
@@ -572,7 +572,7 @@ export default function ThemeManager({
           {themes.slice(0, 6).map((theme) => (
             <span
               key={theme.id}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-sm"
               style={{
                 backgroundColor: `${theme.color}20`,
                 color: theme.color,
@@ -582,7 +582,7 @@ export default function ThemeManager({
             </span>
           ))}
           {themes.length > 6 && (
-            <span className="text-xs text-slate-500">+{themes.length - 6} more</span>
+            <span className="text-sm text-slate-400">+{themes.length - 6} more</span>
           )}
         </div>
 
@@ -607,7 +607,7 @@ export default function ThemeManager({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h3 className="text-sm font-medium text-slate-200">Themes</h3>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-sm text-slate-400">
             <span
               className="px-1.5 py-0.5 rounded"
               style={{ backgroundColor: `${THEME_LEVELS.primary.color}20`, color: THEME_LEVELS.primary.color }}
@@ -631,7 +631,7 @@ export default function ThemeManager({
 
         <button
           onClick={() => setShowDialog(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm
             bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -681,10 +681,10 @@ export default function ThemeManager({
             <div key={level} className="space-y-2">
               <div className="flex items-center gap-2">
                 <LevelIcon className="w-4 h-4" style={{ color: levelInfo.color }} />
-                <span className="text-xs font-medium text-slate-300">
+                <span className="text-sm font-medium text-slate-300">
                   {levelInfo.label}s
                 </span>
-                <span className="text-xs text-slate-500">({levelThemes.length})</span>
+                <span className="text-sm text-slate-400">({levelThemes.length})</span>
               </div>
 
               {levelThemes.length > 0 ? (
@@ -702,7 +702,7 @@ export default function ThemeManager({
                   ))}
                 </div>
               ) : (
-                <div className="text-xs text-slate-500 italic py-2 px-3 bg-slate-800/30 rounded-lg">
+                <div className="text-sm text-slate-400 italic py-2 px-3 bg-slate-800/30 rounded-lg">
                   No {level} themes defined yet
                 </div>
               )}
@@ -714,9 +714,9 @@ export default function ThemeManager({
       {/* Empty state */}
       {themes.length === 0 && (
         <div className="text-center py-8">
-          <Layers className="w-12 h-12 text-slate-600 mx-auto mb-2" />
+          <Layers className="w-12 h-12 text-slate-400 mx-auto mb-2" />
           <p className="text-sm text-slate-400">No themes defined yet</p>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Add themes to track thematic elements throughout your story
           </p>
           <button
@@ -747,7 +747,7 @@ export default function ThemeManager({
 export function ThemeBadge({ theme }: { theme: Theme }) {
   return (
     <span
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px]"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm"
       style={{
         backgroundColor: `${theme.color}20`,
         color: theme.color,

@@ -91,7 +91,7 @@ export function ImageUploadArea({
             <X className="w-4 h-4" />
           </button>
         )}
-        <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-slate-900/80 text-xs font-medium text-slate-200">
+        <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-slate-900/80 text-sm font-medium text-slate-200">
           <ImageIcon className="w-3 h-3 inline mr-1" />
           {previewLabel}
         </div>
@@ -135,7 +135,7 @@ export function ImageUploadArea({
           <p className="text-sm font-medium text-slate-200">
             {isLoading ? 'Processing...' : uploadLabel}
           </p>
-          <p className="text-xs text-slate-500">{uploadHint}</p>
+          <p className="text-sm text-slate-400">{uploadHint}</p>
         </div>
       </div>
     </div>

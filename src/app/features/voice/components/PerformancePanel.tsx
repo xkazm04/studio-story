@@ -117,11 +117,11 @@ export default function PerformancePanel({
       <div className="p-6 border-b border-slate-800">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="ms-h2 flex items-center gap-2">
               <Music className="w-6 h-6 text-purple-400" />
               Performance Director
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="ms-caption mt-1">
               Control emotion, pacing, and delivery style
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function PerformancePanel({
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-purple-500/20 text-purple-400'
                     : 'text-slate-400 hover:text-slate-200'
@@ -215,7 +215,7 @@ export default function PerformancePanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-200">Pitch</label>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-sm text-slate-400">
                     {config.pitch >= 0 ? '+' : ''}{Math.round(config.pitch * 100)}%
                   </span>
                 </div>
@@ -226,7 +226,7 @@ export default function PerformancePanel({
                   step={0.05}
                   onChange={(value) => handleParamChange('pitch', value)}
                 />
-                <div className="flex justify-between text-[10px] text-slate-500">
+                <div className="flex justify-between text-sm text-slate-400">
                   <span>Lower</span>
                   <span>Normal</span>
                   <span>Higher</span>
@@ -237,7 +237,7 @@ export default function PerformancePanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-200">Volume</label>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-sm text-slate-400">
                     {Math.round(config.volume * 100)}%
                   </span>
                 </div>
@@ -254,7 +254,7 @@ export default function PerformancePanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-200">Breathiness</label>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-sm text-slate-400">
                     {Math.round(config.breathiness * 100)}%
                   </span>
                 </div>
@@ -265,7 +265,7 @@ export default function PerformancePanel({
                   step={0.05}
                   onChange={(value) => handleParamChange('breathiness', value)}
                 />
-                <p className="text-[10px] text-slate-500">
+                <p className="text-sm text-slate-400">
                   Add airy quality to the voice
                 </p>
               </div>
@@ -274,7 +274,7 @@ export default function PerformancePanel({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-200">Vibrato</label>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-sm text-slate-400">
                     {Math.round(config.vibrato * 100)}%
                   </span>
                 </div>
@@ -285,7 +285,7 @@ export default function PerformancePanel({
                   step={0.05}
                   onChange={(value) => handleParamChange('vibrato', value)}
                 />
-                <p className="text-[10px] text-slate-500">
+                <p className="text-sm text-slate-400">
                   Add natural voice variation
                 </p>
               </div>
@@ -319,21 +319,21 @@ export default function PerformancePanel({
 
         {/* Current config summary */}
         <div className="mt-4 p-3 rounded-lg bg-slate-900/60 border border-slate-800/50">
-          <div className="grid grid-cols-4 gap-3 text-xs">
+          <div className="grid grid-cols-4 gap-3 text-sm">
             <div>
-              <span className="text-slate-500 block">Emotion</span>
+              <span className="text-slate-400 block">Emotion</span>
               <span className="text-slate-300 capitalize">{config.emotion.type}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Intensity</span>
+              <span className="text-slate-400 block">Intensity</span>
               <span className="text-slate-300">{Math.round(config.emotion.intensity * 100)}%</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Speed</span>
+              <span className="text-slate-400 block">Speed</span>
               <span className="text-slate-300">{(config.pacing.speed * 100).toFixed(0)}%</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Preset</span>
+              <span className="text-slate-400 block">Preset</span>
               <span className="text-slate-300">
                 {selectedPreset
                   ? emotionController.getPreset(selectedPreset)?.name || 'Custom'

@@ -62,7 +62,7 @@ const MediaGalleryItem: React.FC<MediaGalleryItemProps> = ({
       data-testid={`media-item-${item.id}`}
     >
       <div
-        className={`relative bg-gray-900 rounded-lg border border-gray-800 overflow-hidden aspect-square ${hoverClass} transition-colors`}
+        className={`relative bg-slate-900 rounded-lg border border-slate-800 overflow-hidden aspect-square ${hoverClass} transition-colors`}
         onClick={onClick}
         role="button"
         tabIndex={0}
@@ -76,9 +76,9 @@ const MediaGalleryItem: React.FC<MediaGalleryItemProps> = ({
       >
         {/* Skeleton Loading State */}
         {!isLoaded && !hasError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"
+              className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800"
               animate={{
                 translateX: ['-100%', '100%'],
               }}
@@ -89,18 +89,18 @@ const MediaGalleryItem: React.FC<MediaGalleryItemProps> = ({
               }}
             />
             {item.type === 'image' ? (
-              <ImageIcon size={48} className="text-gray-600 relative z-10" />
+              <ImageIcon size={48} className="text-slate-400 relative z-10" />
             ) : (
-              <Video size={48} className="text-gray-600 relative z-10" />
+              <Video size={48} className="text-slate-400 relative z-10" />
             )}
           </div>
         )}
 
         {/* Error State */}
         {hasError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center">
             <AlertCircle size={48} className="text-red-500 mb-2" />
-            <p className="text-gray-400 text-sm">Failed to load</p>
+            <p className="text-slate-400 text-sm">Failed to load</p>
           </div>
         )}
 

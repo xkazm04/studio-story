@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GitCompare,
@@ -13,6 +13,7 @@ import {
   Volume2,
   X,
   Trophy,
+  ListMusic,
 } from 'lucide-react';
 import { Button } from '@/app/components/UI/Button';
 import { voiceMatcher, type AuditionConfig } from '@/lib/voice';
@@ -42,8 +43,11 @@ export default function CastingComparer({
   const [sideA, setSideA] = useState<string | null>(auditions[0]?.voiceId || null);
   const [sideB, setSideB] = useState<string | null>(auditions[1]?.voiceId || null);
   const [playingLine, setPlayingLine] = useState<{ side: 'A' | 'B'; lineId: string } | null>(null);
+  const [playBothActive, setPlayBothActive] = useState(false);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [comparisonNotes, setComparisonNotes] = useState('');
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playBothAbortRef = useRef(false);
 
   // Get audition by voice ID
   const getAudition = useCallback((voiceId: string | null): AuditionConfig | undefined => {
@@ -66,16 +70,102 @@ export default function CastingComparer({
   const availableForA = auditions.filter(a => a.voiceId !== sideB);
   const availableForB = auditions.filter(a => a.voiceId !== sideA);
 
-  // Handle play
+  // Stop any current playback
+  const stopPlayback = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.removeAttribute('src');
+      audioRef.current = null;
+    }
+    setPlayingLine(null);
+    playBothAbortRef.current = true;
+    setPlayBothActive(false);
+  }, []);
+
+  // Play a single side's audio, returns a promise that resolves when playback ends
+  const playSideAudio = useCallback((side: 'A' | 'B', lineId: string, audioUrl?: string): Promise<void> => {
+    return new Promise((resolve) => {
+      stopPlayback();
+      playBothAbortRef.current = false;
+      setPlayingLine({ side, lineId });
+
+      if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+        audio.addEventListener('ended', () => {
+          setPlayingLine(null);
+          audioRef.current = null;
+          resolve();
+        });
+        audio.addEventListener('error', () => {
+          setPlayingLine(null);
+          audioRef.current = null;
+          resolve();
+        });
+        audio.play().catch(() => {
+          setPlayingLine(null);
+          audioRef.current = null;
+          resolve();
+        });
+      } else {
+        // Simulate playback using line duration or 3s default
+        const audition = side === 'A' ? auditionA : auditionB;
+        const line = audition?.lines.find(l => l.id === lineId);
+        const duration = (line?.duration || 3) * 1000;
+        setTimeout(() => {
+          if (!playBothAbortRef.current) {
+            setPlayingLine(null);
+          }
+          resolve();
+        }, duration);
+      }
+    });
+  }, [stopPlayback, auditionA, auditionB]);
+
+  // Handle single side play (toggle)
   const handlePlay = useCallback((side: 'A' | 'B', lineId: string) => {
     if (playingLine?.side === side && playingLine?.lineId === lineId) {
-      setPlayingLine(null);
+      stopPlayback();
     } else {
-      setPlayingLine({ side, lineId });
-      // Simulate playback
-      setTimeout(() => setPlayingLine(null), 3000);
+      const audition = side === 'A' ? auditionA : auditionB;
+      const line = audition?.lines.find(l => l.id === lineId);
+      playSideAudio(side, lineId, line?.audioUrl);
     }
-  }, [playingLine]);
+  }, [playingLine, stopPlayback, playSideAudio, auditionA, auditionB]);
+
+  // Play Both: A then B with 0.5s gap
+  const handlePlayBoth = useCallback(async () => {
+    if (playBothActive) {
+      stopPlayback();
+      return;
+    }
+
+    const lineA = auditionA?.lines[currentLineIndex];
+    const lineB = auditionB?.lines[currentLineIndex];
+    if (!lineA && !lineB) return;
+
+    setPlayBothActive(true);
+    playBothAbortRef.current = false;
+
+    // Play A
+    if (lineA && !playBothAbortRef.current) {
+      await playSideAudio('A', lineA.id, lineA.audioUrl);
+    }
+
+    // Gap between A and B
+    if (!playBothAbortRef.current) {
+      await new Promise(r => setTimeout(r, 500));
+    }
+
+    // Play B
+    if (lineB && !playBothAbortRef.current) {
+      await playSideAudio('B', lineB.id, lineB.audioUrl);
+    }
+
+    if (!playBothAbortRef.current) {
+      setPlayBothActive(false);
+    }
+  }, [playBothActive, stopPlayback, auditionA, auditionB, currentLineIndex, playSideAudio]);
 
   // Navigate lines
   const maxLines = Math.max(
@@ -115,7 +205,7 @@ export default function CastingComparer({
           side === 'A' ? 'border-cyan-500/30 bg-cyan-500/5' : 'border-purple-500/30 bg-purple-500/5'
         }`}>
           <div className="flex items-center justify-between mb-3">
-            <span className={`text-xs font-bold px-2 py-1 rounded ${
+            <span className={`text-sm font-bold px-2 py-1 rounded ${
               side === 'A' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-purple-500/20 text-purple-400'
             }`}>
               Voice {side}
@@ -126,7 +216,7 @@ export default function CastingComparer({
                   <Star
                     key={star}
                     className={`w-3 h-3 ${
-                      star <= audition.rating! ? 'text-amber-400 fill-current' : 'text-slate-600'
+                      star <= audition.rating! ? 'text-amber-400 fill-current' : 'text-slate-400'
                     }`}
                   />
                 ))}
@@ -166,7 +256,7 @@ export default function CastingComparer({
               </div>
               <div>
                 <div className="text-sm font-medium text-slate-200">{voice.name}</div>
-                <div className="text-[10px] text-slate-500">
+                <div className="text-sm text-slate-400">
                   {voice.gender || 'Voice'}{voice.age_range ? ` • ${voice.age_range}` : ''}
                 </div>
               </div>
@@ -176,11 +266,11 @@ export default function CastingComparer({
             {currentLine && (
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-sm text-slate-400">
                     Line {currentLineIndex + 1} of {audition.lines.length}
                   </span>
                   {currentLine.emotion && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                    <span className={`text-sm px-1.5 py-0.5 rounded ${
                       side === 'A' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-purple-500/20 text-purple-400'
                     }`}>
                       {currentLine.emotion}
@@ -231,7 +321,7 @@ export default function CastingComparer({
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center p-4">
-            <p className="text-sm text-slate-500">Select a voice to compare</p>
+            <p className="text-sm text-slate-400">Select a voice to compare</p>
           </div>
         )}
       </div>
@@ -251,10 +341,10 @@ export default function CastingComparer({
           <div className="flex items-center gap-3">
             <GitCompare className="w-5 h-5 text-amber-400" />
             <div>
-              <h2 className="text-lg font-semibold text-slate-100">
+              <h2 className="ms-h3">
                 Compare Voices
               </h2>
-              <p className="text-sm text-slate-400">
+              <p className="ms-caption">
                 Casting for {characterName}
               </p>
             </div>
@@ -275,7 +365,7 @@ export default function CastingComparer({
           {/* Divider */}
           <div className="w-px bg-slate-800 relative">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
-              <span className="text-xs font-bold text-slate-400">VS</span>
+              <span className="text-sm font-bold text-slate-400">VS</span>
             </div>
           </div>
 
@@ -283,28 +373,52 @@ export default function CastingComparer({
           {renderVoiceCard('B', auditionB, voiceB, availableForB, sideB, setSideB)}
         </div>
 
-        {/* Line navigation */}
-        {maxLines > 1 && (
-          <div className="flex items-center justify-center gap-4 p-4 border-t border-slate-800">
-            <button
-              onClick={handlePrevLine}
-              disabled={currentLineIndex === 0}
-              className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <span className="text-sm text-slate-400">
-              Line {currentLineIndex + 1} of {maxLines}
-            </span>
-            <button
-              onClick={handleNextLine}
-              disabled={currentLineIndex === maxLines - 1}
-              className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+        {/* Line navigation + Play Both */}
+        <div className="flex items-center justify-center gap-4 p-4 border-t border-slate-800">
+          {maxLines > 1 && (
+            <>
+              <button
+                onClick={handlePrevLine}
+                disabled={currentLineIndex === 0}
+                className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <span className="text-sm text-slate-400">
+                Line {currentLineIndex + 1} of {maxLines}
+              </span>
+              <button
+                onClick={handleNextLine}
+                disabled={currentLineIndex === maxLines - 1}
+                className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <div className="w-px h-5 bg-slate-700" />
+            </>
+          )}
+          <button
+            onClick={handlePlayBoth}
+            disabled={!auditionA || !auditionB}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              playBothActive
+                ? 'bg-amber-500 text-white'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            }`}
+          >
+            {playBothActive ? (
+              <>
+                <Pause className="w-4 h-4" />
+                Stop A/B
+              </>
+            ) : (
+              <>
+                <ListMusic className="w-4 h-4" />
+                Play Both
+              </>
+            )}
+          </button>
+        </div>
 
         {/* Notes */}
         <div className="p-4 border-t border-slate-800">

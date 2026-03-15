@@ -93,7 +93,7 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
     <button
       type="button"
       onClick={onClick}
-      className="w-full bg-gray-800/50 border border-gray-700 hover:border-gray-600 rounded-lg p-3 text-left transition-colors"
+      className="w-full bg-slate-800/50 border border-slate-700 hover:border-slate-600 rounded-lg p-3 text-left transition-colors"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
           />
           <div>
             <div className="font-medium text-white">{otherFaction?.name || 'Unknown'}</div>
-            <div className="text-xs text-gray-500" style={{ color: config.color }}>
+            <div className="text-sm text-slate-400" style={{ color: config.color }}>
               {config.label} ({relationship.relationship_value})
             </div>
           </div>
@@ -115,7 +115,7 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
             </span>
           )}
           {activeTreaties.length > 0 && (
-            <div className="flex items-center gap-1 text-xs text-cyan-400">
+            <div className="flex items-center gap-1 text-sm text-cyan-400">
               <Scroll size={12} />
               {activeTreaties.length}
             </div>
@@ -129,11 +129,11 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
                 <TrendingDown size={14} className="text-red-400" />
               )}
               {prediction.change_direction === 'stable' && (
-                <Minus size={14} className="text-gray-400" />
+                <Minus size={14} className="text-slate-400" />
               )}
             </div>
           )}
-          <ChevronRight size={16} className="text-gray-500" />
+          <ChevronRight size={16} className="text-slate-400" />
         </div>
       </div>
     </button>
@@ -184,7 +184,7 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
         : 'text-red-400';
 
   return (
-    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-purple-600/20 flex items-center justify-center text-purple-400">
@@ -192,7 +192,7 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
           </div>
           <div>
             <div className="font-medium text-white">{config.label}</div>
-            <div className="text-xs text-gray-500">Target: {targetFaction?.name || 'Unknown'}</div>
+            <div className="text-sm text-slate-400">Target: {targetFaction?.name || 'Unknown'}</div>
           </div>
         </div>
         <div className={cn('text-sm font-medium', successColor)}>
@@ -200,10 +200,10 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
         </div>
       </div>
 
-      <p className="text-sm text-gray-400 mt-3">{action.description}</p>
+      <p className="text-sm text-slate-400 mt-3">{action.description}</p>
 
       {action.cost && (
-        <div className="mt-2 text-xs text-amber-400">
+        <div className="mt-2 text-sm text-amber-400">
           Cost: {action.cost.amount} {action.cost.type}
         </div>
       )}
@@ -214,7 +214,7 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
           <div
             key={index}
             className={cn(
-              'text-xs p-2 rounded',
+              'text-sm p-2 rounded',
               outcome.relationship_change >= 0 ? 'bg-green-900/20' : 'bg-red-900/20'
             )}
           >
@@ -222,7 +222,7 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
               <span className={outcome.relationship_change >= 0 ? 'text-green-400' : 'text-red-400'}>
                 {outcome.description}
               </span>
-              <span className="text-gray-500">{outcome.probability}%</span>
+              <span className="text-slate-400">{outcome.probability}%</span>
             </div>
           </div>
         ))}
@@ -233,7 +233,7 @@ const DiplomaticActionCard: React.FC<DiplomaticActionCardProps> = ({
           type="button"
           onClick={onExecute}
           disabled={disabled}
-          className="mt-4 w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm"
+          className="mt-4 w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm"
         >
           Execute Action
         </button>
@@ -258,14 +258,14 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
     non_aggression: 'text-cyan-400 bg-cyan-900/20',
     vassalage: 'text-purple-400 bg-purple-900/20',
     tribute: 'text-orange-400 bg-orange-900/20',
-    ceasefire: 'text-gray-400 bg-gray-700/50',
+    ceasefire: 'text-slate-400 bg-slate-700/50',
   };
 
   return (
     <div
       className={cn(
-        'bg-gray-800/50 border rounded-lg p-4',
-        treaty.is_active && !isExpired ? 'border-gray-700' : 'border-gray-800 opacity-60'
+        'bg-slate-800/50 border rounded-lg p-4',
+        treaty.is_active && !isExpired ? 'border-slate-700' : 'border-slate-800 opacity-60'
       )}
     >
       <div className="flex items-start justify-between">
@@ -273,12 +273,12 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
           <Scroll size={20} className="text-cyan-400" />
           <div>
             <div className="font-medium text-white">{treaty.name}</div>
-            <div className="text-xs text-gray-500">
+            <div className="text-sm text-slate-400">
               with {otherFaction?.name || 'Unknown'}
             </div>
           </div>
         </div>
-        <span className={cn('px-2 py-0.5 rounded text-xs', typeColors[treaty.type])}>
+        <span className={cn('px-2 py-0.5 rounded text-sm', typeColors[treaty.type])}>
           {treaty.type.replace('_', ' ')}
         </span>
       </div>
@@ -286,11 +286,11 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
       {/* Terms */}
       {treaty.terms.length > 0 && (
         <div className="mt-3">
-          <div className="text-xs text-gray-500 mb-1">Terms:</div>
+          <div className="text-sm text-slate-400 mb-1">Terms:</div>
           <ul className="space-y-1">
             {treaty.terms.map((term, index) => (
-              <li key={index} className="text-xs text-gray-400 flex items-start gap-2">
-                <span className="text-gray-600">•</span>
+              <li key={index} className="text-sm text-slate-400 flex items-start gap-2">
+                <span className="text-slate-400">•</span>
                 {term}
               </li>
             ))}
@@ -299,7 +299,7 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
       )}
 
       {/* Status */}
-      <div className="mt-3 flex items-center justify-between text-xs">
+      <div className="mt-3 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
           {treaty.is_active && !isExpired ? (
             <CheckCircle size={12} className="text-green-400" />
@@ -310,10 +310,10 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
             {isExpired ? 'Expired' : treaty.is_active ? 'Active' : 'Broken'}
           </span>
           {treaty.broken_by && (
-            <span className="text-gray-500">by {treaty.broken_by}</span>
+            <span className="text-slate-400">by {treaty.broken_by}</span>
           )}
         </div>
-        <div className="flex items-center gap-1 text-gray-500">
+        <div className="flex items-center gap-1 text-slate-400">
           <Clock size={12} />
           {new Date(treaty.signed_at).toLocaleDateString()}
           {treaty.expires_at && ` - ${new Date(treaty.expires_at).toLocaleDateString()}`}
@@ -325,7 +325,7 @@ const TreatyCard: React.FC<TreatyCardProps> = ({ treaty, otherFaction, onBreak, 
         <button
           type="button"
           onClick={onBreak}
-          className="mt-3 w-full px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 rounded text-xs transition-colors"
+          className="mt-3 w-full px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 rounded text-sm transition-colors"
         >
           Break Treaty
         </button>
@@ -354,7 +354,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, targetFaction, onRemove, read
   };
 
   return (
-    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+    <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-amber-600/20 flex items-center justify-center text-amber-400">
@@ -363,25 +363,25 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, targetFaction, onRemove, read
           <div>
             <div className="font-medium text-white capitalize">{goal.goal_type}</div>
             {targetFaction && (
-              <div className="text-xs text-gray-500">Target: {targetFaction.name}</div>
+              <div className="text-sm text-slate-400">Target: {targetFaction.name}</div>
             )}
           </div>
         </div>
         <div className="flex items-center gap-2">
           {!goal.is_public && <EyeOff size={14} className="text-amber-400" />}
-          <span className="text-xs text-gray-500">Priority: {goal.priority}</span>
+          <span className="text-sm text-slate-400">Priority: {goal.priority}</span>
         </div>
       </div>
 
-      <p className="mt-2 text-sm text-gray-400">{goal.description}</p>
+      <p className="mt-2 text-sm text-slate-400">{goal.description}</p>
 
       {/* Progress Bar */}
       <div className="mt-3">
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
+        <div className="flex justify-between text-sm text-slate-400 mb-1">
           <span>Progress</span>
           <span>{goal.progress}%</span>
         </div>
-        <div className="relative h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
           <motion.div
             className="absolute left-0 top-0 h-full bg-amber-500 rounded-full"
             initial={{ width: 0 }}
@@ -394,7 +394,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, targetFaction, onRemove, read
         <button
           type="button"
           onClick={onRemove}
-          className="mt-3 text-xs text-red-400 hover:text-red-300 transition-colors"
+          className="mt-3 text-sm text-red-400 hover:text-red-300 transition-colors"
         >
           Remove Goal
         </button>
@@ -421,14 +421,14 @@ const SecretCard: React.FC<SecretCardProps> = ({ secret, onReveal, readOnly }) =
   return (
     <div
       className={cn(
-        'bg-gray-800/50 border rounded-lg p-4',
-        secret.revealed ? 'border-gray-800 opacity-60' : 'border-amber-500/30'
+        'bg-slate-800/50 border rounded-lg p-4',
+        secret.revealed ? 'border-slate-800 opacity-60' : 'border-amber-500/30'
       )}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           {secret.revealed ? (
-            <Eye size={20} className="text-gray-400" />
+            <Eye size={20} className="text-slate-400" />
           ) : (
             <EyeOff size={20} className="text-amber-400" />
           )}
@@ -436,22 +436,22 @@ const SecretCard: React.FC<SecretCardProps> = ({ secret, onReveal, readOnly }) =
             <div className={cn('font-medium capitalize', typeColors[secret.secret_type] || 'text-white')}>
               {secret.secret_type.replace('_', ' ')}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-sm text-slate-400">
               Known by: {secret.known_by.length === 0 ? 'None' : `${secret.known_by.length} faction(s)`}
             </div>
           </div>
         </div>
         {secret.revealed && (
-          <span className="px-2 py-0.5 rounded text-xs bg-gray-700 text-gray-400">
+          <span className="px-2 py-0.5 rounded text-sm bg-slate-700 text-slate-400">
             Revealed
           </span>
         )}
       </div>
 
-      <p className="mt-2 text-sm text-gray-400">{secret.description}</p>
+      <p className="mt-2 text-sm text-slate-400">{secret.description}</p>
 
       {secret.reveal_impact && (
-        <div className="mt-3 p-2 bg-red-900/20 border border-red-500/20 rounded text-xs text-red-300">
+        <div className="mt-3 p-2 bg-red-900/20 border border-red-500/20 rounded text-sm text-red-300">
           <strong>If revealed:</strong> {secret.reveal_impact}
         </div>
       )}
@@ -460,7 +460,7 @@ const SecretCard: React.FC<SecretCardProps> = ({ secret, onReveal, readOnly }) =
         <button
           type="button"
           onClick={onReveal}
-          className="mt-3 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+          className="mt-3 text-sm text-amber-400 hover:text-amber-300 transition-colors"
         >
           Reveal Secret
         </button>
@@ -503,26 +503,26 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({ factions, onAdd, onCancel }) 
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
       onSubmit={handleSubmit}
-      className="bg-gray-800/50 border border-amber-500/30 rounded-lg p-4 space-y-4"
+      className="bg-slate-800/50 border border-amber-500/30 rounded-lg p-4 space-y-4"
     >
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Goal Description</label>
+        <label className="block text-sm text-slate-300 mb-1">Goal Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe the political goal..."
           rows={2}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-gray-300 mb-1">Type</label>
+          <label className="block text-sm text-slate-300 mb-1">Type</label>
           <select
             value={goalType}
             onChange={(e) => setGoalType(e.target.value as PoliticalGoal['goal_type'])}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="expansion">Expansion</option>
             <option value="defense">Defense</option>
@@ -535,24 +535,24 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({ factions, onAdd, onCancel }) 
           </select>
         </div>
         <div>
-          <label className="block text-sm text-gray-300 mb-1">Priority (1-10)</label>
+          <label className="block text-sm text-slate-300 mb-1">Priority (1-10)</label>
           <input
             type="number"
             value={priority}
             onChange={(e) => setPriority(Math.max(1, Math.min(10, Number(e.target.value))))}
             min={1}
             max={10}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Target Faction (Optional)</label>
+        <label className="block text-sm text-slate-300 mb-1">Target Faction (Optional)</label>
         <select
           value={targetFactionId}
           onChange={(e) => setTargetFactionId(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
         >
           <option value="">No specific target</option>
           {factions.map((f) => (
@@ -563,12 +563,12 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({ factions, onAdd, onCancel }) 
         </select>
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-gray-300">
+      <label className="flex items-center gap-2 text-sm text-slate-300">
         <input
           type="checkbox"
           checked={isPublic}
           onChange={(e) => setIsPublic(e.target.checked)}
-          className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-amber-500 focus:ring-amber-500"
+          className="w-4 h-4 rounded bg-slate-700 border-slate-600 text-amber-500 focus:ring-amber-500"
         />
         Publicly known goal
       </label>
@@ -577,14 +577,14 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({ factions, onAdd, onCancel }) 
         <button
           type="submit"
           disabled={!description.trim()}
-          className="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
         >
           Add Goal
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
         >
           Cancel
         </button>
@@ -633,25 +633,25 @@ const AddSecretForm: React.FC<AddSecretFormProps> = ({ factions, onAdd, onCancel
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
       onSubmit={handleSubmit}
-      className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4 space-y-4"
+      className="bg-slate-800/50 border border-purple-500/30 rounded-lg p-4 space-y-4"
     >
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Secret Description</label>
+        <label className="block text-sm text-slate-300 mb-1">Secret Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe the secret..."
           rows={2}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
         />
       </div>
 
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Secret Type</label>
+        <label className="block text-sm text-slate-300 mb-1">Secret Type</label>
         <select
           value={secretType}
           onChange={(e) => setSecretType(e.target.value as FactionSecret['secret_type'])}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <option value="alliance">Secret Alliance</option>
           <option value="betrayal_plan">Betrayal Plan</option>
@@ -662,18 +662,18 @@ const AddSecretForm: React.FC<AddSecretFormProps> = ({ factions, onAdd, onCancel
       </div>
 
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Impact if Revealed</label>
+        <label className="block text-sm text-slate-300 mb-1">Impact if Revealed</label>
         <input
           type="text"
           value={revealImpact}
           onChange={(e) => setRevealImpact(e.target.value)}
           placeholder="What happens when this secret is revealed?"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
       </div>
 
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Known By</label>
+        <label className="block text-sm text-slate-300 mb-1">Known By</label>
         <div className="flex flex-wrap gap-2">
           {factions.map((f) => (
             <button
@@ -681,10 +681,10 @@ const AddSecretForm: React.FC<AddSecretFormProps> = ({ factions, onAdd, onCancel
               type="button"
               onClick={() => toggleKnownBy(f.id)}
               className={cn(
-                'px-2 py-1 rounded text-xs transition-colors',
+                'px-2 py-1 rounded text-sm transition-colors',
                 knownBy.includes(f.id)
                   ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
               )}
             >
               {f.name}
@@ -697,14 +697,14 @@ const AddSecretForm: React.FC<AddSecretFormProps> = ({ factions, onAdd, onCancel
         <button
           type="submit"
           disabled={!description.trim()}
-          className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
         >
           Add Secret
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
         >
           Cancel
         </button>
@@ -790,8 +790,8 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
 
   if (!factionPolitics) {
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-        <div className="text-center text-gray-500">
+      <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+        <div className="text-center text-slate-400">
           <Handshake size={32} className="mx-auto mb-2 opacity-50" />
           <p>No political profile for {faction.name}</p>
           {!readOnly && (
@@ -808,16 +808,16 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
   }
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
+    <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-900/30 to-amber-900/30 p-4 border-b border-gray-800">
+      <div className="bg-gradient-to-r from-purple-900/30 to-amber-900/30 p-4 border-b border-slate-800">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Handshake className="text-purple-400" size={20} />
               Diplomacy
             </h3>
-            <p className="text-sm text-gray-400 mt-0.5">{faction.name}</p>
+            <p className="text-sm text-slate-400 mt-0.5">{faction.name}</p>
           </div>
           <div className="flex items-center gap-2">
             <span
@@ -825,7 +825,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
                 'px-3 py-1 rounded-lg text-sm',
                 POLITICAL_STANCE_CONFIG[factionPolitics.political_stance]?.color
                   ? `bg-opacity-20`
-                  : 'bg-gray-800'
+                  : 'bg-slate-800'
               )}
               style={{
                 backgroundColor: `${POLITICAL_STANCE_CONFIG[factionPolitics.political_stance]?.color}20`,
@@ -839,7 +839,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-800 overflow-x-auto">
+      <div className="flex border-b border-slate-800 overflow-x-auto">
         {(['overview', 'actions', 'treaties', 'goals', 'secrets'] as TabView[]).map((tab) => (
           <button
             key={tab}
@@ -848,8 +848,8 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
             className={cn(
               'flex-1 min-w-[80px] px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap',
               activeTab === tab
-                ? 'bg-gray-800 text-white border-b-2 border-purple-500'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                ? 'bg-slate-800 text-white border-b-2 border-purple-500'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             )}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -871,25 +871,25 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
             >
               {/* Reputation Stats */}
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-800/50 rounded-lg p-3 text-center">
+                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
                   <div className="text-xl font-bold text-white">{factionPolitics.diplomatic_reputation}</div>
-                  <div className="text-xs text-gray-500">Reputation</div>
+                  <div className="text-sm text-slate-400">Reputation</div>
                 </div>
-                <div className="bg-gray-800/50 rounded-lg p-3 text-center">
+                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
                   <div className="text-xl font-bold text-white">{factionPolitics.trustworthiness}</div>
-                  <div className="text-xs text-gray-500">Trustworthiness</div>
+                  <div className="text-sm text-slate-400">Trustworthiness</div>
                 </div>
-                <div className="bg-gray-800/50 rounded-lg p-3 text-center">
+                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
                   <div className="text-xl font-bold text-white">{factionPolitics.aggression_level}</div>
-                  <div className="text-xs text-gray-500">Aggression</div>
+                  <div className="text-sm text-slate-400">Aggression</div>
                 </div>
               </div>
 
               {/* Relationships */}
               <div>
-                <h4 className="text-sm font-medium text-gray-300 mb-2">Relationships</h4>
+                <h4 className="text-sm font-medium text-slate-300 mb-2">Relationships</h4>
                 {factionRelationships.length === 0 ? (
-                  <div className="text-center py-4 text-gray-500 text-sm">
+                  <div className="text-center py-4 text-slate-400 text-sm">
                     No diplomatic relationships established
                   </div>
                 ) : (
@@ -916,14 +916,14 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="bg-gray-800/30 rounded-lg p-3">
-                  <div className="text-gray-500 mb-1">Active Treaties</div>
+                <div className="bg-slate-800/30 rounded-lg p-3">
+                  <div className="text-slate-400 mb-1">Active Treaties</div>
                   <div className="text-white font-medium">
                     {allTreaties.filter((t) => t.treaty.is_active).length}
                   </div>
                 </div>
-                <div className="bg-gray-800/30 rounded-lg p-3">
-                  <div className="text-gray-500 mb-1">Political Goals</div>
+                <div className="bg-slate-800/30 rounded-lg p-3">
+                  <div className="text-slate-400 mb-1">Political Goals</div>
                   <div className="text-white font-medium">{factionPolitics.goals.length}</div>
                 </div>
               </div>
@@ -941,11 +941,11 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
             >
               {/* Target Selection */}
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Select Target Faction</label>
+                <label className="block text-sm text-slate-300 mb-2">Select Target Faction</label>
                 <select
                   value={selectedFactionId || ''}
                   onChange={(e) => setSelectedFactionId(e.target.value || null)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="">Choose a faction...</option>
                   {allFactions
@@ -975,12 +975,12 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-slate-400">
                     No diplomatic actions available for this faction
                   </div>
                 )
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-slate-400">
                   Select a faction to see available diplomatic actions
                 </div>
               )}
@@ -997,7 +997,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
               className="space-y-4"
             >
               {allTreaties.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-slate-400">
                   <Scroll size={32} className="mx-auto mb-2 opacity-50" />
                   <p>No treaties signed</p>
                 </div>
@@ -1054,7 +1054,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
               </AnimatePresence>
 
               {factionPolitics.goals.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-slate-400">
                   <Target size={32} className="mx-auto mb-2 opacity-50" />
                   <p>No political goals defined</p>
                 </div>
@@ -1109,7 +1109,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
               </AnimatePresence>
 
               {factionPolitics.secrets.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-slate-400">
                   <EyeOff size={32} className="mx-auto mb-2 opacity-50" />
                   <p>No secrets recorded</p>
                 </div>
@@ -1134,7 +1134,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
 
       {/* AI Enhancement */}
       {!readOnly && (
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-4 border-t border-slate-800">
           <button
             type="button"
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-amber-600/20 hover:from-purple-600/30 hover:to-amber-600/30 border border-purple-500/30 text-purple-300 rounded-lg transition-colors"

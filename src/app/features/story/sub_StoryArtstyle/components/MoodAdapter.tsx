@@ -9,6 +9,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collapse, NORMAL } from '@/lib/animations';
 import {
   Heart,
   Smile,
@@ -27,6 +28,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
 import { Label } from '@/app/components/UI/Label';
+import { Slider } from '@/app/components/UI/Slider';
 import {
   styleVariationManager,
   type EmotionalMood,
@@ -77,7 +79,7 @@ const MOOD_COLORS: Record<EmotionalMood, string> = {
   peaceful: 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30',
   angry: 'text-red-500 bg-red-600/20 border-red-600/30',
   hopeful: 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30',
-  desperate: 'text-gray-400 bg-gray-500/20 border-gray-500/30',
+  desperate: 'text-slate-400 bg-slate-500/20 border-slate-500/30',
 };
 
 const MOOD_ACTIVE_COLORS: Record<EmotionalMood, string> = {
@@ -92,7 +94,7 @@ const MOOD_ACTIVE_COLORS: Record<EmotionalMood, string> = {
   peaceful: 'bg-emerald-500 text-white border-emerald-400',
   angry: 'bg-red-600 text-white border-red-500',
   hopeful: 'bg-cyan-500 text-white border-cyan-400',
-  desperate: 'bg-gray-500 text-white border-gray-400',
+  desperate: 'bg-slate-500 text-white border-slate-400',
 };
 
 const ALL_MOODS: EmotionalMood[] = [
@@ -114,51 +116,6 @@ const ALL_MOODS: EmotionalMood[] = [
 // Sub-Components
 // ============================================================================
 
-interface SliderProps {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  disabled?: boolean;
-  showSign?: boolean;
-}
-
-function Slider({ label, value, onChange, min = -50, max = 50, disabled, showSign = true }: SliderProps) {
-  const displayValue = showSign && value > 0 ? `+${value}` : value.toString();
-
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-slate-400">{label}</span>
-        <span className={cn(
-          'text-[10px] font-mono',
-          value > 0 ? 'text-emerald-400' : value < 0 ? 'text-red-400' : 'text-slate-500'
-        )}>
-          {displayValue}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(parseInt(e.target.value))}
-        disabled={disabled}
-        className={cn(
-          'w-full h-1.5 rounded-full appearance-none cursor-pointer',
-          'bg-slate-700',
-          '[&::-webkit-slider-thumb]:appearance-none',
-          '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
-          '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500',
-          '[&::-webkit-slider-thumb]:cursor-pointer',
-          'disabled:opacity-50 disabled:cursor-not-allowed'
-        )}
-      />
-    </div>
-  );
-}
-
 interface MoodCardProps {
   mood: EmotionalMood;
   adaptation: MoodAdaptation;
@@ -173,7 +130,7 @@ function MoodCard({ mood, adaptation, isSelected, onSelect, disabled }: MoodCard
       onClick={onSelect}
       disabled={disabled}
       className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-lg border transition-all',
+        'flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg border transition-all',
         isSelected
           ? MOOD_ACTIVE_COLORS[mood]
           : cn(MOOD_COLORS[mood], 'hover:opacity-80'),
@@ -181,7 +138,7 @@ function MoodCard({ mood, adaptation, isSelected, onSelect, disabled }: MoodCard
       )}
     >
       {MOOD_ICONS[mood]}
-      <span className="text-xs font-medium">{adaptation.name}</span>
+      <span className="text-sm font-medium">{adaptation.name}</span>
     </button>
   );
 }
@@ -276,7 +233,7 @@ export function MoodAdapter({
               </span>
               <div>
                 <div className="text-sm font-medium text-slate-200">{currentAdaptation.name}</div>
-                <div className="text-[10px] text-slate-500">Adjust color and lighting shifts</div>
+                <div className="text-sm text-slate-400">Adjust color and lighting shifts</div>
               </div>
             </div>
             <Button
@@ -292,7 +249,7 @@ export function MoodAdapter({
 
           {/* Color Shifts */}
           <div className="space-y-3">
-            <Label className="text-xs text-slate-400">Color Shifts</Label>
+            <Label className="text-sm text-slate-400">Color Shifts</Label>
             <Slider
               label="Hue Rotation"
               value={currentAdaptation.colorShift.hueRotation}
@@ -301,6 +258,8 @@ export function MoodAdapter({
               })}
               min={-180}
               max={180}
+              showSign
+              colorValue
               disabled={disabled}
             />
             <Slider
@@ -309,6 +268,10 @@ export function MoodAdapter({
               onChange={(v) => handleAdaptationChange(selectedMood, {
                 colorShift: { ...currentAdaptation.colorShift, saturation: v }
               })}
+              min={-50}
+              max={50}
+              showSign
+              colorValue
               disabled={disabled}
             />
             <Slider
@@ -317,13 +280,17 @@ export function MoodAdapter({
               onChange={(v) => handleAdaptationChange(selectedMood, {
                 colorShift: { ...currentAdaptation.colorShift, brightness: v }
               })}
+              min={-50}
+              max={50}
+              showSign
+              colorValue
               disabled={disabled}
             />
           </div>
 
           {/* Lighting Modifications */}
           <div className="space-y-3">
-            <Label className="text-xs text-slate-400">Lighting Modifications</Label>
+            <Label className="text-sm text-slate-400">Lighting Modifications</Label>
             <Slider
               label="Intensity"
               value={currentAdaptation.lightingMod.intensity}
@@ -332,6 +299,8 @@ export function MoodAdapter({
               })}
               min={-30}
               max={30}
+              showSign
+              colorValue
               disabled={disabled}
             />
             <Slider
@@ -342,6 +311,8 @@ export function MoodAdapter({
               })}
               min={-30}
               max={30}
+              showSign
+              colorValue
               disabled={disabled}
             />
             <Slider
@@ -350,24 +321,28 @@ export function MoodAdapter({
               onChange={(v) => handleAdaptationChange(selectedMood, {
                 lightingMod: { ...currentAdaptation.lightingMod, warmth: v }
               })}
+              min={-50}
+              max={50}
+              showSign
+              colorValue
               disabled={disabled}
             />
           </div>
 
           {/* Keywords */}
           <div className="space-y-2">
-            <Label className="text-xs text-slate-400">Style Keywords</Label>
+            <Label className="text-sm text-slate-400">Style Keywords</Label>
             <div className="flex flex-wrap gap-1">
               {currentAdaptation.keywords.map((keyword, i) => (
                 <span
                   key={i}
-                  className="px-2 py-0.5 text-[10px] rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                  className="px-2 py-0.5 text-sm rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
                 >
                   {keyword}
                 </span>
               ))}
               {currentAdaptation.keywords.length === 0 && (
-                <span className="text-[10px] text-slate-500 italic">No keywords defined</span>
+                <span className="text-sm text-slate-400 italic">No keywords defined</span>
               )}
             </div>
           </div>
@@ -375,12 +350,12 @@ export function MoodAdapter({
           {/* Avoid Keywords */}
           {currentAdaptation.avoidKeywords.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-xs text-slate-400">Avoid Keywords</Label>
+              <Label className="text-sm text-slate-400">Avoid Keywords</Label>
               <div className="flex flex-wrap gap-1">
                 {currentAdaptation.avoidKeywords.map((keyword, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 text-[10px] rounded-full bg-red-500/20 text-red-400 border border-red-500/30"
+                    className="px-2 py-0.5 text-sm rounded-full bg-red-500/20 text-red-400 border border-red-500/30"
                   >
                     {keyword}
                   </span>
@@ -393,7 +368,7 @@ export function MoodAdapter({
 
       {/* All Moods Expandable List */}
       <div className="space-y-1 pt-2 border-t border-slate-800">
-        <div className="text-[10px] text-slate-500 mb-2">All Mood Adaptations</div>
+        <div className="text-sm text-slate-400 mb-2">All Mood Adaptations</div>
         {ALL_MOODS.filter(m => m !== selectedMood).map(mood => {
           const adaptation = localAdaptations.get(mood) || DEFAULT_MOOD_ADAPTATIONS.find(m => m.mood === mood)!;
           const isExpanded = expandedMood === mood;
@@ -402,27 +377,29 @@ export function MoodAdapter({
             <div key={mood} className="border border-slate-800 rounded-md overflow-hidden">
               <button
                 onClick={() => toggleExpand(mood)}
-                className="w-full flex items-center gap-2 px-2 py-1.5 bg-slate-800/30 hover:bg-slate-800/50 transition-colors"
+                className="w-full flex items-center gap-2 px-2 py-1.5 min-h-[44px] bg-slate-800/30 hover:bg-slate-800/50 transition-colors"
               >
                 {isExpanded ? (
-                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
                 ) : (
-                  <ChevronRight className="w-3 h-3 text-slate-500" />
+                  <ChevronRight className="w-3 h-3 text-slate-400" />
                 )}
                 <span className={cn('p-1 rounded', MOOD_COLORS[mood])}>
                   {MOOD_ICONS[mood]}
                 </span>
-                <span className="text-xs text-slate-300">{adaptation.name}</span>
-                <span className="ml-auto text-[9px] text-slate-500">
+                <span className="text-sm text-slate-300">{adaptation.name}</span>
+                <span className="ml-auto text-sm text-slate-400">
                   H:{adaptation.colorShift.hueRotation} S:{adaptation.colorShift.saturation} B:{adaptation.colorShift.brightness}
                 </span>
               </button>
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
+                    variants={collapse}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={NORMAL}
                     className="overflow-hidden"
                   >
                     <div className="p-2 space-y-2 bg-slate-900/50 border-t border-slate-800">
@@ -434,6 +411,8 @@ export function MoodAdapter({
                         })}
                         min={-180}
                         max={180}
+                        showSign
+                        colorValue
                         disabled={disabled}
                       />
                       <Slider
@@ -442,6 +421,10 @@ export function MoodAdapter({
                         onChange={(v) => handleAdaptationChange(mood, {
                           colorShift: { ...adaptation.colorShift, saturation: v }
                         })}
+                        min={-50}
+                        max={50}
+                        showSign
+                        colorValue
                         disabled={disabled}
                       />
                       <Slider
@@ -450,6 +433,10 @@ export function MoodAdapter({
                         onChange={(v) => handleAdaptationChange(mood, {
                           colorShift: { ...adaptation.colorShift, brightness: v }
                         })}
+                        min={-50}
+                        max={50}
+                        showSign
+                        colorValue
                         disabled={disabled}
                       />
                     </div>

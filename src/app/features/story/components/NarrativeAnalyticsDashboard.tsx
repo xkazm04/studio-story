@@ -133,7 +133,7 @@ const HealthScore: React.FC<HealthScoreProps> = ({ score, label, size = 'md' }) 
           />
         </svg>
       </div>
-      <span className="text-[10px] text-slate-500 uppercase tracking-wider">{label}</span>
+      <span className="text-sm text-slate-400 uppercase tracking-wider">{label}</span>
     </div>
   );
 };
@@ -189,7 +189,7 @@ const Section: React.FC<SectionProps> = ({
             animate={{ rotate: isExpanded ? 90 : 0 }}
             transition={{ duration: 0.15 }}
           >
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400" />
           </motion.div>
         </div>
       </button>
@@ -245,7 +245,7 @@ const IssueList: React.FC<IssueListProps> = ({ issues, maxVisible = 5 }) => {
 
   if (issues.length === 0) {
     return (
-      <div className="flex items-center gap-2 text-emerald-400 text-xs">
+      <div className="flex items-center gap-2 text-emerald-400 text-sm">
         <CheckCircle2 className="w-4 h-4" />
         <span>No issues detected</span>
       </div>
@@ -258,7 +258,7 @@ const IssueList: React.FC<IssueListProps> = ({ issues, maxVisible = 5 }) => {
         <div
           key={i}
           className={cn(
-            'flex items-start gap-2 text-xs p-2 rounded-md',
+            'flex items-start gap-2 text-sm p-2 rounded-md',
             issue.severity === 'critical' && 'bg-red-500/10 border border-red-500/20',
             issue.severity === 'warning' && 'bg-amber-500/10 border border-amber-500/20',
             issue.severity === 'info' && 'bg-slate-800/50'
@@ -268,7 +268,7 @@ const IssueList: React.FC<IssueListProps> = ({ issues, maxVisible = 5 }) => {
           <div className="flex-1">
             <p className="text-slate-300">{issue.message}</p>
             {issue.suggestion && (
-              <p className="text-slate-500 mt-1 italic">{issue.suggestion}</p>
+              <p className="text-slate-400 mt-1 italic">{issue.suggestion}</p>
             )}
           </div>
         </div>
@@ -276,7 +276,7 @@ const IssueList: React.FC<IssueListProps> = ({ issues, maxVisible = 5 }) => {
       {issues.length > maxVisible && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+          className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
         >
           {showAll ? 'Show less' : `Show ${issues.length - maxVisible} more`}
         </button>
@@ -308,10 +308,10 @@ const TensionCurve: React.FC<TensionCurveProps> = ({ points }) => {
     <div className="h-24 relative">
       <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
         {/* Grid lines */}
-        <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" strokeWidth="0.5" className="text-slate-700" />
-        <line x1="25" y1="0" x2="25" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-700" />
-        <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-700" />
-        <line x1="75" y1="0" x2="75" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-700" />
+        <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+        <line x1="25" y1="0" x2="25" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+        <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
+        <line x1="75" y1="0" x2="75" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-slate-400" />
 
         {/* Tension curve */}
         <path
@@ -334,7 +334,7 @@ const TensionCurve: React.FC<TensionCurveProps> = ({ points }) => {
       </svg>
 
       {/* Labels */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[9px] text-slate-600">
+      <div className="absolute bottom-0 left-0 right-0 flex justify-between text-sm text-slate-400">
         <span>Start</span>
         <span>Mid</span>
         <span>End</span>
@@ -432,7 +432,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+          <BookOpen className="w-12 h-12 text-slate-400 mx-auto mb-3" />
           <p className="text-sm text-slate-400">Add scenes or beats to analyze your story</p>
         </div>
       </div>
@@ -449,11 +449,11 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
       >
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="ms-h3 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-cyan-400" />
               Story Health
             </h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="ms-caption mt-1">
               Comprehensive narrative analysis
             </p>
           </div>
@@ -484,7 +484,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           </h3>
           <ul className="space-y-2">
             {allRecommendations.slice(0, 4).map((rec, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-slate-300">
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
                 <ChevronRight className="w-3 h-3 text-amber-400 mt-0.5 flex-shrink-0" />
                 <span>{rec}</span>
               </li>
@@ -503,7 +503,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           isExpanded={expandedSections.has('structure')}
           onToggle={() => toggleSection('structure')}
           badge={
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
               {results.structure.templateName}
             </span>
           }
@@ -511,12 +511,12 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           <div className="space-y-4">
             {/* Act breakdown */}
             <div className="space-y-2">
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
                 Act Balance
               </h4>
               {results.structure.actAnalyses.map(act => (
                 <div key={act.actId} className="flex items-center gap-2">
-                  <span className="text-xs text-slate-300 w-24 truncate">{act.actName}</span>
+                  <span className="text-sm text-slate-300 w-24 truncate">{act.actName}</span>
                   <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
@@ -528,7 +528,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                       )}
                     />
                   </div>
-                  <span className="text-[10px] text-slate-500 w-12 text-right">
+                  <span className="text-sm text-slate-400 w-12 text-right">
                     {act.percentageOfTotal.toFixed(0)}%
                   </span>
                 </div>
@@ -537,7 +537,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
 
             {/* Issues */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Issues
               </h4>
               <IssueList
@@ -560,7 +560,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           onToggle={() => toggleSection('pacing')}
           badge={
             genre && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 capitalize">
+              <span className="text-sm px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 capitalize">
                 {genre}
               </span>
             )
@@ -569,7 +569,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           <div className="space-y-4">
             {/* Tension curve */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Tension Curve
               </h4>
               <TensionCurve points={results.pacing.tensionCurve.points} />
@@ -581,25 +581,25 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                 <div className="text-lg font-mono font-bold text-cyan-400">
                   {Math.round(results.pacing.tensionCurve.averageTension)}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Avg Tension</div>
+                <div className="text-sm text-slate-400 uppercase">Avg Tension</div>
               </div>
               <div className="bg-slate-800/50 rounded-lg p-2 text-center">
                 <div className="text-lg font-mono font-bold text-purple-400">
                   {Math.round(results.pacing.tensionCurve.peakTension)}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Peak</div>
+                <div className="text-sm text-slate-400 uppercase">Peak</div>
               </div>
               <div className="bg-slate-800/50 rounded-lg p-2 text-center">
                 <div className="text-lg font-mono font-bold text-amber-400">
                   {Math.round(results.pacing.tensionCurve.peakPosition * 100)}%
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Climax Position</div>
+                <div className="text-sm text-slate-400 uppercase">Climax Position</div>
               </div>
             </div>
 
             {/* Issues */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Issues
               </h4>
               <IssueList
@@ -621,7 +621,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           isExpanded={expandedSections.has('characters')}
           onToggle={() => toggleSection('characters')}
           badge={
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
               {characters.length} characters
             </span>
           }
@@ -629,13 +629,13 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           <div className="space-y-4">
             {/* Screen time */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Screen Time
               </h4>
               <div className="space-y-2">
                 {results.characters.screenTimeAnalysis.slice(0, 5).map(st => (
                   <div key={st.characterId} className="flex items-center gap-2">
-                    <span className="text-xs text-slate-300 w-24 truncate">{st.characterName}</span>
+                    <span className="text-sm text-slate-300 w-24 truncate">{st.characterName}</span>
                     <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
@@ -644,7 +644,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                         className="h-full rounded-full bg-cyan-500"
                       />
                     </div>
-                    <span className="text-[10px] text-slate-500 w-12 text-right">
+                    <span className="text-sm text-slate-400 w-12 text-right">
                       {st.percentageOfScenes.toFixed(0)}%
                     </span>
                   </div>
@@ -654,7 +654,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
 
             {/* Character arcs */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Character Arcs
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -662,16 +662,16 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                   <button
                     key={arc.characterId}
                     onClick={() => onNavigateToCharacter?.(arc.characterId)}
-                    className="flex items-center gap-1.5 px-2 py-1 bg-slate-800/50 rounded text-xs hover:bg-slate-700/50 transition-colors"
+                    className="flex items-center gap-1.5 px-2 py-1 bg-slate-800/50 rounded text-sm hover:bg-slate-700/50 transition-colors"
                   >
                     <span className="text-slate-300">{arc.characterName}</span>
                     <span className={cn(
-                      'text-[9px] px-1 py-0.5 rounded capitalize',
+                      'text-sm px-1 py-0.5 rounded capitalize',
                       arc.arcType === 'growth' && 'bg-emerald-500/20 text-emerald-400',
                       arc.arcType === 'fall' && 'bg-red-500/20 text-red-400',
                       arc.arcType === 'redemption' && 'bg-purple-500/20 text-purple-400',
                       arc.arcType === 'flat' && 'bg-slate-600/50 text-slate-400',
-                      arc.arcType === 'undefined' && 'bg-slate-700 text-slate-500'
+                      arc.arcType === 'undefined' && 'bg-slate-700 text-slate-400'
                     )}>
                       {arc.arcType}
                     </span>
@@ -682,7 +682,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
 
             {/* Issues */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Consistency Issues
               </h4>
               <IssueList
@@ -705,7 +705,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           onToggle={() => toggleSection('themes')}
           badge={
             results.themes.primaryTheme && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">
+              <span className="text-sm px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">
                 {results.themes.primaryTheme.themeName}
               </span>
             )
@@ -714,7 +714,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           <div className="space-y-4">
             {/* Theme presence */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Detected Themes
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -722,7 +722,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                   <div
                     key={theme.themeId}
                     className={cn(
-                      'flex items-center gap-1.5 px-2 py-1 rounded text-xs',
+                      'flex items-center gap-1.5 px-2 py-1 rounded text-sm',
                       i === 0 ? 'bg-purple-500/20 text-purple-300' :
                       i < 3 ? 'bg-cyan-500/10 text-cyan-400' :
                       'bg-slate-800/50 text-slate-400'
@@ -730,11 +730,11 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                   >
                     <span>{theme.themeName}</span>
                     <span className={cn(
-                      'text-[9px]',
+                      'text-sm',
                       theme.trajectory === 'increasing' && 'text-emerald-400',
                       theme.trajectory === 'decreasing' && 'text-amber-400',
                       theme.trajectory === 'fluctuating' && 'text-purple-400',
-                      theme.trajectory === 'steady' && 'text-slate-500'
+                      theme.trajectory === 'steady' && 'text-slate-400'
                     )}>
                       {theme.trajectory === 'increasing' && <TrendingUp className="w-3 h-3" />}
                       {theme.trajectory === 'decreasing' && <TrendingDown className="w-3 h-3" />}
@@ -751,19 +751,19 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                 <div className="text-lg font-mono font-bold text-cyan-400">
                   {results.themes.coherenceScore}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Coherence</div>
+                <div className="text-sm text-slate-400 uppercase">Coherence</div>
               </div>
               <div className="bg-slate-800/50 rounded-lg p-2 text-center">
                 <div className="text-lg font-mono font-bold text-purple-400">
                   {results.themes.developmentScore}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Development</div>
+                <div className="text-sm text-slate-400 uppercase">Development</div>
               </div>
             </div>
 
             {/* Issues */}
             <div>
-              <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Thematic Issues
               </h4>
               <IssueList
@@ -786,7 +786,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
           onToggle={() => toggleSection('engagement')}
           badge={
             <span className={cn(
-              'text-[10px] px-1.5 py-0.5 rounded',
+              'text-sm px-1.5 py-0.5 rounded',
               results.engagement.retentionPrediction.finishProbability >= 0.7 && 'bg-emerald-500/20 text-emerald-400',
               results.engagement.retentionPrediction.finishProbability >= 0.4 && results.engagement.retentionPrediction.finishProbability < 0.7 && 'bg-amber-500/20 text-amber-400',
               results.engagement.retentionPrediction.finishProbability < 0.4 && 'bg-red-500/20 text-red-400'
@@ -802,13 +802,13 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                 <div className="text-lg font-mono font-bold text-cyan-400">
                   {results.engagement.hooks.length}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Hooks</div>
+                <div className="text-sm text-slate-400 uppercase">Hooks</div>
               </div>
               <div className="bg-slate-800/50 rounded-lg p-2 text-center">
                 <div className="text-lg font-mono font-bold text-purple-400">
                   {results.engagement.payoffs.length}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase">Payoffs</div>
+                <div className="text-sm text-slate-400 uppercase">Payoffs</div>
               </div>
             </div>
 
@@ -816,7 +816,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
             <div className="bg-slate-800/30 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className={cn(
-                  'text-xs font-medium capitalize',
+                  'text-sm font-medium capitalize',
                   results.engagement.pacingAssessment.overall === 'good' && 'text-emerald-400',
                   results.engagement.pacingAssessment.overall === 'too-slow' && 'text-amber-400',
                   results.engagement.pacingAssessment.overall === 'too-fast' && 'text-orange-400',
@@ -825,7 +825,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
                   Pacing: {results.engagement.pacingAssessment.overall.replace('-', ' ')}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-sm text-slate-400">
                 {results.engagement.pacingAssessment.details}
               </p>
             </div>
@@ -833,18 +833,18 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
             {/* Drop-off predictions */}
             {results.engagement.dropOffPredictions.length > 0 && (
               <div>
-                <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+                <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                   Drop-off Risks
                 </h4>
                 <div className="space-y-2">
                   {results.engagement.dropOffPredictions.slice(0, 3).map((d, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 text-xs bg-red-500/10 border border-red-500/20 rounded p-2"
+                      className="flex items-center gap-2 text-sm bg-red-500/10 border border-red-500/20 rounded p-2"
                     >
                       <Target className="w-3.5 h-3.5 text-red-400" />
                       <span className="text-slate-300 flex-1">{d.reason}</span>
-                      <span className="text-red-400 font-mono text-[10px]">
+                      <span className="text-red-400 font-mono text-sm">
                         {Math.round(d.probability * 100)}%
                       </span>
                     </div>
@@ -856,7 +856,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
             {/* Confusion points */}
             {results.engagement.confusionPoints.length > 0 && (
               <div>
-                <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+                <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                   Confusion Points
                 </h4>
                 <IssueList

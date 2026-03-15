@@ -94,13 +94,13 @@ const TemplateCard: React.FC<{
             </div>
             <div>
               <h4 className="font-medium text-white text-sm">{template.name}</h4>
-              <p className="text-xs text-slate-500">{template.description}</p>
+              <p className="text-sm text-slate-400">{template.description}</p>
             </div>
           </div>
           <button
             onClick={onApply}
             disabled={isApplying}
-            className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 text-white rounded transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-sm bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 text-white rounded transition-colors"
           >
             {isApplying ? (
               <Loader2 size={12} className="animate-spin" />
@@ -113,7 +113,7 @@ const TemplateCard: React.FC<{
 
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 mt-2 text-xs text-slate-500 hover:text-slate-300"
+          className="flex items-center gap-1 mt-2 text-sm text-slate-400 hover:text-slate-300"
         >
           {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           {template.roles.length} roles
@@ -141,13 +141,13 @@ const TemplateCard: React.FC<{
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs text-white">{role.title}</span>
-                    <span className="text-[10px] text-slate-500 ml-2">
+                    <span className="text-sm text-white">{role.title}</span>
+                    <span className="text-sm text-slate-400 ml-2">
                       Level {role.level}
                     </span>
                   </div>
                   {role.permissions.length > 0 && (
-                    <span className="text-[10px] text-slate-600">
+                    <span className="text-sm text-slate-400">
                       {role.permissions.length} perms
                     </span>
                   )}
@@ -186,11 +186,11 @@ const RoleCard: React.FC<{
             <div>
               <div className="flex items-center gap-2">
                 <h4 className="font-medium text-white text-sm">{role.title}</h4>
-                <span className="text-[10px] px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded">
+                <span className="text-sm px-1.5 py-0.5 bg-slate-700 text-slate-400 rounded">
                   Level {role.level}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">{role.description}</p>
+              <p className="text-sm text-slate-400 mt-0.5">{role.description}</p>
             </div>
           </div>
 
@@ -198,13 +198,13 @@ const RoleCard: React.FC<{
             <div className="flex items-center gap-1">
               <button
                 onClick={onEdit}
-                className="p-1 text-slate-500 hover:text-cyan-400"
+                className="p-1 text-slate-400 hover:text-cyan-400"
               >
                 <Edit3 size={14} />
               </button>
               <button
                 onClick={onDelete}
-                className="p-1 text-slate-500 hover:text-red-400"
+                className="p-1 text-slate-400 hover:text-red-400"
               >
                 <Trash2 size={14} />
               </button>
@@ -214,7 +214,7 @@ const RoleCard: React.FC<{
 
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1 mt-2 text-xs text-slate-500 hover:text-slate-300"
+          className="flex items-center gap-1 mt-2 text-sm text-slate-400 hover:text-slate-300"
         >
           {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           {role.permissions.length} permissions, {role.responsibilities.length} responsibilities
@@ -233,14 +233,14 @@ const RoleCard: React.FC<{
               {/* Permissions */}
               {role.permissions.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Permissions
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {role.permissions.map((perm) => (
                       <span
                         key={perm}
-                        className="text-[10px] px-2 py-0.5 bg-cyan-500/10 text-cyan-400 rounded"
+                        className="text-sm px-2 py-0.5 bg-cyan-500/10 text-cyan-400 rounded"
                       >
                         {ROLE_PERMISSION_CONFIG[perm].label}
                       </span>
@@ -252,12 +252,12 @@ const RoleCard: React.FC<{
               {/* Responsibilities */}
               {role.responsibilities.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Responsibilities
                   </p>
                   <ul className="space-y-0.5">
                     {role.responsibilities.map((resp, i) => (
-                      <li key={i} className="text-xs text-slate-400 flex items-start gap-1">
+                      <li key={i} className="text-sm text-slate-400 flex items-start gap-1">
                         <span className="text-cyan-500">•</span>
                         {resp}
                       </li>
@@ -269,12 +269,12 @@ const RoleCard: React.FC<{
               {/* Requirements */}
               {role.requirements && role.requirements.length > 0 && (
                 <div>
-                  <p className="text-[10px] uppercase text-slate-600 font-medium mb-1">
+                  <p className="text-sm uppercase text-slate-400 font-medium mb-1">
                     Requirements
                   </p>
                   <ul className="space-y-0.5">
                     {role.requirements.map((req, i) => (
-                      <li key={i} className="text-xs text-amber-400 flex items-start gap-1">
+                      <li key={i} className="text-sm text-amber-400 flex items-start gap-1">
                         <AlertTriangle size={10} className="mt-0.5" />
                         {req}
                       </li>
@@ -285,7 +285,7 @@ const RoleCard: React.FC<{
 
               {/* Multi-holder info */}
               {role.can_have_multiple && (
-                <p className="text-[10px] text-slate-500">
+                <p className="text-sm text-slate-400">
                   Can have multiple holders
                   {role.max_holders && ` (max: ${role.max_holders})`}
                 </p>
@@ -434,7 +434,7 @@ const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
                 onChange={(e) => setFormData({ ...formData, level: Math.max(0, +e.target.value) })}
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
               />
-              <p className="text-[10px] text-slate-500 mt-1">0 = highest (leader), higher = lower rank</p>
+              <p className="text-sm text-slate-400 mt-1">0 = highest (leader), higher = lower rank</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">
@@ -484,7 +484,7 @@ const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
             </label>
             {formData.can_have_multiple && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500">Max:</span>
+                <span className="text-sm text-slate-400">Max:</span>
                 <input
                   type="number"
                   min={2}
@@ -514,7 +514,7 @@ const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
                     type="button"
                     onClick={() => togglePermission(perm)}
                     className={cn(
-                      'flex items-center gap-2 p-2 rounded text-left text-xs transition-colors',
+                      'flex items-center gap-2 p-2 rounded text-left text-sm transition-colors',
                       isSelected
                         ? 'bg-cyan-500/20 text-cyan-300'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -560,7 +560,7 @@ const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveResponsibility(i)}
-                    className="text-slate-500 hover:text-red-400"
+                    className="text-slate-400 hover:text-red-400"
                   >
                     <X size={14} />
                   </button>
@@ -602,7 +602,7 @@ const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveRequirement(i)}
-                    className="text-slate-500 hover:text-red-400"
+                    className="text-slate-400 hover:text-red-400"
                   >
                     <X size={14} />
                   </button>
@@ -770,7 +770,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
           {!readOnly && activeTab === 'roles' && (
             <button
               onClick={handleAddRole}
-              className="flex items-center gap-1 px-2 py-1 text-xs bg-cyan-600 hover:bg-cyan-700 text-white rounded transition-colors"
+              className="flex items-center gap-1 px-2 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded transition-colors"
             >
               <Plus size={12} />
               Add Role
@@ -780,7 +780,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
 
         {/* Search */}
         <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
           <input
             type="text"
             value={searchQuery}
@@ -795,7 +795,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
           <button
             onClick={() => setActiveTab('roles')}
             className={cn(
-              'flex-1 px-3 py-1.5 text-xs rounded transition-colors',
+              'flex-1 px-3 py-1.5 text-sm rounded transition-colors',
               activeTab === 'roles'
                 ? 'bg-cyan-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -806,7 +806,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
           <button
             onClick={() => setActiveTab('templates')}
             className={cn(
-              'flex-1 px-3 py-1.5 text-xs rounded transition-colors',
+              'flex-1 px-3 py-1.5 text-sm rounded transition-colors',
               activeTab === 'templates'
                 ? 'bg-purple-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -834,7 +834,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
               ))}
 
             {filteredRoles.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-400">
                 <Shield className="mx-auto mb-2 opacity-50" size={32} />
                 <p className="text-sm">
                   {searchQuery
@@ -844,7 +844,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
                 {!searchQuery && !readOnly && (
                   <button
                     onClick={handleAddRole}
-                    className="mt-2 text-xs text-cyan-400 hover:underline"
+                    className="mt-2 text-sm text-cyan-400 hover:underline"
                   >
                     Create your first role
                   </button>
@@ -866,7 +866,7 @@ const RoleTemplateLibrary: React.FC<RoleTemplateLibraryProps> = ({
             ))}
 
             {filteredTemplates.length === 0 && (
-              <p className="text-center text-sm text-slate-500 py-8">
+              <p className="text-center text-sm text-slate-400 py-8">
                 No templates match your search
               </p>
             )}

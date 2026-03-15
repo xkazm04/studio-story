@@ -233,7 +233,7 @@ function WaveformDisplay({
             className="absolute top-0 bottom-0 w-0.5 bg-white/30 z-5 pointer-events-none"
             style={{ left: `${hoverPercent}%` }}
           >
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-slate-700 text-[9px] text-white whitespace-nowrap">
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-slate-700 text-sm text-white whitespace-nowrap">
               {formatTime(hoverTime!)}
             </div>
           </div>
@@ -297,14 +297,14 @@ function ChapterList({ chapters, currentChapterId, onSelect }: ChapterListProps)
               : 'hover:bg-slate-800'
           )}
         >
-          <span className="w-5 h-5 rounded bg-slate-700 flex items-center justify-center text-[10px] text-slate-400">
+          <span className="w-5 h-5 rounded bg-slate-700 flex items-center justify-center text-sm text-slate-400">
             {index + 1}
           </span>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-medium text-slate-200 truncate">
+            <div className="text-sm font-medium text-slate-200 truncate">
               {chapter.chapterName}
             </div>
-            <div className="text-[9px] text-slate-500">
+            <div className="text-sm text-slate-400">
               {formatTime(chapter.totalDuration)} • {chapter.metadata.wordCount} words
             </div>
           </div>
@@ -410,9 +410,9 @@ export function AudioTimeline({
       <div className="shrink-0 flex items-center justify-between px-3 py-2 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <FileAudio className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-medium text-slate-200">Audio Timeline</span>
+          <span className="text-sm font-medium text-slate-200">Audio Timeline</span>
           {currentChapter && (
-            <span className="text-[10px] text-slate-500 px-2 py-0.5 rounded bg-slate-800">
+            <span className="text-sm text-slate-400 px-2 py-0.5 rounded bg-slate-800">
               {currentChapter.chapterName}
             </span>
           )}
@@ -427,7 +427,7 @@ export function AudioTimeline({
           >
             <ZoomOut className="w-3.5 h-3.5 text-slate-400" />
           </button>
-          <span className="text-[10px] text-slate-500 min-w-[3rem] text-center">
+          <span className="text-sm text-slate-400 min-w-[3rem] text-center">
             {Math.round(zoom * 100)}%
           </span>
           <button
@@ -461,7 +461,7 @@ export function AudioTimeline({
                     exit={{ opacity: 0, y: 4 }}
                     className="absolute right-0 top-full mt-1 z-20 w-64 p-2 bg-slate-800 border border-slate-700 rounded-lg shadow-xl"
                   >
-                    <div className="text-xs font-medium text-slate-300 mb-2">Chapters</div>
+                    <div className="text-sm font-medium text-slate-300 mb-2">Chapters</div>
                     <ChapterList
                       chapters={chapters}
                       currentChapterId={currentChapter?.chapterId}
@@ -501,7 +501,7 @@ export function AudioTimeline({
                           onExport(format);
                           setShowExportMenu(false);
                         }}
-                        className="w-full px-3 py-1.5 text-left text-xs text-slate-300 hover:bg-slate-700 transition-colors"
+                        className="w-full px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-slate-700 transition-colors"
                       >
                         Export as .{format}
                       </button>
@@ -546,7 +546,7 @@ export function AudioTimeline({
         />
 
         {/* Time indicators */}
-        <div className="flex items-center justify-between mt-1 text-[9px] text-slate-500">
+        <div className="flex items-center justify-between mt-1 text-sm text-slate-400">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
@@ -650,7 +650,7 @@ export function AudioTimeline({
             return (
               <div className="flex items-start gap-2">
                 <div className={cn(
-                  'shrink-0 px-1.5 py-0.5 rounded text-[9px] font-medium',
+                  'shrink-0 px-1.5 py-0.5 rounded text-sm font-medium',
                   block.blockType === 'dialogue' && 'bg-purple-500/20 text-purple-400',
                   block.blockType === 'narration' && 'bg-amber-500/20 text-amber-400',
                   block.blockType === 'description' && 'bg-blue-500/20 text-blue-400',
@@ -660,16 +660,16 @@ export function AudioTimeline({
                 </div>
                 <div className="flex-1 min-w-0">
                   {block.speaker && (
-                    <div className="text-[10px] font-medium text-slate-300 mb-0.5">
+                    <div className="text-sm font-medium text-slate-300 mb-0.5">
                       {block.speaker}
                     </div>
                   )}
-                  <div className="text-[10px] text-slate-500 line-clamp-2">
+                  <div className="text-sm text-slate-400 line-clamp-2">
                     {block.text}
                   </div>
                 </div>
                 {block.audioData && (
-                  <div className="shrink-0 flex items-center gap-1 text-[9px] text-slate-500">
+                  <div className="shrink-0 flex items-center gap-1 text-sm text-slate-400">
                     <Clock className="w-3 h-3" />
                     {formatTime(block.audioData.duration)}
                   </div>

@@ -40,7 +40,7 @@ export default function AssetTypeFilter() {
       {/* All items button */}
       <button
         onClick={() => setAssetType(null)}
-        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
           transition-all duration-200
           ${
             !assetType
@@ -70,7 +70,7 @@ export default function AssetTypeFilter() {
           <button
             key={type.id}
             onClick={() => setAssetType(isActive ? null : type.id)}
-            className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+            className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
               transition-all duration-200
               ${
                 isActive

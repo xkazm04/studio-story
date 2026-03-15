@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { fadeInDown, fadeInUp, NORMAL, staggerDelay } from '@/lib/animations';
 import { Folder, Plus } from 'lucide-react';
 import { EmptyState } from '@/app/components/UI';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
@@ -38,22 +39,24 @@ const ProjectsFeature: React.FC<ProjectsFeatureProps> = ({ userId = MOCK_USER_ID
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12 text-center">
           <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            variants={fadeInDown}
+            initial="initial"
+            animate="animate"
             className="text-4xl font-bold text-white mb-4"
           >
             Your Story Projects
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-gray-400 text-lg"
+            variants={fadeInDown}
+            initial="initial"
+            animate="animate"
+            transition={staggerDelay(2)}
+            className="text-slate-400 text-lg"
           >
             Select a project to continue or create a new one
           </motion.p>
@@ -82,20 +85,18 @@ const ProjectsFeature: React.FC<ProjectsFeatureProps> = ({ userId = MOCK_USER_ID
 
             {/* Create New Project Card */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: projects.length * 0.1,
-                duration: 0.2
-              }}
-              className="group relative bg-gray-800/30 backdrop-blur-sm border-2 border-dashed border-gray-700 rounded-lg p-6 cursor-pointer hover:bg-gray-800/50 hover:border-blue-500/50 transition-all duration-300"
+              variants={fadeInUp}
+              initial="initial"
+              animate="animate"
+              transition={{ ...NORMAL, ...staggerDelay(projects.length * 2) }}
+              className="group relative bg-slate-800/30 backdrop-blur-sm border-2 border-dashed border-slate-700 rounded-lg p-6 cursor-pointer hover:bg-slate-800/50 hover:border-blue-500/50 transition-all duration-300"
               data-testid="create-project-card"
             >
               <div className="flex flex-col items-center justify-center min-h-[140px] text-center">
-                <div className="p-3 bg-gray-700/30 rounded-lg mb-4 group-hover:bg-blue-500/20 transition-colors">
-                  <Plus size={32} className="text-gray-500 group-hover:text-blue-500 transition-colors" />
+                <div className="p-3 bg-slate-700/30 rounded-lg mb-4 group-hover:bg-blue-500/20 transition-colors">
+                  <Plus size={32} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-400 group-hover:text-blue-400 transition-colors">
+                <h3 className="ms-h3 text-slate-400 group-hover:text-blue-400 transition-colors">
                   Create New Project
                 </h3>
               </div>

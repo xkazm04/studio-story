@@ -12,8 +12,9 @@ interface TerminalDockStoreState {
   tabs: TerminalTab[];
   activeTabId: string | null;
   isCollapsed: boolean;
+  _hasHydrated: boolean;
 
-  createTab: (opts?: { label?: string; domain?: SkillDomain | 'general'; isPinned?: boolean }) => TerminalTab;
+  createTab: (opts?: { label?: string; domain?: SkillDomain | 'general'; isPinned?: boolean; isAgentSpawned?: boolean; executionId?: string; streamUrl?: string }) => TerminalTab;
   closeTab: (tabId: string) => void;
   setActiveTab: (tabId: string) => void;
   updateTabLabel: (tabId: string, label: string) => void;
@@ -21,6 +22,7 @@ interface TerminalDockStoreState {
   setCollapsed: (collapsed: boolean) => void;
   pinTab: (tabId: string, pinned: boolean) => void;
   getActiveTab: () => TerminalTab | undefined;
+  expandAndFocus: () => void;
 }
 
 function makeTabId(): string {
@@ -37,6 +39,7 @@ export const useTerminalDockStore = create<TerminalDockStoreState>()(
       tabs: [],
       activeTabId: null,
       isCollapsed: false,
+      _hasHydrated: false,
 
       createTab: (opts) => {
         const tab: TerminalTab = {
@@ -46,6 +49,9 @@ export const useTerminalDockStore = create<TerminalDockStoreState>()(
           domain: opts?.domain ?? 'general',
           createdAt: Date.now(),
           isPinned: opts?.isPinned ?? false,
+          isAgentSpawned: opts?.isAgentSpawned,
+          executionId: opts?.executionId,
+          streamUrl: opts?.streamUrl,
         };
 
         set((state) => ({
@@ -111,6 +117,10 @@ export const useTerminalDockStore = create<TerminalDockStoreState>()(
         const { tabs, activeTabId } = get();
         return tabs.find((t) => t.id === activeTabId);
       },
+
+      expandAndFocus: () => {
+        set({ isCollapsed: false });
+      },
     }),
     {
       name: 'studio-story-terminal-dock',
@@ -121,6 +131,9 @@ export const useTerminalDockStore = create<TerminalDockStoreState>()(
         activeTabId: state.activeTabId,
         isCollapsed: state.isCollapsed,
       }),
+      onRehydrateStorage: () => () => {
+        useTerminalDockStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );

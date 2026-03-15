@@ -1,11 +1,12 @@
 /**
  * ArtStylePresetSelector Component
  * Grid of predefined art style presets with collapsible view
+ * Implements roving tabindex for keyboard navigation
  */
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Check, Palette, ChevronDown } from 'lucide-react';
@@ -18,14 +19,70 @@ interface ArtStylePresetSelectorProps {
   disabled?: boolean;
 }
 
+/** Number of columns at each breakpoint — must match the grid-cols classes */
+const COLS_DEFAULT = 2;
+const COLS_SM = 3;
+
+function getColumnCount() {
+  if (typeof window === 'undefined') return COLS_DEFAULT;
+  return window.innerWidth >= 640 ? COLS_SM : COLS_DEFAULT;
+}
+
 export function ArtStylePresetSelector({
   selectedStyleId,
   onSelect,
   disabled = false,
 }: ArtStylePresetSelectorProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const selectedStyle = ART_STYLES.find((s) => s.id === selectedStyleId);
+
+  const focusItem = useCallback((index: number) => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const buttons = grid.querySelectorAll<HTMLButtonElement>('[role="gridcell"] > button');
+    buttons[index]?.focus();
+    setFocusedIndex(index);
+  }, []);
+
+  const handleGridKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const total = ART_STYLES.length;
+      const cols = getColumnCount();
+      let next = focusedIndex;
+
+      switch (e.key) {
+        case 'ArrowRight':
+          next = focusedIndex + 1 < total ? focusedIndex + 1 : focusedIndex;
+          break;
+        case 'ArrowLeft':
+          next = focusedIndex - 1 >= 0 ? focusedIndex - 1 : focusedIndex;
+          break;
+        case 'ArrowDown':
+          next = focusedIndex + cols < total ? focusedIndex + cols : focusedIndex;
+          break;
+        case 'ArrowUp':
+          next = focusedIndex - cols >= 0 ? focusedIndex - cols : focusedIndex;
+          break;
+        case 'Home':
+          next = 0;
+          break;
+        case 'End':
+          next = total - 1;
+          break;
+        default:
+          return; // don't preventDefault for other keys
+      }
+
+      e.preventDefault();
+      if (next !== focusedIndex) {
+        focusItem(next);
+      }
+    },
+    [focusedIndex, focusItem]
+  );
 
   return (
     <div className="space-y-3">
@@ -36,7 +93,7 @@ export function ArtStylePresetSelector({
         </label>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
+          className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
           disabled={disabled}
         >
           {isExpanded ? 'Collapse' : 'Show all'}
@@ -68,7 +125,7 @@ export function ArtStylePresetSelector({
               <p className="font-semibold text-white text-sm">
                 {selectedStyle.label}
               </p>
-              <p className="text-xs text-white/80 line-clamp-1">
+              <p className="text-sm text-white/80 line-clamp-1">
                 {selectedStyle.description}
               </p>
             </div>
@@ -76,22 +133,32 @@ export function ArtStylePresetSelector({
         </div>
       )}
 
-      {/* Style Grid with Image Cards */}
+      {/* Style Grid with Image Cards — roving tabindex */}
       {isExpanded && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
-          {ART_STYLES.map((style) => (
-            <StyleImageCard
-              key={style.id}
-              imageUrl={style.imageUrl}
-              label={style.label}
-              description={style.description}
-              isSelected={style.id === selectedStyleId}
-              onSelect={() => {
-                onSelect(style.id);
-                setIsExpanded(false);
-              }}
-              disabled={disabled}
-            />
+        <div
+          ref={gridRef}
+          role="grid"
+          aria-label="Art style presets"
+          onKeyDown={handleGridKeyDown}
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1"
+        >
+          {ART_STYLES.map((style, index) => (
+            <div key={style.id} role="gridcell">
+              <StyleImageCard
+                imageUrl={style.imageUrl}
+                label={style.label}
+                description={style.description}
+                ariaLabel={`${style.label} — ${style.description}. ${style.renderingTechnique}`}
+                isSelected={style.id === selectedStyleId}
+                tabIndex={index === focusedIndex ? 0 : -1}
+                onSelect={() => {
+                  onSelect(style.id);
+                  setIsExpanded(false);
+                }}
+                onFocus={() => setFocusedIndex(index)}
+                disabled={disabled}
+              />
+            </div>
           ))}
         </div>
       )}

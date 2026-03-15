@@ -49,12 +49,12 @@ const StyleSelector: React.FC<StyleSelectorProps> = ({
               )}
             >
               <div className={cn(
-                'font-mono text-xs uppercase tracking-wide mb-1',
+                'font-mono text-sm uppercase tracking-wide mb-1',
                 isSelected ? 'text-cyan-400' : 'text-slate-300'
               )}>
                 {style.label}
               </div>
-              <div className="font-mono text-[10px] text-slate-500 leading-relaxed">
+              <div className="font-mono text-sm text-slate-400 leading-relaxed">
                 {style.description}
               </div>
             </motion.button>

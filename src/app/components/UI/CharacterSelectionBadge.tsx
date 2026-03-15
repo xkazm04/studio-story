@@ -63,7 +63,7 @@ const CharacterSelectionBadge: React.FC = () => {
           damping: 30,
           mass: 0.5,
         }}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800/80 backdrop-blur-sm border border-gray-700 hover:border-gray-600 transition-all duration-200 group"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-600 transition-all duration-200 group"
         style={{
           boxShadow: `0 0 12px ${factionColor}33`,
         }}
@@ -106,17 +106,17 @@ const CharacterSelectionBadge: React.FC = () => {
         </div>
 
         {/* Character Name */}
-        <span className="text-sm font-medium text-gray-200 max-w-[150px] truncate">
+        <span className="text-sm font-medium text-slate-200 max-w-[150px] truncate">
           {character.name}
         </span>
 
         {/* Clear Button */}
         <button
           onClick={handleClearSelection}
-          className="ml-1 p-0.5 rounded-full hover:bg-gray-700 transition-colors opacity-60 hover:opacity-100"
+          className="ml-1 p-0.5 rounded-full hover:bg-slate-700 transition-colors opacity-60 hover:opacity-100"
           title="Clear selection"
         >
-          <X size={14} className="text-gray-400" />
+          <X size={14} className="text-slate-400" />
         </button>
 
         {/* Border Glow Effect */}

@@ -88,27 +88,27 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-gray-100">Voice Extraction</h2>
-        <p className="text-gray-400">
+        <h2 className="ms-h1">Voice Extraction</h2>
+        <p className="ms-caption">
           Upload audio samples to create a custom voice for your project
         </p>
       </div>
 
       {/* Voice Name Input */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-200">Voice Name</label>
+        <label className="text-sm font-medium text-slate-200">Voice Name</label>
         <input
           type="text"
           value={voiceName}
           onChange={(e) => setVoiceName(e.target.value)}
           placeholder="e.g., Hero Voice, Narrator, etc."
-          className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
         />
       </div>
 
       {/* File Upload */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-200">Audio Samples</label>
+        <label className="text-sm font-medium text-slate-200">Audio Samples</label>
         <div className="relative">
           <input
             type="file"
@@ -120,11 +120,11 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
           />
           <label
             htmlFor="audio-upload"
-            className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer bg-gray-900 hover:bg-gray-800 transition-colors"
+            className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-700 rounded-lg cursor-pointer bg-slate-900 hover:bg-slate-800 transition-colors"
           >
-            <Upload className="w-12 h-12 text-gray-500 mb-2" />
-            <p className="text-sm text-gray-400">Click to upload audio files</p>
-            <p className="text-xs text-gray-500 mt-1">MP3, WAV, M4A, OGG</p>
+            <Upload className="w-12 h-12 text-slate-400 mb-2" />
+            <p className="text-sm text-slate-400">Click to upload audio files</p>
+            <p className="text-sm text-slate-400 mt-1">MP3, WAV, M4A, OGG</p>
           </label>
         </div>
       </div>
@@ -136,7 +136,7 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-2"
         >
-          <label className="text-sm font-medium text-gray-200">
+          <label className="text-sm font-medium text-slate-200">
             Selected Files ({audioFiles.length})
           </label>
           <div className="space-y-2">
@@ -146,20 +146,20 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-3 bg-gray-900 border border-gray-700 rounded-lg"
+                className="flex items-center justify-between p-3 bg-slate-900 border border-slate-700 rounded-lg"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-200 truncate">{file.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm text-slate-200 truncate">{file.name}</p>
+                    <p className="text-sm text-slate-400">
                       {(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(index)}
-                  className="p-1 rounded hover:bg-gray-800 transition-colors"
+                  className="p-1 rounded hover:bg-slate-800 transition-colors"
                 >
                   <XCircle className="w-5 h-5 text-red-400" />
                 </button>

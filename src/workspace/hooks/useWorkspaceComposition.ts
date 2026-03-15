@@ -12,7 +12,7 @@
 
 import { useCallback, useRef } from 'react';
 import { useWorkspaceStore } from '../store/workspaceStore';
-import type { WorkspacePanelType, PanelRole, WorkspaceLayout } from '../types';
+import type { WorkspacePanelType, PanelRole, PanelDensity, WorkspaceLayout, PanelDataSlice } from '../types';
 import { PANEL_REGISTRY } from '../engine/panelRegistry';
 import { LAYOUT_ORDER, resolvePreferredLayout } from '../engine/layoutEngine';
 
@@ -20,6 +20,8 @@ interface CompositionPanel {
   type: string;
   role?: string;
   props?: Record<string, unknown>;
+  density?: string;
+  dataSlice?: PanelDataSlice;
 }
 
 interface CompositionDirective {
@@ -85,12 +87,23 @@ export function useWorkspaceComposition() {
       const { action, panels, layout } = directive;
       const normalizedLayout = toLayout(layout);
 
-      const deduped = new Map<WorkspacePanelType, { role?: PanelRole; props?: Record<string, unknown> }>();
+      const VALID_DENSITIES = new Set<PanelDensity>(['micro', 'compact', 'full']);
+      const toDensity = (d?: string): PanelDensity | undefined =>
+        d && VALID_DENSITIES.has(d as PanelDensity) ? (d as PanelDensity) : undefined;
+
+      const deduped = new Map<WorkspacePanelType, {
+        role?: PanelRole;
+        props?: Record<string, unknown>;
+        density?: PanelDensity;
+        dataSlice?: PanelDataSlice;
+      }>();
       for (const panel of panels ?? []) {
         if (!isWorkspacePanelType(panel.type)) continue;
         deduped.set(panel.type, {
           role: toRole(panel.role),
           props: panel.props,
+          density: toDensity(panel.density),
+          dataSlice: panel.dataSlice,
         });
       }
 
@@ -98,6 +111,8 @@ export function useWorkspaceComposition() {
         type,
         role: value.role,
         props: value.props,
+        density: value.density,
+        dataSlice: value.dataSlice,
       }));
 
       const fingerprint = buildFingerprint(action, normalizedLayout, directives);

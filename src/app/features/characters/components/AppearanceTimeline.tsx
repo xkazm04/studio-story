@@ -155,7 +155,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <GitCompare size={14} className="text-cyan-400" />
-          <span className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <span className="font-mono text-sm uppercase tracking-wide text-slate-300">
             comparison_view
           </span>
         </div>
@@ -163,10 +163,10 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
           onClick={onSwap}
           disabled={!fromMilestone || !toMilestone}
           className={cn(
-            'flex items-center gap-1 px-2 py-1 rounded font-mono text-[10px] transition-colors',
+            'flex items-center gap-1 px-2 py-1 rounded font-mono text-sm transition-colors',
             fromMilestone && toMilestone
               ? 'bg-slate-700/40 hover:bg-slate-700/60 text-slate-400'
-              : 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
+              : 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
           )}
         >
           <RefreshCw size={12} />
@@ -177,7 +177,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-start">
         {/* From milestone */}
         <div>
-          <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">from</span>
+          <span className="font-mono text-sm text-slate-400 uppercase block mb-2">from</span>
           {fromMilestone ? (
             <MilestoneCard
               milestone={fromMilestone}
@@ -192,20 +192,20 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                          flex flex-col items-center justify-center gap-2
                          hover:border-slate-600 transition-colors"
             >
-              <Plus size={20} className="text-slate-600" />
-              <span className="font-mono text-xs text-slate-600">Select milestone</span>
+              <Plus size={20} className="text-slate-400" />
+              <span className="font-mono text-sm text-slate-400">Select milestone</span>
             </button>
           )}
         </div>
 
         {/* Arrow */}
         <div className="flex items-center justify-center h-32">
-          <ArrowRight size={24} className="text-slate-600" />
+          <ArrowRight size={24} className="text-slate-400" />
         </div>
 
         {/* To milestone */}
         <div>
-          <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">to</span>
+          <span className="font-mono text-sm text-slate-400 uppercase block mb-2">to</span>
           {toMilestone ? (
             <MilestoneCard
               milestone={toMilestone}
@@ -220,8 +220,8 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
                          flex flex-col items-center justify-center gap-2
                          hover:border-slate-600 transition-colors"
             >
-              <Plus size={20} className="text-slate-600" />
-              <span className="font-mono text-xs text-slate-600">Select milestone</span>
+              <Plus size={20} className="text-slate-400" />
+              <span className="font-mono text-sm text-slate-400">Select milestone</span>
             </button>
           )}
         </div>
@@ -230,7 +230,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
       {/* Changes summary */}
       {fromMilestone && toMilestone && (
         <div className="mt-4 pt-4 border-t border-slate-700/50">
-          <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+          <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
             changes_detected
           </span>
           <div className="flex flex-wrap gap-2">
@@ -238,20 +238,20 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
               toMilestone.visual_changes.map((change, i) => (
                 <div
                   key={i}
-                  className="px-2 py-1 bg-slate-800/60 rounded text-xs font-mono"
+                  className="px-2 py-1 bg-slate-800/60 rounded text-sm font-mono"
                 >
-                  <span className="text-slate-500">{change.attribute}:</span>
+                  <span className="text-slate-400">{change.attribute}:</span>
                   {change.from && (
                     <>
                       <span className="text-red-400/70 line-through mx-1">{change.from}</span>
-                      <span className="text-slate-600">→</span>
+                      <span className="text-slate-400">→</span>
                     </>
                   )}
                   <span className="text-green-400 ml-1">{change.to}</span>
                 </div>
               ))
             ) : (
-              <span className="font-mono text-xs text-slate-600 italic">
+              <span className="font-mono text-sm text-slate-400 italic">
                 No visual changes recorded
               </span>
             )}
@@ -260,12 +260,12 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({
           {/* Age progression */}
           {fromMilestone.age_stage !== toMilestone.age_stage && (
             <div className="mt-3 flex items-center gap-2">
-              <span className="font-mono text-[10px] text-amber-400">Age progression:</span>
-              <span className="px-1.5 py-0.5 bg-amber-500/20 rounded text-[10px] font-mono text-amber-400">
+              <span className="font-mono text-sm text-amber-400">Age progression:</span>
+              <span className="px-1.5 py-0.5 bg-amber-500/20 rounded text-sm font-mono text-amber-400">
                 {AGE_STAGES[fromMilestone.age_stage]?.label}
               </span>
-              <ArrowRight size={12} className="text-slate-600" />
-              <span className="px-1.5 py-0.5 bg-amber-500/20 rounded text-[10px] font-mono text-amber-400">
+              <ArrowRight size={12} className="text-slate-400" />
+              <span className="px-1.5 py-0.5 bg-amber-500/20 rounded text-sm font-mono text-amber-400">
                 {AGE_STAGES[toMilestone.age_stage]?.label}
               </span>
             </div>
@@ -396,10 +396,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               appearance_timeline
             </h3>
-            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+            <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {milestones.length}
             </span>
           </div>
@@ -423,8 +423,8 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
             />
           ))}
           {filteredMilestones.length === 0 && (
-            <div className="flex-1 flex items-center justify-center py-4 text-slate-600">
-              <span className="font-mono text-xs">No milestones</span>
+            <div className="flex-1 flex items-center justify-center py-4 text-slate-400">
+              <span className="font-mono text-sm">No milestones</span>
             </div>
           )}
         </div>
@@ -442,7 +442,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
             <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               appearance_timeline
             </h3>
-            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-500">
+            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {filteredMilestones.length} / {milestones.length} milestones
             </span>
           </div>
@@ -453,10 +453,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               <button
                 onClick={() => setViewMode('timeline')}
                 className={cn(
-                  'p-1.5 rounded font-mono text-[10px] transition-colors',
+                  'p-1.5 rounded font-mono text-sm transition-colors',
                   viewMode === 'timeline'
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
                 title="Timeline view"
               >
@@ -465,10 +465,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               <button
                 onClick={() => setViewMode('grid')}
                 className={cn(
-                  'p-1.5 rounded font-mono text-[10px] transition-colors',
+                  'p-1.5 rounded font-mono text-sm transition-colors',
                   viewMode === 'grid'
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
                 title="Grid view"
               >
@@ -477,10 +477,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               <button
                 onClick={() => setViewMode('comparison')}
                 className={cn(
-                  'p-1.5 rounded font-mono text-[10px] transition-colors',
+                  'p-1.5 rounded font-mono text-sm transition-colors',
                   viewMode === 'comparison'
                     ? 'bg-cyan-500/20 text-cyan-400'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-400 hover:text-slate-300'
                 )}
                 title="Comparison view"
               >
@@ -495,7 +495,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                 'p-1.5 rounded transition-colors',
                 showFilters
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'bg-slate-800/40 text-slate-500 hover:text-slate-300'
+                  : 'bg-slate-800/40 text-slate-400 hover:text-slate-300'
               )}
             >
               <Filter size={14} />
@@ -507,7 +507,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                 onClick={onExportRequest}
                 className="flex items-center gap-1 px-2 py-1 rounded
                            bg-slate-800/40 hover:bg-slate-700/60 text-slate-400
-                           font-mono text-[10px] transition-colors"
+                           font-mono text-sm transition-colors"
               >
                 <Download size={12} />
                 <span>Export</span>
@@ -519,7 +519,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               onClick={handleAddMilestone}
               className="flex items-center gap-1 px-2 py-1 rounded
                          bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400
-                         font-mono text-xs transition-colors"
+                         font-mono text-sm transition-colors"
             >
               <Plus size={12} />
               <span>add</span>
@@ -539,14 +539,14 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-700/50">
                 {/* Search */}
                 <div className="relative flex-1 min-w-48">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search milestones..."
                     className="w-full pl-8 pr-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                               font-mono text-xs text-slate-300 placeholder:text-slate-600
+                               font-mono text-sm text-slate-300 placeholder:text-slate-400
                                focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                   />
                 </div>
@@ -556,7 +556,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value as TransformationType | 'all')}
                   className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300
+                             font-mono text-sm text-slate-300
                              focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                 >
                   <option value="all">All Types</option>
@@ -570,7 +570,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                   value={filterAgeStage}
                   onChange={(e) => setFilterAgeStage(e.target.value as AgeStage | 'all')}
                   className="px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                             font-mono text-xs text-slate-300
+                             font-mono text-sm text-slate-300
                              focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
                 >
                   <option value="all">All Ages</option>
@@ -589,7 +589,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                     }}
                     className="flex items-center gap-1 px-2 py-2 rounded-lg
                                bg-slate-800/40 hover:bg-slate-700/60 text-slate-400
-                               font-mono text-xs transition-colors"
+                               font-mono text-sm transition-colors"
                   >
                     <X size={12} />
                     <span>Clear</span>
@@ -604,21 +604,21 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
         {summary && (
           <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-slate-700/50">
             <div className="flex items-center gap-2">
-              <Layers size={12} className="text-slate-500" />
-              <span className="font-mono text-[10px] text-slate-500">
+              <Layers size={12} className="text-slate-400" />
+              <span className="font-mono text-sm text-slate-400">
                 {summary.total_transformations} transformations
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Star size={12} className="text-yellow-500" />
-              <span className="font-mono text-[10px] text-slate-500">
+              <span className="font-mono text-sm text-slate-400">
                 {summary.milestone_count} milestones
               </span>
             </div>
             {summary.current_age_stage && (
               <div className="flex items-center gap-2">
                 <Clock size={12} className="text-amber-500" />
-                <span className="font-mono text-[10px] text-slate-500">
+                <span className="font-mono text-sm text-slate-400">
                   Current: {AGE_STAGES[summary.current_age_stage]?.label}
                 </span>
               </div>
@@ -649,12 +649,12 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
           {selectingFor && (
             <div className="p-4 bg-slate-900/60 rounded-lg border border-cyan-500/30">
               <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-xs text-cyan-400">
+                <span className="font-mono text-sm text-cyan-400">
                   Select {selectingFor === 'from' ? 'starting' : 'ending'} milestone
                 </span>
                 <button
                   onClick={() => setSelectingFor(null)}
-                  className="p-1 rounded hover:bg-slate-700/50 text-slate-500"
+                  className="p-1 rounded hover:bg-slate-700/50 text-slate-400"
                 >
                   <X size={14} />
                 </button>
@@ -693,10 +693,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
               <Clock size={32} className="mb-3 opacity-50" />
               <p className="font-mono text-sm mb-1">No milestones found</p>
-              <p className="font-mono text-xs text-slate-600">
+              <p className="font-mono text-sm text-slate-400">
                 {milestones.length > 0 ? 'Try adjusting your filters' : 'Add a milestone to start tracking evolution'}
               </p>
               {milestones.length === 0 && (
@@ -704,7 +704,7 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
                   onClick={handleAddMilestone}
                   className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg
                              bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400
-                             font-mono text-xs transition-colors"
+                             font-mono text-sm transition-colors"
                 >
                   <Plus size={14} />
                   <span>Add First Milestone</span>
@@ -731,10 +731,10 @@ const AppearanceTimeline: React.FC<AppearanceTimelineProps> = ({
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
               <Clock size={32} className="mb-3 opacity-50" />
               <p className="font-mono text-sm mb-1">No milestones found</p>
-              <p className="font-mono text-xs text-slate-600">
+              <p className="font-mono text-sm text-slate-400">
                 {milestones.length > 0 ? 'Try adjusting your filters' : 'Add a milestone to start tracking evolution'}
               </p>
             </div>

@@ -6,6 +6,7 @@
  */
 
 import { spawn, type ChildProcess } from 'child_process';
+import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as path from 'path';
 import { analyzeEvent } from './signals/signal-analyzer';
@@ -94,6 +95,7 @@ export interface CLIExecution {
   endTime?: number;
   events: CLIExecutionEvent[];
   logFilePath?: string;
+  emitter: EventEmitter;
 }
 
 // Active executions map — use globalThis to persist across Next.js module reloads in dev
@@ -187,6 +189,7 @@ export function startExecution(
     startTime: Date.now(),
     events: [],
     logFilePath,
+    emitter: new EventEmitter(),
   };
 
   activeExecutions.set(executionId, execution);
@@ -212,6 +215,7 @@ export function startExecution(
 
   const emitEvent = (event: CLIExecutionEvent) => {
     execution.events.push(event);
+    execution.emitter.emit('event', event);
     if (onEvent) onEvent(event);
   };
 
@@ -506,6 +510,16 @@ export function startExecution(
  */
 export function getExecution(executionId: string): CLIExecution | undefined {
   return activeExecutions.get(executionId);
+}
+
+export function subscribeExecutionEvents(
+  executionId: string,
+  listener: (event: CLIExecutionEvent) => void,
+): (() => void) | null {
+  const execution = activeExecutions.get(executionId);
+  if (!execution) return null;
+  execution.emitter.on('event', listener);
+  return () => execution.emitter.off('event', listener);
 }
 
 /**

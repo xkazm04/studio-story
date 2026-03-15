@@ -103,15 +103,15 @@ const ProjectDeleteModal: React.FC<ProjectDeleteModalProps> = ({
         )}
 
         {/* Project Name */}
-        <div className="px-4 py-3 bg-gray-800/50 rounded-lg border border-gray-700/50">
-          <p className="text-xs text-gray-400 font-medium mb-1">Project to delete:</p>
+        <div className="px-4 py-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+          <p className="text-xs text-slate-400 font-medium mb-1">Project to delete:</p>
           <p className="text-white font-semibold">{project.name}</p>
           {project.description && (
-            <p className="text-gray-400 text-sm mt-2 line-clamp-2">{project.description}</p>
+            <p className="text-slate-400 text-sm mt-2 line-clamp-2">{project.description}</p>
           )}
         </div>
 
-        <p className="text-sm text-gray-400 text-center">
+        <p className="text-sm text-slate-400 text-center">
           Are you sure you want to delete this project?
         </p>
       </div>

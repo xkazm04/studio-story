@@ -39,7 +39,7 @@ const CurrentAvatar: React.FC<CurrentAvatarProps> = ({
       <div className="flex items-center gap-4">
         {/* Current Avatar */}
         <div className="flex flex-col items-center gap-2">
-          <span className="font-mono text-[10px] text-slate-500 uppercase">current</span>
+          <span className="font-mono text-sm text-slate-400 uppercase">current</span>
           <div className={cn(
             'w-20 h-20 rounded-lg border-2 overflow-hidden flex-shrink-0',
             hasCurrent ? 'border-slate-600' : 'border-dashed border-slate-700/50'
@@ -52,7 +52,7 @@ const CurrentAvatar: React.FC<CurrentAvatarProps> = ({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-slate-800/50">
-                <User className="w-8 h-8 text-slate-600" />
+                <User className="w-8 h-8 text-slate-400" />
               </div>
             )}
           </div>
@@ -76,7 +76,7 @@ const CurrentAvatar: React.FC<CurrentAvatarProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center gap-2"
           >
-            <span className="font-mono text-[10px] text-cyan-400 uppercase">new</span>
+            <span className="font-mono text-sm text-cyan-400 uppercase">new</span>
             <div className="w-20 h-20 rounded-lg border-2 border-cyan-500/50 overflow-hidden shadow-[0_0_12px_rgba(6,182,212,0.2)]">
               <img
                 src={selectedAvatar.url}
@@ -95,7 +95,7 @@ const CurrentAvatar: React.FC<CurrentAvatarProps> = ({
               animate={{ opacity: 1, y: 0 }}
               onClick={onSetAsAvatar}
               disabled={isUpdating}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wide
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-sm uppercase tracking-wide
                          bg-cyan-600 hover:bg-cyan-500 text-white
                          transition-all duration-200 shadow-lg hover:shadow-cyan-500/20
                          disabled:opacity-50 disabled:cursor-not-allowed"
@@ -114,10 +114,10 @@ const CurrentAvatar: React.FC<CurrentAvatarProps> = ({
             </motion.button>
           ) : (
             <div className="text-right">
-              <p className="font-mono text-xs text-slate-500">
+              <p className="font-mono text-sm text-slate-400">
                 // select_an_avatar
               </p>
-              <p className="font-mono text-[10px] text-slate-600">
+              <p className="font-mono text-sm text-slate-400">
                 generate and choose from options
               </p>
             </div>

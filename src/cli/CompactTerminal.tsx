@@ -49,6 +49,7 @@ import {
   toolUseToFileChange,
 } from './protocol';
 import CLIMarkdown from './CLIMarkdown';
+import { MCPConnectionIndicator } from './MCPConnectionIndicator';
 import type {
   CompactTerminalProps,
   LogEntry,
@@ -73,7 +74,7 @@ const LOG_COLORS: Record<LogEntry['type'], string> = {
   assistant: 'text-slate-200',
   tool_use: 'text-amber-400',
   tool_result: 'text-emerald-400',
-  system: 'text-slate-500',
+  system: 'text-slate-400',
   error: 'text-red-400',
 };
 
@@ -522,24 +523,26 @@ export default function CompactTerminal({
     >
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border-b border-slate-800 text-xs">
-        <Terminal className="w-3.5 h-3.5 text-slate-500" />
+        <Terminal className="w-3.5 h-3.5 text-slate-400" />
         <span className="text-slate-400 font-medium">
           {title || 'CLI Terminal'}
         </span>
 
+        <MCPConnectionIndicator />
+
         {sessionId && (
-          <span className="text-purple-400/70 font-mono text-[10px]">
+          <span className="text-purple-400/70 font-mono text-xs">
             {sessionId.slice(0, 6)}
           </span>
         )}
 
         {fileChangeStats.edits > 0 && (
-          <span className="text-amber-400/70 font-mono text-[10px]">
+          <span className="text-amber-400/70 font-mono text-xs">
             {fileChangeStats.edits}E
           </span>
         )}
         {fileChangeStats.writes > 0 && (
-          <span className="text-emerald-400/70 font-mono text-[10px]">
+          <span className="text-emerald-400/70 font-mono text-xs">
             {fileChangeStats.writes}W
           </span>
         )}
@@ -547,7 +550,7 @@ export default function CompactTerminal({
         <div className="flex-1" />
 
         {tokenDisplay && (
-          <span className="text-slate-500 font-mono text-[10px]">
+          <span className="text-slate-400 font-mono text-xs">
             {tokenDisplay}
           </span>
         )}
@@ -561,7 +564,7 @@ export default function CompactTerminal({
             onClick={handleCopyOutput}
             className={cn(
               'transition-colors',
-              copied ? 'text-emerald-400' : 'text-slate-600 hover:text-slate-400',
+              copied ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-300',
             )}
             title={copied ? 'Copied!' : 'Copy output'}
           >
@@ -571,7 +574,7 @@ export default function CompactTerminal({
 
         <button
           onClick={handleClear}
-          className="text-slate-600 hover:text-slate-400 transition-colors"
+          className="text-slate-400 hover:text-slate-300 transition-colors"
           title="Clear logs"
         >
           <Trash2 className="w-3 h-3" />
@@ -585,7 +588,7 @@ export default function CompactTerminal({
         className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5 min-h-[100px] max-h-[400px] font-mono text-xs"
       >
         {logs.length === 0 && !isStreaming && (
-          <div className="flex items-center justify-center h-full text-slate-600 text-xs">
+          <div className="flex items-center justify-center h-full text-slate-400 text-sm">
             Ready. Type a prompt or queue a skill.
           </div>
         )}
@@ -612,7 +615,7 @@ export default function CompactTerminal({
                     ? log.content
                     : log.content.slice(0, 500)}
                 {log.type !== 'user' && log.type !== 'assistant' && log.content.length > 500 && (
-                  <span className="text-slate-600">...</span>
+                  <span className="text-slate-400">...</span>
                 )}
               </span>
             </motion.div>
@@ -682,7 +685,7 @@ export default function CompactTerminal({
           <button
             onClick={handleSubmit}
             disabled={!inputValue.trim()}
-            className="text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-30 pb-0.5"
+            className="text-slate-400 hover:text-slate-300 transition-colors disabled:opacity-30 pb-0.5"
             title="Send"
           >
             <Send className="w-3.5 h-3.5" />

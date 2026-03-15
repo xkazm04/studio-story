@@ -29,11 +29,11 @@ const AudioExtraction = ({ projectId }: AudioExtractionProps) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-2">
+          <h2 className="ms-h1 flex items-center gap-2">
             <FileAudio className="w-6 h-6 text-purple-400" />
             Audio Data Extraction
           </h2>
-          <p className="text-gray-400 mt-1">
+          <p className="ms-caption mt-1">
             Extract audio samples from YouTube or upload your own files for transcription and analysis
           </p>
         </div>
@@ -50,7 +50,7 @@ const AudioExtraction = ({ projectId }: AudioExtractionProps) => {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 mode === m.id
                   ? 'bg-purple-900 text-white border border-purple-600'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-700'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -100,8 +100,8 @@ const AudioExtraction = ({ projectId }: AudioExtractionProps) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <div className="border-t border-gray-800 pt-6">
-            <h3 className="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+          <div className="border-t border-slate-800 pt-6">
+            <h3 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-400" />
               Transcription & Analysis
             </h3>
@@ -121,7 +121,7 @@ const AudioExtraction = ({ projectId }: AudioExtractionProps) => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          <div className="border-t border-gray-800 pt-6">
+          <div className="border-t border-slate-800 pt-6">
             <CharacterPersonalityExtractor transcriptions={transcriptions} />
           </div>
         </motion.div>

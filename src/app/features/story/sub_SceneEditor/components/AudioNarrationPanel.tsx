@@ -271,7 +271,7 @@ export function AudioNarrationPanel({
         {/* Audio icon */}
         <div className="flex items-center gap-1.5 text-slate-400">
           <Mic className="w-3.5 h-3.5" />
-          <span className="text-xs font-medium">Audio</span>
+          <span className="text-sm font-medium">Audio</span>
         </div>
 
         {/* Divider */}
@@ -287,7 +287,7 @@ export function AudioNarrationPanel({
                 onClick={togglePlayback}
                 disabled={disabled || isLoading}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-xs font-medium',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm font-medium',
                   'bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20',
                   'transition-colors disabled:opacity-50'
                 )}
@@ -311,7 +311,7 @@ export function AudioNarrationPanel({
                 onClick={handleGenerate}
                 disabled={!canGenerate || isGenerating}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-xs',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm',
                   'text-slate-400 hover:text-slate-200 hover:bg-slate-700',
                   'transition-colors disabled:opacity-50'
                 )}
@@ -331,7 +331,7 @@ export function AudioNarrationPanel({
                 onClick={handleDelete}
                 disabled={disabled || isDeleting}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-xs',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm',
                   'text-slate-400 hover:text-red-400 hover:bg-red-500/10',
                   'transition-colors disabled:opacity-50'
                 )}
@@ -352,7 +352,7 @@ export function AudioNarrationPanel({
               onClick={handleGenerate}
               disabled={!canGenerate || isGenerating}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium',
+                'flex items-center gap-1.5 px-2.5 py-1 rounded text-sm font-medium',
                 'bg-cyan-600 text-white hover:bg-cyan-500',
                 'transition-colors disabled:opacity-50'
               )}
@@ -375,7 +375,7 @@ export function AudioNarrationPanel({
         {/* Error message */}
         {error && (
           <span
-            className="ml-auto text-xs text-red-400 truncate max-w-[200px]"
+            className="ml-auto text-sm text-red-400 truncate max-w-[200px]"
             title={error}
           >
             {error}

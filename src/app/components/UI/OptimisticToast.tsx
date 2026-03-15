@@ -54,7 +54,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
       case 'info':
         return <Info size={18} className="text-blue-400" />;
       default:
-        return <Info size={18} className="text-gray-400" />;
+        return <Info size={18} className="text-slate-400" />;
     }
   };
 
@@ -67,9 +67,9 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
       case 'error':
         return 'bg-red-900/40 border-red-500/50';
       case 'info':
-        return 'bg-gray-900/40 border-gray-500/50';
+        return 'bg-slate-900/40 border-slate-500/50';
       default:
-        return 'bg-gray-900/40 border-gray-500/50';
+        return 'bg-slate-900/40 border-slate-500/50';
     }
   };
 
@@ -100,7 +100,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
         <div className="flex-1 min-w-0">
           <p className="text-sm text-white font-medium">{toast.message}</p>
           {isUndoAvailable && (
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               Undo available for {Math.ceil(undoTimeLeft / 1000)}s
             </p>
           )}
@@ -124,7 +124,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onDismiss(toast.id)}
-              className="p-1 rounded-md hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              className="p-1 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
               title="Dismiss"
             >
               <X size={16} />

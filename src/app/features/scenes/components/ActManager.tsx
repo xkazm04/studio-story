@@ -132,10 +132,10 @@ const ActManager: React.FC = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center py-8 rounded-lg border-2 border-dashed border-gray-700 bg-gray-800/30 flex flex-col items-center"
+        className="text-center py-8 rounded-lg border-2 border-dashed border-slate-700 bg-slate-800/30 flex flex-col items-center"
         data-testid="no-acts-state"
       >
-        <p className="text-gray-400 font-medium mb-3">No acts available</p>
+        <p className="text-slate-400 font-medium mb-3">No acts available</p>
         {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
         <button
           onClick={handleAddAct}
@@ -161,14 +161,14 @@ const ActManager: React.FC = () => {
               {visibleActs.map((act: Act) => (
                 <div key={act.id} className="flex items-center gap-2">
                   <ActTabButton act={act} onSelect={handleActChange} />
-                  <div className="w-[1px] h-4 bg-gray-700" />
+                  <div className="w-[1px] h-4 bg-slate-700" />
                 </div>
               ))}
 
               {hasMoreActs && (
                 <motion.div
                   ref={moreButtonRef}
-                  className="inline-flex cursor-pointer px-3 py-2 rounded-md text-sm font-medium items-center gap-1 border border-transparent hover:bg-gray-800 text-gray-400 hover:text-gray-300 transition-colors"
+                  className="inline-flex cursor-pointer px-3 py-2 rounded-md text-sm font-medium items-center gap-1 border border-transparent hover:bg-slate-800 text-slate-400 hover:text-slate-300 transition-colors"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   layout
@@ -187,7 +187,7 @@ const ActManager: React.FC = () => {
         </div>
 
         {error && (
-          <p className="text-xs text-red-500 mt-2 text-center">{error}</p>
+          <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
         )}
 
         {/* Acts List Dropdown */}

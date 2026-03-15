@@ -105,7 +105,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/20 rounded-xl border border-purple-500/30 shadow-2xl max-w-lg w-full p-6"
+        className="bg-gradient-to-br from-slate-900 via-slate-900 to-purple-900/20 rounded-xl border border-purple-500/30 shadow-2xl max-w-lg w-full p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -115,7 +115,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors"
             data-testid="close-role-editor-btn"
           >
             <X size={24} />
@@ -124,7 +124,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Character Info */}
-          <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
             <div className="flex items-center gap-3">
               {character.avatar_url && (
                 <img
@@ -135,7 +135,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
               )}
               <div>
                 <div className="font-semibold text-white">{character.name}</div>
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-slate-400">
                   Current: {character.faction_role || 'No role'} (Rank: {character.faction_rank || 0})
                 </div>
               </div>
@@ -144,7 +144,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
 
           {/* Mode Toggle (if hierarchy available) */}
           {hasHierarchy && (
-            <div className="flex gap-2 p-1 bg-gray-800 rounded-lg">
+            <div className="flex gap-2 p-1 bg-slate-800 rounded-lg">
               <button
                 type="button"
                 onClick={() => setUseHierarchyMode(true)}
@@ -152,7 +152,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                   'flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm transition-colors',
                   useHierarchyMode
                     ? 'bg-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-slate-400 hover:text-white'
                 )}
               >
                 <GitBranch size={14} />
@@ -165,7 +165,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                   'flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm transition-colors',
                   !useHierarchyMode
                     ? 'bg-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-slate-400 hover:text-white'
                 )}
               >
                 <Shield size={14} />
@@ -183,7 +183,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
               >
-                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
                   <Crown size={16} className="text-amber-400" />
                   Hierarchy Role
                 </label>
@@ -197,7 +197,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                         'w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left',
                         selectedHierarchyRole === role.id
                           ? 'border-purple-500 bg-purple-500/10'
-                          : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
+                          : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                       )}
                     >
                       {role.color && (
@@ -209,20 +209,20 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-white font-medium">{role.title}</span>
-                          <span className="text-xs text-gray-500">Level {role.level}</span>
+                          <span className="text-sm text-slate-400">Level {role.level}</span>
                         </div>
-                        <p className="text-xs text-gray-400 truncate">{role.description}</p>
+                        <p className="text-sm text-slate-400 truncate">{role.description}</p>
                       </div>
                       {selectedHierarchyRole === role.id && (
                         <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
+                          <span className="text-white text-sm">✓</span>
                         </div>
                       )}
                     </button>
                   ))}
                 </div>
                 {sortedHierarchyRoles.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">
+                  <p className="text-sm text-slate-400 text-center py-4">
                     No hierarchy roles defined. Create roles in the organization chart first.
                   </p>
                 )}
@@ -236,14 +236,14 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
               >
                 {/* Standard Role Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
                     <Shield size={16} className="text-purple-400" />
                     Faction Role
                   </label>
                   <select
                     value={factionRole}
                     onChange={(e) => setFactionRole(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     data-testid="faction-role-select"
                   >
                     <option value="">-- No Role --</option>
@@ -264,7 +264,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                     exit={{ opacity: 0, height: 0 }}
                     className="mt-4"
                   >
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Custom Role Name
                     </label>
                     <input
@@ -272,7 +272,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                       value={customRole}
                       onChange={(e) => setCustomRole(e.target.value)}
                       placeholder="Enter custom role..."
-                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                       data-testid="custom-role-input"
                     />
                   </motion.div>
@@ -283,7 +283,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
 
           {/* Rank Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
               <TrendingUp size={16} className="text-purple-400" />
               Faction Rank
             </label>
@@ -294,16 +294,16 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
                 onChange={(e) => setFactionRank(Number(e.target.value))}
                 min="0"
                 max="100"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 data-testid="faction-rank-input"
               />
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-sm text-slate-400">
                 <span>0 = Lowest</span>
                 <span>Higher = More Important</span>
                 <span>100 = Highest</span>
               </div>
               {/* Visual Rank Indicator */}
-              <div className="relative w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div className="relative w-full h-2 bg-slate-700 rounded-full overflow-hidden">
                 <motion.div
                   className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full"
                   initial={{ width: 0 }}
@@ -319,7 +319,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || (factionRole === 'Custom' && !customRole.trim())}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:from-gray-700 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:from-slate-700 disabled:to-slate-600 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
               data-testid="save-role-rank-btn"
             >
               <Save size={18} />
@@ -328,7 +328,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors"
               data-testid="cancel-role-edit-btn"
             >
               Cancel
@@ -338,7 +338,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
 
         {/* Help Text */}
         <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-          <p className="text-xs text-blue-300">
+          <p className="text-sm text-blue-300">
             <strong>Tip:</strong> {useHierarchyMode && hasHierarchy ? (
               <>Hierarchy roles are defined in the Organization Chart. Rank is automatically calculated from the role level.</>
             ) : (

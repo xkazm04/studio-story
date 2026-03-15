@@ -478,7 +478,7 @@ export function SceneSketchPanel({
         <div className="space-y-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label className="text-xs font-medium text-slate-400">
+              <Label className="text-sm font-medium text-slate-400">
                 Current Scene
               </Label>
               <Button
@@ -486,7 +486,7 @@ export function SceneSketchPanel({
                 variant="ghost"
                 onClick={onRemoveImage}
                 disabled={isSaving}
-                className="h-6 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                className="h-6 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10"
               >
                 <Trash2 className="w-3 h-3 mr-1" />
                 Remove
@@ -504,7 +504,7 @@ export function SceneSketchPanel({
             </div>
 
             {imagePrompt && (
-              <p className="text-[10px] text-slate-500 italic line-clamp-2">
+              <p className="text-sm text-slate-400 italic line-clamp-2">
                 {imagePrompt}
               </p>
             )}
@@ -521,7 +521,7 @@ export function SceneSketchPanel({
               onClick={() => setSketchMode('custom')}
               disabled={isGenerating || isExtracting}
               className={cn(
-                'flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg transition-all',
+                'flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all',
                 sketchMode === 'custom'
                   ? 'bg-cyan-600 text-white'
                   : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700 border border-slate-700'
@@ -534,7 +534,7 @@ export function SceneSketchPanel({
               onClick={() => setSketchMode('narrative')}
               disabled={isGenerating || isExtracting}
               className={cn(
-                'flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg transition-all',
+                'flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all',
                 sketchMode === 'narrative'
                   ? 'bg-cyan-600 text-white'
                   : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700 border border-slate-700'
@@ -552,7 +552,7 @@ export function SceneSketchPanel({
               <div className="space-y-2">
                 <button
                   onClick={() => setExtractorExpanded(!extractorExpanded)}
-                  className="flex items-center justify-between w-full text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
+                  className="flex items-center justify-between w-full text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
                   disabled={isGenerating || isExtracting}
                 >
                   <span className="flex items-center gap-1.5">
@@ -596,7 +596,7 @@ export function SceneSketchPanel({
                             ) : (
                               <Upload className="w-5 h-5 text-slate-400" />
                             )}
-                            <p className="text-[10px] text-slate-500">
+                            <p className="text-sm text-slate-400">
                               {isExtracting
                                 ? 'Extracting...'
                                 : 'Drop image or click to upload'}
@@ -610,7 +610,7 @@ export function SceneSketchPanel({
                             variant="secondary"
                             onClick={handleExtractFromCurrent}
                             disabled={isExtracting}
-                            className="w-full h-7 text-[10px]"
+                            className="w-full h-7 text-sm"
                           >
                             <Sparkles className="w-3 h-3 mr-1" />
                             Extract from Current Scene
@@ -643,7 +643,7 @@ export function SceneSketchPanel({
                             size="sm"
                             variant="ghost"
                             onClick={handleClearExtraction}
-                            className="w-full h-6 text-[10px]"
+                            className="w-full h-6 text-sm"
                           >
                             <RefreshCw className="w-3 h-3 mr-1" />
                             Try Another Image
@@ -658,17 +658,17 @@ export function SceneSketchPanel({
               {/* Custom Prompt Input */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-medium text-slate-400">
+                  <Label className="text-sm font-medium text-slate-400">
                     Scene Description
                   </Label>
                   <span
                     className={cn(
-                      'text-[10px]',
+                      'text-sm',
                       isCustomPromptTooLong
                         ? 'text-red-400'
                         : isCustomPromptTooShort
                           ? 'text-amber-400'
-                          : 'text-slate-500'
+                          : 'text-slate-400'
                     )}
                   >
                     {customPromptLength}/{MAX_PROMPT_LENGTH}
@@ -685,7 +685,7 @@ export function SceneSketchPanel({
                   placeholder="Describe the visual scene you want to generate (100-1500 characters)..."
                   disabled={isGenerating || isSaving || isExtracting}
                   className={cn(
-                    'w-full min-h-[100px] px-3 py-2 text-xs rounded-md resize-none',
+                    'w-full min-h-[100px] px-3 py-2 text-sm rounded-md resize-none',
                     'bg-slate-800/60 border text-slate-200 placeholder:text-slate-500',
                     'focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50',
                     'disabled:cursor-not-allowed disabled:opacity-50',
@@ -698,7 +698,7 @@ export function SceneSketchPanel({
                   )}
                 />
                 {isCustomPromptTooShort && (
-                  <p className="text-[10px] text-amber-400">
+                  <p className="text-sm text-amber-400">
                     Minimum {MIN_PROMPT_LENGTH} characters required (
                     {MIN_PROMPT_LENGTH - customPromptLength} more needed)
                   </p>
@@ -710,21 +710,21 @@ export function SceneSketchPanel({
           {/* Narrative Mode */}
           {sketchMode === 'narrative' && (
             <div className="space-y-2 p-3 bg-slate-800/30 rounded-lg border border-slate-700">
-              <div className="flex items-center gap-2 text-xs text-slate-400">
+              <div className="flex items-center gap-2 text-sm text-slate-400">
                 <BookOpen className="w-4 h-4" />
                 <span className="font-medium">Auto-generate from story</span>
               </div>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 This mode automatically creates an image from your story
                 content. No manual input needed.
               </p>
               {!hasStoryContent && (
-                <p className="text-[10px] text-amber-400">
+                <p className="text-sm text-amber-400">
                   Add story content to use this mode
                 </p>
               )}
               {hasStoryContent && (
-                <p className="text-[10px] text-emerald-400">
+                <p className="text-sm text-emerald-400">
                   Story content ready ({storyContent.trim().length} chars)
                 </p>
               )}
@@ -735,14 +735,14 @@ export function SceneSketchPanel({
           <div className="space-y-2">
             <button
               onClick={() => setMoodExpanded(!moodExpanded)}
-              className="flex items-center justify-between w-full text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
+              className="flex items-center justify-between w-full text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
               disabled={isGenerating}
             >
               <span className="flex items-center gap-1.5">
                 <span></span>
                 <span>Mood (optional)</span>
                 {selectedMood && (
-                  <span className="px-1.5 py-0.5 bg-cyan-500/20 text-cyan-400 rounded text-[10px]">
+                  <span className="px-1.5 py-0.5 bg-cyan-500/20 text-cyan-400 rounded text-sm">
                     {selectedMood.label}
                   </span>
                 )}
@@ -766,7 +766,7 @@ export function SceneSketchPanel({
                       }
                       disabled={isGenerating}
                       className={cn(
-                        'flex items-center gap-1.5 px-2 py-1.5 text-[10px] rounded-md transition-all',
+                        'flex items-center gap-1.5 px-2 py-1.5 text-sm rounded-md transition-all',
                         isSelected
                           ? 'bg-cyan-600 text-white'
                           : 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-cyan-500/50'
@@ -784,7 +784,7 @@ export function SceneSketchPanel({
           {/* Error Display */}
           {error && (
             <div className="p-2 bg-red-500/10 border border-red-500/30 rounded-lg">
-              <p className="text-[10px] text-red-400">{error}</p>
+              <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
 
@@ -803,7 +803,7 @@ export function SceneSketchPanel({
               (sketchMode === 'narrative' && !hasStoryContent)
             }
             variant="primary"
-            className="w-full h-9 text-xs"
+            className="w-full h-9 text-sm"
           >
             {isGenerating ? (
               <>
@@ -824,7 +824,7 @@ export function SceneSketchPanel({
       {sketches.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label className="text-xs font-medium text-slate-200">
+            <Label className="text-sm font-medium text-slate-200">
               Select a Sketch
             </Label>
             <Button
@@ -832,7 +832,7 @@ export function SceneSketchPanel({
               variant="ghost"
               onClick={handleStartOver}
               disabled={isGenerating}
-              className="h-6 text-xs"
+              className="h-6 text-sm"
             >
               <RefreshCw className="w-3 h-3 mr-1" />
               Start Over
@@ -868,7 +868,7 @@ export function SceneSketchPanel({
                     </div>
                   )}
                   <div className="absolute bottom-1 left-1 bg-black/70 rounded px-2 py-1">
-                    <span className="text-xs text-white font-medium">
+                    <span className="text-sm text-white font-medium">
                       Option {index + 1}
                     </span>
                   </div>

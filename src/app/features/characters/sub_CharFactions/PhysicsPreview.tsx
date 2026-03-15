@@ -213,7 +213,7 @@ const PhysicsPreview: React.FC<PhysicsPreviewProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute bottom-4 text-xs text-gray-400 pointer-events-none"
+            className="absolute bottom-4 text-sm text-slate-400 pointer-events-none"
           >
             Hover to interact
           </motion.div>

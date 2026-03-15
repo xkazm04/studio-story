@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { fadeIn, NORMAL } from '@/lib/animations';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
@@ -59,7 +60,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
       }}
       exit={{ opacity: 0, scale: 0.9 }}
       whileTap={{ scale: 0.97 }}
-      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+      transition={NORMAL}
       onClick={() => !isDeleting && setSelectedCharacter(character.id)}
       tabIndex={0}
       role="button"
@@ -84,11 +85,12 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
       {/* Deleting overlay */}
       {isDeleting && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          variants={fadeIn}
+          initial="initial"
+          animate="animate"
           className="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm"
         >
-          <span className="font-mono text-xs text-red-400 animate-pulse">deleting...</span>
+          <span className="font-mono text-sm text-red-400 animate-pulse">deleting...</span>
         </motion.div>
       )}
 
@@ -103,7 +105,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl font-bold text-slate-600">
+            <span className="text-4xl font-bold text-slate-400">
               {character.name.charAt(0).toUpperCase()}
             </span>
           </div>
@@ -120,7 +122,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
       <div className="p-3">
         <h3 className="font-medium text-slate-100 text-sm truncate">{character.name}</h3>
         {character.type && (
-          <span className="inline-block mt-1.5 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide
+          <span className="inline-block mt-1.5 px-1.5 py-0.5 font-mono text-sm uppercase tracking-wide
                          bg-slate-800/80 text-slate-400 border border-slate-700/50 rounded">
             {character.type}
           </span>
@@ -144,7 +146,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
 
       {/* Error display */}
       {rollbackError && (
-        <div className="absolute bottom-0 left-0 right-0 p-2 bg-red-900/90 text-red-200 font-mono text-[10px]">
+        <div className="absolute bottom-0 left-0 right-0 p-2 bg-red-900/90 text-red-200 font-mono text-sm">
           {rollbackError}
         </div>
       )}

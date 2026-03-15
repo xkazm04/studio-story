@@ -43,7 +43,7 @@ export function CollapsibleSection({
 
   return (
     <div
-      className={`relative group bg-gray-850/50 backdrop-blur-sm rounded-lg overflow-hidden ${className}`}
+      className={`relative group bg-slate-900/50 backdrop-blur-sm rounded-lg overflow-hidden ${className}`}
       data-testid={`collapsible-section-${title.toLowerCase().replace(/s+/g, '-')}`}
     >
       <ColoredBorder color={borderColor} />
@@ -56,17 +56,17 @@ export function CollapsibleSection({
         aria-expanded={isOpen}
         aria-controls={`collapsible-content-${title.toLowerCase().replace(/s+/g, '-')}`}
         data-testid={`collapsible-header-${title.toLowerCase().replace(/s+/g, '-')}`}
-        className={`w-full flex items-center justify-between hover:bg-gray-800/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 ${
-          compact ? 'px-3 py-2' : 'px-4 py-3'
+        className={`w-full flex items-center justify-between hover:bg-slate-800/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+          compact ? 'px-2.5 py-1.5' : 'px-3 py-2'
         }`}
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {Icon && <Icon className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} ${iconColor}`} />}
-          <h3 className={`${compact ? 'text-sm' : 'text-base'} font-semibold text-gray-100`}>
+          <h3 className={`${compact ? 'text-sm' : 'text-base'} font-semibold text-slate-100`}>
             {title}
           </h3>
           {badge && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-700/50 text-gray-400">
+            <span className="text-sm px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-400">
               {badge}
             </span>
           )}
@@ -76,9 +76,9 @@ export function CollapsibleSection({
           transition={{ duration: 0.2 }}
         >
           {isOpen ? (
-            <ChevronDown className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} text-gray-400`} />
+            <ChevronDown className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} text-slate-400`} />
           ) : (
-            <ChevronRight className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} text-gray-400`} />
+            <ChevronRight className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} text-slate-400`} />
           )}
         </motion.div>
       </button>
@@ -97,7 +97,7 @@ export function CollapsibleSection({
             }}
             className="overflow-hidden"
           >
-            <div className={`border-t border-gray-700/30 ${compact ? 'px-3 py-2' : 'px-4 py-3'}`}>
+            <div className={`border-t border-slate-700/30 ${compact ? 'px-2.5 py-1.5' : 'px-3 py-2'}`}>
               {children}
             </div>
           </motion.div>

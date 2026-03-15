@@ -67,9 +67,24 @@ export function ContentSection({
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Ref to hold latest pending save so cleanup can flush it synchronously
+  const pendingSaveRef = useRef<(() => void) | null>(null);
 
-  // Reset when scene changes
+  // Flush any pending save immediately (used on scene change / unmount)
+  const flushPendingSave = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+    if (pendingSaveRef.current) {
+      pendingSaveRef.current();
+      pendingSaveRef.current = null;
+    }
+  }, []);
+
+  // Reset when scene changes — flush pending save for the PREVIOUS scene first
   useEffect(() => {
+    // On sceneId change, flush is handled by the previous render's cleanup below
     setName(initialName);
     setContent(initialContent);
     setDescription(initialDescription);
@@ -95,6 +110,7 @@ export function ContentSection({
   useEffect(() => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
     }
 
     const hasChanges =
@@ -103,15 +119,33 @@ export function ContentSection({
       description !== initialDescription;
 
     if (hasChanges) {
-      saveTimeoutRef.current = setTimeout(saveChanges, 1500);
+      pendingSaveRef.current = saveChanges;
+      saveTimeoutRef.current = setTimeout(() => {
+        pendingSaveRef.current = null;
+        saveChanges();
+      }, 1500);
+    } else {
+      pendingSaveRef.current = null;
     }
 
     return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
+      // On cleanup (scene change or unmount), flush the pending save immediately
+      flushPendingSave();
+    };
+  }, [name, content, description, initialName, initialContent, initialDescription, saveChanges, flushPendingSave]);
+
+  // Guard against browser/tab close with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (pendingSaveRef.current) {
+        pendingSaveRef.current();
+        pendingSaveRef.current = null;
+        e.preventDefault();
       }
     };
-  }, [name, content, description, initialName, initialContent, initialDescription, saveChanges]);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   // Word count
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -125,7 +159,7 @@ export function ContentSection({
     >
       {/* Save Status Indicator */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-slate-500 font-mono uppercase tracking-wide">
+        <div className="flex items-center gap-2 text-sm text-slate-400 font-mono uppercase tracking-wide">
           <FileText className="w-3.5 h-3.5" />
           <span>// scene_content</span>
         </div>
@@ -136,7 +170,7 @@ export function ContentSection({
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-1.5 text-xs text-slate-400 font-mono"
+              className="flex items-center gap-1.5 text-sm text-slate-400 font-mono"
             >
               <Save className="w-3 h-3 animate-pulse" />
               saving...
@@ -148,7 +182,7 @@ export function ContentSection({
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-1.5 text-xs text-emerald-400 font-mono"
+              className="flex items-center gap-1.5 text-sm text-emerald-400 font-mono"
             >
               <Check className="w-3 h-3" />
               saved
@@ -159,7 +193,7 @@ export function ContentSection({
 
       {/* Scene Name */}
       <div className="relative group">
-        <label className="flex items-center gap-2 text-xs font-mono font-medium text-slate-300 mb-2 uppercase tracking-wide">
+        <label className="flex items-center gap-2 text-sm font-mono font-medium text-slate-300 mb-2 uppercase tracking-wide">
           <Type className="w-4 h-4 text-cyan-400" />
           scene_name
         </label>
@@ -194,10 +228,10 @@ export function ContentSection({
 
       {/* Description (optional) */}
       <div className="relative group">
-        <label className="flex items-center gap-2 text-xs font-mono font-medium text-slate-300 mb-2 uppercase tracking-wide">
+        <label className="flex items-center gap-2 text-sm font-mono font-medium text-slate-300 mb-2 uppercase tracking-wide">
           <Sparkles className="w-4 h-4 text-purple-400" />
           description
-          <span className="text-slate-500 font-normal normal-case">(optional)</span>
+          <span className="text-slate-400 font-normal normal-case">(optional)</span>
         </label>
         <div className="relative">
           <input
@@ -222,11 +256,11 @@ export function ContentSection({
       {/* Scene Content */}
       <div className="relative group">
         <div className="flex items-center justify-between mb-2">
-          <label className="flex items-center gap-2 text-xs font-mono font-medium text-slate-300 uppercase tracking-wide">
+          <label className="flex items-center gap-2 text-sm font-mono font-medium text-slate-300 uppercase tracking-wide">
             <AlignLeft className="w-4 h-4 text-emerald-400" />
             content
           </label>
-          <span className="text-xs text-slate-500 font-mono">
+          <span className="text-sm text-slate-400 font-mono">
             {wordCount} {wordCount === 1 ? 'word' : 'words'}
           </span>
         </div>
@@ -277,7 +311,7 @@ export function ContentSection({
 
       {/* Bottom stats bar */}
       <div className="flex items-center justify-between pt-4 border-t border-slate-800/50">
-        <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-wide">
+        <div className="flex items-center gap-4 font-mono text-sm uppercase tracking-wide">
           <div className="flex items-center gap-1.5">
             <div
               className={cn(
@@ -285,7 +319,7 @@ export function ContentSection({
                 name ? 'bg-emerald-400' : 'bg-slate-600'
               )}
             />
-            <span className="text-slate-500">Title</span>
+            <span className="text-slate-400">Title</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div
@@ -294,7 +328,7 @@ export function ContentSection({
                 description ? 'bg-emerald-400' : 'bg-slate-600'
               )}
             />
-            <span className="text-slate-500">Desc</span>
+            <span className="text-slate-400">Desc</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div
@@ -303,10 +337,10 @@ export function ContentSection({
                 content ? 'bg-emerald-400' : 'bg-slate-600'
               )}
             />
-            <span className="text-slate-500">Content</span>
+            <span className="text-slate-400">Content</span>
           </div>
         </div>
-        <span className="text-[10px] text-slate-600 font-mono">auto-save: on</span>
+        <span className="text-sm text-slate-400 font-mono">auto-save: on</span>
       </div>
     </motion.div>
   );

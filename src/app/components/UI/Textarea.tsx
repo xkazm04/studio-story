@@ -17,9 +17,9 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 const sizeClasses: Record<TextareaSize, string> = {
-  sm: 'px-2 py-1.5 text-xs min-h-[60px]',
-  md: 'px-3 py-2 text-sm min-h-[80px]',
-  lg: 'px-4 py-2.5 text-base min-h-[120px]',
+  sm: 'px-2 py-1 text-sm min-h-[48px]',
+  md: 'px-2.5 py-1.5 text-sm min-h-[64px]',
+  lg: 'px-3 py-2 text-sm min-h-[96px]',
 };
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -52,13 +52,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           <div className="flex items-center justify-between">
             <label
               htmlFor={textareaId}
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-slate-300"
             >
               {label}
               {props.required && <span className="text-red-400 ml-1">*</span>}
             </label>
             {showCount && (
-              <span className="text-xs text-gray-500">
+              <span className="text-sm text-slate-400">
                 {charCount}
                 {maxCharCount && ` / ${maxCharCount}`}
               </span>
@@ -68,7 +68,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <div
           className={clsx(
             'rounded-lg border bg-slate-950/60',
-            'transition-all outline-none text-white placeholder-gray-500',
+            'transition-all outline-none text-white placeholder-slate-500',
             'focus-within:border-cyan-500/60 focus-within:ring-1 focus-within:ring-cyan-500/60',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             hasError
@@ -92,8 +92,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {(error || helperText) && (
           <span
             className={clsx(
-              'text-xs',
-              hasError ? 'text-red-400' : 'text-gray-500'
+              'text-sm',
+              hasError ? 'text-red-400' : 'text-slate-400'
             )}
           >
             {error || helperText}

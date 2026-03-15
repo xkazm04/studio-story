@@ -250,7 +250,8 @@ Plans:
   3. `SuggestionStack` is rendered in the layout and displays ambient observer suggestions with Apply/Dismiss actions
 
 Plans:
-- [ ] 14-01-PLAN.md -- Instantiate LLM transport in useIntentDispatch, handle NEEDS_LLM, wire ambient observer and SuggestionStack
+- [ ] 14-01-PLAN.md -- Wire LLM transport into useIntentDispatch, handle NEEDS_LLM as suggestion cards, update SuggestionCard with LLM variant
+- [ ] 14-02-PLAN.md -- Add pause/resume to ambient observer, wire providers/V2Layout with SuggestionStack, status dot, and observer lifecycle
 
 ## Progress
 
@@ -273,5 +274,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
 | 12. Export and Package Boundary | 4/4 | Complete    | 2026-03-15 |
-| 13. Rich Visual Novel Export Bridge | 2/2 | Complete   | 2026-03-15 |
-| 14. LLM Transport and Ambient Observer Wiring | 0/1 | Not started | - |
+| 13. Rich Visual Novel Export Bridge | 2/2 | Complete    | 2026-03-15 |
+| 14. LLM Transport and Ambient Observer Wiring | 0/2 | Not started | - |

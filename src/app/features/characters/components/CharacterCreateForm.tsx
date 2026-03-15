@@ -85,11 +85,11 @@ const CharacterCreateForm: React.FC<CharacterCreateFormProps> = ({ onClose }) =>
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white">Create New Character</h3>
+        <h3 className="ms-h3">Create New Character</h3>
         <button
           type="button"
           onClick={onClose}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-slate-400 hover:text-white transition-colors"
         >
           <X size={20} />
         </button>
@@ -111,11 +111,11 @@ const CharacterCreateForm: React.FC<CharacterCreateFormProps> = ({ onClose }) =>
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+        <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select type (optional)</option>
           {CHARACTER_TYPES.map((t) => (
@@ -127,11 +127,11 @@ const CharacterCreateForm: React.FC<CharacterCreateFormProps> = ({ onClose }) =>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Faction</label>
+        <label className="block text-sm font-medium text-slate-300 mb-2">Faction</label>
         <select
           value={factionId}
           onChange={(e) => setFactionId(e.target.value)}
-          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Independent (no faction)</option>
           {factions.map((faction) => (
@@ -146,14 +146,14 @@ const CharacterCreateForm: React.FC<CharacterCreateFormProps> = ({ onClose }) =>
         <button
           type="submit"
           disabled={isLoading || !name.trim()}
-          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-colors"
+          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white rounded-lg font-medium transition-colors"
         >
           {isLoading ? 'Creating...' : 'Create Character'}
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors"
         >
           Cancel
         </button>

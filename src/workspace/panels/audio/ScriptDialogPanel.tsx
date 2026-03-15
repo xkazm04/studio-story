@@ -8,9 +8,11 @@ import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { useVoicesByProject } from '@/app/hooks/useVoices';
 import type { VoiceSettings, VoiceNarrationResult } from '@/app/features/voice/types';
+import type { PanelDensity } from '@/workspace/types';
 
 interface ScriptDialogPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 const DEFAULT_SETTINGS: VoiceSettings = {
@@ -20,7 +22,7 @@ const DEFAULT_SETTINGS: VoiceSettings = {
   speed: 100,
 };
 
-export default function ScriptDialogPanel({ onClose }: ScriptDialogPanelProps) {
+export default function ScriptDialogPanel({ onClose, density }: ScriptDialogPanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id;
   const { data: characters = [] } = characterApi.useProjectCharacters(projectId ?? '', !!projectId);
@@ -33,8 +35,8 @@ export default function ScriptDialogPanel({ onClose }: ScriptDialogPanelProps) {
 
   if (!projectId) {
     return (
-      <PanelFrame title="Script & Dialog" icon={BookOpen} onClose={onClose} headerAccent="amber">
-        <div className="flex items-center justify-center h-full text-xs text-slate-500">
+      <PanelFrame title="Script & Dialog" icon={BookOpen} onClose={onClose} headerAccent="amber" density={density}>
+        <div className="flex items-center justify-center h-full text-sm text-slate-400">
           Select a project first
         </div>
       </PanelFrame>
@@ -49,7 +51,7 @@ export default function ScriptDialogPanel({ onClose }: ScriptDialogPanelProps) {
   }));
 
   return (
-    <PanelFrame title="Script & Dialog" icon={BookOpen} onClose={onClose} headerAccent="amber">
+    <PanelFrame title="Script & Dialog" icon={BookOpen} onClose={onClose} headerAccent="amber" density={density}>
       <NarrationPipeline
         characters={charInfos}
         voices={voiceInfos}

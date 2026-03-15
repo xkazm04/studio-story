@@ -83,8 +83,8 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
 
   if (media.length === 0) {
     return (
-      <div className={`relative bg-gray-900 rounded-lg border border-gray-800 p-12 ${className}`}>
-        <div className="text-center text-gray-400">
+      <div className={`relative bg-slate-900 rounded-lg border border-slate-800 p-12 ${className}`}>
+        <div className="text-center text-slate-400">
           <ImageIcon size={48} className="mx-auto mb-4 opacity-30" />
           <p>{emptyMessage}</p>
         </div>
@@ -114,21 +114,21 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="px-3 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
             aria-label="Previous page"
             data-testid="media-gallery-prev-page"
           >
             <ChevronLeft size={16} />
           </button>
 
-          <span className="text-gray-400 text-sm px-4">
+          <span className="text-slate-400 text-sm px-4">
             Page {currentPage} of {totalPages}
           </span>
 
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="px-3 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
             aria-label="Next page"
             data-testid="media-gallery-next-page"
           >

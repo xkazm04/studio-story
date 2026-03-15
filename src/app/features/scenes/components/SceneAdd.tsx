@@ -63,7 +63,7 @@ const SceneAdd: React.FC = () => {
       <div className="flex justify-center py-3">
         <button
           onClick={() => setIsFormOpen(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg text-gray-400 hover:text-gray-300 transition-all group"
+          className="flex items-center gap-2 px-6 py-3 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 rounded-lg text-slate-400 hover:text-slate-300 transition-all group"
           title="Add Scene"
           data-testid="add-scene-btn"
         >
@@ -75,17 +75,17 @@ const SceneAdd: React.FC = () => {
   }
 
   return (
-    <div className="mx-2 my-3 p-4 bg-gray-900/50 border border-gray-700 rounded-lg">
+    <div className="mx-2 my-3 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
       <form onSubmit={handleAddScene} className="space-y-4">
         <div className="flex justify-between items-center mb-2">
-          <h4 className="text-sm font-medium text-gray-300">New Scene</h4>
+          <h4 className="text-sm font-medium text-slate-300">New Scene</h4>
           <button
             type="button"
             onClick={() => {
               setIsFormOpen(false);
               setSceneName('');
             }}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors"
             data-testid="close-scene-form-btn"
           >
             <X size={16} />

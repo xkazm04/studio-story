@@ -200,9 +200,9 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <Variable className="w-3 h-3 text-cyan-400" />
-            <span className="text-xs font-medium text-slate-200 truncate">{variable.name}</span>
+            <span className="text-sm font-medium text-slate-200 truncate">{variable.name}</span>
             <span className={cn(
-              'px-1 py-0.5 text-[9px] rounded',
+              'px-1 py-0.5 text-sm rounded',
               variable.scope === 'global' && 'bg-blue-500/20 text-blue-300',
               variable.scope === 'scene' && 'bg-green-500/20 text-green-300',
               variable.scope === 'character' && 'bg-purple-500/20 text-purple-300'
@@ -211,7 +211,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
             </span>
           </div>
           {variable.description && (
-            <div className="text-[10px] text-slate-500 truncate mt-0.5">{variable.description}</div>
+            <div className="text-sm text-slate-400 truncate mt-0.5">{variable.description}</div>
           )}
         </div>
 
@@ -221,7 +221,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
             <select
               value={String(currentValue)}
               onChange={(e) => handleValueChange(variable.id, e.target.value)}
-              className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
             >
               <option value="true">true</option>
               <option value="false">false</option>
@@ -231,14 +231,14 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
               type={variable.type === 'number' ? 'number' : 'text'}
               value={formatValue(currentValue ?? variable.defaultValue)}
               onChange={(e) => handleValueChange(variable.id, e.target.value)}
-              className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[10px] text-slate-200 focus:outline-none focus:border-cyan-500/50"
+              className="w-full px-2 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
             />
           )}
         </div>
 
         {/* Last changed indicator */}
         {lastChange && (
-          <div className="text-[9px] text-slate-500" title={`Changed at ${formatTime(lastChange.timestamp)}`}>
+          <div className="text-sm text-slate-400" title={`Changed at ${formatTime(lastChange.timestamp)}`}>
             <Clock className="w-3 h-3" />
           </div>
         )}
@@ -260,12 +260,12 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-medium text-slate-300">{variable?.name ?? 'Unknown'}</span>
-            <span className="text-[10px] text-slate-500">
+            <span className="text-sm font-medium text-slate-300">{variable?.name ?? 'Unknown'}</span>
+            <span className="text-sm text-slate-400">
               {formatValue(change.oldValue)} → {formatValue(change.newValue)}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-[9px] text-slate-500 mt-0.5">
+          <div className="flex items-center gap-2 text-sm text-slate-400 mt-0.5">
             <span>{formatTime(change.timestamp)}</span>
             {change.sceneId && <span>@ {change.sceneId}</span>}
             <span className="px-1 py-0.5 bg-slate-800 rounded">{change.source}</span>
@@ -283,8 +283,8 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
     >
       <div className="flex items-center justify-between mb-2">
         <div>
-          <div className="text-xs font-medium text-slate-200">{snapshot.label}</div>
-          <div className="text-[10px] text-slate-500">
+          <div className="text-sm font-medium text-slate-200">{snapshot.label}</div>
+          <div className="text-sm text-slate-400">
             {formatTime(snapshot.timestamp)} • {snapshot.state.size} variables
           </div>
         </div>
@@ -357,7 +357,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                'flex-1 px-2 py-1 text-[10px] font-medium rounded transition-colors',
+                'flex-1 px-2 py-1 text-sm font-medium rounded transition-colors',
                 activeTab === tab
                   ? 'bg-slate-800 text-slate-200'
                   : 'text-slate-400 hover:text-slate-300'
@@ -391,13 +391,13 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
               <div className="space-y-2">
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search variables..."
-                    className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-800 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                    className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-800 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                   />
                 </div>
 
@@ -408,7 +408,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
                       key={scope}
                       onClick={() => setFilterScope(scope)}
                       className={cn(
-                        'px-2 py-1 text-[10px] rounded transition-colors',
+                        'px-2 py-1 text-sm rounded transition-colors',
                         filterScope === scope
                           ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                           : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300'
@@ -421,7 +421,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
                   <button
                     onClick={() => setShowOnlyChanged(!showOnlyChanged)}
                     className={cn(
-                      'flex items-center gap-1 px-2 py-1 text-[10px] rounded transition-colors',
+                      'flex items-center gap-1 px-2 py-1 text-sm rounded transition-colors',
                       showOnlyChanged
                         ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                         : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300'
@@ -436,8 +436,8 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
               {/* Variables List */}
               {filteredVariables.length === 0 ? (
                 <div className="text-center py-8">
-                  <Variable className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No variables found</p>
+                  <Variable className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No variables found</p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
@@ -450,7 +450,7 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
                 size="xs"
                 variant="ghost"
                 onClick={handleReset}
-                className="w-full h-7 text-slate-500 hover:text-red-400"
+                className="w-full h-7 text-slate-400 hover:text-red-400"
               >
                 <RotateCcw className="w-3 h-3 mr-1" />
                 Reset All to Defaults
@@ -469,8 +469,8 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
             >
               {history.length === 0 ? (
                 <div className="text-center py-8">
-                  <History className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No changes recorded</p>
+                  <History className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No changes recorded</p>
                 </div>
               ) : (
                 history.map((change, index) => renderHistoryEntry(change, index))
@@ -502,8 +502,8 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
               {/* Snapshots List */}
               {snapshots.length === 0 ? (
                 <div className="text-center py-8">
-                  <Camera className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No snapshots saved</p>
+                  <Camera className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No snapshots saved</p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
@@ -518,8 +518,8 @@ export const StateDebugger: React.FC<StateDebuggerProps> = ({
       {/* Footer - Current Scene */}
       {currentSceneId && (
         <div className="shrink-0 px-3 py-2 border-t border-slate-800 bg-slate-900/30">
-          <div className="flex items-center justify-between text-[10px]">
-            <span className="text-slate-500">Current Scene:</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-400">Current Scene:</span>
             <span className="text-slate-300 font-medium truncate ml-2">{currentSceneId}</span>
           </div>
         </div>

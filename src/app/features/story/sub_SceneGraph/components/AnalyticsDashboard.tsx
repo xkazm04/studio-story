@@ -132,10 +132,10 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3">
       <div className="flex items-center gap-2 mb-1">
         <span className={`text-${color}-400`}>{icon}</span>
-        <span className="text-[10px] text-slate-500 uppercase tracking-wide">{label}</span>
+        <span className="text-sm text-slate-400 uppercase tracking-wide">{label}</span>
       </div>
       <div className="text-lg font-semibold text-slate-200">{value}</div>
-      {subValue && <div className="text-[10px] text-slate-500">{subValue}</div>}
+      {subValue && <div className="text-sm text-slate-400">{subValue}</div>}
     </div>
   );
 
@@ -152,17 +152,17 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     >
       <div className="flex items-center gap-2">
         <span className="text-cyan-400">{icon}</span>
-        <span className="text-xs font-medium text-slate-300">{title}</span>
+        <span className="text-sm font-medium text-slate-300">{title}</span>
         {badge !== undefined && (
-          <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded">
+          <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-sm rounded">
             {badge}
           </span>
         )}
       </div>
       {expandedSection === id ? (
-        <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+        <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
       ) : (
-        <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
       )}
     </button>
   );
@@ -182,7 +182,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               variant={heatmapEnabled ? 'primary' : 'secondary'}
               onClick={handleHeatmapToggle}
               disabled={!simulationResult}
-              className="h-6 text-[10px]"
+              className="h-6 text-sm"
             >
               <Map className="w-3 h-3 mr-1" />
               Heatmap
@@ -210,14 +210,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               <div className="pb-3 space-y-3">
                 {/* Iterations */}
                 <div>
-                  <div className="text-[10px] font-medium text-slate-400 mb-1.5">Iterations</div>
+                  <div className="text-sm font-medium text-slate-400 mb-1.5">Iterations</div>
                   <div className="flex gap-1">
                     {ITERATION_PRESETS.map((preset) => (
                       <button
                         key={preset}
                         onClick={() => setIterations(preset)}
                         className={cn(
-                          'px-2 py-1 text-[10px] rounded transition-colors',
+                          'px-2 py-1 text-sm rounded transition-colors',
                           iterations === preset
                             ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                             : 'bg-slate-800 text-slate-400 border border-transparent hover:text-slate-300'
@@ -231,7 +231,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
                 {/* Behavior Model */}
                 <div>
-                  <div className="text-[10px] font-medium text-slate-400 mb-1.5">Player Behavior</div>
+                  <div className="text-sm font-medium text-slate-400 mb-1.5">Player Behavior</div>
                   <div className="grid grid-cols-2 gap-1">
                     {BEHAVIOR_MODELS.map((model) => (
                       <button
@@ -245,12 +245,12 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                         )}
                       >
                         <div className={cn(
-                          'text-[10px] font-medium',
+                          'text-sm font-medium',
                           behaviorType === model.value ? 'text-cyan-300' : 'text-slate-300'
                         )}>
                           {model.label}
                         </div>
-                        <div className="text-[9px] text-slate-500">{model.description}</div>
+                        <div className="text-sm text-slate-400">{model.description}</div>
                       </button>
                     ))}
                   </div>
@@ -260,8 +260,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                 {behaviorType === 'exploration' && (
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-medium text-slate-400">Exploration Factor</span>
-                      <span className="text-[10px] text-cyan-400">{(explorationFactor * 100).toFixed(0)}%</span>
+                      <span className="text-sm font-medium text-slate-400">Exploration Factor</span>
+                      <span className="text-sm text-cyan-400">{(explorationFactor * 100).toFixed(0)}%</span>
                     </div>
                     <input
                       type="range"
@@ -307,9 +307,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {!simulationResult ? (
           <div className="text-center py-8">
-            <Compass className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+            <Compass className="w-10 h-10 text-slate-400 mx-auto mb-3" />
             <p className="text-sm text-slate-400">No simulation data</p>
-            <p className="text-xs text-slate-600 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               Run a simulation to see player flow analytics
             </p>
           </div>
@@ -389,14 +389,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                             className="bg-slate-900/50 border border-slate-800 rounded-lg p-2"
                           >
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] font-medium text-slate-400">
+                              <span className="text-sm font-medium text-slate-400">
                                 Path #{index + 1}
                               </span>
-                              <span className="text-xs font-medium text-cyan-400">
+                              <span className="text-sm font-medium text-cyan-400">
                                 {path.percentage.toFixed(1)}%
                               </span>
                             </div>
-                            <div className="text-[10px] text-slate-500 truncate">
+                            <div className="text-sm text-slate-400 truncate">
                               {sceneNames}
                               {path.path.length > 3 && ` ... +${path.path.length - 3} more`}
                             </div>
@@ -440,11 +440,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                             className="w-full bg-slate-900/50 border border-slate-800 rounded-lg p-2 text-left hover:border-amber-500/30 transition-colors"
                           >
                             <div className="flex items-center justify-between">
-                              <span className="text-xs text-slate-300 truncate">
+                              <span className="text-sm text-slate-300 truncate">
                                 {bottleneck.sceneName}
                               </span>
                               <span className={cn(
-                                'text-[10px] font-medium px-1.5 py-0.5 rounded',
+                                'text-sm font-medium px-1.5 py-0.5 rounded',
                                 bottleneck.isRequired
                                   ? 'bg-red-500/20 text-red-400'
                                   : 'bg-amber-500/20 text-amber-400'
@@ -453,7 +453,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                               </span>
                             </div>
                             {bottleneck.isRequired && (
-                              <div className="text-[9px] text-red-400/70 mt-1">
+                              <div className="text-sm text-red-400/70 mt-1">
                                 Required for all paths
                               </div>
                             )}
@@ -494,18 +494,18 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                             <div className="flex items-center justify-between mb-2">
                               <button
                                 onClick={() => onSelectScene?.(distribution.sceneId)}
-                                className="text-xs text-slate-300 truncate hover:text-cyan-400 transition-colors"
+                                className="text-sm text-slate-300 truncate hover:text-cyan-400 transition-colors"
                               >
                                 {distribution.sceneName}
                               </button>
-                              <span className="text-[9px] text-slate-500">
+                              <span className="text-sm text-slate-400">
                                 Entropy: {distribution.entropy.toFixed(2)}
                               </span>
                             </div>
                             <div className="space-y-1">
                               {distribution.choices.map((choice) => (
                                 <div key={choice.choiceId} className="flex items-center gap-2">
-                                  <div className="flex-1 text-[10px] text-slate-400 truncate">
+                                  <div className="flex-1 text-sm text-slate-400 truncate">
                                     {choice.label}
                                   </div>
                                   <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -514,7 +514,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                                       style={{ width: `${choice.percentage}%` }}
                                     />
                                   </div>
-                                  <div className="text-[10px] text-slate-500 w-10 text-right">
+                                  <div className="text-sm text-slate-400 w-10 text-right">
                                     {choice.percentage.toFixed(0)}%
                                   </div>
                                 </div>
@@ -547,25 +547,25 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                       <div className="pt-2 space-y-2">
                         <div className="grid grid-cols-2 gap-2">
                           <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-2">
-                            <div className="text-[10px] text-slate-500">Shortest</div>
+                            <div className="text-sm text-slate-400">Shortest</div>
                             <div className="text-sm font-medium text-slate-300">
                               {pathStats.shortestPath} scenes
                             </div>
                           </div>
                           <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-2">
-                            <div className="text-[10px] text-slate-500">Longest</div>
+                            <div className="text-sm text-slate-400">Longest</div>
                             <div className="text-sm font-medium text-slate-300">
                               {pathStats.longestPath} scenes
                             </div>
                           </div>
                           <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-2">
-                            <div className="text-[10px] text-slate-500">Average</div>
+                            <div className="text-sm text-slate-400">Average</div>
                             <div className="text-sm font-medium text-slate-300">
                               {pathStats.averagePath.toFixed(1)} scenes
                             </div>
                           </div>
                           <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-2">
-                            <div className="text-[10px] text-slate-500">Std Dev</div>
+                            <div className="text-sm text-slate-400">Std Dev</div>
                             <div className="text-sm font-medium text-slate-300">
                               ±{pathStats.standardDeviation.toFixed(1)}
                             </div>
@@ -574,7 +574,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
                         {/* Path Length Distribution */}
                         <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-2">
-                          <div className="text-[10px] text-slate-500 mb-2">Length Distribution</div>
+                          <div className="text-sm text-slate-400 mb-2">Length Distribution</div>
                           <div className="flex items-end gap-1 h-12">
                             {Array.from(pathStats.pathLengthDistribution.entries())
                               .sort((a, b) => a[0] - b[0])
@@ -592,8 +592,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                               })}
                           </div>
                           <div className="flex justify-between mt-1">
-                            <span className="text-[9px] text-slate-600">{pathStats.shortestPath}</span>
-                            <span className="text-[9px] text-slate-600">{pathStats.longestPath}</span>
+                            <span className="text-sm text-slate-400">{pathStats.shortestPath}</span>
+                            <span className="text-sm text-slate-400">{pathStats.longestPath}</span>
                           </div>
                         </div>
                       </div>

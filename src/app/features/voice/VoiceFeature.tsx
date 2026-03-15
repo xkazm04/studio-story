@@ -30,9 +30,9 @@ const VoiceFeature = () => {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <Mic className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-300 mb-2">No Project Selected</h3>
-          <p className="text-gray-500">Select a project to manage voices</p>
+          <Mic className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+          <h3 className="ms-h2 mb-2">No Project Selected</h3>
+          <p className="ms-caption">Select a project to manage voices</p>
         </div>
       </div>
     );
@@ -47,9 +47,9 @@ const VoiceFeature = () => {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-gray-950">
+    <div className="h-full flex flex-col bg-slate-950">
       {/* Tab Navigation */}
-      <div className="flex items-center gap-2 px-6 py-4 bg-gray-900 border-b border-gray-800">
+      <div className="flex items-center gap-2 px-6 py-4 bg-slate-900 border-b border-slate-800">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -59,7 +59,7 @@ const VoiceFeature = () => {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-emerald-900 text-white shadow-lg shadow-emerald-500/30'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
               }`}
             >
               <Icon className="w-4 h-4" />

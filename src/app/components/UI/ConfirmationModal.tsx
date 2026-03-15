@@ -102,7 +102,7 @@ export function ConfirmationModal({
     >
       <div className="py-2">
         {typeof message === 'string' ? (
-          <p className="text-sm text-gray-300" data-testid="confirmation-message">
+          <p className="text-sm text-slate-300" data-testid="confirmation-message">
             {message}
           </p>
         ) : (

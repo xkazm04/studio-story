@@ -468,7 +468,7 @@ export const TRANSFORMATION_TYPES: Record<TransformationType, {
   custom: {
     label: 'Custom',
     description: 'User-defined transformation',
-    color: 'text-gray-400 bg-gray-600/20',
+    color: 'text-slate-400 bg-slate-600/20',
     icon: 'edit',
   },
 };

@@ -29,6 +29,7 @@ import {
   type CompositionTemplate,
 } from '@/lib/composition';
 import { cn } from '@/app/lib/utils';
+import { RangeSlider } from '@/app/components/UI/RangeSlider';
 
 // ============================================================================
 // Types
@@ -110,7 +111,7 @@ const GridButton: React.FC<GridButtonProps> = ({ option, isActive, onClick }) =>
       title={option.label}
     >
       <Icon className="w-5 h-5" />
-      <span className="text-[10px] font-medium">{option.shortLabel}</span>
+      <span className="text-sm font-medium">{option.shortLabel}</span>
       {isActive && (
         <motion.div
           layoutId="activeGrid"
@@ -139,8 +140,8 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, isActive, onClick
         isActive && 'bg-blue-600/20 ring-1 ring-blue-500/30'
       )}
     >
-      <span className="text-xs font-medium text-slate-200">{template.name}</span>
-      <span className="text-[10px] text-slate-500 line-clamp-1">{template.description}</span>
+      <span className="text-sm font-medium text-slate-200">{template.name}</span>
+      <span className="text-sm text-slate-400 line-clamp-1">{template.description}</span>
     </button>
   );
 };
@@ -221,16 +222,8 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
     setConfig((prev) => ({ ...prev, visible: !prev.visible }));
   }, []);
 
-  const handleOpacityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfig((prev) => ({ ...prev, opacity: parseFloat(e.target.value) }));
-  }, []);
-
   const handleColorChange = useCallback((color: string) => {
     setConfig((prev) => ({ ...prev, color }));
-  }, []);
-
-  const handleLineWidthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfig((prev) => ({ ...prev, lineWidth: parseInt(e.target.value, 10) }));
   }, []);
 
   const handleTogglePowerPoints = useCallback(() => {
@@ -282,25 +275,27 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Grid3X3 className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-medium text-slate-200">Composition Guides</span>
+          <span className="text-sm font-medium text-slate-200">Composition Guides</span>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={handleToggleVisibility}
             className={cn(
-              'p-1.5 rounded transition-colors',
+              'p-2.5 rounded transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none',
               config.visible
                 ? 'bg-blue-600/20 text-blue-400'
                 : 'bg-slate-700/50 text-slate-400'
             )}
             title={config.visible ? 'Hide guides' : 'Show guides'}
+            aria-label={config.visible ? 'Hide guides' : 'Show guides'}
           >
             {config.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={handleReset}
-            className="p-1.5 rounded bg-slate-700/50 text-slate-400 hover:text-slate-200 transition-colors"
+            className="p-2.5 rounded bg-slate-700/50 text-slate-400 hover:text-slate-200 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
             title="Reset to defaults"
+            aria-label="Reset guides"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -317,7 +312,7 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
         />
         {!config.visible && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80">
-            <span className="text-xs text-slate-500">Guides hidden</span>
+            <span className="text-sm text-slate-400">Guides hidden</span>
           </div>
         )}
       </div>
@@ -337,7 +332,7 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
       {/* Suggested Grids */}
       {suggestedGrids.length > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-slate-500">Suggested:</span>
+          <span className="text-sm text-slate-400">Suggested:</span>
           <div className="flex gap-1">
             {suggestedGrids.map((gridType) => {
               const option = GRID_OPTIONS.find((o) => o.type === gridType);
@@ -347,7 +342,7 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
                   key={gridType}
                   onClick={() => handleGridTypeChange(gridType)}
                   className={cn(
-                    'px-2 py-0.5 text-[10px] rounded-full transition-colors',
+                    'px-2 py-0.5 text-sm rounded-full transition-colors',
                     config.type === gridType
                       ? 'bg-cyan-500/20 text-cyan-300'
                       : 'bg-slate-700/50 text-slate-400 hover:text-slate-200'
@@ -372,13 +367,13 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
             className="overflow-hidden"
           >
             <div className="flex flex-wrap gap-1 p-2 bg-slate-800/50 rounded-lg">
-              <span className="w-full text-[10px] text-slate-500 mb-1">Spiral Origin:</span>
+              <span className="w-full text-sm text-slate-400 mb-1">Spiral Origin:</span>
               {SPIRAL_ORIENTATIONS.map((orient) => (
                 <button
                   key={orient.value}
                   onClick={() => handleSpiralOrientationChange(orient.value)}
                   className={cn(
-                    'px-2 py-1 text-[10px] rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     config.spiralOrientation === orient.value
                       ? 'bg-blue-600/30 text-blue-300'
                       : 'bg-slate-700/50 text-slate-400 hover:text-slate-200'
@@ -400,13 +395,13 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
             className="overflow-hidden"
           >
             <div className="flex flex-wrap gap-1 p-2 bg-slate-800/50 rounded-lg">
-              <span className="w-full text-[10px] text-slate-500 mb-1">Diagonal Type:</span>
+              <span className="w-full text-sm text-slate-400 mb-1">Diagonal Type:</span>
               {DIAGONAL_TYPES.map((diag) => (
                 <button
                   key={diag.value}
                   onClick={() => handleDiagonalTypeChange(diag.value)}
                   className={cn(
-                    'px-2 py-1 text-[10px] rounded transition-colors',
+                    'px-2 py-1 text-sm rounded transition-colors',
                     config.diagonalType === diag.value
                       ? 'bg-blue-600/30 text-blue-300'
                       : 'bg-slate-700/50 text-slate-400 hover:text-slate-200'
@@ -429,25 +424,25 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
           >
             <div className="grid grid-cols-2 gap-2 p-2 bg-slate-800/50 rounded-lg">
               <div>
-                <label className="text-[10px] text-slate-500">Rows</label>
+                <label className="text-sm text-slate-400">Rows</label>
                 <input
                   type="number"
                   min={2}
                   max={12}
                   value={config.customRows}
                   onChange={(e) => handleCustomGridChange('customRows', parseInt(e.target.value, 10))}
-                  className="w-full mt-1 px-2 py-1 text-xs bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:outline-none"
+                  className="w-full mt-1 px-2 py-1 text-sm bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-[10px] text-slate-500">Columns</label>
+                <label className="text-sm text-slate-400">Columns</label>
                 <input
                   type="number"
                   min={2}
                   max={12}
                   value={config.customCols}
                   onChange={(e) => handleCustomGridChange('customCols', parseInt(e.target.value, 10))}
-                  className="w-full mt-1 px-2 py-1 text-xs bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:outline-none"
+                  className="w-full mt-1 px-2 py-1 text-sm bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -462,7 +457,7 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
       >
         <div className="flex items-center gap-2">
           <Sliders className="w-3.5 h-3.5" />
-          <span className="text-xs">Appearance Settings</span>
+          <span className="text-sm">Appearance Settings</span>
         </div>
         <ChevronDown
           className={cn(
@@ -483,51 +478,27 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
           >
             <div className="flex flex-col gap-3 p-3 bg-slate-800/50 rounded-lg">
               {/* Opacity */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-[10px] text-slate-500">Opacity</label>
-                  <span className="text-[10px] text-slate-400">
-                    {Math.round(config.opacity * 100)}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0.1}
-                  max={1}
-                  step={0.1}
-                  value={config.opacity}
-                  onChange={handleOpacityChange}
-                  className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Opacity</span>
+                <RangeSlider aria-label="Guide opacity" value={config.opacity} min={0.1} max={1} step={0.1} onChange={(v) => setConfig((prev) => ({ ...prev, opacity: v }))} />
               </div>
 
               {/* Line Width */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-[10px] text-slate-500">Line Width</label>
-                  <span className="text-[10px] text-slate-400">{config.lineWidth}px</span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={4}
-                  step={1}
-                  value={config.lineWidth}
-                  onChange={handleLineWidthChange}
-                  className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                />
+              <div className="space-y-1">
+                <span className="text-sm text-slate-300">Line Width</span>
+                <RangeSlider aria-label="Line width" value={config.lineWidth} min={1} max={4} step={1} onChange={(v) => setConfig((prev) => ({ ...prev, lineWidth: v }))} unit="px" />
               </div>
 
               {/* Color */}
               <div>
-                <label className="text-[10px] text-slate-500 block mb-1">Color</label>
+                <label className="text-sm text-slate-300 block mb-1">Color</label>
                 <div className="flex gap-1">
                   {PRESET_COLORS.map((preset) => (
                     <button
                       key={preset.value}
                       onClick={() => handleColorChange(preset.value)}
                       className={cn(
-                        'w-6 h-6 rounded-full border-2 transition-all',
+                        'w-8 h-8 rounded-full border-2 transition-all',
                         config.color === preset.value
                           ? 'border-white scale-110'
                           : 'border-transparent hover:border-slate-500'
@@ -547,8 +518,8 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
                   onChange={handleTogglePowerPoints}
                   className="rounded bg-slate-700 border-slate-600"
                 />
-                <Target className="w-3.5 h-3.5 text-slate-500" />
-                <span className="text-xs text-slate-300">Show Power Points</span>
+                <Target className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-sm text-slate-300">Show Power Points</span>
               </label>
             </div>
           </motion.div>
@@ -562,7 +533,7 @@ export const CompositionGuides: React.FC<CompositionGuidesProps> = ({
       >
         <div className="flex items-center gap-2">
           <Layers className="w-3.5 h-3.5" />
-          <span className="text-xs">Composition Templates</span>
+          <span className="text-sm">Composition Templates</span>
         </div>
         <ChevronDown
           className={cn(

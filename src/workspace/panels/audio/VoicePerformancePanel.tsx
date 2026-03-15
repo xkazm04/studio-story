@@ -8,9 +8,11 @@ import PerformanceControls from '@/app/features/voice/components/PerformanceCont
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { useVoicesByProject } from '@/app/hooks/useVoices';
 import type { VoiceSettings } from '@/app/features/voice/types';
+import type { PanelDensity } from '@/workspace/types';
 
 interface VoicePerformancePanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 const DEFAULT_SETTINGS: VoiceSettings = {
@@ -20,7 +22,7 @@ const DEFAULT_SETTINGS: VoiceSettings = {
   speed: 100,
 };
 
-export default function VoicePerformancePanel({ onClose }: VoicePerformancePanelProps) {
+export default function VoicePerformancePanel({ onClose, density }: VoicePerformancePanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id;
   const { data: voices = [] } = useVoicesByProject(projectId ?? '');
@@ -29,7 +31,7 @@ export default function VoicePerformancePanel({ onClose }: VoicePerformancePanel
 
   if (!projectId) {
     return (
-      <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald">
+      <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald" density={density}>
         <PanelEmptyState
           icon={SlidersHorizontal}
           title="No project selected"
@@ -41,7 +43,7 @@ export default function VoicePerformancePanel({ onClose }: VoicePerformancePanel
 
   if (voices.length === 0) {
     return (
-      <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald">
+      <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald" density={density}>
         <PanelEmptyState
           icon={SlidersHorizontal}
           title="No voices available"
@@ -52,7 +54,7 @@ export default function VoicePerformancePanel({ onClose }: VoicePerformancePanel
   }
 
   return (
-    <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald">
+    <PanelFrame title="Voice Performance" icon={SlidersHorizontal} onClose={onClose} headerAccent="emerald" density={density}>
       <div className="flex h-full min-h-0 flex-col overflow-auto">
         {/* Voice selector */}
         <div className="shrink-0 border-b border-slate-800/50 p-2">
@@ -64,7 +66,7 @@ export default function VoicePerformancePanel({ onClose }: VoicePerformancePanel
           <select
             value={selectedVoiceId ?? ''}
             onChange={(e) => setSelectedVoiceId(e.target.value || undefined)}
-            className="w-full rounded border border-slate-700/50 bg-slate-900/80 px-2 py-1 text-xs text-slate-300 outline-none transition-colors focus:border-emerald-500/40"
+            className="w-full rounded border border-slate-700/50 bg-slate-900/80 px-2 py-1 text-sm text-slate-300 outline-none transition-colors focus:border-emerald-500/40"
           >
             <option value="">None selected</option>
             {voices.map((v) => (

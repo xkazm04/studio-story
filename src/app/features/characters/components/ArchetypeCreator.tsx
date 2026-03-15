@@ -97,15 +97,15 @@ const FormSection: React.FC<FormSectionProps> = ({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-gray-700 rounded-lg overflow-hidden">
+    <div className="border border-slate-700 rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-3 p-4 bg-gray-800/50 hover:bg-gray-800 transition-colors"
+        className="w-full flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 transition-colors"
       >
-        <span className="p-1.5 rounded bg-gray-700 text-gray-300">{icon}</span>
+        <span className="p-1.5 rounded bg-slate-700 text-slate-300">{icon}</span>
         <span className="flex-1 text-left font-medium text-white">{title}</span>
         <motion.span animate={{ rotate: isOpen ? 180 : 0 }}>
-          <ChevronDown size={18} className="text-gray-400" />
+          <ChevronDown size={18} className="text-slate-400" />
         </motion.span>
       </button>
       <AnimatePresence>
@@ -116,7 +116,7 @@ const FormSection: React.FC<FormSectionProps> = ({
             exit={{ height: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-4 space-y-4 bg-gray-900/50">{children}</div>
+            <div className="p-4 space-y-4 bg-slate-900/50">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -190,18 +190,18 @@ const TagInput: React.FC<TagInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder="Add a tag..."
         disabled={tags.length >= maxTags}
-        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+        className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
       />
 
       {/* Suggestions */}
       {unusedSuggestions.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="text-xs text-gray-500">Suggestions:</span>
+          <span className="text-sm text-slate-400">Suggestions:</span>
           {unusedSuggestions.slice(0, 5).map(suggestion => (
             <button
               key={suggestion}
               onClick={() => addTag(suggestion)}
-              className="text-xs px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded transition-colors"
+              className="text-sm px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded transition-colors"
             >
               + {suggestion}
             </button>
@@ -342,7 +342,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">Create Custom Archetype</h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-slate-400">
               {fromCharacter
                 ? `Based on ${fromCharacter.name}`
                 : baseArchetype
@@ -353,7 +353,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
         </div>
         <button
           onClick={onCancel}
-          className="p-2 text-gray-400 hover:text-white transition-colors"
+          className="p-2 text-slate-400 hover:text-white transition-colors"
         >
           <X size={20} />
         </button>
@@ -377,7 +377,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
         <FormSection title="Basic Information" icon={<FileText size={16} />}>
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Archetype Name *
             </label>
             <input
@@ -386,24 +386,24 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
               onChange={(e) => updateField('name', e.target.value)}
               placeholder="e.g., The Wandering Sage"
               className={cn(
-                'w-full px-3 py-2 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500',
-                errors.name ? 'border-red-500' : 'border-gray-700'
+                'w-full px-3 py-2 bg-slate-800 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500',
+                errors.name ? 'border-red-500' : 'border-slate-700'
               )}
             />
             {errors.name && (
-              <p className="mt-1 text-xs text-red-400">{errors.name}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.name}</p>
             )}
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Category
             </label>
             <select
               value={formData.category}
               onChange={(e) => updateField('category', e.target.value as ArchetypeCategory)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               {CATEGORIES.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -413,7 +413,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
 
           {/* Genres */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Compatible Genres
             </label>
             <div className="flex flex-wrap gap-2">
@@ -425,7 +425,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
                     'px-3 py-1.5 text-sm rounded-lg border transition-colors',
                     formData.genres.includes(genre)
                       ? 'bg-purple-600/30 border-purple-500 text-purple-300'
-                      : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600'
+                      : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
                   )}
                 >
                   {genre === 'sci-fi' ? 'Sci-Fi' : genre.charAt(0).toUpperCase() + genre.slice(1)}
@@ -439,7 +439,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
         <FormSection title="Story Elements" icon={<User size={16} />}>
           {/* Backstory */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Backstory *
             </label>
             <textarea
@@ -448,18 +448,18 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
               placeholder="Describe the character's background and history..."
               rows={3}
               className={cn(
-                'w-full px-3 py-2 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none',
-                errors.backstory ? 'border-red-500' : 'border-gray-700'
+                'w-full px-3 py-2 bg-slate-800 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none',
+                errors.backstory ? 'border-red-500' : 'border-slate-700'
               )}
             />
             {errors.backstory && (
-              <p className="mt-1 text-xs text-red-400">{errors.backstory}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.backstory}</p>
             )}
           </div>
 
           {/* Motivations */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Motivations
             </label>
             <textarea
@@ -467,13 +467,13 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
               onChange={(e) => updateField('motivations', e.target.value)}
               placeholder="What drives this character?"
               rows={2}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
             />
           </div>
 
           {/* Personality */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Personality *
             </label>
             <textarea
@@ -482,12 +482,12 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
               placeholder="Key personality traits (comma-separated)..."
               rows={2}
               className={cn(
-                'w-full px-3 py-2 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none',
-                errors.personality ? 'border-red-500' : 'border-gray-700'
+                'w-full px-3 py-2 bg-slate-800 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none',
+                errors.personality ? 'border-red-500' : 'border-slate-700'
               )}
             />
             {errors.personality && (
-              <p className="mt-1 text-xs text-red-400">{errors.personality}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.personality}</p>
             )}
           </div>
         </FormSection>
@@ -495,7 +495,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
         {/* Tags */}
         <FormSection title="Tags" icon={<Tag size={16} />}>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-slate-300 mb-2">
               Searchable Tags *
             </label>
             <TagInput
@@ -504,7 +504,7 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
               onChange={(tags) => updateField('tags', tags)}
             />
             {errors.tags && (
-              <p className="mt-1 text-xs text-red-400">{errors.tags}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.tags}</p>
             )}
           </div>
         </FormSection>
@@ -514,28 +514,28 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
           <FormSection title="Appearance (from source)" icon={<Globe size={16} />} defaultOpen={false}>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <span className="text-gray-500">Gender:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.gender || 'Not set'}</span>
+                <span className="text-slate-400">Gender:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.gender || 'Not set'}</span>
               </div>
               <div>
-                <span className="text-gray-500">Age:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.age || 'Not set'}</span>
+                <span className="text-slate-400">Age:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.age || 'Not set'}</span>
               </div>
               <div>
-                <span className="text-gray-500">Body:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.bodyType || 'Not set'}</span>
+                <span className="text-slate-400">Body:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.bodyType || 'Not set'}</span>
               </div>
               <div>
-                <span className="text-gray-500">Height:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.height || 'Not set'}</span>
+                <span className="text-slate-400">Height:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.height || 'Not set'}</span>
               </div>
               <div>
-                <span className="text-gray-500">Hair:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.face.hairColor || 'Not set'}</span>
+                <span className="text-slate-400">Hair:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.face.hairColor || 'Not set'}</span>
               </div>
               <div>
-                <span className="text-gray-500">Eyes:</span>{' '}
-                <span className="text-gray-300">{formData.appearance.face.eyeColor || 'Not set'}</span>
+                <span className="text-slate-400">Eyes:</span>{' '}
+                <span className="text-slate-300">{formData.appearance.face.eyeColor || 'Not set'}</span>
               </div>
             </div>
           </FormSection>
@@ -543,10 +543,10 @@ const ArchetypeCreator: React.FC<ArchetypeCreatorProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-700">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-700">
         <button
           onClick={onCancel}
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-medium transition-colors"
         >
           Cancel
         </button>

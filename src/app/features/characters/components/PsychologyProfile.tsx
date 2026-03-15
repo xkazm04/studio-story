@@ -94,37 +94,37 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ type, value, wing }) => {
           <div>
             <h4 className="font-mono text-sm text-slate-200">{ennea.name}</h4>
             {wing && (
-              <span className="font-mono text-[10px] text-slate-500">
+              <span className="font-mono text-sm text-slate-400">
                 Wing: {wing}
               </span>
             )}
           </div>
         </div>
 
-        <div className="space-y-2 text-xs font-mono">
+        <div className="space-y-2 text-sm font-mono">
           <div>
-            <span className="text-slate-500">Core Motivation:</span>
+            <span className="text-slate-400">Core Motivation:</span>
             <p className="text-slate-400 mt-0.5">{ennea.coreMotivation}</p>
           </div>
           <div>
-            <span className="text-slate-500">Core Fear:</span>
+            <span className="text-slate-400">Core Fear:</span>
             <p className="text-slate-400 mt-0.5">{ennea.coreFear}</p>
           </div>
           <div>
-            <span className="text-slate-500">Desires:</span>
+            <span className="text-slate-400">Desires:</span>
             <div className="flex flex-wrap gap-1 mt-0.5">
               {ennea.desires.map((d, i) => (
-                <span key={i} className="px-1.5 py-0.5 bg-green-500/10 text-green-400/70 rounded text-[10px]">
+                <span key={i} className="px-1.5 py-0.5 bg-green-500/10 text-green-400/70 rounded text-sm">
                   {d}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <span className="text-slate-500">Weaknesses:</span>
+            <span className="text-slate-400">Weaknesses:</span>
             <div className="flex flex-wrap gap-1 mt-0.5">
               {ennea.weaknesses.map((w, i) => (
-                <span key={i} className="px-1.5 py-0.5 bg-red-500/10 text-red-400/70 rounded text-[10px]">
+                <span key={i} className="px-1.5 py-0.5 bg-red-500/10 text-red-400/70 rounded text-sm">
                   {w}
                 </span>
               ))}
@@ -145,36 +145,36 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ type, value, wing }) => {
         <h4 className="font-mono text-sm text-slate-200">{jung.label}</h4>
       </div>
 
-      <div className="space-y-2 text-xs font-mono">
+      <div className="space-y-2 text-sm font-mono">
         <div>
-          <span className="text-slate-500">Core Motivation:</span>
+          <span className="text-slate-400">Core Motivation:</span>
           <p className="text-slate-400 mt-0.5">{jung.coreMotivation}</p>
         </div>
         <div>
-          <span className="text-slate-500">Fears:</span>
+          <span className="text-slate-400">Fears:</span>
           <div className="flex flex-wrap gap-1 mt-0.5">
             {jung.fears.map((f, i) => (
-              <span key={i} className="px-1.5 py-0.5 bg-amber-500/10 text-amber-400/70 rounded text-[10px]">
+              <span key={i} className="px-1.5 py-0.5 bg-amber-500/10 text-amber-400/70 rounded text-sm">
                 {f}
               </span>
             ))}
           </div>
         </div>
         <div>
-          <span className="text-slate-500">Strengths:</span>
+          <span className="text-slate-400">Strengths:</span>
           <div className="flex flex-wrap gap-1 mt-0.5">
             {jung.strengths.map((s, i) => (
-              <span key={i} className="px-1.5 py-0.5 bg-green-500/10 text-green-400/70 rounded text-[10px]">
+              <span key={i} className="px-1.5 py-0.5 bg-green-500/10 text-green-400/70 rounded text-sm">
                 {s}
               </span>
             ))}
           </div>
         </div>
         <div>
-          <span className="text-slate-500">Shadow Aspects:</span>
+          <span className="text-slate-400">Shadow Aspects:</span>
           <div className="flex flex-wrap gap-1 mt-0.5">
             {jung.shadows.map((s, i) => (
-              <span key={i} className="px-1.5 py-0.5 bg-red-500/10 text-red-400/70 rounded text-[10px]">
+              <span key={i} className="px-1.5 py-0.5 bg-red-500/10 text-red-400/70 rounded text-sm">
                 {s}
               </span>
             ))}
@@ -206,10 +206,10 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
       <div className="space-y-3">
         <div className="flex items-center gap-2 mb-2">
           <AlertTriangle size={14} className="text-red-400" />
-          <h4 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h4 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             fears
           </h4>
-          <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+          <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
             {fears.length}
           </span>
         </div>
@@ -230,16 +230,16 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
                         style={{ width: `${fear.intensity}%` }}
                       />
                     </div>
-                    <span className="font-mono text-[10px] text-slate-500">{fear.intensity}</span>
+                    <span className="font-mono text-sm text-slate-400">{fear.intensity}</span>
                   </div>
                 </div>
                 {fear.description && (
-                  <p className="font-mono text-[10px] text-slate-500">{fear.description}</p>
+                  <p className="font-mono text-sm text-slate-400">{fear.description}</p>
                 )}
                 {fear.triggers.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {fear.triggers.map((t, i) => (
-                      <span key={i} className="px-1.5 py-0.5 bg-slate-800/40 rounded text-[10px] font-mono text-slate-500">
+                      <span key={i} className="px-1.5 py-0.5 bg-slate-800/40 rounded text-sm font-mono text-slate-400">
                         {t}
                       </span>
                     ))}
@@ -250,7 +250,7 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
           </div>
         ) : (
           <div className="p-4 bg-slate-800/20 rounded-lg border border-slate-800/30 text-center">
-            <p className="font-mono text-xs text-slate-600">No fears defined</p>
+            <p className="font-mono text-sm text-slate-400">No fears defined</p>
           </div>
         )}
       </div>
@@ -259,10 +259,10 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
       <div className="space-y-3">
         <div className="flex items-center gap-2 mb-2">
           <Heart size={14} className="text-green-400" />
-          <h4 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h4 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             desires
           </h4>
-          <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[10px] font-mono text-slate-500">
+          <span className="px-1.5 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
             {desires.length}
           </span>
         </div>
@@ -283,7 +283,7 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm text-slate-200">{desire.label}</span>
                     <span className={cn(
-                      'px-1 py-0.5 rounded text-[9px] font-mono',
+                      'px-1 py-0.5 rounded text-sm font-mono',
                       desire.type === 'need'
                         ? 'bg-purple-500/20 text-purple-400'
                         : 'bg-green-500/20 text-green-400'
@@ -301,16 +301,16 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
                         style={{ width: `${desire.intensity}%` }}
                       />
                     </div>
-                    <span className="font-mono text-[10px] text-slate-500">{desire.intensity}</span>
+                    <span className="font-mono text-sm text-slate-400">{desire.intensity}</span>
                   </div>
                 </div>
                 {desire.description && (
-                  <p className="font-mono text-[10px] text-slate-500">{desire.description}</p>
+                  <p className="font-mono text-sm text-slate-400">{desire.description}</p>
                 )}
                 {desire.obstacles.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {desire.obstacles.map((o, i) => (
-                      <span key={i} className="px-1.5 py-0.5 bg-slate-800/40 rounded text-[10px] font-mono text-slate-500">
+                      <span key={i} className="px-1.5 py-0.5 bg-slate-800/40 rounded text-sm font-mono text-slate-400">
                         {o}
                       </span>
                     ))}
@@ -321,7 +321,7 @@ const FearDesireList: React.FC<FearDesireListProps> = ({
           </div>
         ) : (
           <div className="p-4 bg-slate-800/20 rounded-lg border border-slate-800/30 text-center">
-            <p className="font-mono text-xs text-slate-600">No desires defined</p>
+            <p className="font-mono text-sm text-slate-400">No desires defined</p>
           </div>
         )}
       </div>
@@ -349,7 +349,7 @@ const BehaviorPredictor: React.FC<BehaviorPredictorProps> = ({
       <div className="p-4 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-4">
           <Lightbulb size={14} className="text-amber-400" />
-          <h4 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h4 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             behavior_prediction
           </h4>
         </div>
@@ -361,7 +361,7 @@ const BehaviorPredictor: React.FC<BehaviorPredictorProps> = ({
             placeholder="Describe a situation to predict how this character would respond..."
             rows={3}
             className="w-full px-3 py-2 bg-slate-800/40 border border-slate-700/50 rounded-lg
-                       font-mono text-sm text-slate-300 placeholder:text-slate-600
+                       font-mono text-sm text-slate-300 placeholder:text-slate-400
                        focus:outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
           />
 
@@ -369,10 +369,10 @@ const BehaviorPredictor: React.FC<BehaviorPredictorProps> = ({
             onClick={() => onPredict(situation)}
             disabled={!situation.trim() || !profile || isLoading}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-colors',
+              'flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-sm transition-colors',
               situation.trim() && profile && !isLoading
                 ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-400'
-                : 'bg-slate-800/40 text-slate-600 cursor-not-allowed'
+                : 'bg-slate-800/40 text-slate-400 cursor-not-allowed'
             )}
           >
             {isLoading ? (
@@ -399,7 +399,7 @@ const BehaviorPredictor: React.FC<BehaviorPredictorProps> = ({
         >
           <div className="flex items-center gap-2 mb-2">
             <Eye size={14} className="text-amber-400" />
-            <span className="font-mono text-xs text-amber-400 uppercase">Predicted Behavior</span>
+            <span className="font-mono text-sm text-amber-400 uppercase">Predicted Behavior</span>
           </div>
           <p className="font-mono text-sm text-slate-300 whitespace-pre-wrap">{prediction}</p>
         </motion.div>
@@ -561,7 +561,7 @@ How would they respond to this situation: ${situation}`;
             <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               psychology_profile
             </h3>
-            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-xs font-mono text-slate-400">
+            <span className="px-2 py-0.5 bg-slate-800/60 rounded text-sm font-mono text-slate-400">
               {characterName}
             </span>
           </div>
@@ -571,9 +571,9 @@ How would they respond to this situation: ${situation}`;
               onClick={handleGenerateProfile}
               disabled={isGenerating || cli.isRunning}
               className={cn(
-                'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-xs transition-colors',
+                'flex items-center gap-1 px-3 py-1.5 rounded-lg font-mono text-sm transition-colors',
                 isGenerating || cli.isRunning
-                  ? 'bg-slate-700/40 text-slate-600 cursor-not-allowed'
+                  ? 'bg-slate-700/40 text-slate-400 cursor-not-allowed'
                   : 'bg-purple-500/20 hover:bg-purple-500/30 text-purple-400'
               )}
             >
@@ -599,7 +599,7 @@ How would they respond to this situation: ${situation}`;
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-xs transition-all',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-mono text-sm transition-all',
                 activeTab === tab.id
                   ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30'
                   : 'text-slate-400 border border-transparent hover:text-slate-200 hover:bg-slate-800/50'
@@ -636,28 +636,28 @@ How would they respond to this situation: ${situation}`;
                       <div className="font-mono text-lg text-slate-200">
                         {profile.motivationTree.totalMotivations}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-500">Motivations</div>
+                      <div className="font-mono text-sm text-slate-400">Motivations</div>
                     </div>
                     <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50 text-center">
                       <Zap size={20} className="mx-auto mb-1 text-orange-400" />
                       <div className="font-mono text-lg text-slate-200">
                         {profile.internalConflicts.length}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-500">Conflicts</div>
+                      <div className="font-mono text-sm text-slate-400">Conflicts</div>
                     </div>
                     <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50 text-center">
                       <AlertTriangle size={20} className="mx-auto mb-1 text-red-400" />
                       <div className="font-mono text-lg text-slate-200">
                         {profile.fears.length}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-500">Fears</div>
+                      <div className="font-mono text-sm text-slate-400">Fears</div>
                     </div>
                     <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50 text-center">
                       <Heart size={20} className="mx-auto mb-1 text-green-400" />
                       <div className="font-mono text-lg text-slate-200">
                         {profile.desires.length}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-500">Desires</div>
+                      <div className="font-mono text-sm text-slate-400">Desires</div>
                     </div>
                   </div>
 
@@ -680,17 +680,17 @@ How would they respond to this situation: ${situation}`;
                   <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-700/50">
                     <div className="flex items-center gap-2 mb-3">
                       <User size={14} className="text-slate-400" />
-                      <span className="font-mono text-xs text-slate-500 uppercase">Psychological Profile</span>
+                      <span className="font-mono text-sm text-slate-400 uppercase">Psychological Profile</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="font-mono text-[10px] text-slate-600">Enneagram</span>
+                        <span className="font-mono text-sm text-slate-400">Enneagram</span>
                         <p className="font-mono text-sm text-purple-400">
                           Type {profile.archetypes.enneagram.type}: {ENNEAGRAM_TYPES[profile.archetypes.enneagram.type].name}
                         </p>
                       </div>
                       <div>
-                        <span className="font-mono text-[10px] text-slate-600">Jungian</span>
+                        <span className="font-mono text-sm text-slate-400">Jungian</span>
                         <p className="font-mono text-sm text-cyan-400">
                           {JUNGIAN_ARCHETYPES[profile.archetypes.jungian.primary].label}
                         </p>
@@ -700,9 +700,9 @@ How would they respond to this situation: ${situation}`;
                 </>
               ) : (
                 <div className="p-12 bg-slate-900/60 rounded-lg border border-slate-800/50 text-center">
-                  <Brain size={48} className="mx-auto mb-4 text-slate-600 opacity-50" />
+                  <Brain size={48} className="mx-auto mb-4 text-slate-400 opacity-50" />
                   <h4 className="font-mono text-sm text-slate-400 mb-2">No Psychology Profile</h4>
-                  <p className="font-mono text-xs text-slate-600 mb-4">
+                  <p className="font-mono text-sm text-slate-400 mb-4">
                     Generate a psychology profile to explore your character's motivations, fears, and internal conflicts.
                   </p>
                   <button
@@ -710,7 +710,7 @@ How would they respond to this situation: ${situation}`;
                     disabled={isGenerating || cli.isRunning}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg mx-auto
                                bg-purple-500/20 hover:bg-purple-500/30 text-purple-400
-                               font-mono text-xs transition-colors"
+                               font-mono text-sm transition-colors"
                   >
                     <Sparkles size={14} />
                     <span>Generate Psychology Profile</span>
@@ -781,8 +781,8 @@ How would they respond to this situation: ${situation}`;
           {/* Empty state for tabs when no profile */}
           {!profile && activeTab !== 'overview' && (
             <div className="p-8 bg-slate-900/60 rounded-lg border border-slate-800/50 text-center">
-              <Brain size={32} className="mx-auto mb-3 text-slate-600 opacity-50" />
-              <p className="font-mono text-sm text-slate-500">
+              <Brain size={32} className="mx-auto mb-3 text-slate-400 opacity-50" />
+              <p className="font-mono text-sm text-slate-400">
                 Generate a psychology profile first to access this feature.
               </p>
             </div>

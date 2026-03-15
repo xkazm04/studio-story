@@ -8,13 +8,15 @@ import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelSkeletonList } from '../shared/PanelPrimitives';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
+import type { PanelDensity } from '@/workspace/types';
 
 interface SceneListPanelProps {
   onClose?: () => void;
   onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
+  density?: PanelDensity;
 }
 
-export default function SceneListPanel({ onClose, onTriggerSkill }: SceneListPanelProps) {
+export default function SceneListPanel({ onClose, onTriggerSkill, density }: SceneListPanelProps) {
   const { selectedProject, selectedAct, selectedSceneId, setSelectedSceneId } = useProjectStore();
   const projectId = selectedProject?.id;
   const actId = selectedAct?.id;
@@ -30,10 +32,11 @@ export default function SceneListPanel({ onClose, onTriggerSkill }: SceneListPan
       icon={List}
       onClose={onClose}
       headerAccent="amber"
+      density={density}
       actions={
         <div className="flex items-center gap-1">
           {isFetching && !isLoading ? (
-            <span className="inline-flex items-center gap-1 rounded border border-cyan-500/20 bg-cyan-500/8 px-1.5 py-0.5 text-[9px] text-cyan-300">
+            <span className="inline-flex items-center gap-1 rounded border border-cyan-500/20 bg-cyan-500/8 px-1.5 py-0.5 text-xs text-cyan-300">
               <Loader2 className="h-3 w-3 animate-spin" />
               Refreshing
             </span>
@@ -42,7 +45,7 @@ export default function SceneListPanel({ onClose, onTriggerSkill }: SceneListPan
             <button
               type="button"
               onClick={() => onTriggerSkill('scene-generation')}
-              className="rounded p-0.5 text-slate-500 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
+              className="rounded p-0.5 text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
               title="Generate new scene"
             >
               <Plus className="w-3 h-3" />
@@ -86,22 +89,22 @@ export default function SceneListPanel({ onClose, onTriggerSkill }: SceneListPan
                 )}
               >
                 <span className={cn(
-                  'shrink-0 w-5 h-5 rounded flex items-center justify-center text-[10px] font-mono font-bold mt-0.5',
+                  'shrink-0 w-5 h-5 rounded flex items-center justify-center text-sm font-mono font-bold mt-0.5',
                   selectedSceneId === scene.id
                     ? 'bg-amber-500/20 text-amber-400'
-                    : 'bg-slate-800/60 text-slate-500'
+                    : 'bg-slate-800/60 text-slate-400'
                 )}>
                   {idx + 1}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className={cn(
-                    'text-xs font-medium truncate',
+                    'text-sm font-medium truncate',
                     selectedSceneId === scene.id ? 'text-amber-200' : 'text-slate-300'
                   )}>
                     {scene.name || 'Untitled Scene'}
                   </p>
                   {scene.description && (
-                    <p className="text-[10px] text-slate-600 line-clamp-2 mt-0.5 leading-relaxed">
+                    <p className="hidden @sm:block text-sm text-slate-400 line-clamp-2 mt-0.5 leading-relaxed">
                       {scene.description}
                     </p>
                   )}

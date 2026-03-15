@@ -256,7 +256,7 @@ function EventItem({
               {catConfig.icon}
               <span className="text-xs font-medium">{catConfig.label}</span>
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-400">
               {formatTimestamp(event.metadata.createdAt)}
             </span>
           </div>
@@ -270,7 +270,7 @@ function EventItem({
               e.stopPropagation();
               onToggle();
             }}
-            className="flex items-center gap-1 mt-1 text-xs text-slate-500 hover:text-slate-400 transition-colors"
+            className="flex items-center gap-1 mt-1 text-xs text-slate-400 hover:text-slate-400 transition-colors"
           >
             <ChevronDown
               className={clsx(
@@ -292,19 +292,19 @@ function EventItem({
                 <div className="mt-2 p-2 rounded bg-slate-900/50 border border-slate-700/50 text-xs">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-slate-500">Entity ID:</span>
+                      <span className="text-slate-400">Entity ID:</span>
                       <span className="ml-1 text-slate-300 font-mono">
                         {event.payload.entityId?.slice(0, 12) || 'N/A'}...
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500">Source:</span>
+                      <span className="text-slate-400">Source:</span>
                       <span className="ml-1 text-slate-300">
                         {event.payload.source || 'Unknown'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500">Priority:</span>
+                      <span className="text-slate-400">Priority:</span>
                       <span
                         className={clsx(
                           'ml-1',
@@ -320,7 +320,7 @@ function EventItem({
                     </div>
                     {event.metadata.batchId && (
                       <div>
-                        <span className="text-slate-500">Batch:</span>
+                        <span className="text-slate-400">Batch:</span>
                         <span className="ml-1 text-slate-300 font-mono">
                           {event.metadata.batchId.slice(0, 8)}
                         </span>
@@ -355,6 +355,13 @@ export function EventTimeline({
   const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set());
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
+  const [tick, setTick] = useState(0);
+
+  // Refresh relative timestamps every 30 seconds
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
 
   // Load events and subscribe to updates
   useEffect(() => {
@@ -418,10 +425,10 @@ export function EventTimeline({
     return result;
   }, [events, searchQuery, selectedTypes]);
 
-  // Group events by time
+  // Group events by time (re-evaluated on tick for live timestamps)
   const groupedEvents = useMemo(
     () => groupEventsByTime(filteredEvents.slice().reverse()),
-    [filteredEvents]
+    [filteredEvents, tick]
   );
 
   const toggleEventExpanded = (eventId: string) => {
@@ -528,13 +535,13 @@ export function EventTimeline({
             <div className="p-3 space-y-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search events..."
-                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-900/50 border border-slate-700/50 rounded-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-900/50 border border-slate-700/50 rounded-lg text-slate-200 placeholder:text-slate-400 focus:outline-none focus:border-cyan-500/50"
                 />
               </div>
 
@@ -574,7 +581,7 @@ export function EventTimeline({
               <div key={label}>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-px flex-1 bg-slate-700/50" />
-                  <span className="text-xs text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs text-slate-400 uppercase tracking-wider">
                     {label}
                   </span>
                   <div className="h-px flex-1 bg-slate-700/50" />
@@ -595,9 +602,9 @@ export function EventTimeline({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Clock className="w-10 h-10 text-slate-600 mb-3" />
+            <Clock className="w-10 h-10 text-slate-400 mb-3" />
             <div className="text-slate-400 font-medium">No activity yet</div>
-            <div className="text-sm text-slate-500 mt-1">
+            <div className="text-sm text-slate-400 mt-1">
               Events will appear here as you make changes
             </div>
           </div>

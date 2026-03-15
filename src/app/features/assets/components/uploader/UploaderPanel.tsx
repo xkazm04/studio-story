@@ -220,7 +220,7 @@ export default function UploaderPanel({ className = '' }: UploaderPanelProps) {
           <div className="flex items-center gap-1 p-1 bg-slate-900/60 rounded-lg border border-slate-800/50">
             <button
               onClick={() => setUploadMode('single')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 uploadMode === 'single'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
                   : 'text-slate-400 hover:text-slate-200'
@@ -231,7 +231,7 @@ export default function UploaderPanel({ className = '' }: UploaderPanelProps) {
             </button>
             <button
               onClick={() => setUploadMode('batch')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 uploadMode === 'batch'
                   ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                   : 'text-slate-400 hover:text-slate-200'

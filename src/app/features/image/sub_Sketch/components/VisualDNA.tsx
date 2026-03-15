@@ -20,7 +20,7 @@ export const VisualDNA: React.FC<VisualDNAProps> = ({ theme, scene, character })
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visual DNA</span>
+        <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">Visual DNA</span>
         <div className="flex gap-1">
           {selections.map((s, i) => (
             <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${s.option ? 'bg-white' : 'bg-slate-800'}`} />
@@ -56,7 +56,7 @@ export const VisualDNA: React.FC<VisualDNAProps> = ({ theme, scene, character })
                 }}
                 className={`
                     w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 relative z-10
-                    ${isSelected ? "bg-slate-900 shadow-lg shadow-purple-500/20" : "bg-slate-950"}
+                    ${isSelected ? "bg-slate-900 ms-shadow-card shadow-purple-500/20" : "bg-slate-950"}
                 `}
               >
                 {isSelected && item.option ? (
@@ -69,7 +69,7 @@ export const VisualDNA: React.FC<VisualDNAProps> = ({ theme, scene, character })
                 )}
               </motion.div>
 
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-500 uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm font-medium text-slate-400 uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 {item.label}
               </div>
             </div>

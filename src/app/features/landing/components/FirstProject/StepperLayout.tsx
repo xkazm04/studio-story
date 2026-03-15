@@ -202,7 +202,7 @@ const StepperLayout = ({ setShowGuide, userId = MOCK_USER_ID }: Props) => {
                   className={`px-4 py-2 rounded-lg transition ${
                     genderPreference === 'male'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300'
+                      : 'bg-slate-700 text-slate-300'
                   }`}
                 >
                   Male
@@ -212,7 +212,7 @@ const StepperLayout = ({ setShowGuide, userId = MOCK_USER_ID }: Props) => {
                   className={`px-4 py-2 rounded-lg transition ${
                     genderPreference === 'female'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300'
+                      : 'bg-slate-700 text-slate-300'
                   }`}
                 >
                   Female

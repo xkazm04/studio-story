@@ -153,10 +153,10 @@ export function EditableRow<T extends Record<string, any>>({
     <>
       <div
         className={clsx(
-          'flex items-center py-2 px-3 border-b border-gray-800/50 hover:bg-gray-900/30 transition-colors',
-          isDragging && 'bg-gray-900/50 shadow-xl',
+          'flex items-center py-2 px-3 border-b border-slate-800/50 hover:bg-slate-900/30 transition-colors',
+          isDragging && 'bg-slate-900/50 shadow-xl',
           highlighted && 'bg-blue-500/10',
-          rowState.isEditing && 'bg-gray-900/50',
+          rowState.isEditing && 'bg-slate-900/50',
           rowClassName
         )}
         onClick={handleRowClick}
@@ -168,7 +168,7 @@ export function EditableRow<T extends Record<string, any>>({
         {dragHandleProps && (
           <div
             {...dragHandleProps}
-            className="w-8 flex items-center justify-center cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-400"
+            className="w-8 flex items-center justify-center cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-400"
             data-testid={`${testId}-drag-handle`}
           >
             <GripVertical className="h-4 w-4" />
@@ -183,7 +183,7 @@ export function EditableRow<T extends Record<string, any>>({
               checked={isSelected}
               onChange={onSelectionToggle}
               onClick={(e) => e.stopPropagation()}
-              className="w-4 h-4 rounded border-gray-700 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
               data-testid={`${testId}-select`}
             />
           </div>
@@ -191,7 +191,7 @@ export function EditableRow<T extends Record<string, any>>({
 
         {/* Index */}
         {showIndex && (
-          <div className="w-10 flex items-center justify-center text-gray-400 text-sm">
+          <div className="w-10 flex items-center justify-center text-slate-400 text-sm">
             {index + 1}
           </div>
         )}
@@ -204,7 +204,7 @@ export function EditableRow<T extends Record<string, any>>({
                 e.stopPropagation();
                 toggleExpanded();
               }}
-              className="text-gray-500 hover:text-gray-300 transition"
+              className="text-slate-400 hover:text-slate-300 transition"
               data-testid={`${testId}-expand-btn`}
             >
               {rowState.isExpanded ? (
@@ -286,7 +286,7 @@ export function EditableRow<T extends Record<string, any>>({
                       className={clsx(
                         action.variant === 'danger' && 'text-red-500 hover:text-red-400',
                         action.variant === 'primary' && 'text-blue-500 hover:text-blue-400',
-                        !action.variant && 'text-gray-500 hover:text-gray-300'
+                        !action.variant && 'text-slate-400 hover:text-slate-300'
                       )}
                       aria-label={action.label}
                       data-testid={`${testId}-action-${idx}`}
@@ -306,7 +306,7 @@ export function EditableRow<T extends Record<string, any>>({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-b border-gray-800/50 bg-gray-900/20"
+            className="border-b border-slate-800/50 bg-slate-900/20"
             data-testid={`${testId}-expanded`}
           >
             <div className="px-3 py-2">{renderExpanded(row, index)}</div>

@@ -276,13 +276,13 @@ export function PathSimulator({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Footprints className="w-4 h-4 text-cyan-400" />
-            <h3 className="font-mono text-xs font-medium text-slate-200 uppercase tracking-wide">
+            <h3 className="font-mono text-sm font-medium text-slate-200 uppercase tracking-wide">
               // path_simulator
             </h3>
           </div>
 
           {state.isRunning && (
-            <div className="flex items-center gap-3 text-xs">
+            <div className="flex items-center gap-3 text-sm">
               <div className="flex items-center gap-1 text-slate-400">
                 <Clock className="w-3 h-3" />
                 <span>{elapsedTime}</span>
@@ -304,10 +304,10 @@ export function PathSimulator({
               onClick={handleStart}
               disabled={!firstSceneId}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                 firstSceneId
                   ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900'
-                  : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                  : 'bg-slate-700 text-slate-400 cursor-not-allowed'
               )}
             >
               <Play className="w-3.5 h-3.5" />
@@ -318,7 +318,7 @@ export function PathSimulator({
               <button
                 onClick={handlePauseResume}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors',
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
                   state.isPaused
                     ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-900'
                     : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30'
@@ -358,7 +358,7 @@ export function PathSimulator({
 
           {/* Auto-advance toggle */}
           <label className="flex items-center gap-2 ml-auto cursor-pointer">
-            <span className="text-[10px] text-slate-500 uppercase">Auto</span>
+            <span className="text-sm text-slate-400 uppercase">Auto</span>
             <input
               type="checkbox"
               checked={autoAdvance}
@@ -378,7 +378,7 @@ export function PathSimulator({
                   {currentScene.name}
                 </h4>
                 {currentScene.description && (
-                  <p className="text-[10px] text-slate-400 mt-1 line-clamp-2">
+                  <p className="text-sm text-slate-400 mt-1 line-clamp-2">
                     {currentScene.description}
                   </p>
                 )}
@@ -387,7 +387,7 @@ export function PathSimulator({
 
             {/* Dead End Indicator */}
             {isDeadEnd && (
-              <div className="mt-2 flex items-center gap-2 px-2 py-1.5 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400">
+              <div className="mt-2 flex items-center gap-2 px-2 py-1.5 bg-red-500/10 border border-red-500/30 rounded text-sm text-red-400">
                 <XCircle className="w-3.5 h-3.5" />
                 <span>Dead end reached - no more choices</span>
               </div>
@@ -398,7 +398,7 @@ export function PathSimulator({
         {/* Choices */}
         {state.isRunning && availableChoices.length > 0 && !state.isPaused && (
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase">
+            <div className="flex items-center gap-2 text-sm text-slate-400 uppercase">
               <GitBranch className="w-3 h-3" />
               <span>Available choices ({availableChoices.length})</span>
             </div>
@@ -424,11 +424,11 @@ export function PathSimulator({
                     )}
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-cyan-400" />
-                    <span className="flex-1 text-xs text-slate-200 truncate">
+                    <span className="flex-1 text-sm text-slate-200 truncate">
                       {choice.label}
                     </span>
                     {isVisited && (
-                      <span className="text-[9px] text-amber-400 bg-amber-500/20 px-1.5 py-0.5 rounded">
+                      <span className="text-sm text-amber-400 bg-amber-500/20 px-1.5 py-0.5 rounded">
                         visited
                       </span>
                     )}
@@ -447,7 +447,7 @@ export function PathSimulator({
           <div className="space-y-2">
             <button
               onClick={() => setShowVariables(!showVariables)}
-              className="flex items-center gap-2 text-[10px] text-slate-500 uppercase hover:text-slate-400"
+              className="flex items-center gap-2 text-sm text-slate-400 uppercase hover:text-slate-400"
             >
               <Eye className="w-3 h-3" />
               <span>Path history ({state.path.length} steps)</span>
@@ -474,12 +474,12 @@ export function PathSimulator({
                             : 'hover:bg-slate-800/50'
                         )}
                       >
-                        <span className="text-[10px] text-slate-500 w-4">{index + 1}</span>
-                        <span className="flex-1 text-[10px] text-slate-300 truncate">
+                        <span className="text-sm text-slate-400 w-4">{index + 1}</span>
+                        <span className="flex-1 text-sm text-slate-300 truncate">
                           {step.sceneName}
                         </span>
                         {index === state.path.length - 1 && (
-                          <span className="text-[9px] text-cyan-400">current</span>
+                          <span className="text-sm text-cyan-400">current</span>
                         )}
                       </button>
                     ))}
@@ -493,8 +493,8 @@ export function PathSimulator({
         {/* Coverage Bar */}
         {state.isRunning && (
           <div className="space-y-1">
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="text-slate-500 uppercase">Coverage</span>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-400 uppercase">Coverage</span>
               <span className="text-slate-400">
                 {coverage.visited}/{coverage.total} scenes
               </span>
@@ -513,11 +513,11 @@ export function PathSimulator({
         {/* Empty State */}
         {!state.isRunning && (
           <div className="py-6 text-center">
-            <Footprints className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-xs text-slate-500">
+            <Footprints className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+            <p className="text-sm text-slate-400">
               Click Start to begin walkthrough simulation
             </p>
-            <p className="text-[10px] text-slate-600 mt-1">
+            <p className="text-sm text-slate-400 mt-1">
               Navigate through your story and track coverage
             </p>
           </div>

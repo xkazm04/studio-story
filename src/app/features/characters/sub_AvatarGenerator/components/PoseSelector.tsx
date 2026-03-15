@@ -262,7 +262,7 @@ const AngleSelector: React.FC<AngleSelectorProps> = ({
               'font-mono text-lg',
               isSelected
                 ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400'
-                : 'bg-slate-800/40 border-slate-700/50 text-slate-500 hover:border-slate-600 hover:text-slate-300',
+                : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600 hover:text-slate-300',
               disabled && 'opacity-50 cursor-not-allowed'
             )}
           >
@@ -309,7 +309,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
       <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800/50">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+          <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
             pose & angle
           </h3>
         </div>
@@ -323,7 +323,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
                 onClick={() => handlePoseClick(pose)}
                 disabled={disabled}
                 className={cn(
-                  'flex items-center gap-1 px-2 py-1 rounded text-xs transition-all',
+                  'flex items-center gap-1 px-2 py-1 rounded text-sm transition-all',
                   isSelected
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300'
                     : 'bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:border-slate-600',
@@ -356,7 +356,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
             pose_selector
           </h3>
           {selectedPose && (
-            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-sm">
               {selectedPose.name}
             </span>
           )}
@@ -367,7 +367,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
             onClick={() => onSelectPose(null)}
             disabled={disabled}
             className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800/40
-                       text-slate-500 hover:text-slate-300 transition-colors text-xs
+                       text-slate-400 hover:text-slate-300 transition-colors text-sm
                        disabled:opacity-50"
           >
             <RotateCcw size={12} />
@@ -396,10 +396,10 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
                 )}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs uppercase text-slate-300">
+                  <span className="font-mono text-sm uppercase text-slate-300">
                     {categoryConfig.label}
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-sm text-slate-400">
                     ({poses.length} poses)
                   </span>
                 </div>
@@ -407,7 +407,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
                   animate={{ rotate: isExpanded ? 90 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <ChevronRight size={14} className="text-slate-500" />
+                  <ChevronRight size={14} className="text-slate-400" />
                 </motion.div>
               </button>
 
@@ -444,13 +444,13 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
                                 {pose.icon}
                               </span>
                               <span className={cn(
-                                'font-mono text-xs uppercase',
+                                'font-mono text-sm uppercase',
                                 isSelected ? 'text-cyan-400' : 'text-slate-300'
                               )}>
                                 {pose.label}
                               </span>
                             </div>
-                            <p className="font-mono text-[10px] text-slate-500 line-clamp-2">
+                            <p className="font-mono text-sm text-slate-400 line-clamp-2">
                               {pose.description}
                             </p>
                           </motion.button>
@@ -468,9 +468,9 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
       {/* Angle Selection */}
       <div className="pt-4 border-t border-slate-700/50">
         <div className="flex items-center gap-2 mb-3">
-          <span className="font-mono text-xs uppercase text-slate-400">camera_angle</span>
+          <span className="font-mono text-sm uppercase text-slate-400">camera_angle</span>
           {selectedAngle && (
-            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-xs">
+            <span className="px-2 py-0.5 bg-cyan-500/20 rounded text-cyan-400 font-mono text-sm">
               {selectedAngle.name}
             </span>
           )}
@@ -488,7 +488,7 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
               onClick={() => onSelectAngle(null)}
               disabled={disabled}
               className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800/40
-                         text-slate-500 hover:text-slate-300 transition-colors text-xs
+                         text-slate-400 hover:text-slate-300 transition-colors text-sm
                          disabled:opacity-50"
             >
               <RotateCcw size={12} />
@@ -500,10 +500,10 @@ const PoseSelector: React.FC<PoseSelectorProps> = ({
       {/* Preview of combined prompt */}
       {(selectedPose || selectedAngle) && (
         <div className="mt-4 p-3 bg-slate-800/40 rounded border border-slate-700/30">
-          <span className="font-mono text-[10px] text-slate-500 uppercase block mb-1">
+          <span className="font-mono text-sm text-slate-400 uppercase block mb-1">
             pose_prompt_modifier
           </span>
-          <p className="font-mono text-[10px] text-slate-400">
+          <p className="font-mono text-sm text-slate-400">
             {buildPoseAnglePrompt(selectedPose, selectedAngle)}
           </p>
         </div>

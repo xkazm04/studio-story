@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { staggerDelay, NORMAL } from "@/lib/animations";
 import { Sparkles, Filter, LayoutGrid, List, Search, X } from "lucide-react";
 import { Button } from "@/app/components/UI/Button";
 import { Input } from "@/app/components/UI/Input";
@@ -107,10 +108,10 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
             <Sparkles className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-semibold tracking-tight text-slate-50">
+            <span className="text-sm font-semibold tracking-tight text-slate-50">
               Claude Prompt Composer
             </span>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-sm text-slate-400">
               Visual prompt builder with smart filtering
             </span>
           </div>
@@ -121,30 +122,32 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
           <div className="flex items-center gap-0.5 bg-slate-900/60 border border-slate-800 rounded-lg p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1 rounded transition-all ${
+              className={`p-2.5 rounded transition-all focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${
                 viewMode === 'grid'
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'text-slate-500 hover:text-slate-300'
+                  : 'text-slate-400 hover:text-slate-300'
               }`}
+              aria-label="Grid view"
             >
-              <LayoutGrid className="w-3 h-3" />
+              <LayoutGrid className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setViewMode('compact')}
-              className={`p-1 rounded transition-all ${
+              className={`p-2.5 rounded transition-all focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none ${
                 viewMode === 'compact'
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'text-slate-500 hover:text-slate-300'
+                  : 'text-slate-400 hover:text-slate-300'
               }`}
+              aria-label="Compact view"
             >
-              <List className="w-3 h-3" />
+              <List className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <Button
             size="xs"
             variant={showFilter ? "primary" : "secondary"}
-            className="text-[11px] px-2 py-1 h-7"
+            className="text-sm px-2 py-1 h-7"
             onClick={() => setShowFilter((v) => !v)}
           >
             <Filter className="w-3 h-3 mr-1" />
@@ -160,27 +163,28 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
             initial={{ opacity: 0, y: -10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -10, height: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={NORMAL}
             className="overflow-hidden"
           >
             <div className="flex flex-col gap-2.5 bg-slate-950/80 border border-slate-900/70 rounded-lg p-2.5 backdrop-blur-sm">
               {/* Search Bar */}
               <div className="flex items-center gap-2 bg-slate-900/60 border border-slate-800/60 rounded-lg px-2.5 py-1.5">
-                <Search className="w-3 h-3 text-slate-500 flex-shrink-0" />
+                <Search className="w-3 h-3 text-slate-400 flex-shrink-0" />
                 <Input
                   size="sm"
                   placeholder="Search by name, description, or tags..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="bg-transparent border-none px-0 text-[11px] placeholder:text-slate-600"
+                  className="bg-transparent border-none px-0 text-sm placeholder:text-slate-400"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => setSearch("")}
-                    className="p-0.5 rounded hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition-colors"
+                    className="p-2.5 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-300 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-500/50 focus-visible:outline-none"
+                    aria-label="Clear search"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -209,7 +213,7 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
                 key={column.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: columnIndex * 0.1 }}
+                transition={staggerDelay(columnIndex)}
                 className="flex flex-col gap-2 bg-slate-950/90 border border-slate-900/70 rounded-lg p-2.5 backdrop-blur-sm"
               >
                 {/* Column Header */}
@@ -217,10 +221,10 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{column.icon}</span>
                     <div className="flex flex-col">
-                      <span className="text-[11px] font-semibold text-slate-100">
+                      <span className="text-sm font-semibold text-slate-100">
                         {column.label}
                       </span>
-                      <span className="text-[9px] text-slate-500">
+                      <span className="text-sm text-slate-400">
                         {options.length} option{options.length !== 1 ? 's' : ''}
                       </span>
                     </div>
@@ -229,7 +233,7 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
                   {selected && (
                     <button
                       onClick={() => handleSelect(column.id, selected)}
-                      className="text-[9px] text-slate-500 hover:text-slate-300 transition-colors"
+                      className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
                     >
                       Deselect
                     </button>
@@ -241,7 +245,7 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
                   {options.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
                       <div className="text-2xl opacity-30 mb-2">🔍</div>
-                      <p className="text-[11px] text-slate-500 italic">
+                      <p className="text-sm text-slate-400 italic">
                         No matches found
                       </p>
                     </div>
@@ -251,7 +255,7 @@ export const PromptMapClaude: React.FC<PromptMapClaudeProps> = ({ onPromptChange
                         key={option.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.02 }}
+                        transition={staggerDelay(index)}
                       >
                         <PromptCard
                           option={option}

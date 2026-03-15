@@ -21,7 +21,7 @@ const LeftPanelScenes: React.FC = () => {
   if (!selectedProject) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-gray-400">No project selected</p>
+        <p className="text-slate-400">No project selected</p>
       </div>
     );
   }
@@ -47,7 +47,7 @@ const LeftPanelScenes: React.FC = () => {
       {/* No act selected state */}
       {!selectedAct && (
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500 text-center">
+          <p className="text-slate-400 text-center">
             Select or create an act to view scenes
           </p>
         </div>

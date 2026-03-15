@@ -23,6 +23,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, SEMANTIC_COLORS, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { Button } from '@/app/components/UI/Button';
 import { Label } from '@/app/components/UI/Label';
 import {
@@ -65,9 +66,9 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
   const [isExpanded, setIsExpanded] = useState(depth === 0);
 
   const likelihoodColors = {
-    likely: 'text-emerald-400 bg-emerald-500/20',
-    possible: 'text-amber-400 bg-amber-500/20',
-    unlikely: 'text-red-400 bg-red-500/20',
+    likely: cn(SEMANTIC_COLORS.success.text, SEMANTIC_COLORS.success.bg),
+    possible: cn(SEMANTIC_COLORS.warning.text, SEMANTIC_COLORS.warning.bg),
+    unlikely: cn(SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.bg),
   };
 
   return (
@@ -82,7 +83,7 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-start gap-2 p-3 text-left"
       >
-        <span className="text-slate-500 mt-0.5">
+        <span className="text-slate-400 mt-0.5">
           {isExpanded ? (
             <ChevronDown className="w-3.5 h-3.5" />
           ) : (
@@ -90,24 +91,23 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
           )}
         </span>
         <div className="flex-1 min-w-0">
-          <h4 className="text-xs font-medium text-slate-200">{scenario.premise}</h4>
-          <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{scenario.description}</p>
+          <h4 className={TYPOGRAPHY.h3}>{scenario.premise}</h4>
+          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{scenario.description}</p>
         </div>
-        <span className="text-[9px] text-slate-600 shrink-0">Depth {scenario.explorationDepth}</span>
+        <span className="text-sm text-slate-400 shrink-0">Depth {scenario.explorationDepth}</span>
       </button>
 
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            {...FM_VARIANTS.collapse}
+            transition={FM_TRANSITION.slow}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-3 border-t border-slate-700/50">
+            <div className="p-3 space-y-3 border-t border-slate-700/50">
               {/* Possible Outcomes */}
               <div className="pt-3">
-                <h5 className="text-[10px] font-medium text-slate-400 mb-2">Possible Outcomes</h5>
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-2')}>Possible Outcomes</h5>
                 <div className="space-y-1.5">
                   {scenario.possibleOutcomes.map((outcome, i) => (
                     <div
@@ -122,7 +122,7 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
                       >
                         {outcome.likelihood}
                       </span>
-                      <span className="text-[10px] text-slate-400">{outcome.outcome}</span>
+                      <span className="text-sm text-slate-400">{outcome.outcome}</span>
                     </div>
                   ))}
                 </div>
@@ -131,7 +131,7 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
               {/* Affected Characters */}
               {scenario.affectedCharacters.length > 0 && (
                 <div>
-                  <h5 className="text-[10px] font-medium text-slate-400 mb-1.5 flex items-center gap-1">
+                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
                     <Users className="w-3 h-3" />
                     Affected Characters
                   </h5>
@@ -139,7 +139,7 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
                     {scenario.affectedCharacters.map((char, i) => (
                       <span
                         key={i}
-                        className="px-1.5 py-0.5 text-[9px] rounded bg-slate-700 text-slate-300"
+                        className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
                       >
                         {char}
                       </span>
@@ -150,13 +150,13 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
 
               {/* Story Implications */}
               <div>
-                <h5 className="text-[10px] font-medium text-slate-400 mb-1.5 flex items-center gap-1">
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
                   <AlertCircle className="w-3 h-3" />
                   Implications
                 </h5>
                 <ul className="space-y-0.5">
                   {scenario.storyImplications.map((impl, i) => (
-                    <li key={i} className="text-[10px] text-slate-500 flex items-start gap-1.5">
+                    <li key={i} className="text-sm text-slate-400 flex items-start gap-1.5">
                       <ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" />
                       {impl}
                     </li>
@@ -169,8 +169,8 @@ function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: Scenar
                 onClick={() => onExploreDeeper(scenario.id)}
                 disabled={disabled || scenario.explorationDepth >= 3}
                 className={cn(
-                  'w-full flex items-center justify-center gap-1.5 py-2 rounded text-xs font-medium',
-                  'bg-purple-600/20 text-purple-400 hover:bg-purple-600/30 transition-colors',
+                  'w-full flex items-center justify-center gap-1.5 py-2 rounded text-sm font-medium transition-colors',
+                  SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text, SEMANTIC_COLORS.brand.hover,
                   'disabled:opacity-50 disabled:cursor-not-allowed'
                 )}
               >
@@ -218,10 +218,10 @@ function EscalationCard({ escalation }: EscalationCardProps) {
           ))}
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-xs font-medium text-slate-200 truncate">{escalation.originalConflict}</h4>
-          <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{escalation.escalatedDescription}</p>
+          <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{escalation.originalConflict}</h4>
+          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{escalation.escalatedDescription}</p>
         </div>
-        <span className="text-slate-500 shrink-0">
+        <span className="text-slate-400 shrink-0">
           {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
         </span>
       </button>
@@ -229,18 +229,17 @@ function EscalationCard({ escalation }: EscalationCardProps) {
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            {...FM_VARIANTS.collapse}
+            transition={FM_TRANSITION.slow}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-3 border-t border-slate-700/50">
+            <div className="p-3 space-y-3 border-t border-slate-700/50">
               {/* New Stakes */}
               <div className="pt-3">
-                <h5 className="text-[10px] font-medium text-slate-400 mb-1.5">New Stakes</h5>
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>New Stakes</h5>
                 <ul className="space-y-1">
                   {escalation.newStakes.map((stake, i) => (
-                    <li key={i} className="text-[10px] text-red-400/80 flex items-start gap-1.5">
+                    <li key={i} className="text-sm text-red-400/80 flex items-start gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0" />
                       {stake}
                     </li>
@@ -250,12 +249,12 @@ function EscalationCard({ escalation }: EscalationCardProps) {
 
               {/* Character Reactions */}
               <div>
-                <h5 className="text-[10px] font-medium text-slate-400 mb-1.5">Character Reactions</h5>
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Character Reactions</h5>
                 <div className="space-y-1.5">
                   {escalation.characterReactions.map((reaction, i) => (
                     <div key={i} className="p-2 rounded bg-slate-900/50">
-                      <span className="text-[9px] font-medium text-amber-400">{reaction.characterName}</span>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{reaction.reaction}</p>
+                      <span className="text-sm font-medium text-amber-400">{reaction.characterName}</span>
+                      <p className="text-sm text-slate-400 mt-0.5">{reaction.reaction}</p>
                     </div>
                   ))}
                 </div>
@@ -263,10 +262,10 @@ function EscalationCard({ escalation }: EscalationCardProps) {
 
               {/* Potential Resolutions */}
               <div>
-                <h5 className="text-[10px] font-medium text-slate-400 mb-1.5">Possible Resolutions</h5>
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Possible Resolutions</h5>
                 <ul className="space-y-1">
                   {escalation.potentialResolutions.map((resolution, i) => (
-                    <li key={i} className="text-[10px] text-emerald-400/80 flex items-start gap-1.5">
+                    <li key={i} className="text-sm text-emerald-400/80 flex items-start gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
                       {resolution}
                     </li>
@@ -289,12 +288,12 @@ function TwistCard({ twist }: TwistCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const typeColors: Record<PlotTwist['twistType'], string> = {
-    revelation: 'text-cyan-400 bg-cyan-500/20',
-    betrayal: 'text-red-400 bg-red-500/20',
-    reversal: 'text-amber-400 bg-amber-500/20',
-    discovery: 'text-emerald-400 bg-emerald-500/20',
-    arrival: 'text-blue-400 bg-blue-500/20',
-    departure: 'text-purple-400 bg-purple-500/20',
+    revelation: cn(SEMANTIC_COLORS.accent.text, SEMANTIC_COLORS.accent.bg),
+    betrayal: cn(SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.bg),
+    reversal: cn(SEMANTIC_COLORS.warning.text, SEMANTIC_COLORS.warning.bg),
+    discovery: cn(SEMANTIC_COLORS.success.text, SEMANTIC_COLORS.success.bg),
+    arrival: 'text-blue-400 bg-blue-500/15',
+    departure: cn(SEMANTIC_COLORS.brand.text, SEMANTIC_COLORS.brand.bg),
   };
 
   return (
@@ -303,14 +302,14 @@ function TwistCard({ twist }: TwistCardProps) {
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-start gap-2 p-3 text-left"
       >
-        <span className={cn('px-1.5 py-0.5 text-[9px] rounded shrink-0 capitalize', typeColors[twist.twistType])}>
+        <span className={cn('px-1.5 py-0.5 text-sm rounded shrink-0 capitalize', typeColors[twist.twistType])}>
           {twist.twistType}
         </span>
         <div className="flex-1 min-w-0">
-          <h4 className="text-xs font-medium text-slate-200 truncate">{twist.title}</h4>
-          <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{twist.description}</p>
+          <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{twist.title}</h4>
+          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{twist.description}</p>
         </div>
-        <span className="text-slate-500 shrink-0">
+        <span className="text-slate-400 shrink-0">
           {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
         </span>
       </button>
@@ -318,30 +317,29 @@ function TwistCard({ twist }: TwistCardProps) {
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            {...FM_VARIANTS.collapse}
+            transition={FM_TRANSITION.slow}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-3 border-t border-slate-700/50">
+            <div className="p-3 space-y-3 border-t border-slate-700/50">
               {/* Setup & Payoff */}
               <div className="pt-3 grid grid-cols-2 gap-2">
                 <div>
-                  <h5 className="text-[10px] font-medium text-slate-400 mb-1">Setup</h5>
-                  <p className="text-[10px] text-slate-500">{twist.setup}</p>
+                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Setup</h5>
+                  <p className="text-sm text-slate-400">{twist.setup}</p>
                 </div>
                 <div>
-                  <h5 className="text-[10px] font-medium text-slate-400 mb-1">Payoff</h5>
-                  <p className="text-[10px] text-slate-500">{twist.payoff}</p>
+                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Payoff</h5>
+                  <p className="text-sm text-slate-400">{twist.payoff}</p>
                 </div>
               </div>
 
               {/* Foreshadowing */}
               <div>
-                <h5 className="text-[10px] font-medium text-slate-400 mb-1.5">Foreshadowing Hints</h5>
+                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Foreshadowing Hints</h5>
                 <ul className="space-y-1">
                   {twist.foreshadowingHints.map((hint, i) => (
-                    <li key={i} className="text-[10px] text-purple-400/80 flex items-start gap-1.5">
+                    <li key={i} className="text-sm text-purple-400/80 flex items-start gap-1.5">
                       <Sparkles className="w-2.5 h-2.5 mt-0.5 shrink-0" />
                       {hint}
                     </li>
@@ -355,7 +353,7 @@ function TwistCard({ twist }: TwistCardProps) {
                   {twist.affectedCharacters.map((char, i) => (
                     <span
                       key={i}
-                      className="px-1.5 py-0.5 text-[9px] rounded bg-slate-700 text-slate-300"
+                      className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
                     >
                       {char}
                     </span>
@@ -434,15 +432,15 @@ export function ScenarioExplorer({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-md transition-colors',
+              'flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium rounded-md transition-colors',
               activeTab === tab.id
-                ? 'bg-purple-600/20 text-purple-400'
-                : 'text-slate-500 hover:text-slate-300'
+                ? cn(SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text)
+                : 'text-slate-400 hover:text-slate-300'
             )}
           >
             {tab.label}
             {tab.count > 0 && (
-              <span className="px-1.5 py-0.5 text-[9px] rounded-full bg-slate-700">
+              <span className="px-1.5 py-0.5 text-sm rounded-full bg-slate-700">
                 {tab.count}
               </span>
             )}
@@ -455,7 +453,7 @@ export function ScenarioExplorer({
         <div className="space-y-3">
           {/* New Scenario Input */}
           <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-700">
-            <Label className="text-xs text-slate-400 mb-2 block">
+            <Label className="text-sm text-slate-400 mb-2 block">
               What if...
             </Label>
             <div className="flex gap-2">
@@ -466,9 +464,9 @@ export function ScenarioExplorer({
                 placeholder="...the protagonist had made a different choice?"
                 disabled={disabled}
                 className={cn(
-                  'flex-1 px-3 py-2 text-xs rounded-md',
+                  'flex-1 px-3 py-2 text-sm rounded-md',
                   'bg-slate-900/50 border border-slate-700',
-                  'text-slate-200 placeholder:text-slate-600',
+                  'text-slate-200 placeholder:text-slate-400',
                   'focus:outline-none focus:ring-1 focus:ring-purple-500/50',
                   'disabled:opacity-50'
                 )}
@@ -488,8 +486,8 @@ export function ScenarioExplorer({
           <div className="space-y-2">
             {rootScenarios.length === 0 ? (
               <div className="text-center py-6">
-                <GitBranch className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-                <p className="text-xs text-slate-500">
+                <GitBranch className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm text-slate-400">
                   Start exploring what-if scenarios
                 </p>
               </div>
@@ -513,7 +511,7 @@ export function ScenarioExplorer({
           {/* New Escalation Input */}
           <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-700 space-y-3">
             <div>
-              <Label className="text-xs text-slate-400 mb-2 block">
+              <Label className="text-sm text-slate-400 mb-2 block">
                 Conflict to Escalate
               </Label>
               <input
@@ -523,16 +521,16 @@ export function ScenarioExplorer({
                 placeholder="Enter the current conflict..."
                 disabled={disabled}
                 className={cn(
-                  'w-full px-3 py-2 text-xs rounded-md',
+                  'w-full px-3 py-2 text-sm rounded-md',
                   'bg-slate-900/50 border border-slate-700',
-                  'text-slate-200 placeholder:text-slate-600',
+                  'text-slate-200 placeholder:text-slate-400',
                   'focus:outline-none focus:ring-1 focus:ring-purple-500/50',
                   'disabled:opacity-50'
                 )}
               />
             </div>
             <div>
-              <Label className="text-xs text-slate-400 mb-2 block">
+              <Label className="text-sm text-slate-400 mb-2 block">
                 Escalation Level
               </Label>
               <div className="flex gap-2">
@@ -542,10 +540,10 @@ export function ScenarioExplorer({
                     onClick={() => setEscalationLevel(level)}
                     disabled={disabled}
                     className={cn(
-                      'flex-1 py-2 text-xs font-medium rounded-md transition-colors',
+                      'flex-1 py-2 text-sm font-medium rounded-md transition-colors',
                       escalationLevel === level
-                        ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                        : 'bg-slate-800 text-slate-500 border border-slate-700 hover:bg-slate-700'
+                        ? cn(SEMANTIC_COLORS.danger.bg, SEMANTIC_COLORS.danger.text, 'border', SEMANTIC_COLORS.danger.border)
+                        : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
                     )}
                   >
                     {level}
@@ -567,8 +565,8 @@ export function ScenarioExplorer({
           <div className="space-y-2">
             {escalations.length === 0 ? (
               <div className="text-center py-6">
-                <AlertCircle className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-                <p className="text-xs text-slate-500">
+                <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm text-slate-400">
                   No conflicts escalated yet
                 </p>
               </div>
@@ -587,7 +585,7 @@ export function ScenarioExplorer({
           {/* New Twist Generator */}
           <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-700 space-y-3">
             <div>
-              <Label className="text-xs text-slate-400 mb-2 block">
+              <Label className="text-sm text-slate-400 mb-2 block">
                 Twist Type
               </Label>
               <div className="grid grid-cols-3 gap-1.5">
@@ -597,10 +595,10 @@ export function ScenarioExplorer({
                     onClick={() => setTwistType(type)}
                     disabled={disabled}
                     className={cn(
-                      'py-1.5 text-[10px] font-medium rounded capitalize transition-colors',
+                      'py-1.5 text-sm font-medium rounded capitalize transition-colors',
                       twistType === type
-                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                        : 'bg-slate-800 text-slate-500 border border-slate-700 hover:bg-slate-700'
+                        ? cn(SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text, 'border', SEMANTIC_COLORS.brand.border)
+                        : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
                     )}
                   >
                     {type}
@@ -622,8 +620,8 @@ export function ScenarioExplorer({
           <div className="space-y-2">
             {twists.length === 0 ? (
               <div className="text-center py-6">
-                <Sparkles className="w-8 h-8 text-slate-700 mx-auto mb-2" />
-                <p className="text-xs text-slate-500">
+                <Sparkles className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm text-slate-400">
                   No twists generated yet
                 </p>
               </div>

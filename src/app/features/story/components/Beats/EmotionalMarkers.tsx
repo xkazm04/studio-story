@@ -33,6 +33,7 @@ import {
   X,
   Plus,
 } from 'lucide-react';
+import { INTERACTIVE } from '@/workspace/theme/tokens';
 import {
   type EmotionType,
   type EmotionalMarker,
@@ -96,7 +97,7 @@ function EmotionBadge({
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.8, opacity: 0 }}
       className={cn(
-        'inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium',
+        'inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-sm font-medium',
         'border transition-all',
         isSecondary ? 'opacity-70' : 'opacity-100'
       )}
@@ -109,7 +110,7 @@ function EmotionBadge({
       <Icon className="w-3 h-3" />
       <span>{emotionDef.label}</span>
       {intensity > 0 && (
-        <span className="text-[10px] opacity-70">{intensity}%</span>
+        <span className="text-sm opacity-70">{intensity}%</span>
       )}
       {!readonly && onRemove && (
         <button
@@ -117,7 +118,7 @@ function EmotionBadge({
             e.stopPropagation();
             onRemove();
           }}
-          className="ml-0.5 hover:opacity-100 opacity-60 transition-opacity"
+          className={`ml-0.5 hover:opacity-100 opacity-60 ${INTERACTIVE.transition}`}
         >
           <X className="w-3 h-3" />
         </button>
@@ -142,7 +143,7 @@ function EmotionShift({
   if (!fromDef || !toDef) return null;
 
   return (
-    <div className="flex items-center gap-1 text-xs">
+    <div className="flex items-center gap-1 text-sm">
       <span
         className="flex items-center gap-1"
         style={{ color: fromDef.color }}
@@ -150,7 +151,7 @@ function EmotionShift({
         <FromIcon className="w-3 h-3" />
         {fromDef.label}
       </span>
-      <span className="text-slate-500">→</span>
+      <span className="text-slate-400">→</span>
       <span
         className="flex items-center gap-1"
         style={{ color: toDef.color }}
@@ -174,7 +175,7 @@ function IntensitySlider({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-slate-400 w-16">Intensity</span>
+      <span className="text-sm text-slate-400 w-16">Intensity</span>
       <input
         type="range"
         min={0}
@@ -186,7 +187,7 @@ function IntensitySlider({
           background: `linear-gradient(to right, ${color} ${value}%, #374151 ${value}%)`,
         }}
       />
-      <span className="text-xs text-slate-300 w-8 text-right">{value}%</span>
+      <span className="text-sm text-slate-300 w-8 text-right">{value}%</span>
     </div>
   );
 }
@@ -211,6 +212,22 @@ function EmotionPicker({
     });
   }, [filter, selectedEmotions]);
 
+  const handleGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const focusable = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button[data-emotion-option="true"]'));
+    const current = focusable.indexOf(document.activeElement as HTMLButtonElement);
+    if (current < 0) return;
+    const cols = 2;
+    let next = current;
+    if (e.key === 'ArrowRight') next = Math.min(current + 1, focusable.length - 1);
+    if (e.key === 'ArrowLeft') next = Math.max(current - 1, 0);
+    if (e.key === 'ArrowDown') next = Math.min(current + cols, focusable.length - 1);
+    if (e.key === 'ArrowUp') next = Math.max(current - cols, 0);
+    if (next !== current) {
+      e.preventDefault();
+      focusable[next]?.focus();
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
@@ -225,7 +242,7 @@ function EmotionPicker({
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              'flex-1 px-2 py-1.5 text-xs font-medium transition-colors capitalize',
+              'flex-1 px-2 py-1.5 text-sm font-medium', INTERACTIVE.transition, 'capitalize',
               filter === f
                 ? 'bg-slate-700 text-cyan-400'
                 : 'text-slate-400 hover:text-slate-200'
@@ -238,18 +255,19 @@ function EmotionPicker({
 
       {/* Emotion grid */}
       <div className="p-2 max-h-48 overflow-y-auto">
-        <div className="grid grid-cols-2 gap-1">
+        <div className="grid grid-cols-2 gap-1" onKeyDown={handleGridKeyDown}>
           {filteredEmotions.map((emotion) => {
             const Icon = EMOTION_ICONS[emotion.type] || Sparkles;
             return (
               <button
                 key={emotion.type}
+                data-emotion-option="true"
                 onClick={() => {
                   onSelect(emotion.type);
                   onClose();
                 }}
                 className={cn(
-                  'flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors',
+                  'flex items-center gap-2 px-2 py-1.5 rounded text-sm', INTERACTIVE.transition,
                   'hover:bg-slate-700/50 text-left'
                 )}
               >
@@ -347,9 +365,13 @@ export default function EmotionalMarkers({
           <div className="relative">
             <button
               onClick={() => setShowPicker(!showPicker)}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs
-                border border-dashed border-slate-600 text-slate-400
-                hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+              aria-expanded={showPicker}
+              aria-label="Add emotional marker"
+              className={cn(
+                'inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm',
+                'border border-dashed border-slate-600 text-slate-400',
+                'hover:border-cyan-500/50 hover:text-cyan-400', INTERACTIVE.transition
+              )}
             >
               <Plus className="w-3 h-3" />
             </button>
@@ -393,7 +415,9 @@ export default function EmotionalMarkers({
                 {!readonly && (
                   <button
                     onClick={() => setEditingIndex(editingIndex === index ? null : index)}
-                    className="text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                    aria-expanded={editingIndex === index}
+                    aria-label={editingIndex === index ? 'Collapse emotion details' : 'Expand emotion details'}
+                    className={cn('text-sm text-slate-400 hover:text-cyan-400', INTERACTIVE.transition)}
                   >
                     <ChevronDown className={cn(
                       'w-4 h-4 transition-transform',
@@ -421,7 +445,7 @@ export default function EmotionalMarkers({
 
                     {/* Secondary emotion */}
                     <div className="space-y-1">
-                      <span className="text-xs text-slate-400">Secondary emotion</span>
+                      <span className="text-sm text-slate-400">Secondary emotion</span>
                       {marker.secondary ? (
                         <EmotionBadge
                           emotion={marker.secondary}
@@ -434,7 +458,7 @@ export default function EmotionalMarkers({
                         <div className="relative">
                           <button
                             onClick={() => setShowPicker(true)}
-                            className="text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                            className={cn('text-sm text-slate-400 hover:text-cyan-400', INTERACTIVE.transition)}
                           >
                             + Add secondary
                           </button>
@@ -445,7 +469,7 @@ export default function EmotionalMarkers({
                     {/* Emotional shift */}
                     {marker.shift && (
                       <div className="space-y-1">
-                        <span className="text-xs text-slate-400">Emotional shift</span>
+                        <span className="text-sm text-slate-400">Emotional shift</span>
                         <EmotionShift from={marker.shift.from} to={marker.shift.to} />
                       </div>
                     )}
@@ -464,8 +488,8 @@ export default function EmotionalMarkers({
             onClick={() => setShowPicker(!showPicker)}
             className={cn(
               'w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg',
-              'border border-dashed border-slate-600 text-slate-400 text-xs',
-              'hover:border-cyan-500/50 hover:text-cyan-400 transition-colors'
+              'border border-dashed border-slate-600 text-slate-400 text-sm',
+              'hover:border-cyan-500/50 hover:text-cyan-400', INTERACTIVE.transition
             )}
           >
             <Plus className="w-3.5 h-3.5" />
@@ -485,7 +509,7 @@ export default function EmotionalMarkers({
 
       {/* Empty state */}
       {markers.length === 0 && readonly && (
-        <div className="text-xs text-slate-500 italic">No emotional markers</div>
+        <div className="text-sm text-slate-400 italic">No emotional markers</div>
       )}
     </div>
   );
@@ -508,7 +532,7 @@ export function EmotionalMarkersCompact({
         return (
           <div
             key={index}
-            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px]"
+            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-sm"
             style={{
               backgroundColor: `${emotionDef?.color}15`,
               color: emotionDef?.color,
@@ -520,7 +544,7 @@ export function EmotionalMarkersCompact({
         );
       })}
       {markers.length > 2 && (
-        <span className="text-[10px] text-slate-500">+{markers.length - 2}</span>
+        <span className="text-sm text-slate-400">+{markers.length - 2}</span>
       )}
     </div>
   );

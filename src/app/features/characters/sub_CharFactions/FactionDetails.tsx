@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Edit, Trash2, Users, Save, X } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { Button } from '@/app/components/UI/Button';
 import { Faction } from '@/app/types/Faction';
 import { Character } from '@/app/types/Character';
 import { factionApi } from '@/app/api/factions';
@@ -13,7 +14,9 @@ import MediaUploadForm from './MediaUploadForm';
 import RoleRankEditor from './RoleRankEditor';
 import FactionTabNav, { FactionTabType } from './FactionTabNav';
 import FactionDetailsTabContent from './FactionDetailsTabContent';
+import { FACTION_PRESET_COLORS } from './factionTheme';
 import { useQueryClient } from '@tanstack/react-query';
+import { ConfirmationModal } from '@/app/components/UI/ConfirmationModal';
 import {
   FactionPolitics,
   FactionRelationship,
@@ -33,13 +36,6 @@ interface FactionDetailsProps {
   onUpdate: () => void;
   allFactions?: Faction[];
 }
-
-const PRESET_COLORS = [
-  '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
-  '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
-  '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
-  '#ec4899', '#f43f5e', '#64748b', '#6b7280', '#71717a',
-];
 
 type TabType = FactionTabType;
 
@@ -67,9 +63,10 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(faction.name);
   const [description, setDescription] = useState(faction.description || '');
-  const [color, setColor] = useState(faction.color || PRESET_COLORS[0]);
+  const [color, setColor] = useState(faction.color || FACTION_PRESET_COLORS[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
 
@@ -218,8 +215,6 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Delete faction "${faction.name}"? This cannot be undone.`)) return;
-
     setIsDeleting(true);
     try {
       await factionApi.deleteFaction(faction.id);
@@ -229,13 +224,14 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
       console.error('Failed to delete faction:', error);
     } finally {
       setIsDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
   const handleCancel = () => {
     setName(faction.name);
     setDescription(faction.description || '');
-    setColor(faction.color || PRESET_COLORS[0]);
+    setColor(faction.color || FACTION_PRESET_COLORS[0]);
     setIsEditing(false);
   };
 
@@ -269,7 +265,7 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft size={20} />
           Back to Factions
@@ -278,46 +274,52 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
         <div className="flex gap-2">
           {!isEditing ? (
             <>
-              <button
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<Edit size={16} />}
                 onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
-                <Edit size={16} />
                 Edit
-              </button>
-              <button
-                onClick={handleDelete}
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                icon={<Trash2 size={16} />}
+                onClick={() => setShowDeleteModal(true)}
                 disabled={isDeleting}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-700 text-white rounded-lg transition-colors"
+                loading={isDeleting}
               >
-                <Trash2 size={16} />
-                {isDeleting ? 'Deleting...' : 'Delete'}
-              </button>
+                Delete
+              </Button>
             </>
           ) : (
             <>
-              <button
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<Save size={16} />}
                 onClick={handleSave}
                 disabled={isSubmitting || !name.trim()}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 text-white rounded-lg transition-colors"
+                loading={isSubmitting}
               >
-                <Save size={16} />
-                {isSubmitting ? 'Saving...' : 'Save'}
-              </button>
-              <button
+                Save
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={<X size={16} />}
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
               >
-                <X size={16} />
                 Cancel
-              </button>
+              </Button>
             </>
           )}
         </div>
       </div>
 
       {/* Faction Info */}
-      <div className="relative bg-gray-900 rounded-lg border border-gray-800 p-6">
+      <div className="relative bg-slate-900 rounded-lg border border-slate-800 p-6">
         <ColoredBorder color="blue" />
         
         {faction.color && !isEditing && (
@@ -346,42 +348,42 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
             {isEditing ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
                     Name
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
                     Description
                   </label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full min-h-[100px] px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full min-h-[100px] px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
                     Color
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {PRESET_COLORS.map((presetColor) => (
+                    {FACTION_PRESET_COLORS.map((presetColor) => (
                       <button
                         key={presetColor}
                         type="button"
                         onClick={() => setColor(presetColor)}
-                        className={cn('w-8 h-8 rounded-lg transition-all',
+                        className={cn('w-8 h-8 rounded-lg transition-all ring-offset-1 ring-offset-slate-900',
                           color === presetColor
-                            ? 'ring-2 ring-white scale-110'
-                            : 'hover:scale-105'
+                            ? 'ring-2 ring-[var(--ms-cyan,#06b6d4)] scale-110'
+                            : 'hover:scale-105 hover:ring-1 hover:ring-slate-500'
                         )}
                         style={{ backgroundColor: presetColor }}
                       />
@@ -393,9 +395,9 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
               <>
                 <h2 className="text-2xl font-bold text-white">{faction.name}</h2>
                 {faction.description && (
-                  <p className="text-gray-400">{faction.description}</p>
+                  <p className="text-slate-400">{faction.description}</p>
                 )}
-                <div className="flex items-center gap-2 text-gray-400">
+                <div className="flex items-center gap-2 text-slate-400">
                   <Users size={16} />
                   <span>{factionMembers.length} members</span>
                 </div>
@@ -464,6 +466,19 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
           />
         )}
       </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        type="danger"
+        title="Delete Faction"
+        message={`Are you sure you want to delete "${faction.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isDeleting}
+      />
     </motion.div>
   );
 };

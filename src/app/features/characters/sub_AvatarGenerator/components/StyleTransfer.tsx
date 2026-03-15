@@ -118,7 +118,7 @@ const CharacterSelectCard: React.FC<CharacterSelectCardProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600">
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
             <Image size={20} />
           </div>
         )}
@@ -126,7 +126,7 @@ const CharacterSelectCard: React.FC<CharacterSelectCardProps> = ({
 
       {/* Name */}
       <span className={cn(
-        'font-mono text-[10px] text-center truncate w-full',
+        'font-mono text-sm text-center truncate w-full',
         isSelected
           ? isSource ? 'text-purple-400' : 'text-cyan-400'
           : 'text-slate-400'
@@ -258,7 +258,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <h3 className="font-mono text-xs uppercase tracking-wide text-slate-300">
+            <h3 className="font-mono text-sm uppercase tracking-wide text-slate-300">
               style_transfer
             </h3>
           </div>
@@ -272,7 +272,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
               onChange={(e) => setSourceCharacterId(e.target.value || null)}
               disabled={disabled}
               className="w-full px-2 py-1.5 bg-slate-800/40 border border-slate-700/50 rounded
-                         font-mono text-xs text-slate-300
+                         font-mono text-sm text-slate-300
                          focus:outline-none focus:ring-1 focus:ring-purple-500/50
                          disabled:opacity-50"
             >
@@ -285,11 +285,11 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
             </select>
           </div>
 
-          <ArrowRight size={14} className="text-slate-500" />
+          <ArrowRight size={14} className="text-slate-400" />
 
           {/* Target count */}
           <div className="px-2 py-1.5 bg-slate-800/40 border border-slate-700/50 rounded
-                          font-mono text-xs text-slate-400">
+                          font-mono text-sm text-slate-400">
             {targetCharacterIds.size} targets
           </div>
 
@@ -298,7 +298,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
             onClick={executeTransfer}
             disabled={disabled || !sourceCharacterId || targetCharacterIds.size === 0 || isTransferring}
             className="px-2 py-1.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30
-                       text-cyan-400 font-mono text-xs transition-colors
+                       text-cyan-400 font-mono text-sm transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Wand2 size={14} />
@@ -329,7 +329,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
           )}
         >
           <Settings size={12} />
-          <span className="font-mono text-[10px]">Settings</span>
+          <span className="font-mono text-sm">Settings</span>
           {showSettings ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         </button>
       </div>
@@ -346,10 +346,10 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
             {/* Transfer Strength */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="font-mono text-[10px] text-slate-500 uppercase">
+                <label className="font-mono text-sm text-slate-400 uppercase">
                   transfer_strength
                 </label>
-                <span className="font-mono text-xs text-slate-300">
+                <span className="font-mono text-sm text-slate-300">
                   {settings.transferStrength}%
                 </span>
               </div>
@@ -371,10 +371,10 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
                     onClick={() => updateSetting('transferStrength', preset.value)}
                     disabled={disabled}
                     className={cn(
-                      'px-2 py-0.5 rounded font-mono text-[9px] transition-colors',
+                      'px-2 py-0.5 rounded font-mono text-sm transition-colors',
                       settings.transferStrength === preset.value
                         ? 'bg-cyan-500/20 text-cyan-400'
-                        : 'text-slate-500 hover:text-slate-300'
+                        : 'text-slate-400 hover:text-slate-300'
                     )}
                   >
                     {preset.label}
@@ -386,8 +386,8 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
             {/* Preserve Identity Toggle */}
             <div className="flex items-center justify-between">
               <div>
-                <span className="font-mono text-xs text-slate-300 block">Preserve Identity</span>
-                <span className="font-mono text-[9px] text-slate-500">
+                <span className="font-mono text-sm text-slate-300 block">Preserve Identity</span>
+                <span className="font-mono text-sm text-slate-400">
                   Maintain unique character features
                 </span>
               </div>
@@ -421,11 +421,11 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
                     'flex items-center justify-center gap-1 px-2 py-1.5 rounded border transition-colors',
                     settings[key]
                       ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400'
-                      : 'bg-slate-800/40 border-slate-700/50 text-slate-500'
+                      : 'bg-slate-800/40 border-slate-700/50 text-slate-400'
                   )}
                 >
                   <Check size={10} className={settings[key] ? 'opacity-100' : 'opacity-0'} />
-                  <span className="font-mono text-[10px]">{label}</span>
+                  <span className="font-mono text-sm">{label}</span>
                 </button>
               ))}
             </div>
@@ -436,10 +436,10 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
       {/* Source Selection */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <label className="font-mono text-[10px] text-purple-400 uppercase">
+          <label className="font-mono text-sm text-purple-400 uppercase">
             select_source
           </label>
-          <span className="font-mono text-[10px] text-slate-500">
+          <span className="font-mono text-sm text-slate-400">
             Style to copy from
           </span>
         </div>
@@ -471,12 +471,12 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={20} />
                   </div>
                 )}
               </div>
-              <span className="font-mono text-[9px] text-purple-400 mt-1">
+              <span className="font-mono text-sm text-purple-400 mt-1">
                 {sourceCharacter.characterName}
               </span>
             </div>
@@ -484,7 +484,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
             {/* Arrow */}
             <div className="flex flex-col items-center">
               <ArrowRight size={24} className="text-cyan-400" />
-              <span className="font-mono text-[9px] text-slate-500 mt-1">
+              <span className="font-mono text-sm text-slate-400 mt-1">
                 {settings.transferStrength}%
               </span>
             </div>
@@ -497,7 +497,7 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
                   {targetCharacterIds.size}
                 </span>
               </div>
-              <span className="font-mono text-[9px] text-cyan-400 mt-1">
+              <span className="font-mono text-sm text-cyan-400 mt-1">
                 targets
               </span>
             </div>
@@ -509,22 +509,22 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
       {sourceCharacter && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <label className="font-mono text-[10px] text-cyan-400 uppercase">
+            <label className="font-mono text-sm text-cyan-400 uppercase">
               select_targets
             </label>
             <div className="flex items-center gap-2">
               <button
                 onClick={selectAllTargets}
                 disabled={disabled}
-                className="font-mono text-[10px] text-slate-400 hover:text-cyan-400 transition-colors"
+                className="font-mono text-sm text-slate-400 hover:text-cyan-400 transition-colors"
               >
                 Select All
               </button>
-              <span className="text-slate-600">|</span>
+              <span className="text-slate-400">|</span>
               <button
                 onClick={clearAllSelections}
                 disabled={disabled}
-                className="font-mono text-[10px] text-slate-400 hover:text-red-400 transition-colors"
+                className="font-mono text-sm text-slate-400 hover:text-red-400 transition-colors"
               >
                 Clear
               </button>
@@ -547,10 +547,10 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
 
       {/* No source selected message */}
       {!sourceCharacter && (
-        <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+        <div className="flex flex-col items-center justify-center py-8 text-slate-400">
           <Sparkles size={32} className="mb-3 opacity-50" />
           <p className="font-mono text-sm mb-1">Select a source character</p>
-          <p className="font-mono text-xs text-slate-600">
+          <p className="font-mono text-sm text-slate-400">
             Choose a character whose style you want to transfer
           </p>
         </div>
@@ -561,10 +561,10 @@ const StyleTransfer: React.FC<StyleTransferProps> = ({
         <div className="mb-4 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-start gap-2">
           <AlertTriangle size={14} className="text-yellow-400 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-mono text-xs text-yellow-400">
+            <p className="font-mono text-sm text-yellow-400">
               Full strength without identity preservation
             </p>
-            <p className="font-mono text-[10px] text-yellow-400/70">
+            <p className="font-mono text-sm text-yellow-400/70">
               Target characters may lose their unique features
             </p>
           </div>

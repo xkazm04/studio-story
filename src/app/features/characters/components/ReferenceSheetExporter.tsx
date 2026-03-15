@@ -126,7 +126,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
         <h2 className="font-mono text-lg text-slate-200 uppercase tracking-wider">
           {characterName}
         </h2>
-        <p className="font-mono text-xs text-slate-500 mt-1">
+        <p className="font-mono text-sm text-slate-400 mt-1">
           Character Appearance Reference Sheet
         </p>
       </div>
@@ -145,7 +145,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={32} />
                   </div>
                 )}
@@ -154,11 +154,11 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
               {/* Label */}
               {settings.includeLabels && (
                 <div className="text-center">
-                  <p className="font-mono text-xs text-slate-300 truncate">
+                  <p className="font-mono text-sm text-slate-300 truncate">
                     {milestone.name}
                   </p>
                   <span className={cn(
-                    'inline-block px-1.5 py-0.5 rounded text-[9px] font-mono mt-1',
+                    'inline-block px-1.5 py-0.5 rounded text-sm font-mono mt-1',
                     TRANSFORMATION_TYPES[milestone.transformation_type]?.color || 'text-slate-400 bg-slate-700/50'
                   )}>
                     {TRANSFORMATION_TYPES[milestone.transformation_type]?.label}
@@ -170,12 +170,12 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
               {settings.includeChanges && milestone.visual_changes.length > 0 && (
                 <div className="flex flex-wrap gap-1 justify-center">
                   {milestone.visual_changes.slice(0, 2).map((change, i) => (
-                    <span key={i} className="px-1 py-0.5 bg-slate-800/60 rounded text-[8px] font-mono text-slate-500">
+                    <span key={i} className="px-1 py-0.5 bg-slate-800/60 rounded text-[8px] font-mono text-slate-400">
                       {change.attribute}
                     </span>
                   ))}
                   {milestone.visual_changes.length > 2 && (
-                    <span className="text-[8px] font-mono text-slate-600">
+                    <span className="text-[8px] font-mono text-slate-400">
                       +{milestone.visual_changes.length - 2}
                     </span>
                   )}
@@ -184,7 +184,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
               {/* Date */}
               {settings.includeDates && (
-                <p className="text-center font-mono text-[8px] text-slate-600">
+                <p className="text-center font-mono text-[8px] text-slate-400">
                   {new Date(milestone.created_at).toLocaleDateString()}
                 </p>
               )}
@@ -205,7 +205,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                   TRANSFORMATION_TYPES[milestone.transformation_type]?.color?.split(' ')[0] || 'border-slate-600',
                   'bg-slate-800'
                 )}>
-                  <span className="font-mono text-xs text-slate-400">{index + 1}</span>
+                  <span className="font-mono text-sm text-slate-400">{index + 1}</span>
                 </div>
                 {index < milestones.length - 1 && (
                   <div className="w-px flex-1 bg-slate-700/50 min-h-8" />
@@ -223,7 +223,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-600">
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
                         <Image size={20} />
                       </div>
                     )}
@@ -232,9 +232,9 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                   <div className="flex-1 min-w-0">
                     {settings.includeLabels && (
                       <>
-                        <p className="font-mono text-xs text-slate-300">{milestone.name}</p>
+                        <p className="font-mono text-sm text-slate-300">{milestone.name}</p>
                         <span className={cn(
-                          'inline-block px-1.5 py-0.5 rounded text-[9px] font-mono mt-1',
+                          'inline-block px-1.5 py-0.5 rounded text-sm font-mono mt-1',
                           TRANSFORMATION_TYPES[milestone.transformation_type]?.color || 'text-slate-400 bg-slate-700/50'
                         )}>
                           {TRANSFORMATION_TYPES[milestone.transformation_type]?.label}
@@ -245,7 +245,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                     {settings.includeChanges && milestone.visual_changes.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {milestone.visual_changes.map((change, i) => (
-                          <span key={i} className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[8px] font-mono text-slate-500">
+                          <span key={i} className="px-1.5 py-0.5 bg-slate-800/60 rounded text-[8px] font-mono text-slate-400">
                             {change.attribute}: {change.to}
                           </span>
                         ))}
@@ -266,7 +266,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <div className="grid grid-cols-[1fr_auto_1fr] gap-4">
             {/* First */}
             <div className="text-center">
-              <p className="font-mono text-[10px] text-slate-500 uppercase mb-2">Beginning</p>
+              <p className="font-mono text-sm text-slate-400 uppercase mb-2">Beginning</p>
               <div className="aspect-square rounded-lg overflow-hidden bg-slate-800/50 border border-slate-700/50">
                 {milestones[0].avatar_url || milestones[0].thumbnail_url ? (
                   <img
@@ -275,13 +275,13 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={32} />
                   </div>
                 )}
               </div>
               {settings.includeLabels && (
-                <p className="font-mono text-xs text-slate-300 mt-2">{milestones[0].name}</p>
+                <p className="font-mono text-sm text-slate-300 mt-2">{milestones[0].name}</p>
               )}
             </div>
 
@@ -294,7 +294,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
             {/* Last */}
             <div className="text-center">
-              <p className="font-mono text-[10px] text-slate-500 uppercase mb-2">Current</p>
+              <p className="font-mono text-sm text-slate-400 uppercase mb-2">Current</p>
               <div className="aspect-square rounded-lg overflow-hidden bg-slate-800/50 border border-slate-700/50">
                 {milestones[milestones.length - 1].avatar_url || milestones[milestones.length - 1].thumbnail_url ? (
                   <img
@@ -303,13 +303,13 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Image size={32} />
                   </div>
                 )}
               </div>
               {settings.includeLabels && (
-                <p className="font-mono text-xs text-slate-300 mt-2">
+                <p className="font-mono text-sm text-slate-300 mt-2">
                   {milestones[milestones.length - 1].name}
                 </p>
               )}
@@ -319,7 +319,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
           {/* All changes summary */}
           {settings.includeChanges && (
             <div className="pt-4 border-t border-slate-700/50">
-              <p className="font-mono text-[10px] text-slate-500 uppercase mb-2">Evolution Summary</p>
+              <p className="font-mono text-sm text-slate-400 uppercase mb-2">Evolution Summary</p>
               <div className="grid grid-cols-2 gap-2">
                 {/* Collect all unique changes */}
                 {Array.from(
@@ -329,8 +329,8 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
                       .map((c) => [c.attribute, c])
                   ).values()
                 ).map((change, i) => (
-                  <div key={i} className="px-2 py-1 bg-slate-800/60 rounded text-[9px] font-mono">
-                    <span className="text-slate-500">{change.attribute}:</span>
+                  <div key={i} className="px-2 py-1 bg-slate-800/60 rounded text-sm font-mono">
+                    <span className="text-slate-400">{change.attribute}:</span>
                     <span className="text-slate-400 ml-1">{change.to}</span>
                   </div>
                 ))}
@@ -343,7 +343,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
       {/* Watermark */}
       {settings.watermark && (
         <div className="mt-6 pt-4 border-t border-slate-700/30 text-center">
-          <p className="font-mono text-[8px] text-slate-600">
+          <p className="font-mono text-[8px] text-slate-400">
             Generated by Story Character Tools
           </p>
         </div>
@@ -520,8 +520,8 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
             {/* Preview */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Eye size={14} className="text-slate-500" />
-                <span className="font-mono text-xs text-slate-500 uppercase">Preview</span>
+                <Eye size={14} className="text-slate-400" />
+                <span className="font-mono text-sm text-slate-400 uppercase">Preview</span>
               </div>
               <PreviewPanel
                 milestones={milestones}
@@ -534,7 +534,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
             <div className="space-y-4">
               {/* Layout */}
               <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
-                <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   Layout
                 </span>
                 <div className="grid grid-cols-3 gap-2">
@@ -550,7 +550,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
                       )}
                     >
                       {option.icon}
-                      <span className="font-mono text-[9px]">{option.label}</span>
+                      <span className="font-mono text-sm">{option.label}</span>
                     </button>
                   ))}
                 </div>
@@ -558,7 +558,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
 
               {/* Format & Size */}
               <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
-                <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   Format
                 </span>
                 <div className="grid grid-cols-3 gap-2 mb-3">
@@ -567,7 +567,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
                       key={option.id}
                       onClick={() => updateSetting('format', option.id)}
                       className={cn(
-                        'px-2 py-1.5 rounded border font-mono text-xs transition-colors',
+                        'px-2 py-1.5 rounded border font-mono text-sm transition-colors',
                         settings.format === option.id
                           ? 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400'
                           : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600'
@@ -578,7 +578,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
                   ))}
                 </div>
 
-                <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   Size
                 </span>
                 <div className="space-y-1">
@@ -587,14 +587,14 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
                       key={option.id}
                       onClick={() => updateSetting('size', option.id)}
                       className={cn(
-                        'w-full flex items-center justify-between px-2 py-1.5 rounded border font-mono text-xs transition-colors',
+                        'w-full flex items-center justify-between px-2 py-1.5 rounded border font-mono text-sm transition-colors',
                         settings.size === option.id
                           ? 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400'
                           : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:border-slate-600'
                       )}
                     >
                       <span>{option.label}</span>
-                      <span className="text-[10px] text-slate-600">{option.dimensions}</span>
+                      <span className="text-sm text-slate-400">{option.dimensions}</span>
                     </button>
                   ))}
                 </div>
@@ -602,7 +602,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
 
               {/* Options */}
               <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
-                <span className="font-mono text-[10px] text-slate-500 uppercase block mb-2">
+                <span className="font-mono text-sm text-slate-400 uppercase block mb-2">
                   Include
                 </span>
                 <div className="space-y-2">
@@ -616,7 +616,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
                       key={option.key}
                       className="flex items-center justify-between cursor-pointer"
                     >
-                      <span className="font-mono text-xs text-slate-400">{option.label}</span>
+                      <span className="font-mono text-sm text-slate-400">{option.label}</span>
                       <input
                         type="checkbox"
                         checked={settings[option.key]}
@@ -632,10 +632,10 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
               {/* Quality */}
               <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[10px] text-slate-500 uppercase">
+                  <span className="font-mono text-sm text-slate-400 uppercase">
                     Quality
                   </span>
-                  <span className="font-mono text-xs text-slate-400">
+                  <span className="font-mono text-sm text-slate-400">
                     {settings.quality}%
                   </span>
                 </div>
@@ -661,13 +661,13 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
         <div className="flex items-center justify-between p-4 border-t border-slate-800">
           <div className="flex items-center gap-2">
             {exportStatus === 'success' && (
-              <span className="flex items-center gap-1 font-mono text-xs text-green-400">
+              <span className="flex items-center gap-1 font-mono text-sm text-green-400">
                 <Check size={14} />
                 Export complete
               </span>
             )}
             {exportStatus === 'error' && (
-              <span className="flex items-center gap-1 font-mono text-xs text-red-400">
+              <span className="flex items-center gap-1 font-mono text-sm text-red-400">
                 <AlertCircle size={14} />
                 Export failed
               </span>
@@ -678,7 +678,7 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
             <button
               onClick={onClose}
               className="px-4 py-2 rounded bg-slate-800/40 text-slate-400
-                         hover:bg-slate-700/60 font-mono text-xs transition-colors"
+                         hover:bg-slate-700/60 font-mono text-sm transition-colors"
             >
               Cancel
             </button>
@@ -686,9 +686,9 @@ const ReferenceSheetExporter: React.FC<ReferenceSheetExporterProps> = ({
               onClick={handleExport}
               disabled={isExporting || milestones.length === 0}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded font-mono text-xs transition-colors',
+                'flex items-center gap-2 px-4 py-2 rounded font-mono text-sm transition-colors',
                 isExporting || milestones.length === 0
-                  ? 'bg-slate-700/40 text-slate-600 cursor-not-allowed'
+                  ? 'bg-slate-700/40 text-slate-400 cursor-not-allowed'
                   : 'bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400'
               )}
             >

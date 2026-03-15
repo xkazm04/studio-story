@@ -22,3 +22,10 @@ export type {
   FocusArea,
   PromptGeneratorOptions,
 } from './PromptGenerator';
+
+export { storyboardEngine } from './StoryboardEngine';
+export type {
+  StoryboardFrame,
+  StoryboardActGroup,
+  MoodPreset,
+} from './StoryboardEngine';

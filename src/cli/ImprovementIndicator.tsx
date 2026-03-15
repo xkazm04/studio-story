@@ -112,7 +112,7 @@ export default function ImprovementIndicator({
       <button
         onClick={() => setExpanded(!expanded)}
         className={cn(
-          'flex items-center gap-1.5 w-full px-3 py-1 text-[10px] transition-colors',
+          'flex items-center gap-1.5 w-full px-3 py-1 text-xs transition-colors',
           'hover:bg-slate-800/50',
         )}
       >
@@ -125,9 +125,9 @@ export default function ImprovementIndicator({
         </span>
         <div className="flex-1" />
         {expanded ? (
-          <ChevronDown className="w-3 h-3 text-slate-600" />
+          <ChevronDown className="w-3 h-3 text-slate-400" />
         ) : (
-          <ChevronUp className="w-3 h-3 text-slate-600" />
+          <ChevronUp className="w-3 h-3 text-slate-400" />
         )}
       </button>
 
@@ -150,7 +150,7 @@ export default function ImprovementIndicator({
                 return (
                   <div
                     key={pattern.fingerprint}
-                    className={cn('flex items-start gap-1.5 rounded px-2 py-1 text-[10px]', sevBg)}
+                    className={cn('flex items-start gap-1.5 rounded px-2 py-1 text-xs', sevBg)}
                   >
                     <SevIcon className={cn('w-3 h-3 mt-0.5 shrink-0', sevColor)} />
                     <div className="flex-1 min-w-0">
@@ -159,10 +159,10 @@ export default function ImprovementIndicator({
                         {pattern.toolName && (
                           <span className="text-amber-300/70">{pattern.toolName}</span>
                         )}
-                        <span className="text-slate-600">x{pattern.count}</span>
+                        <span className="text-slate-400">x{pattern.count}</span>
                       </div>
                       {pattern.suggestedFix && (
-                        <div className="text-slate-500 truncate">{pattern.suggestedFix}</div>
+                        <div className="text-slate-400 truncate">{pattern.suggestedFix}</div>
                       )}
                     </div>
                   </div>
@@ -175,7 +175,7 @@ export default function ImprovementIndicator({
                 disabled={isFixing}
                 className={cn(
                   'w-full flex items-center justify-center gap-1.5 mt-1',
-                  'rounded py-1 text-[10px] font-medium transition-colors',
+                  'rounded py-1 text-xs font-medium transition-colors',
                   'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20',
                   'disabled:opacity-50 disabled:cursor-not-allowed',
                 )}

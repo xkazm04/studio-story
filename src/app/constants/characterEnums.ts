@@ -13,7 +13,7 @@ export const getCharacterTypeColor = (type: "protagonist" | "antagonist" | "neut
         case "neutral":
             return "border-amber-500 bg-amber-600/20 text-amber-400";
         default:
-            return "border-gray-500 bg-gray-600/20 text-gray-400";
+            return "border-slate-500 bg-slate-600/20 text-slate-400";
     }
 };
 

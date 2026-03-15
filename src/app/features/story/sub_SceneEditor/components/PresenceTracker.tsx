@@ -124,7 +124,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-sm font-medium text-slate-400">
               {charPresence.characterName.charAt(0).toUpperCase()}
             </span>
           )}
@@ -133,7 +133,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-medium text-slate-200 truncate">
+            <span className="text-sm font-medium text-slate-200 truncate">
               {charPresence.characterName}
             </span>
             {charPresence.isSpeaking && (
@@ -146,13 +146,13 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
             {charPresence.roles.map(role => (
               <span
                 key={role}
-                className={cn('flex items-center gap-0.5 text-[9px]', ROLE_COLORS[role])}
+                className={cn('flex items-center gap-0.5 text-sm', ROLE_COLORS[role])}
                 title={role}
               >
                 {ROLE_ICONS[role]}
               </span>
             ))}
-            <span className="text-[9px] text-slate-600 ml-1">
+            <span className="text-sm text-slate-400 ml-1">
               {charPresence.mentionCount}x
             </span>
           </div>
@@ -176,14 +176,14 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-cyan-400" />
           <span className="text-sm font-medium text-slate-200">Character Presence</span>
-          <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-[10px] rounded">
+          <span className="px-1.5 py-0.5 bg-slate-800 text-slate-400 text-sm rounded">
             {presence.presentCharacters.length}
           </span>
         </div>
         {isExpanded ? (
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          <ChevronDown className="w-4 h-4 text-slate-400" />
         ) : (
-          <ChevronRight className="w-4 h-4 text-slate-500" />
+          <ChevronRight className="w-4 h-4 text-slate-400" />
         )}
       </button>
 
@@ -199,9 +199,9 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
               {/* No characters message */}
               {presence.presentCharacters.length === 0 && (
                 <div className="text-center py-4">
-                  <User className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">No characters detected</p>
-                  <p className="text-[10px] text-slate-600 mt-0.5">
+                  <User className="w-6 h-6 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400">No characters detected</p>
+                  <p className="text-sm text-slate-400 mt-0.5">
                     Write character names to track presence
                   </p>
                 </div>
@@ -218,7 +218,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
 
               {/* Dominant character highlight */}
               {presence.dominantCharacter && presence.presentCharacters.length > 1 && (
-                <div className="px-2 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded text-[10px] text-cyan-300">
+                <div className="px-2 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded text-sm text-cyan-300">
                   <span className="font-medium">{presence.dominantCharacter.characterName}</span>
                   <span className="text-cyan-400/70"> is the focus of this scene</span>
                 </div>
@@ -227,7 +227,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
               {/* Relevant relationships */}
               {relevantRelationships.length > 0 && (
                 <div className="pt-2 border-t border-slate-800">
-                  <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">
+                  <div className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-1.5">
                     Active Relationships
                   </div>
                   <div className="space-y-1">
@@ -237,13 +237,13 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                       return (
                         <div
                           key={rel.id}
-                          className="text-[10px] text-slate-400 px-2 py-1 bg-slate-800/50 rounded"
+                          className="text-sm text-slate-400 px-2 py-1 bg-slate-800/50 rounded"
                         >
                           <span className="text-slate-300">{charA?.name}</span>
-                          <span className="text-slate-500"> ↔ </span>
+                          <span className="text-slate-400"> ↔ </span>
                           <span className="text-slate-300">{charB?.name}</span>
                           {rel.relationship_type && (
-                            <span className="text-slate-600 ml-1">({rel.relationship_type})</span>
+                            <span className="text-slate-400 ml-1">({rel.relationship_type})</span>
                           )}
                         </div>
                       );
@@ -255,7 +255,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
               {/* Add character button */}
               <button
                 onClick={() => setShowAddDialog(!showAddDialog)}
-                className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 border border-dashed border-slate-700 rounded text-[10px] text-slate-500 hover:text-slate-400 hover:border-slate-600 transition-colors"
+                className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 border border-dashed border-slate-700 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
               >
                 <Plus className="w-3 h-3" />
                 Add character mention
@@ -272,13 +272,13 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                   >
                     {/* Search */}
                     <div className="relative">
-                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search characters..."
-                        className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-700 rounded text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                        className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                         autoFocus
                       />
                     </div>
@@ -286,7 +286,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                     {/* Character list */}
                     <div className="max-h-32 overflow-y-auto space-y-1">
                       {filteredAbsent.length === 0 ? (
-                        <p className="text-[10px] text-slate-600 text-center py-2">
+                        <p className="text-sm text-slate-400 text-center py-2">
                           No characters available
                         </p>
                       ) : (
@@ -304,10 +304,10 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                               {char.avatar_url ? (
                                 <img src={char.avatar_url} alt={char.name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="text-[9px] text-slate-400">{char.name.charAt(0)}</span>
+                                <span className="text-sm text-slate-400">{char.name.charAt(0)}</span>
                               )}
                             </div>
-                            <span className="text-xs text-slate-300">{char.name}</span>
+                            <span className="text-sm text-slate-300">{char.name}</span>
                           </button>
                         ))
                       )}

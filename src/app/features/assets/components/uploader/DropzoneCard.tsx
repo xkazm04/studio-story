@@ -193,7 +193,7 @@ export default function DropzoneCard({
                 ? 'Drag & drop images'
                 : 'Drag & drop an image'}
             </p>
-            <p className="text-slate-500 text-xs text-center">
+            <p className="text-slate-400 text-sm text-center">
               {multiple
                 ? `or click to browse (up to ${maxFiles} files)`
                 : 'or click to browse'}
@@ -265,7 +265,7 @@ export default function DropzoneCard({
                   />
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="text-xs text-slate-300 bg-slate-900/80 px-3 py-1.5 rounded-full">
+                    <span className="text-sm text-slate-300 bg-slate-900/80 px-3 py-1.5 rounded-full">
                       Click to change
                     </span>
                   </div>
@@ -275,7 +275,7 @@ export default function DropzoneCard({
 
             {/* Compression info badge */}
             {compressionInfo && (
-              <div className="absolute bottom-3 left-3 px-2 py-1 text-[10px] text-slate-400 bg-slate-900/80 rounded-md border border-slate-800/50">
+              <div className="absolute bottom-3 left-3 px-2 py-1 text-sm text-slate-400 bg-slate-900/80 rounded-md border border-slate-800/50">
                 {compressionInfo}
               </div>
             )}

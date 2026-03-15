@@ -7,9 +7,11 @@ import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { useScriptContextStore } from '../../store/scriptContextStore';
 import PanelFrame from '../shared/PanelFrame';
+import type { PanelDensity } from '@/workspace/types';
 
 interface CastSidebarPanelProps {
   onClose?: () => void;
+  density?: PanelDensity;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -19,7 +21,7 @@ const TYPE_LABELS: Record<string, string> = {
   minor: 'Minor',
 };
 
-export default function CastSidebarPanel({ onClose }: CastSidebarPanelProps) {
+export default function CastSidebarPanel({ onClose, density }: CastSidebarPanelProps) {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id || '';
   const { data: characters = [] } = characterApi.useProjectCharacters(projectId, !!projectId);
@@ -34,8 +36,8 @@ export default function CastSidebarPanel({ onClose }: CastSidebarPanelProps) {
 
   if (!projectId) {
     return (
-      <PanelFrame title="Cast" icon={Users} onClose={onClose} headerAccent="cyan">
-        <div className="flex items-center justify-center h-full text-xs text-slate-500">
+      <PanelFrame title="Cast" icon={Users} onClose={onClose} headerAccent="cyan" density={density}>
+        <div className="flex items-center justify-center h-full text-sm text-slate-400">
           Select a project first
         </div>
       </PanelFrame>
@@ -48,10 +50,11 @@ export default function CastSidebarPanel({ onClose }: CastSidebarPanelProps) {
       icon={Users}
       onClose={onClose}
       headerAccent="cyan"
+      density={density}
     >
       <div className="flex-1 overflow-auto p-2 space-y-1">
         {characters.length === 0 ? (
-          <div className="text-center text-[10px] text-slate-600 py-4">
+          <div className="text-center text-sm text-slate-400 py-4">
             No characters yet
           </div>
         ) : (
@@ -78,7 +81,7 @@ export default function CastSidebarPanel({ onClose }: CastSidebarPanelProps) {
                   />
                 ) : (
                   <div className="w-6 h-6 rounded-full bg-slate-800 border border-slate-700/50 flex items-center justify-center shrink-0">
-                    <User className="w-3 h-3 text-slate-500" />
+                    <User className="w-3 h-3 text-slate-400" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
@@ -87,14 +90,14 @@ export default function CastSidebarPanel({ onClose }: CastSidebarPanelProps) {
                       <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
                     )}
                     <span className={cn(
-                      'text-xs font-medium truncate',
+                      'text-sm font-medium truncate',
                       isReferenced ? 'text-cyan-300' : 'text-slate-300',
                     )}>
                       {char.name}
                     </span>
                   </div>
                   {char.type && (
-                    <p className="text-[10px] text-slate-500 truncate">
+                    <p className="hidden @3xs:block text-sm text-slate-400 truncate">
                       {TYPE_LABELS[char.type] || char.type}
                     </p>
                   )}
