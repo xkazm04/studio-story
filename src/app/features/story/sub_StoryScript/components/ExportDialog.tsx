@@ -25,6 +25,9 @@ import {
   Info,
   Eye,
   Copy,
+  FileImage,
+  Globe,
+  Gamepad2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
@@ -55,6 +58,7 @@ interface FormatOption {
   extension: string;
   color: string;
   features: string[];
+  group: 'script' | 'story';
 }
 
 // ============================================================================
@@ -62,6 +66,7 @@ interface FormatOption {
 // ============================================================================
 
 const FORMAT_OPTIONS: FormatOption[] = [
+  // Script Formats
   {
     id: 'pdf',
     name: 'PDF Screenplay',
@@ -69,6 +74,7 @@ const FORMAT_OPTIONS: FormatOption[] = [
     icon: Film,
     extension: '.pdf',
     color: 'text-red-400',
+    group: 'script',
     features: [
       'Standard Courier 12pt format',
       'Professional margins and spacing',
@@ -83,6 +89,7 @@ const FORMAT_OPTIONS: FormatOption[] = [
     icon: FileType,
     extension: '.fountain',
     color: 'text-cyan-400',
+    group: 'script',
     features: [
       'Compatible with Final Draft, Highland',
       'Plain text, version control friendly',
@@ -97,6 +104,7 @@ const FORMAT_OPTIONS: FormatOption[] = [
     icon: Book,
     extension: '.epub',
     color: 'text-purple-400',
+    group: 'script',
     features: [
       'Chapter-based organization',
       'Table of contents',
@@ -111,11 +119,58 @@ const FORMAT_OPTIONS: FormatOption[] = [
     icon: FileText,
     extension: '.txt',
     color: 'text-slate-400',
+    group: 'script',
     features: [
       'Universal compatibility',
       'No formatting dependencies',
       'Easy to share and edit',
       'Minimal file size',
+    ],
+  },
+  // Story Formats
+  {
+    id: 'story-pdf',
+    name: 'Story PDF',
+    description: 'Illustrated PDF with formatted prose and scene images',
+    icon: FileImage,
+    extension: '.pdf',
+    color: 'text-amber-400',
+    group: 'story',
+    features: [
+      'Formatted prose layout',
+      'Inline scene illustrations',
+      'Professional typography',
+      'Print-ready quality',
+    ],
+  },
+  {
+    id: 'html5',
+    name: 'HTML5 Reader',
+    description: 'Self-contained HTML file with images, narration, and scene navigation',
+    icon: Globe,
+    extension: '.html',
+    color: 'text-emerald-400',
+    group: 'story',
+    features: [
+      'Works offline in any browser',
+      'Embedded images and audio',
+      'Page-by-page navigation',
+      'Art-style adaptive theming',
+    ],
+  },
+  {
+    id: 'visual-novel',
+    name: 'Visual Novel',
+    description: 'Interactive branching experience with VN-style dialogue and choices',
+    icon: Gamepad2,
+    extension: '.html',
+    color: 'text-pink-400',
+    group: 'story',
+    features: [
+      'Classic VN dialogue layout',
+      'Branching choice navigation',
+      'Auto-play voice narration',
+      'Fullscreen scene backgrounds',
     ],
   },
 ];
@@ -158,12 +213,12 @@ function FormatCard({ format, isSelected, onSelect }: FormatCardProps) {
             )}>
               {format.name}
             </span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
+            <span className="text-sm px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
               {format.extension}
             </span>
             {isSelected && <Check className="w-4 h-4 text-cyan-400 ml-auto" />}
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">{format.description}</p>
+          <p className="text-sm text-slate-400 mt-0.5">{format.description}</p>
         </div>
       </div>
     </button>
@@ -185,11 +240,11 @@ function SettingsSection({ title, children, defaultOpen = true }: SettingsSectio
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between px-3 py-2 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
       >
-        <span className="text-xs font-medium text-slate-300">{title}</span>
+        <span className="text-sm font-medium text-slate-300">{title}</span>
         {isOpen ? (
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+          <ChevronDown className="w-4 h-4 text-slate-400" />
         ) : (
-          <ChevronRight className="w-4 h-4 text-slate-500" />
+          <ChevronRight className="w-4 h-4 text-slate-400" />
         )}
       </button>
       <AnimatePresence>
@@ -238,9 +293,9 @@ function ToggleOption({ label, description, checked, onChange }: ToggleOptionPro
         </div>
       </div>
       <div>
-        <div className="text-xs font-medium text-slate-300">{label}</div>
+        <div className="text-sm font-medium text-slate-300">{label}</div>
         {description && (
-          <div className="text-[10px] text-slate-500 mt-0.5">{description}</div>
+          <div className="text-sm text-slate-400 mt-0.5">{description}</div>
         )}
       </div>
     </label>
@@ -257,11 +312,11 @@ interface SelectOptionProps {
 function SelectOption({ label, value, options, onChange }: SelectOptionProps) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-xs text-slate-400">{label}</span>
+      <span className="text-sm text-slate-400">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="px-2 py-1 text-xs bg-slate-800 border border-slate-700 rounded text-slate-300 focus:outline-none focus:border-cyan-500"
+        className="px-2 py-1 text-sm bg-slate-800 border border-slate-700 rounded text-slate-300 focus:outline-none focus:border-cyan-500"
       >
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -300,6 +355,9 @@ export function ExportDialog({
 
   // Fountain-specific options
   const [fountainUppercase, setFountainUppercase] = useState(true);
+
+  // Story format options
+  const [includeNarration, setIncludeNarration] = useState(true);
 
   // Get selected format info
   const selectedFormatInfo = useMemo(
@@ -399,7 +457,7 @@ export function ExportDialog({
               </div>
               <div>
                 <h2 className="text-base font-semibold text-white">Export Script</h2>
-                <p className="text-xs text-slate-500">{scriptData.title || 'Untitled Script'}</p>
+                <p className="text-sm text-slate-400">{scriptData.title || 'Untitled Script'}</p>
               </div>
             </div>
             <button
@@ -415,8 +473,8 @@ export function ExportDialog({
             <div className="p-5 space-y-5">
               {/* Script Stats */}
               <div className="flex items-center gap-4 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
-                <Info className="w-4 h-4 text-slate-500 shrink-0" />
-                <div className="flex items-center gap-4 text-xs text-slate-400">
+                <Info className="w-4 h-4 text-slate-400 shrink-0" />
+                <div className="flex items-center gap-4 text-sm text-slate-400">
                   <span>{stats.sceneCount} scenes</span>
                   <span>•</span>
                   <span>{stats.dialogueCount} dialogue blocks</span>
@@ -430,15 +488,37 @@ export function ExportDialog({
               {/* Format Selection */}
               <div className="space-y-3">
                 <h3 className="text-sm font-medium text-slate-200">Export Format</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {FORMAT_OPTIONS.map(format => (
-                    <FormatCard
-                      key={format.id}
-                      format={format}
-                      isSelected={selectedFormat === format.id}
-                      onSelect={() => setSelectedFormat(format.id)}
-                    />
-                  ))}
+
+                <div className="space-y-4">
+                  {/* Script Formats */}
+                  <div className="space-y-2">
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Script Formats</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {FORMAT_OPTIONS.filter(f => f.group === 'script').map(format => (
+                        <FormatCard
+                          key={format.id}
+                          format={format}
+                          isSelected={selectedFormat === format.id}
+                          onSelect={() => setSelectedFormat(format.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Story Formats */}
+                  <div className="space-y-2">
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Story Formats</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {FORMAT_OPTIONS.filter(f => f.group === 'story').map(format => (
+                        <FormatCard
+                          key={format.id}
+                          format={format}
+                          isSelected={selectedFormat === format.id}
+                          onSelect={() => setSelectedFormat(format.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -446,13 +526,13 @@ export function ExportDialog({
               <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-800">
                 <div className="flex items-center gap-2 mb-2">
                   <selectedFormatInfo.icon className={cn('w-4 h-4', selectedFormatInfo.color)} />
-                  <span className="text-xs font-medium text-slate-300">
+                  <span className="text-sm font-medium text-slate-300">
                     {selectedFormatInfo.name} Features
                   </span>
                 </div>
                 <ul className="space-y-1">
                   {selectedFormatInfo.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-[11px] text-slate-500">
+                    <li key={i} className="flex items-center gap-2 text-sm text-slate-400">
                       <Check className="w-3 h-3 text-green-500" />
                       {feature}
                     </li>
@@ -532,11 +612,30 @@ export function ExportDialog({
                 </SettingsSection>
               )}
 
+              {(selectedFormat === 'html5' || selectedFormat === 'visual-novel') && (
+                <SettingsSection title="Audio Options">
+                  <ToggleOption
+                    label="Include voice narration"
+                    description="Embed audio narration in the exported file"
+                    checked={includeNarration}
+                    onChange={setIncludeNarration}
+                  />
+                  {includeNarration && (
+                    <div className="flex items-center gap-2 p-2 rounded bg-amber-500/10 border border-amber-500/20">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span className="text-xs text-amber-300">
+                        Note: Including narration audio increases file size significantly
+                      </span>
+                    </div>
+                  )}
+                </SettingsSection>
+              )}
+
               {/* Error Display */}
               {exportError && (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                  <span className="text-xs text-red-400">{exportError}</span>
+                  <span className="text-sm text-red-400">{exportError}</span>
                 </div>
               )}
             </div>
@@ -544,7 +643,7 @@ export function ExportDialog({
 
           {/* Footer */}
           <div className="flex items-center justify-between px-5 py-4 border-t border-slate-800 bg-slate-900/50">
-            <div className="text-xs text-slate-500">
+            <div className="text-sm text-slate-400">
               Exporting as <span className="text-slate-300">{selectedFormatInfo.extension}</span>
             </div>
             <div className="flex items-center gap-2">
