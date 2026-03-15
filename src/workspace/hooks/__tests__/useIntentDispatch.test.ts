@@ -113,6 +113,13 @@ describe('useIntentDispatch - LLM transport wiring', () => {
     vi.clearAllMocks();
     busSubscriber = null;
 
+    // Re-establish mock return values after clearAllMocks
+    mocks.createIntentBus.mockReturnValue(mocks.mockBus);
+    mocks.createStateEngine.mockReturnValue(mocks.mockStateEngine);
+    mocks.createIntentQueue.mockReturnValue(mocks.mockQueue);
+    mocks.createDirector.mockReturnValue({ resolve: vi.fn() });
+    mocks.createLLMTransport.mockReturnValue(mocks.mockTransport);
+
     // Capture the subscriber function passed to bus.subscribe
     mocks.mockBus.subscribe.mockImplementation((listener: (event: IntentEvent) => void) => {
       busSubscriber = listener;
