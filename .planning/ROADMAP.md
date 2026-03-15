@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Visual Pipeline** - AI-generated scene illustrations with character consistency and art style coherence
 - [x] **Phase 10: Writing Tools and Voice** - AI text generation, fiction writing tools, TTS narration, and script-to-performance pipeline (completed 2026-03-14)
 - [x] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation (completed 2026-03-15)
-- [ ] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation
+- [x] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation (completed 2026-03-15)
 
 ## Phase Details
 
@@ -213,7 +213,7 @@ Plans:
   2. User can export a complete story package as a shareable HTML5 bundle with illustrations, voice narration, and reader navigation
   3. For branching stories, the export produces a navigable visual novel experience where the reader makes choices and follows different paths
   4. CI/lint rules prevent any import from Studio Story domain code into the Jinn engine package -- violations fail the build
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 12-01-PLAN.md -- Shared StoryExportData types, StoryPDFGenerator with embedded illustrations (EXPORT-01)
@@ -241,4 +241,4 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 9. Visual Pipeline | 1/3 | In Progress|  |
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
-| 12. Export and Package Boundary | 3/4 | In Progress|  |
+| 12. Export and Package Boundary | 4/4 | Complete   | 2026-03-15 |

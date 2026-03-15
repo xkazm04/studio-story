@@ -68,7 +68,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Package Boundary
 
-- [ ] **PKG-01**: Automated import boundary enforcement — CI/lint rules prevent Studio Story domain code from leaking into Jinn engine code
+- [x] **PKG-01**: Automated import boundary enforcement — CI/lint rules prevent Studio Story domain code from leaking into Jinn engine code
 - [x] **PKG-02**: Jinn engine code organized in a monorepo-ready structure (packages/jinn/) even if not yet published as npm package
 
 ## v2 Requirements
@@ -141,7 +141,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXPORT-01 | Phase 12 | Complete |
 | EXPORT-02 | Phase 12 | Complete |
 | EXPORT-03 | Phase 12 | Complete |
-| PKG-01 | Phase 12 | Pending |
+| PKG-01 | Phase 12 | Complete |
 | PKG-02 | Phase 1 | Complete |
 
 **Coverage:**
