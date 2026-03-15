@@ -213,13 +213,13 @@ Plans:
   2. User can export a complete story package as a shareable HTML5 bundle with illustrations, voice narration, and reader navigation
   3. For branching stories, the export produces a navigable visual novel experience where the reader makes choices and follows different paths
   4. CI/lint rules prevent any import from Studio Story domain code into the Jinn engine package -- violations fail the build
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 12-01: TBD
-- [ ] 12-02: TBD
-- [ ] 12-03: TBD
-- [ ] 12-04: TBD
+- [ ] 12-01-PLAN.md -- Shared StoryExportData types, StoryPDFGenerator with embedded illustrations (EXPORT-01)
+- [ ] 12-02-PLAN.md -- HTML5BundleGenerator with inlined assets, art-style adaptive reader, scene navigation (EXPORT-02)
+- [ ] 12-03-PLAN.md -- VisualNovelGenerator with VN state machine and branching choices, ExportDialog update (EXPORT-03)
+- [ ] 12-04-PLAN.md -- ESLint no-restricted-imports boundary rule for dzin package, extended boundary test (PKG-01)
 
 ## Progress
 
@@ -240,5 +240,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 1/3 | In Progress|  |
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
-| 11. Multimodal Input | 2/2 | Complete   | 2026-03-15 |
+| 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
 | 12. Export and Package Boundary | 0/4 | Not started | - |
