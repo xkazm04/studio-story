@@ -32,8 +32,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Jinn Multimodal
 
-- [ ] **JMULTI-01**: Voice input as equal-mode interaction — user speaks intent ("show me the castle scene with Elena") and LLM composes the right view
-- [ ] **JMULTI-02**: Fluid modality switching — user transitions between voice, text, and direct manipulation without mode changes or friction
+- [x] **JMULTI-01**: Voice input as equal-mode interaction — user speaks intent ("show me the castle scene with Elena") and LLM composes the right view
+- [x] **JMULTI-02**: Fluid modality switching — user transitions between voice, text, and direct manipulation without mode changes or friction
 
 ### Story Creation
 
@@ -123,8 +123,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | JINT-04 | Phase 6 | Complete |
 | JINT-05 | Phase 6 | Complete |
 | JINT-06 | Phase 5 | Complete |
-| JMULTI-01 | Phase 11 | Pending |
-| JMULTI-02 | Phase 11 | Pending |
+| JMULTI-01 | Phase 11 | Complete |
+| JMULTI-02 | Phase 11 | Complete |
 | STORY-01 | Phase 7 | Complete |
 | STORY-02 | Phase 7 | Complete |
 | STORY-03 | Phase 7 | Complete |
