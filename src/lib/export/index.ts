@@ -43,6 +43,17 @@ export { HTML5BundleGenerator } from './HTML5BundleGenerator';
 // Visual Novel Generator
 export { VisualNovelGenerator } from './VisualNovelGenerator';
 
+// VN Export Bridge utilities
+export {
+  buildVNExportScenes,
+  findReachableScenes,
+  generateGradientBackground,
+  type ExportSummary,
+  type VNSceneInput,
+  type VNActInput,
+  type BuildVNExportParams,
+} from './vnExportBridge';
+
 // Shared Story Export Types
 export { type StoryExportData, type StoryExportScene, slugify } from './types';
 
