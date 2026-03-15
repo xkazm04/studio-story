@@ -19,6 +19,8 @@ export interface ActiveSuggestion {
 export interface AmbientObserver {
   dismiss(suggestionId: string): void;
   getActiveSuggestions(): ActiveSuggestion[];
+  pause(): void;
+  resume(): void;
   destroy(): void;
 }
 
@@ -55,6 +57,7 @@ export function createAmbientObserver(
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const idleTimers = new Map<string, ReturnType<typeof setTimeout>>();
   let destroyed = false;
+  let paused = false;
 
   // ---------------------------------------------------------------------------
   // Helpers
@@ -82,6 +85,7 @@ export function createAmbientObserver(
 
   function emitOrQueue(suggestion: ActiveSuggestion, pattern: WorkflowPattern): void {
     if (destroyed) return;
+    if (paused) return;
     setCooldown(pattern);
 
     if (activeSuggestions.length < MAX_ACTIVE_SUGGESTIONS) {
@@ -132,6 +136,7 @@ export function createAmbientObserver(
 
   function processEvents(): void {
     if (destroyed) return;
+    if (paused) return;
 
     for (const pattern of patterns) {
       if (isOnCooldown(pattern.id)) continue;
@@ -176,6 +181,7 @@ export function createAmbientObserver(
       const trigger = pattern.trigger;
       const timer = setTimeout(() => {
         if (destroyed) return;
+        if (paused) return;
         if (isOnCooldown(pattern.id)) return;
         if (activeSuggestions.some((s) => s.patternId === pattern.id)) return;
 
@@ -237,6 +243,14 @@ export function createAmbientObserver(
 
     getActiveSuggestions(): ActiveSuggestion[] {
       return [...activeSuggestions];
+    },
+
+    pause(): void {
+      paused = true;
+    },
+
+    resume(): void {
+      paused = false;
     },
 
     destroy(): void {
