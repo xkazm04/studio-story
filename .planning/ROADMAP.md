@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Writing Tools and Voice** - AI text generation, fiction writing tools, TTS narration, and script-to-performance pipeline (completed 2026-03-14)
 - [x] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation (completed 2026-03-15)
 - [x] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation (completed 2026-03-15)
-- [ ] **Phase 13: Rich Visual Novel Export Bridge** - Wire branching choices, illustrations, and narration audio through VN export pipeline (Gap Closure)
+- [x] **Phase 13: Rich Visual Novel Export Bridge** - Wire branching choices, illustrations, and narration audio through VN export pipeline (Gap Closure) (completed 2026-03-15)
 - [ ] **Phase 14: LLM Transport and Ambient Observer Wiring** - Connect @dzin/core LLM transport and ambient observer to production app (Gap Closure)
 
 ## Phase Details
@@ -233,7 +233,7 @@ Plans:
   2. `StoryExportScene` includes `imageUrl` from scene illustrations, `narrationUrl` from TTS audio, and `dialogueLines` from screenplay parser
   3. Exported HTML VN renders branching choices, displays scene illustrations as backgrounds, and plays dialogue/narration audio
   4. Dead-end scenes correctly show "The End" in the exported VN
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 13-01-PLAN.md -- VN export bridge utilities (graph traversal, data assembly, gradient fallback), VN engine narration play button
@@ -273,5 +273,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
 | 12. Export and Package Boundary | 4/4 | Complete    | 2026-03-15 |
-| 13. Rich Visual Novel Export Bridge | 1/2 | In Progress|  |
+| 13. Rich Visual Novel Export Bridge | 2/2 | Complete   | 2026-03-15 |
 | 14. LLM Transport and Ambient Observer Wiring | 0/1 | Not started | - |
