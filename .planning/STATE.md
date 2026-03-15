@@ -3,30 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 14 context gathered
-last_updated: "2026-03-15T22:11:10.532Z"
-last_activity: 2026-03-15 -- Completed 13-01-PLAN.md (VN Export Bridge)
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-03-15T22:38:00.000Z"
+last_activity: 2026-03-15 -- Completed 14-01-PLAN.md (LLM Transport Wiring)
 progress:
   total_phases: 14
   completed_phases: 13
-  total_plans: 40
-  completed_plans: 40
-  percent: 100
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-15T15:34:13.979Z"
-last_activity: 2026-03-15 -- Completed 13-01-PLAN.md (VN Export Bridge)
-progress:
-  [██████████] 100%
-  completed_phases: 12
-  total_plans: 40
-  completed_plans: 39
+  total_plans: 42
+  completed_plans: 41
   percent: 98
 ---
 
@@ -37,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 13 - Rich Visual Novel Export Bridge (1 of 2 plans complete)
+**Current focus:** Phase 14 - LLM Transport and Ambient Observer Wiring (1 of 2 plans complete)
 
 ## Current Position
 
-Phase: 13 of 14 (Rich Visual Novel Export Bridge)
-Plan: 1 of 2 in current phase (13-01-PLAN.md complete)
+Phase: 14 of 14 (LLM Transport and Ambient Observer Wiring)
+Plan: 1 of 2 in current phase (14-01-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-15 -- Completed 13-01-PLAN.md (VN Export Bridge)
+Last activity: 2026-03-15 -- Completed 14-01-PLAN.md (LLM Transport Wiring)
 
-Progress: [█████████████████████████████░] 39/40 plans
+Progress: [█████████████████████████████░] 41/42 plans
 
 ## Performance Metrics
 
@@ -108,6 +92,7 @@ Progress: [███████████████████████
 | Phase 12 P04 | 4 | 2 tasks | 2 files |
 | Phase 13 P01 | 5 | 2 tasks | 6 files |
 | Phase 13 P02 | 2 | 2 tasks | 3 files |
+| Phase 14 P01 | 5 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -245,6 +230,10 @@ Recent decisions affecting current work:
 - [Phase 13]: Narration play button only when NO per-line dialogue audio exists -- avoids double audio
 - [Phase 13]: useVNExportData defers API calls via enabled flag until VN format selected
 - [Phase 13]: VN export with rich data bypasses exportScript, goes directly to VisualNovelGenerator.generate()
+- [14-01]: Host-side bus subscription pattern: subscribe to IntentBus events in useIntentDispatch and filter for needs-llm, rather than modifying @dzin/core bus
+- [14-01]: Lazy transport: getOrCreateTransport() only called on first NEEDS_LLM event, no CLI session spawned on app load
+- [14-01]: Late-binding addSuggestion callback via setAddSuggestion() for parent component wiring
+- [14-01]: SuggestionCard variant derived from patternId '__llm_response__' in SuggestionStack, not passed from caller
 
 ### Pending Todos
 
@@ -257,6 +246,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T22:11:10.529Z
-Stopped at: Phase 14 context gathered
-Resume file: .planning/phases/14-llm-transport-and-ambient-observer-wiring/14-CONTEXT.md
+Last session: 2026-03-15T22:38:00.000Z
+Stopped at: Completed 14-01-PLAN.md
+Resume file: .planning/phases/14-llm-transport-and-ambient-observer-wiring/14-01-SUMMARY.md
