@@ -37,6 +37,9 @@ export {
 // Story PDF Generator
 export { StoryPDFGenerator } from './StoryPDFGenerator';
 
+// HTML5 Bundle Generator
+export { HTML5BundleGenerator } from './HTML5BundleGenerator';
+
 // Shared Story Export Types
 export { type StoryExportData, type StoryExportScene, slugify } from './types';
 
@@ -96,6 +99,7 @@ import { PDFGenerator, convertToScriptElements, type TitlePageInfo } from './PDF
 import { EPUBBuilder, convertToEPUBChapters, type EPUBMetadata } from './EPUBBuilder';
 import { FountainExporter, convertToFountainElements, type FountainTitlePage } from './FountainExporter';
 import { StoryPDFGenerator as _StoryPDFGenerator } from './StoryPDFGenerator';
+import { HTML5BundleGenerator as _HTML5BundleGenerator } from './HTML5BundleGenerator';
 import type { StoryExportData } from './types';
 
 export interface ScriptData {
@@ -147,7 +151,7 @@ export async function exportScript(
     case 'story-pdf':
       return exportToStoryPDF(data);
     case 'html5':
-      throw new Error('HTML5 bundle export is not yet implemented');
+      return exportToHTML5(data);
     case 'visual-novel':
       throw new Error('Visual novel export is not yet implemented');
     default:
@@ -372,6 +376,40 @@ async function exportToStoryPDF(data: ScriptData): Promise<ExportResult> {
   };
 
   const generator = new _StoryPDFGenerator();
+  return generator.generate(storyData);
+}
+
+/**
+ * Export story data as a self-contained HTML5 bundle.
+ */
+async function exportToHTML5(data: ScriptData): Promise<ExportResult> {
+  const sceneMap = new Map<string, string[]>();
+  for (const block of data.blocks) {
+    const existing = sceneMap.get(block.sceneId) || [];
+    existing.push(block.content);
+    sceneMap.set(block.sceneId, existing);
+  }
+
+  const scenes = data.scenes || Array.from(sceneMap.keys()).map((id, i) => ({
+    id,
+    name: `Scene ${i + 1}`,
+  }));
+
+  const storyData: StoryExportData = {
+    title: data.title,
+    author: data.author,
+    scenes: scenes.map((s) => ({
+      id: s.id,
+      name: s.name,
+      content: (sceneMap.get(s.id) || []).join('\n\n'),
+    })),
+    metadata: data.metadata ? {
+      description: data.metadata.description,
+      genre: data.metadata.genre,
+    } : undefined,
+  };
+
+  const generator = new _HTML5BundleGenerator();
   return generator.generate(storyData);
 }
 
