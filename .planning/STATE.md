@@ -3,31 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 12-04-PLAN.md
-last_updated: "2026-03-15T10:20:04.881Z"
-last_activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-15T15:34:13.979Z"
+last_activity: 2026-03-15 -- Completed 13-01-PLAN.md (VN Export Bridge)
 progress:
-  total_phases: 12
+  total_phases: 14
   completed_phases: 12
-  total_plans: 38
-  completed_plans: 38
-  percent: 97
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-15T10:07:00Z"
-last_activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
-progress:
-  [██████████] 97%
-  completed_phases: 11
-  total_plans: 38
-  completed_plans: 36
-  percent: 95
+  total_plans: 40
+  completed_plans: 39
+  percent: 98
 ---
 
 # Project State
@@ -37,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 12 - Export and Package Boundary (2 of 4 plans complete)
+**Current focus:** Phase 13 - Rich Visual Novel Export Bridge (1 of 2 plans complete)
 
 ## Current Position
 
-Phase: 12 of 12 (Export and Package Boundary)
-Plan: 2 of 4 in current phase (12-02-PLAN.md complete)
+Phase: 13 of 14 (Rich Visual Novel Export Bridge)
+Plan: 1 of 2 in current phase (13-01-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
+Last activity: 2026-03-15 -- Completed 13-01-PLAN.md (VN Export Bridge)
 
-Progress: [████████████████████████████░░] 36/38 plans
+Progress: [█████████████████████████████░] 39/40 plans
 
 ## Performance Metrics
 
@@ -106,6 +90,7 @@ Progress: [███████████████████████
 | Phase 12 P02 | 3 | 2 tasks | 5 files |
 | Phase 12 P03 | 4 | 2 tasks | 6 files |
 | Phase 12 P04 | 4 | 2 tasks | 2 files |
+| Phase 13 P01 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -238,6 +223,9 @@ Recent decisions affecting current work:
 - [Phase 12]: VN engine uses inline JS state machine for zero-dependency single-file output
 - [Phase 12]: ExportDialog groups formats into Script Formats and Story Formats sections
 - [Phase 12]: ESLint flat config scoped block for dzin boundary -- keeps rule isolated to engine files only
+- [Phase 13]: BFS with adjacency map for graph traversal -- handles cycles via visited set
+- [Phase 13]: Scenes with explicit choices do NOT get implicit Continue links -- preserves authored branching
+- [Phase 13]: Narration play button only when NO per-line dialogue audio exists -- avoids double audio
 
 ### Pending Todos
 
@@ -250,6 +238,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T10:20:04.878Z
-Stopped at: Completed 12-04-PLAN.md
+Last session: 2026-03-15T15:34:13.976Z
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None
