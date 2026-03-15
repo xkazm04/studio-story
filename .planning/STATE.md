@@ -3,11 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
+stopped_at: Completed 12-03-PLAN.md
+last_updated: "2026-03-15T10:14:22.041Z"
+last_activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
+progress:
+  total_phases: 12
+  completed_phases: 11
+  total_plans: 38
+  completed_plans: 37
+  percent: 97
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
 stopped_at: Completed 12-02-PLAN.md
 last_updated: "2026-03-15T10:07:00Z"
 last_activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
 progress:
-  total_phases: 12
+  [██████████] 97%
   completed_phases: 11
   total_plans: 38
   completed_plans: 36
@@ -88,6 +104,7 @@ Progress: [███████████████████████
 | Phase 11 P02 | 7 | 2 tasks | 4 files |
 | Phase 12 P01 | 3 | 2 tasks | 4 files |
 | Phase 12 P02 | 3 | 2 tasks | 5 files |
+| Phase 12 P03 | 4 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -217,6 +234,8 @@ Recent decisions affecting current work:
 - [12-02]: Base64 inlining via fetch+arrayBuffer+btoa for zero-dependency asset embedding
 - [12-02]: Scroll-snap CSS for page-by-page reading with IntersectionObserver dot sync
 - [12-02]: Art-style adaptive theming falls back to --ms- design system dark defaults
+- [Phase 12]: VN engine uses inline JS state machine for zero-dependency single-file output
+- [Phase 12]: ExportDialog groups formats into Script Formats and Story Formats sections
 
 ### Pending Todos
 
@@ -229,6 +248,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T10:07:00Z
-Stopped at: Completed 12-02-PLAN.md
-Resume file: .planning/phases/12-export-and-package-boundary/12-03-PLAN.md
+Last session: 2026-03-15T10:14:22.038Z
+Stopped at: Completed 12-03-PLAN.md
+Resume file: None
