@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 12-01-PLAN.md
-last_updated: "2026-03-15T10:01:07Z"
-last_activity: 2026-03-15 -- Completed 12-01-PLAN.md (Story PDF Generator with illustrations)
+stopped_at: Completed 12-02-PLAN.md
+last_updated: "2026-03-15T10:07:00Z"
+last_activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
 progress:
   total_phases: 12
   completed_phases: 11
   total_plans: 38
-  completed_plans: 35
-  percent: 92
+  completed_plans: 36
+  percent: 95
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 12 - Export and Package Boundary (1 of 4 plans complete)
+**Current focus:** Phase 12 - Export and Package Boundary (2 of 4 plans complete)
 
 ## Current Position
 
 Phase: 12 of 12 (Export and Package Boundary)
-Plan: 1 of 4 in current phase (12-01-PLAN.md complete)
+Plan: 2 of 4 in current phase (12-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-15 -- Completed 12-01-PLAN.md (Story PDF Generator with illustrations)
+Last activity: 2026-03-15 -- Completed 12-02-PLAN.md (HTML5 Bundle Generator)
 
-Progress: [███████████████████████████░░░] 35/38 plans
+Progress: [████████████████████████████░░] 36/38 plans
 
 ## Performance Metrics
 
@@ -87,6 +87,7 @@ Progress: [███████████████████████
 | Phase 11 P01 | 5 | 2 tasks | 8 files |
 | Phase 11 P02 | 7 | 2 tasks | 4 files |
 | Phase 12 P01 | 3 | 2 tasks | 4 files |
+| Phase 12 P02 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -213,6 +214,9 @@ Recent decisions affecting current work:
 - [12-01]: Hand-rolled PDF with DCTDecode image XObjects -- no external PDF library, consistent with existing PDFGenerator
 - [12-01]: Helvetica font for story PDF (not Courier) -- prose readability over screenplay convention
 - [12-01]: Fixed image display dimensions with cm matrix -- real dimension parsing deferred
+- [12-02]: Base64 inlining via fetch+arrayBuffer+btoa for zero-dependency asset embedding
+- [12-02]: Scroll-snap CSS for page-by-page reading with IntersectionObserver dot sync
+- [12-02]: Art-style adaptive theming falls back to --ms- design system dark defaults
 
 ### Pending Todos
 
@@ -225,6 +229,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T10:01:07Z
-Stopped at: Completed 12-01-PLAN.md
-Resume file: .planning/phases/12-export-and-package-boundary/12-02-PLAN.md
+Last session: 2026-03-15T10:07:00Z
+Stopped at: Completed 12-02-PLAN.md
+Resume file: .planning/phases/12-export-and-package-boundary/12-03-PLAN.md
