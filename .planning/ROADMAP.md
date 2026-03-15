@@ -24,6 +24,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Writing Tools and Voice** - AI text generation, fiction writing tools, TTS narration, and script-to-performance pipeline (completed 2026-03-14)
 - [x] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation (completed 2026-03-15)
 - [x] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation (completed 2026-03-15)
+- [ ] **Phase 13: Rich Visual Novel Export Bridge** - Wire branching choices, illustrations, and narration audio through VN export pipeline (Gap Closure)
+- [ ] **Phase 14: LLM Transport and Ambient Observer Wiring** - Connect @dzin/core LLM transport and ambient observer to production app (Gap Closure)
 
 ## Phase Details
 
@@ -221,6 +223,33 @@ Plans:
 - [ ] 12-03-PLAN.md -- VisualNovelGenerator with VN state machine and branching choices, ExportDialog update (EXPORT-03)
 - [ ] 12-04-PLAN.md -- ESLint no-restricted-imports boundary rule for dzin package, extended boundary test (PKG-01)
 
+### Phase 13: Rich Visual Novel Export Bridge
+**Goal**: Visual novel export produces a fully interactive branching experience with illustrations, dialogue audio, and narration — not just a linear reader
+**Depends on**: Phase 8, Phase 9, Phase 10, Phase 12
+**Requirements**: EXPORT-03
+**Gap Closure**: Closes EXPORT-03 partial gap and "Story → Visual Novel Export" broken flow from audit
+**Success Criteria** (what must be TRUE):
+  1. `exportToVisualNovel()` fetches scene choices from scene-choices API and passes them through to `VisualNovelGenerator`
+  2. `StoryExportScene` includes `imageUrl` from scene illustrations, `narrationUrl` from TTS audio, and `dialogueLines` from screenplay parser
+  3. Exported HTML VN renders branching choices, displays scene illustrations as backgrounds, and plays dialogue/narration audio
+  4. Dead-end scenes correctly show "The End" in the exported VN
+
+Plans:
+- [ ] 13-01-PLAN.md -- Extend ScriptData/StoryExportData interfaces, update exportToVisualNovel() bridge to fetch and pass choices/images/audio
+
+### Phase 14: LLM Transport and Ambient Observer Wiring
+**Goal**: The @dzin/core LLM transport pipeline and ambient observer are connected in production, so NEEDS_LLM intents reach Claude and workflow suggestions appear automatically
+**Depends on**: Phase 5, Phase 6
+**Requirements**: JINT-03, JINT-05
+**Gap Closure**: Closes LLM transport and ambient observer integration gaps from audit
+**Success Criteria** (what must be TRUE):
+  1. When an intent handler returns `NEEDS_LLM`, the intent is forwarded to Claude via `createLLMTransport` → `/api/claude-terminal/intent` and the response patches are applied to workspace state
+  2. `createAmbientObserver` is instantiated in the app lifecycle, subscribes to IntentBus events, and fires workflow suggestions
+  3. `SuggestionStack` is rendered in the layout and displays ambient observer suggestions with Apply/Dismiss actions
+
+Plans:
+- [ ] 14-01-PLAN.md -- Instantiate LLM transport in useIntentDispatch, handle NEEDS_LLM, wire ambient observer and SuggestionStack
+
 ## Progress
 
 **Execution Order:**
@@ -235,10 +264,12 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 3. Jinn State and Streaming | 3/3 | Complete    | 2026-03-14 |
 | 4. Jinn Conversation Shell | 2/2 | Complete | 2026-03-14 |
 | 5. Jinn Intent and Director | 3/3 | Complete | 2026-03-14 |
-| 6. Jinn LLM Integration | 0/3 | Not started | - |
-| 7. Story Data and Authoring | 3/4 | In Progress|  |
-| 8. Story Intelligence and Branching | 2/3 | In Progress|  |
-| 9. Visual Pipeline | 1/3 | In Progress|  |
+| 6. Jinn LLM Integration | 3/3 | Complete | 2026-03-14 |
+| 7. Story Data and Authoring | 4/4 | Complete | 2026-03-14 |
+| 8. Story Intelligence and Branching | 3/3 | Complete | 2026-03-14 |
+| 9. Visual Pipeline | 3/3 | Complete | 2026-03-14 |
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
-| 12. Export and Package Boundary | 4/4 | Complete   | 2026-03-15 |
+| 12. Export and Package Boundary | 4/4 | Complete    | 2026-03-15 |
+| 13. Rich Visual Novel Export Bridge | 0/1 | Not started | - |
+| 14. LLM Transport and Ambient Observer Wiring | 0/1 | Not started | - |

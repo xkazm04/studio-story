@@ -64,7 +64,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **EXPORT-01**: PDF export with embedded illustrations and formatted story text
 - [x] **EXPORT-02**: Complete story package — shareable HTML5 bundle with illustrations, voice narration, and navigation
-- [x] **EXPORT-03**: Visual novel output — branching narrative exported as navigable, illustrated, voiced experience
+- [ ] **EXPORT-03**: Visual novel output — branching narrative exported as navigable, illustrated, voiced experience
 
 ### Package Boundary
 
@@ -140,7 +140,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VOICE-02 | Phase 10 | Complete |
 | EXPORT-01 | Phase 12 | Complete |
 | EXPORT-02 | Phase 12 | Complete |
-| EXPORT-03 | Phase 12 | Complete |
+| EXPORT-03 | Phase 13 | Pending |
 | PKG-01 | Phase 12 | Complete |
 | PKG-02 | Phase 1 | Complete |
 
