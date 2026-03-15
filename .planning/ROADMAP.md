@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Story Intelligence and Branching** - AI-driven narrative suggestions and branching story paths with scene graph
 - [ ] **Phase 9: Visual Pipeline** - AI-generated scene illustrations with character consistency and art style coherence
 - [x] **Phase 10: Writing Tools and Voice** - AI text generation, fiction writing tools, TTS narration, and script-to-performance pipeline (completed 2026-03-14)
-- [ ] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation
+- [x] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation (completed 2026-03-15)
 - [ ] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation
 
 ## Phase Details
@@ -240,5 +240,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 8. Story Intelligence and Branching | 2/3 | In Progress|  |
 | 9. Visual Pipeline | 1/3 | In Progress|  |
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
-| 11. Multimodal Input | 1/2 | In Progress|  |
+| 11. Multimodal Input | 2/2 | Complete   | 2026-03-15 |
 | 12. Export and Package Boundary | 0/4 | Not started | - |

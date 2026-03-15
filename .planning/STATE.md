@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-14T23:58:36Z"
-last_activity: 2026-03-15 -- Completed 11-01-PLAN.md (Voice transcription infrastructure)
+stopped_at: Completed 11-02-PLAN.md
+last_updated: "2026-03-15T00:09:08Z"
+last_activity: 2026-03-15 -- Completed 11-02-PLAN.md (Push-to-talk and always-available voice)
 progress:
   total_phases: 12
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 34
-  completed_plans: 33
-  percent: 97
+  completed_plans: 34
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 11 - Multimodal Input (1 of 2 plans complete)
+**Current focus:** Phase 11 - Multimodal Input (2 of 2 plans complete)
 
 ## Current Position
 
 Phase: 11 of 12 (Multimodal Input)
-Plan: 1 of 2 in current phase (11-01-PLAN.md complete)
+Plan: 2 of 2 in current phase (11-02-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-15 -- Completed 11-01-PLAN.md (Voice transcription infrastructure)
+Last activity: 2026-03-15 -- Completed 11-02-PLAN.md (Push-to-talk and always-available voice)
 
-Progress: [█████████████████████████████░] 33/34 plans
+Progress: [██████████████████████████████] 34/34 plans
 
 ## Performance Metrics
 
@@ -85,6 +85,7 @@ Progress: [███████████████████████
 | Phase 10 P03 | 8 | 2 tasks | 6 files |
 | Phase 10 P04 | 9 | 3 tasks | 12 files |
 | Phase 11 P01 | 5 | 2 tasks | 8 files |
+| Phase 11 P02 | 7 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -203,6 +204,11 @@ Recent decisions affecting current work:
 - [11-01]: parseTextToIntent is a pure exported function for testability rather than embedded in the hook
 - [11-01]: InteractionContext stored in ref (not React state) to avoid re-renders on each fragment addition
 - [11-01]: INTERACTION_TIMEOUT_MS set to 10s matching typical voice interaction gap patterns
+- [11-02]: isTypingInInput checks instanceof HTMLElement before getAttribute for jsdom compatibility
+- [11-02]: IDLE_DISCONNECT_MS = 120000 (2 min) per research pitfall #4 about WebSocket drain
+- [11-02]: Input area always visible since mic auto-connects; not gated behind isAnyConnected
+- [11-02]: Ghost text clears after 2s timeout rather than on next input event
+- [11-02]: PTT hint dismissed after 3 uses via localStorage counter (advisor-ptt-hint-count)
 
 ### Pending Todos
 
@@ -215,6 +221,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T23:58:36Z
-Stopped at: Completed 11-01-PLAN.md
-Resume file: Phase 11, plan 1 of 2 complete. Ready for 11-02.
+Last session: 2026-03-15T00:09:08Z
+Stopped at: Completed 11-02-PLAN.md
+Resume file: Phase 11 complete (2 of 2 plans). Ready for Phase 12.
