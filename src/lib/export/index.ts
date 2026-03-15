@@ -40,6 +40,9 @@ export { StoryPDFGenerator } from './StoryPDFGenerator';
 // HTML5 Bundle Generator
 export { HTML5BundleGenerator } from './HTML5BundleGenerator';
 
+// Visual Novel Generator
+export { VisualNovelGenerator } from './VisualNovelGenerator';
+
 // Shared Story Export Types
 export { type StoryExportData, type StoryExportScene, slugify } from './types';
 
@@ -100,6 +103,7 @@ import { EPUBBuilder, convertToEPUBChapters, type EPUBMetadata } from './EPUBBui
 import { FountainExporter, convertToFountainElements, type FountainTitlePage } from './FountainExporter';
 import { StoryPDFGenerator as _StoryPDFGenerator } from './StoryPDFGenerator';
 import { HTML5BundleGenerator as _HTML5BundleGenerator } from './HTML5BundleGenerator';
+import { VisualNovelGenerator as _VisualNovelGenerator } from './VisualNovelGenerator';
 import type { StoryExportData } from './types';
 
 export interface ScriptData {
@@ -153,7 +157,7 @@ export async function exportScript(
     case 'html5':
       return exportToHTML5(data);
     case 'visual-novel':
-      throw new Error('Visual novel export is not yet implemented');
+      return exportToVisualNovel(data);
     default:
       throw new Error(`Unsupported export format: ${format}`);
   }
@@ -410,6 +414,40 @@ async function exportToHTML5(data: ScriptData): Promise<ExportResult> {
   };
 
   const generator = new _HTML5BundleGenerator();
+  return generator.generate(storyData);
+}
+
+/**
+ * Export story data as an interactive visual novel HTML file.
+ */
+async function exportToVisualNovel(data: ScriptData): Promise<ExportResult> {
+  const sceneMap = new Map<string, string[]>();
+  for (const block of data.blocks) {
+    const existing = sceneMap.get(block.sceneId) || [];
+    existing.push(block.content);
+    sceneMap.set(block.sceneId, existing);
+  }
+
+  const scenes = data.scenes || Array.from(sceneMap.keys()).map((id, i) => ({
+    id,
+    name: `Scene ${i + 1}`,
+  }));
+
+  const storyData: StoryExportData = {
+    title: data.title,
+    author: data.author,
+    scenes: scenes.map((s) => ({
+      id: s.id,
+      name: s.name,
+      content: (sceneMap.get(s.id) || []).join('\n\n'),
+    })),
+    metadata: data.metadata ? {
+      description: data.metadata.description,
+      genre: data.metadata.genre,
+    } : undefined,
+  };
+
+  const generator = new _VisualNovelGenerator();
   return generator.generate(storyData);
 }
 
