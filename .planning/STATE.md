@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-15T22:38:00.000Z"
-last_activity: 2026-03-15 -- Completed 14-01-PLAN.md (LLM Transport Wiring)
+status: complete
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-03-15T22:45:52.000Z"
+last_activity: 2026-03-15 -- Completed 14-02-PLAN.md (Ambient Observer Wiring)
 progress:
   total_phases: 14
-  completed_phases: 13
+  completed_phases: 14
   total_plans: 42
-  completed_plans: 41
-  percent: 98
+  completed_plans: 42
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 14 - LLM Transport and Ambient Observer Wiring (1 of 2 plans complete)
+**Current focus:** All 14 phases complete - v1.0 milestone achieved
 
 ## Current Position
 
 Phase: 14 of 14 (LLM Transport and Ambient Observer Wiring)
-Plan: 1 of 2 in current phase (14-01-PLAN.md complete)
-Status: Executing
-Last activity: 2026-03-15 -- Completed 14-01-PLAN.md (LLM Transport Wiring)
+Plan: 2 of 2 in current phase (14-02-PLAN.md complete)
+Status: Complete
+Last activity: 2026-03-15 -- Completed 14-02-PLAN.md (Ambient Observer Wiring)
 
-Progress: [█████████████████████████████░] 41/42 plans
+Progress: [██████████████████████████████] 42/42 plans
 
 ## Performance Metrics
 
@@ -93,6 +93,7 @@ Progress: [███████████████████████
 | Phase 13 P01 | 5 | 2 tasks | 6 files |
 | Phase 13 P02 | 2 | 2 tasks | 3 files |
 | Phase 14 P01 | 5 | 2 tasks | 4 files |
+| Phase 14 P02 | 4 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -234,6 +235,10 @@ Recent decisions affecting current work:
 - [14-01]: Lazy transport: getOrCreateTransport() only called on first NEEDS_LLM event, no CLI session spawned on app load
 - [14-01]: Late-binding addSuggestion callback via setAddSuggestion() for parent component wiring
 - [14-01]: SuggestionCard variant derived from patternId '__llm_response__' in SuggestionStack, not passed from caller
+- [14-02]: SuggestionContext as React context in providers.tsx bridges useSuggestionState + useIntentDispatch for descendant access
+- [14-02]: Observer pauses on error/disconnected transport status, resumes on idle/sending/streaming -- simple boolean gate
+- [14-02]: Apply dispatches intent through bus with 'click' source for unified validation/undo
+- [14-02]: Idle timers keep running while paused but emitOrQueue gates output -- no timer reset needed
 
 ### Pending Todos
 
@@ -246,6 +251,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T22:38:00.000Z
-Stopped at: Completed 14-01-PLAN.md
-Resume file: .planning/phases/14-llm-transport-and-ambient-observer-wiring/14-01-SUMMARY.md
+Last session: 2026-03-15T22:45:52.000Z
+Stopped at: Completed 14-02-PLAN.md (all plans complete)
+Resume file: .planning/phases/14-llm-transport-and-ambient-observer-wiring/14-02-SUMMARY.md

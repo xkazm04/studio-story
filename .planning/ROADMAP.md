@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 11: Multimodal Input** - Voice as equal-mode interaction and fluid modality switching between voice, text, and manipulation (completed 2026-03-15)
 - [x] **Phase 12: Export and Package Boundary** - Story package exports (PDF, HTML5, visual novel) and enforced Jinn package separation (completed 2026-03-15)
 - [x] **Phase 13: Rich Visual Novel Export Bridge** - Wire branching choices, illustrations, and narration audio through VN export pipeline (Gap Closure) (completed 2026-03-15)
-- [ ] **Phase 14: LLM Transport and Ambient Observer Wiring** - Connect @dzin/core LLM transport and ambient observer to production app (Gap Closure)
+- [x] **Phase 14: LLM Transport and Ambient Observer Wiring** - Connect @dzin/core LLM transport and ambient observer to production app (Gap Closure) (completed 2026-03-15)
 
 ## Phase Details
 
@@ -275,4 +275,4 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
 | 12. Export and Package Boundary | 4/4 | Complete    | 2026-03-15 |
 | 13. Rich Visual Novel Export Bridge | 2/2 | Complete    | 2026-03-15 |
-| 14. LLM Transport and Ambient Observer Wiring | 1/2 | In Progress|  |
+| 14. LLM Transport and Ambient Observer Wiring | 2/2 | Complete   | 2026-03-15 |
