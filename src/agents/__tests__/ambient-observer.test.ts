@@ -266,4 +266,63 @@ describe('AmbientObserver', () => {
       'idle-empty-workspace',
     ]);
   });
+
+  // --- pause / resume ---
+
+  describe('pause/resume', () => {
+    it('does not fire suggestions when paused on matching events', () => {
+      observer = createAmbientObserver(bus, DEFAULT_PATTERNS, onSuggestion);
+
+      observer.pause();
+
+      // Emit a matching entity-created event
+      bus.emit(makeEvent('compose', 'open'));
+      vi.advanceTimersByTime(8_100);
+
+      // Paused -- should NOT fire
+      expect(onSuggestion).not.toHaveBeenCalled();
+    });
+
+    it('fires suggestions again after resume', () => {
+      observer = createAmbientObserver(bus, DEFAULT_PATTERNS, onSuggestion);
+
+      observer.pause();
+
+      bus.emit(makeEvent('compose', 'open'));
+      vi.advanceTimersByTime(8_100);
+      expect(onSuggestion).not.toHaveBeenCalled();
+
+      observer.resume();
+
+      // After resume, a new matching event should trigger suggestion
+      bus.emit(makeEvent('compose', 'open'));
+      vi.advanceTimersByTime(8_100);
+      expect(onSuggestion).toHaveBeenCalledTimes(1);
+    });
+
+    it('idle timers keep running while paused but emitOrQueue is gated', () => {
+      const idlePattern: WorkflowPattern[] = [
+        { ...DEFAULT_PATTERNS[3], cooldownMs: 1_000 }, // idle-empty-workspace with short cooldown
+      ];
+      observer = createAmbientObserver(bus, idlePattern, onSuggestion, { getPanelCount: () => 1 });
+
+      observer.pause();
+
+      // Wait for idle timer to fire (30s)
+      vi.advanceTimersByTime(40_000);
+
+      // Paused -- should NOT have fired
+      expect(onSuggestion).not.toHaveBeenCalled();
+
+      observer.resume();
+
+      // After resume, the idle timer needs to be re-triggered (emit an event to reset idle timer, or wait for next cycle)
+      // Emit an event to reset idle timers, then wait for them to fire again
+      bus.emit(makeEvent('compose', 'open'));
+      vi.advanceTimersByTime(40_000);
+
+      expect(onSuggestion).toHaveBeenCalledTimes(1);
+      expect(suggestions[0].patternId).toBe('idle-empty-workspace');
+    });
+  });
 });
