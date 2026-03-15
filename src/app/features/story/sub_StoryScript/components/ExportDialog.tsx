@@ -37,7 +37,9 @@ import {
   type ScriptData,
   exportScript,
   downloadExport,
+  VisualNovelGenerator,
 } from '@/lib/export';
+import { useVNExportData } from '@/app/hooks/integration/useVNExportData';
 
 // ============================================================================
 // Types
@@ -48,6 +50,7 @@ interface ExportDialogProps {
   onClose: () => void;
   scriptData: ScriptData;
   projectName?: string;
+  projectId?: string;
 }
 
 interface FormatOption {
@@ -335,11 +338,22 @@ export function ExportDialog({
   onClose,
   scriptData,
   projectName,
+  projectId,
 }: ExportDialogProps) {
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('pdf');
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [exportProgress, setExportProgress] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+
+  // VN export data hook - only fetches when VN format is selected and projectId is available
+  const vnExportData = useVNExportData(
+    projectId || '',
+    scriptData.title,
+    scriptData.author,
+    undefined,
+    selectedFormat === 'visual-novel' && !!projectId
+  );
 
   // Export options
   const [includeTitlePage, setIncludeTitlePage] = useState(true);
@@ -382,29 +396,41 @@ export function ExportDialog({
   const handleExport = useCallback(async () => {
     setIsExporting(true);
     setExportError(null);
+    setExportProgress(null);
 
     try {
-      const options: ExportOptions = {
-        format: selectedFormat,
-        includeTitlePage,
-        includeSceneNumbers,
-        filename: `${projectName || scriptData.title || 'screenplay'}.${selectedFormatInfo.extension.slice(1)}`,
-        pdf: selectedFormat === 'pdf' ? {
-          draftMode: pdfDraftMode,
-          pageSize: pdfPageSize,
-        } : undefined,
-        epub: selectedFormat === 'epub' ? {
-          theme: epubTheme,
-          includeChapterNumbers: epubIncludeChapterNumbers,
-        } : undefined,
-        fountain: selectedFormat === 'fountain' ? {
-          uppercaseSceneHeadings: fountainUppercase,
-          uppercaseCharacterNames: fountainUppercase,
-        } : undefined,
-      };
+      // Dual-path: VN format with rich data goes directly to VisualNovelGenerator
+      if (selectedFormat === 'visual-novel' && vnExportData.storyExportData) {
+        setExportProgress('Encoding images and audio...');
+        const generator = new VisualNovelGenerator();
+        setExportProgress('Generating visual novel...');
+        const result = await generator.generate(vnExportData.storyExportData);
+        downloadExport(result);
+      } else {
+        // All other formats (and VN fallback without projectId) use exportScript
+        setExportProgress('Assembling scene data...');
+        const options: ExportOptions = {
+          format: selectedFormat,
+          includeTitlePage,
+          includeSceneNumbers,
+          filename: `${projectName || scriptData.title || 'screenplay'}.${selectedFormatInfo.extension.slice(1)}`,
+          pdf: selectedFormat === 'pdf' ? {
+            draftMode: pdfDraftMode,
+            pageSize: pdfPageSize,
+          } : undefined,
+          epub: selectedFormat === 'epub' ? {
+            theme: epubTheme,
+            includeChapterNumbers: epubIncludeChapterNumbers,
+          } : undefined,
+          fountain: selectedFormat === 'fountain' ? {
+            uppercaseSceneHeadings: fountainUppercase,
+            uppercaseCharacterNames: fountainUppercase,
+          } : undefined,
+        };
 
-      const result = await exportScript(scriptData, options);
-      downloadExport(result);
+        const result = await exportScript(scriptData, options);
+        downloadExport(result);
+      }
 
       // Close dialog after successful export
       setTimeout(() => {
@@ -415,6 +441,7 @@ export function ExportDialog({
       setExportError(error instanceof Error ? error.message : 'Export failed');
     } finally {
       setIsExporting(false);
+      setExportProgress(null);
     }
   }, [
     selectedFormat,
@@ -428,6 +455,7 @@ export function ExportDialog({
     projectName,
     scriptData,
     selectedFormatInfo,
+    vnExportData.storyExportData,
     onClose,
   ]);
 
@@ -539,6 +567,69 @@ export function ExportDialog({
                   ))}
                 </ul>
               </div>
+
+              {/* VN Pre-Export Summary */}
+              {selectedFormat === 'visual-novel' && (
+                <div className="p-3 rounded-lg bg-slate-800/30 border border-slate-700 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Info className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-300">Visual Novel Data</span>
+                  </div>
+                  {vnExportData.isLoading && (
+                    <div className="flex items-center gap-2 text-sm text-slate-400">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      Loading scene data...
+                    </div>
+                  )}
+                  {vnExportData.error && (
+                    <div className="flex items-center gap-2 text-sm text-red-400">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      {vnExportData.error.message}
+                    </div>
+                  )}
+                  {vnExportData.summary && (
+                    <div className="space-y-1 text-sm">
+                      <div className="text-slate-300">
+                        {vnExportData.summary.includedScenes}/{vnExportData.summary.totalScenes} scenes included
+                      </div>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-slate-400">
+                        <span className="flex items-center gap-1">
+                          {vnExportData.summary.withIllustrations > 0 ? (
+                            <Check className="w-3 h-3 text-green-500" />
+                          ) : (
+                            <Info className="w-3 h-3 text-slate-500" />
+                          )}
+                          {vnExportData.summary.withIllustrations} with illustrations
+                        </span>
+                        <span className="flex items-center gap-1">
+                          {vnExportData.summary.withAudio > 0 ? (
+                            <Check className="w-3 h-3 text-green-500" />
+                          ) : (
+                            <Info className="w-3 h-3 text-slate-500" />
+                          )}
+                          {vnExportData.summary.withAudio} with audio
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Info className="w-3 h-3 text-slate-500" />
+                          {vnExportData.summary.deadEnds} dead-end scenes
+                        </span>
+                        {vnExportData.summary.emptySkipped > 0 && (
+                          <span className="flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3 text-amber-400" />
+                            {vnExportData.summary.emptySkipped} empty scenes skipped
+                          </span>
+                        )}
+                      </div>
+                      {!projectId && (
+                        <div className="flex items-center gap-2 mt-1 text-xs text-amber-300">
+                          <AlertCircle className="w-3 h-3" />
+                          No project ID -- using basic script data fallback
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Common Settings */}
               <SettingsSection title="General Options">
@@ -658,13 +749,13 @@ export function ExportDialog({
               <Button
                 size="sm"
                 onClick={handleExport}
-                disabled={isExporting}
+                disabled={isExporting || (selectedFormat === 'visual-novel' && vnExportData.isLoading)}
                 className="px-6 bg-cyan-600 hover:bg-cyan-500"
               >
                 {isExporting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Exporting...
+                    {exportProgress || 'Exporting...'}
                   </>
                 ) : (
                   <>
