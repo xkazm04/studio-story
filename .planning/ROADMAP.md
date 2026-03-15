@@ -233,9 +233,11 @@ Plans:
   2. `StoryExportScene` includes `imageUrl` from scene illustrations, `narrationUrl` from TTS audio, and `dialogueLines` from screenplay parser
   3. Exported HTML VN renders branching choices, displays scene illustrations as backgrounds, and plays dialogue/narration audio
   4. Dead-end scenes correctly show "The End" in the exported VN
+**Plans:** 2 plans
 
 Plans:
-- [ ] 13-01-PLAN.md -- Extend ScriptData/StoryExportData interfaces, update exportToVisualNovel() bridge to fetch and pass choices/images/audio
+- [ ] 13-01-PLAN.md -- VN export bridge utilities (graph traversal, data assembly, gradient fallback), VN engine narration play button
+- [ ] 13-02-PLAN.md -- useVNExportData hook, ExportDialog pre-export summary and dual-path VN export with progress indicator
 
 ### Phase 14: LLM Transport and Ambient Observer Wiring
 **Goal**: The @dzin/core LLM transport pipeline and ambient observer are connected in production, so NEEDS_LLM intents reach Claude and workflow suggestions appear automatically
@@ -271,5 +273,5 @@ Note: Phases 2 and 3 can execute in parallel (both depend only on Phase 1). Phas
 | 10. Writing Tools and Voice | 4/4 | Complete    | 2026-03-14 |
 | 11. Multimodal Input | 2/2 | Complete    | 2026-03-15 |
 | 12. Export and Package Boundary | 4/4 | Complete    | 2026-03-15 |
-| 13. Rich Visual Novel Export Bridge | 0/1 | Not started | - |
+| 13. Rich Visual Novel Export Bridge | 0/2 | Not started | - |
 | 14. LLM Transport and Ambient Observer Wiring | 0/1 | Not started | - |
