@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 11-02-PLAN.md
-last_updated: "2026-03-15T00:09:08Z"
-last_activity: 2026-03-15 -- Completed 11-02-PLAN.md (Push-to-talk and always-available voice)
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-03-15T10:01:07Z"
+last_activity: 2026-03-15 -- Completed 12-01-PLAN.md (Story PDF Generator with illustrations)
 progress:
   total_phases: 12
   completed_phases: 11
-  total_plans: 34
-  completed_plans: 34
-  percent: 100
+  total_plans: 38
+  completed_plans: 35
+  percent: 92
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** A regular person can produce a high-quality, compelling, publishable story package through an AI-driven interface that adapts to them.
-**Current focus:** Phase 11 - Multimodal Input (2 of 2 plans complete)
+**Current focus:** Phase 12 - Export and Package Boundary (1 of 4 plans complete)
 
 ## Current Position
 
-Phase: 11 of 12 (Multimodal Input)
-Plan: 2 of 2 in current phase (11-02-PLAN.md complete)
+Phase: 12 of 12 (Export and Package Boundary)
+Plan: 1 of 4 in current phase (12-01-PLAN.md complete)
 Status: Executing
-Last activity: 2026-03-15 -- Completed 11-02-PLAN.md (Push-to-talk and always-available voice)
+Last activity: 2026-03-15 -- Completed 12-01-PLAN.md (Story PDF Generator with illustrations)
 
-Progress: [██████████████████████████████] 34/34 plans
+Progress: [███████████████████████████░░░] 35/38 plans
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Progress: [███████████████████████
 | Phase 10 P04 | 9 | 3 tasks | 12 files |
 | Phase 11 P01 | 5 | 2 tasks | 8 files |
 | Phase 11 P02 | 7 | 2 tasks | 4 files |
+| Phase 12 P01 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -209,6 +210,9 @@ Recent decisions affecting current work:
 - [11-02]: Input area always visible since mic auto-connects; not gated behind isAnyConnected
 - [11-02]: Ghost text clears after 2s timeout rather than on next input event
 - [11-02]: PTT hint dismissed after 3 uses via localStorage counter (advisor-ptt-hint-count)
+- [12-01]: Hand-rolled PDF with DCTDecode image XObjects -- no external PDF library, consistent with existing PDFGenerator
+- [12-01]: Helvetica font for story PDF (not Courier) -- prose readability over screenplay convention
+- [12-01]: Fixed image display dimensions with cm matrix -- real dimension parsing deferred
 
 ### Pending Todos
 
@@ -221,6 +225,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T00:09:08Z
-Stopped at: Completed 11-02-PLAN.md
-Resume file: Phase 11 complete (2 of 2 plans). Ready for Phase 12.
+Last session: 2026-03-15T10:01:07Z
+Stopped at: Completed 12-01-PLAN.md
+Resume file: .planning/phases/12-export-and-package-boundary/12-02-PLAN.md
