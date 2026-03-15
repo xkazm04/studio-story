@@ -107,6 +107,24 @@ html, body {
   color: #000;
 }
 
+/* Narration play button */
+.vn-narration-btn {
+  display: inline-block;
+  padding: 8px 20px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid ${accent};
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+.vn-narration-btn:hover {
+  background: ${accent};
+  color: #000;
+}
+
 /* Ending overlay */
 #vn-ending {
   position: fixed; inset: 0;

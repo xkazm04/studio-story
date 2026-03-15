@@ -190,4 +190,80 @@ describe('VisualNovelGenerator', () => {
     expect(html).toContain('transition');
     expect(html).toContain('opacity');
   });
+
+  it('gradient fallback used when scene has no imageUrl', async () => {
+    const data = makeData({
+      scenes: [
+        {
+          id: 'scene-1',
+          name: 'No Image Scene',
+          content: 'A scene without an image.',
+          // No imageUrl
+        },
+      ],
+      artStyle: {
+        palette: ['#ff0000', '#00ff00'],
+        backgroundColor: '#000',
+        accentColor: '#06b6d4',
+      },
+    });
+
+    const gen = new VisualNovelGenerator();
+    const result = await gen.generate(data);
+    const html = await result.blob.text();
+
+    // Should contain the gradient SVG data URL
+    expect(html).toContain('data:image/svg+xml');
+  });
+});
+
+// ============================================================================
+// Narration Play Button Tests
+// ============================================================================
+
+describe('VN engine narration button', () => {
+  it('narration play button appears when scene has narrationUrl but no dialogue audio', () => {
+    const js = generateVNEngine([
+      {
+        name: 'Scene 1',
+        lines: [{ speaker: '', text: 'Some narration text.' }],
+        choices: [],
+        backgroundDataUrl: '',
+        isEnding: false,
+        narrationUrl: 'data:audio/mpeg;base64,AAAA',
+      },
+    ]);
+    expect(js).toContain('Play Narration');
+    expect(js).toContain('vn-narration-btn');
+  });
+
+  it('does NOT show narration button when dialogue lines have audioUrl', () => {
+    const js = generateVNEngine([
+      {
+        name: 'Scene 1',
+        lines: [{ speaker: 'Alice', text: 'Hello', audioUrl: 'data:audio/mpeg;base64,BB' }],
+        choices: [],
+        backgroundDataUrl: '',
+        isEnding: false,
+        narrationUrl: 'data:audio/mpeg;base64,AAAA',
+      },
+    ]);
+    // The condition checks for per-line audio -- button should NOT appear
+    // because the engine checks `!scene.lines.some(function(l) { return !!l.audioUrl; })`
+    // The narrationUrl is still in the data, but the button rendering is gated by the condition
+    // We verify the engine code has the correct conditional logic
+    expect(js).toContain('!scene.lines.some');
+  });
+});
+
+// ============================================================================
+// CSS Narration Button Tests
+// ============================================================================
+
+describe('generateVNCss narration button', () => {
+  it('includes narration button styles', () => {
+    const css = generateVNCss();
+    expect(css).toContain('vn-narration-btn');
+    expect(css).toContain('cursor: pointer');
+  });
 });

@@ -17,6 +17,7 @@ import {
   type VNLine,
   type VNChoice,
 } from './templates/visual-novel';
+import { generateGradientBackground } from './vnExportBridge';
 
 // ============================================================================
 // VisualNovelGenerator
@@ -31,9 +32,12 @@ export class VisualNovelGenerator {
     const idToIndex = new Map<string, number>();
     data.scenes.forEach((s, i) => idToIndex.set(s.id, i));
 
+    // Capture art style palette for gradient fallback
+    const palette = data.artStyle?.palette;
+
     // Transform scenes into VN scene data
     const vnScenes: VNSceneData[] = await Promise.all(
-      data.scenes.map((scene) => this.transformScene(scene, idToIndex))
+      data.scenes.map((scene) => this.transformScene(scene, idToIndex, palette))
     );
 
     // Assemble template parts
@@ -68,7 +72,8 @@ export class VisualNovelGenerator {
 
   private async transformScene(
     scene: StoryExportScene,
-    idToIndex: Map<string, number>
+    idToIndex: Map<string, number>,
+    artStylePalette?: string[]
   ): Promise<VNSceneData> {
     // Build dialogue lines
     let lines: VNLine[];
@@ -97,10 +102,18 @@ export class VisualNovelGenerator {
     // Detect dead-end: no choices and not explicitly an ending
     const isEnding = scene.isEnding === true || (choices.length === 0);
 
-    // Encode background image
+    // Encode background image or generate gradient fallback
     let backgroundDataUrl = '';
     if (scene.imageUrl) {
       backgroundDataUrl = await this.fetchAndEncode(scene.imageUrl, 'image');
+    } else {
+      backgroundDataUrl = generateGradientBackground(scene.name, artStylePalette);
+    }
+
+    // Encode narration audio if present
+    let narrationDataUrl = '';
+    if (scene.narrationUrl) {
+      narrationDataUrl = await this.fetchAndEncode(scene.narrationUrl, 'audio');
     }
 
     return {
@@ -109,6 +122,7 @@ export class VisualNovelGenerator {
       choices,
       backgroundDataUrl,
       isEnding,
+      narrationUrl: narrationDataUrl || undefined,
     };
   }
 

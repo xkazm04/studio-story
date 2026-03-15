@@ -15,6 +15,7 @@ export interface VNSceneData {
   choices: VNChoice[];
   backgroundDataUrl: string;
   isEnding: boolean;
+  narrationUrl?: string;
 }
 
 export interface VNLine {
@@ -107,6 +108,21 @@ export function generateVNEngine(scenes: VNSceneData[]): string {
   function showChoices() {
     var scene = scenes[currentSceneIndex];
     hintEl.style.display = 'none';
+
+    // Show narration play button if scene has narrationUrl but no per-line dialogue audio
+    if (scene.narrationUrl && !scene.lines.some(function(l) { return !!l.audioUrl; })) {
+      var narBtn = document.createElement('button');
+      narBtn.className = 'vn-narration-btn';
+      narBtn.textContent = 'Play Narration';
+      narBtn.onclick = function() {
+        if (currentAudio) { currentAudio.pause(); }
+        currentAudio = new Audio(scene.narrationUrl);
+        currentAudio.play().catch(function(){});
+        narBtn.textContent = 'Playing...';
+        currentAudio.onended = function() { narBtn.textContent = 'Play Narration'; };
+      };
+      dialogueBox.appendChild(narBtn);
+    }
 
     if (scene.choices && scene.choices.length > 0) {
       waitingForChoice = true;
