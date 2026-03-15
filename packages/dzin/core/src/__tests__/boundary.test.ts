@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { join, extname, resolve } from 'path';
 import { describe, it, expect } from 'vitest';
 
 // ---------------------------------------------------------------------------
@@ -89,5 +89,50 @@ describe('Package boundary', () => {
     }
 
     expect(violations).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ESLint rule alignment verification
+// Reads eslint.config.mjs as text and verifies the dzin boundary rule exists
+// ---------------------------------------------------------------------------
+
+describe('ESLint boundary rule alignment', () => {
+  const repoRoot = resolve(__dirname, '../../../../..');
+  const eslintConfigPath = join(repoRoot, 'eslint.config.mjs');
+  let eslintContent: string;
+
+  try {
+    eslintContent = readFileSync(eslintConfigPath, 'utf-8');
+  } catch {
+    eslintContent = '';
+  }
+
+  it('eslint.config.mjs exists and is readable', () => {
+    expect(eslintContent.length).toBeGreaterThan(0);
+  });
+
+  it('includes no-restricted-imports rule scoped to dzin package', () => {
+    expect(eslintContent).toContain('packages/dzin/**/*.ts');
+    expect(eslintContent).toContain('no-restricted-imports');
+  });
+
+  it('ESLint patterns cover @/ alias imports', () => {
+    const aliasPatterns = ['@/app/*', '@/workspace/*', '@/manifest/*', '@/agents/*', '@/lib/*'];
+    for (const pattern of aliasPatterns) {
+      expect(eslintContent).toContain(pattern);
+    }
+  });
+
+  it('ESLint patterns cover relative src/ path imports', () => {
+    expect(eslintContent).toContain('../../src/*');
+    expect(eslintContent).toContain('../../../src/*');
+  });
+
+  it('ESLint patterns cover domain runtime libraries', () => {
+    const libs = ['zustand', '@supabase/*', '@tanstack/react-query'];
+    for (const lib of libs) {
+      expect(eslintContent).toContain(lib);
+    }
   });
 });
