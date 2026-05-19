@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGeminiProvider, parseJsonFromGeminiResponse } from '@/app/lib/ai';
 import { fetchImageAsDataUrl } from '@/app/lib/ai/image-utils';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 interface EvaluateRequest {
   imageUrl: string;
@@ -26,8 +27,7 @@ interface ImageEvaluation {
   strengths?: string[];
 }
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/ai/evaluate-image', async (request: NextRequest) => {
     const body: EvaluateRequest = await request.json();
     const { imageUrl, promptId, criteria } = body;
 
@@ -100,11 +100,4 @@ Return this exact JSON structure:
     };
 
     return NextResponse.json({ success: true, evaluation });
-  } catch (error) {
-    console.error('Image evaluation error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+});

@@ -147,17 +147,6 @@ class SeededRandom {
  * - Generate heatmap data for visualization
  */
 class FlowSimulatorClass {
-  private static instance: FlowSimulatorClass;
-
-  private constructor() {}
-
-  static getInstance(): FlowSimulatorClass {
-    if (!FlowSimulatorClass.instance) {
-      FlowSimulatorClass.instance = new FlowSimulatorClass();
-    }
-    return FlowSimulatorClass.instance;
-  }
-
   /**
    * Run Monte Carlo simulation for player flow
    */
@@ -779,5 +768,5 @@ class FlowSimulatorClass {
   }
 }
 
-export const flowSimulator = FlowSimulatorClass.getInstance();
+export const flowSimulator = new FlowSimulatorClass();
 export default flowSimulator;

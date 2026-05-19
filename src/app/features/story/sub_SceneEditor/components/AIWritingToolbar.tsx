@@ -112,7 +112,7 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
     >
       <div
         ref={dropdownRef}
-        className="relative flex items-center gap-0.5 rounded-lg border border-slate-700 bg-slate-800 px-1 py-0.5 shadow-xl"
+        className="relative flex items-center gap-0.5 rounded-lg border border-slate-700/60 bg-slate-800 px-1 py-0.5 shadow-xl"
       >
         {/* AI Button */}
         <button
@@ -122,8 +122,8 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
           className={cn(
             'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-all',
             showDropdown
-              ? 'bg-cyan-500/20 text-cyan-400'
-              : 'text-cyan-400 hover:bg-slate-700/60 hover:text-cyan-300',
+              ? 'bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-500/30'
+              : 'text-cyan-400 hover:bg-slate-800/80 hover:text-cyan-300',
             isProcessing && 'opacity-60 cursor-not-allowed'
           )}
           title="AI Writing Tools"
@@ -138,7 +138,7 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
 
         {/* Dropdown */}
         {showDropdown && (
-          <div className="absolute left-0 top-full mt-1.5 z-50 min-w-[200px] rounded-lg border border-slate-700 bg-slate-800 py-1 shadow-2xl">
+          <div className="absolute left-0 top-full mt-1.5 z-50 min-w-[200px] rounded-lg border border-slate-700/60 bg-slate-800 py-1 shadow-2xl">
             {TOOL_ITEMS.map((item) => {
               if (item.id === 'divider') {
                 return (
@@ -162,7 +162,7 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
                     }}
                     className={cn(
                       'flex w-full items-center gap-2.5 px-3 py-2 text-sm text-slate-300',
-                      'hover:bg-slate-700/60 hover:text-slate-100 transition-colors',
+                      'hover:bg-slate-800/80 hover:text-slate-100 transition-colors duration-150',
                     )}
                   >
                     <item.icon className="w-3.5 h-3.5 text-slate-400" />
@@ -174,7 +174,7 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
 
                   {/* Continue submenu */}
                   {item.hasSubmenu && showContinueSubmenu && (
-                    <div className="absolute left-full top-0 ml-1 min-w-[160px] rounded-lg border border-slate-700 bg-slate-800 py-1 shadow-2xl">
+                    <div className="absolute left-full top-0 ml-1 min-w-[160px] rounded-lg border border-slate-700/60 bg-slate-800 py-1 shadow-2xl">
                       {CONTINUE_OPTIONS.map((opt) => (
                         <button
                           key={opt.length}
@@ -182,7 +182,7 @@ export function AIWritingToolbar({ editor, projectId, sceneId }: AIWritingToolba
                           onClick={() =>
                             handleToolClick('continue', { length: opt.length })
                           }
-                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 transition-colors"
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/80 hover:text-slate-100 transition-colors duration-150"
                         >
                           {opt.label}
                         </button>

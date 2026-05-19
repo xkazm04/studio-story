@@ -9,6 +9,7 @@
  */
 
 import type { StoryExportScene } from './types';
+import { escapeXml } from './utils';
 import type { SceneChoice } from '@/app/types/SceneChoice';
 import { parseScreenplayToScriptLines } from '@/app/features/voice/lib/screenplayParser';
 
@@ -302,15 +303,3 @@ export function generateGradientBackground(
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
-// ============================================================================
-// Helpers
-// ============================================================================
-
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useCopyToClipboard } from '@/app/hooks/useCopyToClipboard';
 import { motion } from 'framer-motion';
 import {
   Copy,
@@ -36,9 +37,11 @@ interface SuggestionCardProps {
   showDetails?: boolean;
 }
 
+type SuggestionColor = 'blue' | 'purple' | 'green' | 'yellow' | 'red' | 'cyan';
+
 const suggestionTypeConfig: Record<
   SuggestionType,
-  { icon: React.ElementType; color: string; label: string }
+  { icon: React.ElementType; color: SuggestionColor; label: string }
 > = {
   scene_hook: { icon: Film, color: 'blue', label: 'Scene Hook' },
   beat_outline: { icon: BookOpen, color: 'purple', label: 'Beat Outline' },
@@ -48,6 +51,47 @@ const suggestionTypeConfig: Record<
   world_building: { icon: Globe, color: 'cyan', label: 'World Building' },
 };
 
+/**
+ * Static class map — avoids dynamic Tailwind class construction
+ * which gets purged from production CSS bundles.
+ */
+const colorClasses: Record<SuggestionColor, {
+  iconWrap: string;
+  iconText: string;
+  insertBtn: string;
+}> = {
+  blue: {
+    iconWrap: 'bg-blue-600/20 border border-blue-600/30',
+    iconText: 'text-blue-400',
+    insertBtn: 'bg-blue-600 hover:bg-blue-700',
+  },
+  purple: {
+    iconWrap: 'bg-purple-600/20 border border-purple-600/30',
+    iconText: 'text-purple-400',
+    insertBtn: 'bg-purple-600 hover:bg-purple-700',
+  },
+  green: {
+    iconWrap: 'bg-green-600/20 border border-green-600/30',
+    iconText: 'text-green-400',
+    insertBtn: 'bg-green-600 hover:bg-green-700',
+  },
+  yellow: {
+    iconWrap: 'bg-yellow-600/20 border border-yellow-600/30',
+    iconText: 'text-yellow-400',
+    insertBtn: 'bg-yellow-600 hover:bg-yellow-700',
+  },
+  red: {
+    iconWrap: 'bg-red-600/20 border border-red-600/30',
+    iconText: 'text-red-400',
+    insertBtn: 'bg-red-600 hover:bg-red-700',
+  },
+  cyan: {
+    iconWrap: 'bg-cyan-600/20 border border-cyan-600/30',
+    iconText: 'text-cyan-400',
+    insertBtn: 'bg-cyan-600 hover:bg-cyan-700',
+  },
+};
+
 export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   suggestion,
   onCopy,
@@ -55,7 +99,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   onDismiss,
   showDetails = true,
 }) => {
-  const [copied, setCopied] = useState(false);
+  const { copy: copyToClipboard, copied } = useCopyToClipboard();
   const [expanded, setExpanded] = useState(false);
 
   const config = suggestionTypeConfig[suggestion.type] || suggestionTypeConfig.scene_hook;
@@ -64,11 +108,8 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   const handleCopy = async () => {
     if (onCopy) {
       onCopy(suggestion);
-    } else {
-      await navigator.clipboard.writeText(suggestion.content);
     }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    await copyToClipboard(suggestion.content);
   };
 
   const handleInsert = () => {
@@ -99,13 +140,13 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.2 }}
     >
-      <SectionWrapper borderColor={config.color as any} padding="sm" className="relative">
+      <SectionWrapper borderColor={config.color} padding="sm" className="relative">
         {/* Header */}
         <div className="flex items-start gap-3 mb-2">
           <div
-            className={`p-2 rounded-lg bg-${config.color}-600/20 border border-${config.color}-600/30`}
+            className={`p-2 rounded-lg ${colorClasses[config.color].iconWrap}`}
           >
-            <Icon className={`w-4 h-4 text-${config.color}-400`} />
+            <Icon className={`w-4 h-4 ${colorClasses[config.color].iconText}`} />
           </div>
 
           <div className="flex-1 min-w-0">
@@ -199,7 +240,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           {onInsert && (
             <button
               onClick={handleInsert}
-              className={`flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-600 hover:bg-${config.color}-700 rounded text-sm text-white transition-colors`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 ${colorClasses[config.color].insertBtn} rounded text-sm text-white transition-colors`}
               data-testid="insert-suggestion-btn"
             >
               <Zap className="w-3 h-3" />

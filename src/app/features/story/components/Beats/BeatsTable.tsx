@@ -7,13 +7,12 @@ import { BeatTableItem } from './BeatsOverview';
 import { beatApi } from '@/app/hooks/integration/useBeats';
 import { ConfirmationModal } from '@/app/components/UI/ConfirmationModal';
 import { useToast } from '@/app/components/UI/ToastContainer';
-import { useUserSettingsStore } from '@/app/store/slices/userSettingsSlice';
-import { triggerCheckboxConfetti, getCongratulationMessage } from '@/app/lib/celebration';
 import { useState } from 'react';
 import BeatSceneSuggestions from './BeatSceneSuggestions';
 import { BeatSceneSuggestion } from '@/app/types/Beat';
 import { beatSceneMappingApi } from '@/app/hooks/integration/useBeatSceneMappings';
 import { useProjectStore } from '@/app/store/projectStore';
+import { useToggleBeatCompletion } from './useToggleBeatCompletion';
 
 interface BeatsTableProps {
   beats: BeatTableItem[];
@@ -23,11 +22,11 @@ interface BeatsTableProps {
 
 export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTableProps) {
   const { showToast } = useToast();
-  const { celebrationsEnabled, isBeatCelebrated, markBeatCelebrated } = useUserSettingsStore();
   const { selectedProject } = useProjectStore();
   const [deleteModalRow, setDeleteModalRow] = useState<BeatTableItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const checkboxRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const { toggleCompletion } = useToggleBeatCompletion({ setBeats });
 
   const columns = useMemo<ColumnDefinition<BeatTableItem>[]>(
     () => [
@@ -82,7 +81,7 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
                 }}
                 type="checkbox"
                 checked={!!value}
-                onChange={() => handleToggleCompletion(row)}
+                onChange={() => toggleCompletion(row, checkboxRefs.current.get(rowId))}
                 className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
                 data-testid={`beat-completion-checkbox-${rowId}`}
               />
@@ -93,32 +92,6 @@ export default function BeatsTable({ beats, setBeats, isReordering }: BeatsTable
     ],
     []
   );
-
-  const handleToggleCompletion = async (beat: BeatTableItem) => {
-    const newValue = !beat.completed;
-    const wasNotCompleted = !beat.completed;
-
-    try {
-      await beatApi.editBeat(beat.id, 'completed', newValue);
-      setBeats((prev) =>
-        prev.map((b) => (b.id === beat.id ? { ...b, completed: newValue } : b))
-      );
-
-      // Trigger celebration only on first completion
-      if (wasNotCompleted && newValue && celebrationsEnabled && !isBeatCelebrated(beat.id)) {
-        const checkboxEl = checkboxRefs.current.get(beat.id);
-        if (checkboxEl) {
-          triggerCheckboxConfetti(checkboxEl);
-        }
-        const message = getCongratulationMessage(beat.name);
-        showToast(message, 'success', 3000);
-        markBeatCelebrated(beat.id);
-      }
-    } catch (error) {
-      console.error('Failed to toggle completion:', error);
-      showToast('Failed to update beat completion', 'error');
-    }
-  };
 
   const handleRowUpdate = async (beat: BeatTableItem, updates: Partial<BeatTableItem>) => {
     const promises = [];

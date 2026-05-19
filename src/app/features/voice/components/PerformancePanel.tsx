@@ -118,7 +118,7 @@ export default function PerformancePanel({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="ms-h2 flex items-center gap-2">
-              <Music className="w-6 h-6 text-purple-400" />
+              <Music className="w-6 h-6 text-voice-muted" />
               Performance Director
             </h2>
             <p className="ms-caption mt-1">
@@ -144,7 +144,7 @@ export default function PerformancePanel({
                 onClick={() => setActiveSection(section.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-purple-500/20 text-purple-400'
+                    ? 'bg-voice-muted/20 text-voice-muted'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -312,7 +312,7 @@ export default function PerformancePanel({
           <textarea
             value={previewText}
             onChange={(e) => setPreviewText(e.target.value)}
-            className="w-full h-20 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 placeholder-slate-500 resize-none focus:outline-none focus:border-purple-500/50"
+            className="w-full h-20 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 placeholder-slate-500 resize-none focus:outline-none focus:border-voice-muted/50"
             placeholder="Enter text to preview..."
           />
         </div>

@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { fetchImageAsBase64 } from '@/app/lib/ai/image-utils';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // Gemini 2.5 Flash has native image generation capability
 const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
@@ -21,8 +22,7 @@ interface GeminiRequest {
   mode?: RegenerationMode; // 'transform' = redesign the image, 'overlay' = add elements on top
 }
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/ai/gemini', async (request: NextRequest) => {
     const body: GeminiRequest = await request.json();
     const { prompt, sourceImageUrl, aspectRatio = '16:9', mode = 'transform' } = body;
 
@@ -145,14 +145,4 @@ Create a completely NEW image inspired by the provided reference. You should rei
       success: true,
       imageUrl: generatedImageUrl,
     });
-  } catch (error) {
-    console.error('Gemini image generation error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to generate image',
-      },
-      { status: 500 }
-    );
-  }
-}
+});

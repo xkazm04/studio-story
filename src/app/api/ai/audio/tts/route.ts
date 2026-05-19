@@ -7,8 +7,9 @@
  * the public audio URL with estimated duration.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,8 +28,7 @@ interface TTSRequest {
 
 // ── Route Handler ────────────────────────────────────────────────────────────
 
-export async function POST(request: Request) {
-  try {
+export const POST = withApiHandler('POST /api/ai/audio/tts', async (request: NextRequest) => {
     const body: TTSRequest = await request.json();
     const { text, voice_id, voice_settings, model_id, project_id } = body;
 
@@ -119,11 +119,4 @@ export async function POST(request: Request) {
       audioUrl: urlData.publicUrl,
       duration: Math.round(estimatedDuration * 100) / 100,
     });
-  } catch (error) {
-    console.error('TTS API error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to generate speech' },
-      { status: 500 },
-    );
-  }
-}
+});

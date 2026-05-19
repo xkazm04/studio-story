@@ -6,12 +6,11 @@ import { Check, X, Pencil, Trash2 } from 'lucide-react';
 import { beatApi } from "@/app/hooks/integration/useBeats";
 import { ConfirmationModal } from "@/app/components/UI/ConfirmationModal";
 import { useToast } from "@/app/components/UI/ToastContainer";
-import { useUserSettingsStore } from "@/app/store/slices/userSettingsSlice";
-import { triggerCheckboxConfetti, getCongratulationMessage } from "@/app/lib/celebration";
 import BeatSceneSuggestions from "./BeatSceneSuggestions";
 import { BeatSceneSuggestion } from "@/app/types/Beat";
 import { beatSceneMappingApi } from "@/app/hooks/integration/useBeatSceneMappings";
 import { useProjectStore } from "@/app/store/projectStore";
+import { useToggleBeatCompletion } from "./useToggleBeatCompletion";
 
 type Props = {
     beat: BeatTableItem;
@@ -24,14 +23,13 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
     const [editValues, setEditValues] = useState<Partial<BeatTableItem>>({});
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [isCelebrating, setIsCelebrating] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
     const checkboxRef = useRef<HTMLInputElement>(null);
     const rowRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
-    const { celebrationsEnabled, isBeatCelebrated, markBeatCelebrated } = useUserSettingsStore();
     const { selectedProject } = useProjectStore();
+    const { toggleCompletion } = useToggleBeatCompletion({ setBeats });
 
     const startEditing = () => {
         setIsEditing(true);
@@ -91,45 +89,6 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
         }
     };
 
-    const toggleCompletion = async () => {
-        const newValue = !beat.completed;
-        const wasNotCompleted = !beat.completed;
-
-        try {
-            await beatApi.editBeat(beat.id, 'completed', newValue);
-            setBeats(prev => prev.map(b =>
-                b.id === beat.id ? { ...b, completed: newValue } : b
-            ));
-
-            // Trigger celebration only on first completion
-            if (wasNotCompleted && newValue && celebrationsEnabled && !isBeatCelebrated(beat.id)) {
-                triggerCelebration();
-                markBeatCelebrated(beat.id);
-            }
-        } catch (error) {
-            console.error('Failed to toggle completion:', error);
-        }
-    };
-
-    const triggerCelebration = () => {
-        // Set celebrating state for animations
-        setIsCelebrating(true);
-
-        // Trigger confetti at checkbox position
-        if (checkboxRef.current) {
-            triggerCheckboxConfetti(checkboxRef.current);
-        }
-
-        // Show congratulatory toast
-        const message = getCongratulationMessage(beat.name);
-        showToast(message, 'success', 3000);
-
-        // Reset celebrating state after animation
-        setTimeout(() => {
-            setIsCelebrating(false);
-        }, 1000);
-    };
-
     const handleAcceptSuggestion = async (suggestion: BeatSceneSuggestion) => {
         try {
             // Create the mapping in the database
@@ -167,7 +126,7 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
 
     return (
         <>
-            <div ref={rowRef} className={isCelebrating ? 'celebrate-row' : ''}>
+            <div ref={rowRef}>
             {isEditing ? (
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -228,11 +187,9 @@ const BeatsTableRow = ({ beat, index, setBeats }: Props) => {
                             ref={checkboxRef}
                             type="checkbox"
                             checked={beat.completed || false}
-                            onChange={toggleCompletion}
+                            onChange={() => toggleCompletion(beat, checkboxRef.current)}
                             data-testid="beat-completion-checkbox"
-                            className={`w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 ${
-                                isCelebrating ? 'celebrate-checkmark celebrate-glow' : ''
-                            }`}
+                            className="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500"
                         />
                     </div>
                     <div className="w-24 flex justify-end items-center space-x-1">

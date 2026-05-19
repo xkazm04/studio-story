@@ -5,8 +5,10 @@
  * and sends compact state snapshots to the Gemini Live client.
  */
 
-import type { GeminiLiveClient } from './GeminiLiveClient';
-import type { WorkspaceStateSnapshot } from './types';
+import type { GeminiLiveClient } from '@dzin/voice';
+import type { CLIToolEvent, WorkspaceStateSnapshot } from './types';
+import type { SceneMetadata } from '@/app/types/Scene';
+import { summarizeToolInput } from './types';
 
 type StoreGetter<T> = {
   getState: () => T;
@@ -19,10 +21,11 @@ interface ObserverDeps {
     panels: Array<{ type: string; role: string; density?: string }>;
     layout: string;
     focusedPanelId: string | null;
+    autoCompactedPanels: Set<string>;
   }>;
   projectStore: StoreGetter<{
     selectedProject: { id: string; title?: string; name?: string } | null;
-    selectedScene: { id: string; name?: string } | null;
+    selectedScene: { id: string; name?: string; metadata?: SceneMetadata } | null;
     selectedAct: { id: string; name?: string } | null;
   }>;
 }
@@ -30,12 +33,6 @@ interface ObserverDeps {
 const DEBOUNCE_MS = 800;
 const MIN_CHANGE_INTERVAL_MS = 3000;
 const TOOL_EVENT_DEBOUNCE_MS = 500;
-
-export interface CLIToolEvent {
-  toolName: string;
-  toolInput: Record<string, unknown>;
-  timestamp: number;
-}
 
 export class WorkspaceObserver {
   private unsubscribers: Array<() => void> = [];
@@ -96,8 +93,7 @@ export class WorkspaceObserver {
 
     this.recentToolEvents.push({
       toolName,
-      toolInput,
-      timestamp: Date.now(),
+      summary: summarizeToolInput(toolName, toolInput),
     });
 
     // Debounce: batch rapid tool events into a single message
@@ -114,31 +110,13 @@ export class WorkspaceObserver {
     const lines = ['[CLI Tool Activity]'];
 
     for (const event of events) {
-      const inputSummary = this.summarizeToolInput(event.toolName, event.toolInput);
-      lines.push(`- ${event.toolName}: ${inputSummary}`);
+      lines.push(`- ${event.toolName}: ${event.summary}`);
     }
 
     lines.push('');
     lines.push('Based on this CLI activity, consider if the workspace panels should be updated to show relevant content (e.g., show image gallery after image generation, show character detail after character update).');
 
     this.deps.client.send(lines.join('\n'));
-  }
-
-  private summarizeToolInput(toolName: string, input: Record<string, unknown>): string {
-    // Extract key info without sending full payloads
-    const parts: string[] = [];
-    if (input.characterId) parts.push(`character=${input.characterId}`);
-    if (input.sceneId) parts.push(`scene=${input.sceneId}`);
-    if (input.actId) parts.push(`act=${input.actId}`);
-    if (input.name) parts.push(`name="${input.name}"`);
-    if (input.type) parts.push(`type=${input.type}`);
-    if (input.prompt && typeof input.prompt === 'string') {
-      parts.push(`prompt="${(input.prompt as string).slice(0, 80)}..."`);
-    }
-    if (input.sourceImageUrl) parts.push('has_source_image');
-    if (input.imageUrl) parts.push('has_image');
-    if (input.updates) parts.push(`updates=${typeof input.updates === 'string' ? input.updates.slice(0, 100) : 'object'}`);
-    return parts.length > 0 ? parts.join(', ') : 'no params';
   }
 
   private scheduleSnapshot(): void {
@@ -178,6 +156,21 @@ export class WorkspaceObserver {
       ? ws.panels.find(p => `panel-${p.type}` === focusedId || p.type === focusedId)
       : null;
 
+    // Build scene atmosphere string from metadata
+    const meta = ps.selectedScene?.metadata;
+    let sceneAtmosphere: string | undefined;
+    if (meta) {
+      const parts: string[] = [];
+      if (meta.timeOfDay) parts.push(meta.timeOfDay);
+      if (meta.weather) parts.push(meta.weather);
+      if (meta.season) parts.push(meta.season);
+      if (meta.mood) parts.push(`mood: ${meta.mood}`);
+      if (meta.lighting) parts.push(`lighting: ${meta.lighting}`);
+      if (parts.length > 0) sceneAtmosphere = parts.join(', ');
+    }
+
+    const autoCompactedCount = ws.autoCompactedPanels.size;
+
     return {
       panels: ws.panels.map(p => ({ type: p.type, role: p.role, density: p.density })),
       layout: ws.layout,
@@ -190,6 +183,8 @@ export class WorkspaceObserver {
         ? { width: window.innerWidth, height: window.innerHeight }
         : undefined,
       focusedPanelType: focusedPanel?.type ?? undefined,
+      sceneAtmosphere,
+      autoCompactedCount: autoCompactedCount > 0 ? autoCompactedCount : undefined,
     };
   }
 
@@ -212,8 +207,13 @@ export class WorkspaceObserver {
       parts.push(`Focused: ${snapshot.focusedPanelType}`);
     }
 
+    if (snapshot.autoCompactedCount) {
+      parts.push(`Auto-compacted: ${snapshot.autoCompactedCount} panel(s)`);
+    }
+
     if (snapshot.selectedProject) parts.push(`Project: ${snapshot.selectedProject}`);
     if (snapshot.selectedScene) parts.push(`Scene: ${snapshot.selectedScene}`);
+    if (snapshot.sceneAtmosphere) parts.push(`Scene atmosphere: ${snapshot.sceneAtmosphere}`);
     if (snapshot.selectedAct) parts.push(`Act: ${snapshot.selectedAct}`);
     parts.push(`Terminal tabs: ${snapshot.terminalTabCount}`);
 

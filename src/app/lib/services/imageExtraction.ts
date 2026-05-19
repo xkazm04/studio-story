@@ -4,6 +4,8 @@
  * Supports multiple models (Gemini, Groq) and custom extraction schemas
  */
 
+import { extractData } from '@/app/utils/api';
+
 export interface ModelConfig {
   enabled: boolean;
 }
@@ -94,13 +96,13 @@ async function extractWithGemini<T>(
       throw new Error(`Gemini API error: ${response.statusText}`);
     }
 
-    const result = await response.json();
+    const result = extractData<Record<string, unknown>>(await response.json());
 
     return {
       model: 'gemini',
-      data: result.data,
+      data: result.data as T,
       processingTime: Date.now() - startTime,
-      confidence: result.confidence,
+      confidence: result.confidence as number | undefined,
     };
   } catch (error) {
     return {
@@ -144,13 +146,13 @@ async function extractWithGroq<T>(
       throw new Error(`Groq API error: ${response.statusText}`);
     }
 
-    const result = await response.json();
+    const result = extractData<Record<string, unknown>>(await response.json());
 
     return {
       model: 'groq',
-      data: result.data,
+      data: result.data as T,
       processingTime: Date.now() - startTime,
-      confidence: result.confidence,
+      confidence: result.confidence as number | undefined,
     };
   } catch (error) {
     return {

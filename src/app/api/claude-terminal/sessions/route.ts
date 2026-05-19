@@ -6,38 +6,20 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getActiveExecutions, getExecution } from '@/lib/claude-terminal/cli-service';
+import { getExecutionStore } from '@/lib/claude-terminal/execution-store';
 
-// Also expose a way to get ALL executions (not just running)
-// by looking up specific IDs via query params
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const executionId = searchParams.get('executionId');
+  const store = getExecutionStore();
 
   if (executionId) {
-    const execution = getExecution(executionId);
-    if (!execution) {
+    const summary = store.getSummary(executionId);
+    if (!summary) {
       return NextResponse.json({ error: 'Execution not found' }, { status: 404 });
     }
-    return NextResponse.json({
-      id: execution.id,
-      status: execution.status,
-      sessionId: execution.sessionId,
-      startTime: execution.startTime,
-      endTime: execution.endTime,
-      eventCount: execution.events.length,
-    });
+    return NextResponse.json(summary);
   }
 
-  const executions = getActiveExecutions();
-  return NextResponse.json(
-    executions.map((e) => ({
-      id: e.id,
-      status: e.status,
-      sessionId: e.sessionId,
-      startTime: e.startTime,
-      endTime: e.endTime,
-      eventCount: e.events.length,
-    }))
-  );
+  return NextResponse.json(store.getActiveSummaries());
 }

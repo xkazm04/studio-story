@@ -13,6 +13,7 @@
 import { useCallback, useRef } from 'react';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import type { WorkspacePanelType, PanelRole, PanelDensity, WorkspaceLayout, PanelDataSlice } from '../types';
+import { TOOL_NAMES } from '@/agents/types';
 import { PANEL_REGISTRY } from '../engine/panelRegistry';
 import { LAYOUT_ORDER, resolvePreferredLayout } from '../engine/layoutEngine';
 
@@ -25,10 +26,11 @@ interface CompositionPanel {
 }
 
 interface CompositionDirective {
-  action: 'show' | 'hide' | 'replace' | 'clear';
+  action: 'show' | 'hide' | 'replace' | 'clear' | 'save_snapshot' | 'load_snapshot';
   layout?: string;
   panels?: CompositionPanel[];
   reasoning?: string;
+  snapshotName?: string;
 }
 
 const VALID_ROLES: PanelRole[] = ['primary', 'secondary', 'tertiary', 'sidebar'];
@@ -70,6 +72,9 @@ export function useWorkspaceComposition() {
   const replaceAllPanels = useWorkspaceStore((s) => s.replaceAllPanels);
   const clearPanels = useWorkspaceStore((s) => s.clearPanels);
   const getVisiblePanels = useWorkspaceStore((s) => s.getVisiblePanels);
+  const saveNamedSnapshot = useWorkspaceStore((s) => s.saveNamedSnapshot);
+  const loadNamedSnapshot = useWorkspaceStore((s) => s.loadNamedSnapshot);
+  const namedSnapshots = useWorkspaceStore((s) => s.namedSnapshots);
   const lastFingerprintRef = useRef<string | null>(null);
   const lastAppliedAtRef = useRef(0);
 
@@ -79,7 +84,7 @@ export function useWorkspaceComposition() {
    */
   const handleToolUse = useCallback(
     (toolName: string, toolInput: Record<string, unknown>): boolean => {
-      if (toolName !== 'compose_workspace' && toolName !== 'update_workspace') {
+      if (toolName !== TOOL_NAMES.COMPOSE_WORKSPACE && toolName !== TOOL_NAMES.UPDATE_WORKSPACE) {
         return false;
       }
 
@@ -161,6 +166,20 @@ export function useWorkspaceComposition() {
           if (visibleTypes.size === 0) return true;
           clearPanels();
           break;
+        case 'save_snapshot': {
+          const name = directive.snapshotName?.trim();
+          if (!name) return false;
+          saveNamedSnapshot(name);
+          break;
+        }
+        case 'load_snapshot': {
+          const name = directive.snapshotName?.trim();
+          if (!name) return false;
+          const match = namedSnapshots.find((s) => s.name.toLowerCase() === name.toLowerCase());
+          if (!match) return false;
+          loadNamedSnapshot(match.id);
+          break;
+        }
         default:
           // Unknown action — don't handle
           return false;
@@ -176,7 +195,7 @@ export function useWorkspaceComposition() {
 
       return true;
     },
-    [showPanels, hidePanels, replaceAllPanels, clearPanels]
+    [showPanels, hidePanels, replaceAllPanels, clearPanels, saveNamedSnapshot, loadNamedSnapshot, namedSnapshots]
   );
 
   return { handleToolUse };

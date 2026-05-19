@@ -1,37 +1,66 @@
 'use client';
 
-import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User } from 'lucide-react';
+import { User, ArrowUp, ArrowDown } from 'lucide-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '@/app/lib/utils';
 import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelErrorState, PanelSkeletonList } from '../shared/PanelPrimitives';
-import type { BasePrimitiveProps, FieldSchema } from './types';
+import type { BasePrimitiveProps, BulkAction, FieldSchema } from './types';
+import { getFieldValue, renderFieldValue } from './utils';
 import { getAccent, SPACING, MOTION } from '@/workspace/theme/tokens';
+import { useKeyboardNavigation } from './useKeyboardNavigation';
+import { useMultiSelect } from './useMultiSelect';
+import BulkActionBar from './BulkActionBar';
+import { useFacetedFilter } from './useFacetedFilter';
+import FacetedFilterBar from './FacetedFilterBar';
+import ContextMenu, { useContextMenu } from './ContextMenu';
 
-interface DataListProps extends BasePrimitiveProps {
-  items: Record<string, unknown>[];
+// ─── Sort Types & Helpers ────────────────────────────────
+
+type SortDirection = 'asc' | 'desc';
+
+interface SortState {
+  key: string;
+  direction: SortDirection;
+}
+
+function compareValues(a: unknown, b: unknown, direction: SortDirection): number {
+  const aStr = renderFieldValue(a);
+  const bStr = renderFieldValue(b);
+
+  // Try numeric comparison first
+  const aNum = Number(aStr);
+  const bNum = Number(bStr);
+  if (aStr !== '' && bStr !== '' && !isNaN(aNum) && !isNaN(bNum)) {
+    return direction === 'asc' ? aNum - bNum : bNum - aNum;
+  }
+
+  // Fall back to locale-aware string comparison
+  const cmp = aStr.localeCompare(bStr, undefined, { sensitivity: 'base', numeric: true });
+  return direction === 'asc' ? cmp : -cmp;
+}
+
+interface DataListProps<T extends object = Record<string, unknown>> extends BasePrimitiveProps {
+  items: T[];
   fields: FieldSchema[];
   selectedId?: string;
-  onSelect?: (item: Record<string, unknown>) => void;
+  onSelect?: (item: T) => void;
   highlightIds?: Set<string>;
   highlightField?: string;
   highlightAccent?: string;
-  onItemClick?: (item: Record<string, unknown>) => void;
+  onItemClick?: (item: T) => void;
   numberedItems?: boolean;
-  itemBadge?: (item: Record<string, unknown>) => { label: string; className: string } | null;
-}
-
-function getFieldValue(item: Record<string, unknown>, key: string): unknown {
-  return item[key];
-}
-
-function renderFieldValue(value: unknown): string {
-  if (value == null) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return '';
+  itemBadge?: (item: T) => { label: string; className: string } | null;
+  /** Bulk actions shown when multiple items are selected via Ctrl/Shift+click */
+  bulkActions?: BulkAction[];
+  /** Called when a bulk action button is clicked */
+  onBulkAction?: (action: string, ids: string[]) => void;
+  /** Returns context menu items for a right-clicked entity */
+  contextMenuItems?: (entity: T) => import('./ContextMenu').ContextMenuItem[];
+  /** Called when a context menu action is selected */
+  onContextMenuAction?: (actionId: string, entity: T) => void;
 }
 
 /** Threshold: virtualize lists above this size */
@@ -39,7 +68,7 @@ const VIRTUALIZE_THRESHOLD = 50;
 /** Estimated row height in px for the virtualizer */
 const ROW_HEIGHT = 36;
 
-export default function DataList({
+export default function DataList<T extends object>({
   title,
   icon,
   headerAccent,
@@ -63,7 +92,13 @@ export default function DataList({
   emptyTitle,
   emptyDescription,
   density,
-}: DataListProps) {
+  bulkActions,
+  onBulkAction,
+  contextMenuItems,
+  onContextMenuAction,
+}: DataListProps<T>) {
+  const ctxMenu = useContextMenu<T>();
+
   const listFields = fields.filter(
     (f) => !f.displayIn || f.displayIn.includes('list-item')
   );
@@ -78,40 +113,48 @@ export default function DataList({
   const listRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const shouldVirtualize = items.length > VIRTUALIZE_THRESHOLD;
-
-  const handleListKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      const container = listRef.current;
-      if (!container) return;
-      const options = Array.from(
-        container.querySelectorAll<HTMLElement>('[role="option"]')
-      );
-      const currentIndex = options.indexOf(document.activeElement as HTMLElement);
-      if (currentIndex === -1) return;
-
-      let nextIndex = -1;
-      if (e.key === 'ArrowDown') {
-        nextIndex = Math.min(currentIndex + 1, options.length - 1);
-      } else if (e.key === 'ArrowUp') {
-        nextIndex = Math.max(currentIndex - 1, 0);
-      } else if (e.key === 'Home') {
-        nextIndex = 0;
-      } else if (e.key === 'End') {
-        nextIndex = options.length - 1;
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        (document.activeElement as HTMLElement)?.click();
-        return;
-      }
-
-      if (nextIndex >= 0 && nextIndex !== currentIndex) {
-        e.preventDefault();
-        options[nextIndex].focus();
-      }
-    },
-    []
+  // ─── Sorting ─────────────────────────────────────────
+  const sortableFields = useMemo(
+    () => listFields.filter((f) => f.sortable),
+    [listFields]
   );
+
+  const [sortState, setSortState] = useState<SortState | null>(null);
+
+  const toggleSort = (key: string) => {
+    setSortState((prev) => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null; // third click clears sort
+    });
+  };
+
+  const sortedItems = useMemo(() => {
+    if (!sortState) return items;
+    const { key, direction } = sortState;
+    return [...items].sort((a, b) =>
+      compareValues(getFieldValue(a, key), getFieldValue(b, key), direction)
+    );
+  }, [items, sortState]);
+
+  // Faceted filtering runs on top of sorting
+  const facetFilter = useFacetedFilter(sortedItems, fields);
+  const hasFilterableFields = facetFilter.facets.length > 0;
+  const displayItems = hasFilterableFields ? facetFilter.filteredItems : sortedItems;
+
+  const allSortedIds = useMemo(
+    () => displayItems.map((item) => renderFieldValue(getFieldValue(item, 'id'))),
+    [displayItems],
+  );
+  const multiSelect = useMultiSelect(allSortedIds);
+  const hasBulkActions = bulkActions && bulkActions.length > 0;
+
+  const shouldVirtualize = displayItems.length > VIRTUALIZE_THRESHOLD;
+
+  const handleListKeyDown = useKeyboardNavigation(listRef, {
+    selector: '[role="option"]',
+    mode: 'list',
+  });
 
   return (
     <PanelFrame
@@ -122,56 +165,64 @@ export default function DataList({
       actions={actions}
       density={density}
     >
+      {hasBulkActions && (
+        <BulkActionBar
+          selectedCount={multiSelect.selectedIds.size}
+          totalCount={displayItems.length}
+          actions={bulkActions!}
+          onAction={(actionId) =>
+            onBulkAction?.(actionId, Array.from(multiSelect.selectedIds))
+          }
+          onSelectAll={() => multiSelect.selectAll(allSortedIds)}
+          onClear={multiSelect.clearSelection}
+        />
+      )}
+
       {isLoading ? (
         <PanelSkeletonList rows={5} />
       ) : isError ? (
         <PanelErrorState message={errorMessage} onRetry={onRetry} />
-      ) : items.length === 0 ? (
+      ) : displayItems.length === 0 ? (
         <PanelEmptyState
           icon={emptyIcon}
           title={emptyTitle ?? 'No items'}
           description={emptyDescription}
         />
-      ) : shouldVirtualize ? (
-        <div
-          ref={scrollRef}
-          className={cn('overflow-auto flex-1', SPACING.panelPaddingCompact)}
-        >
-          <VirtualizedList
-            items={items}
-            listRef={listRef}
-            scrollRef={scrollRef}
-            title={title}
-            handleListKeyDown={handleListKeyDown}
-            selectedId={selectedId}
-            highlightIds={highlightIds}
-            highlightField={highlightField}
-            accentStyles={accentStyles}
-            onItemClick={onItemClick}
-            onSelect={onSelect}
-            numberedItems={numberedItems}
-            itemBadge={itemBadge}
-            avatarField={avatarField}
-            titleField={titleField}
-            subtitleField={subtitleField}
-          />
-        </div>
       ) : (
-        <div
-          ref={listRef}
-          role="listbox"
-          aria-label={title}
-          onKeyDown={handleListKeyDown}
-          className={cn(SPACING.listGap, SPACING.panelPaddingCompact)}
-        >
-          <AnimatePresence mode="popLayout">
-            {items.map((item, index) => (
-              <DataListRow
-                key={renderFieldValue(getFieldValue(item, 'id')) || `item-${index}`}
-                item={item}
-                index={index}
-                animated
+        <>
+          {sortableFields.length > 0 && (
+            <SortHeader
+              fields={sortableFields}
+              sortState={sortState}
+              onToggle={toggleSort}
+            />
+          )}
+          {hasFilterableFields && (
+            <FacetedFilterBar
+              facets={facetFilter.facets}
+              activeFilterCount={facetFilter.activeFilterCount}
+              toggleValue={facetFilter.toggleValue}
+              setTextQuery={facetFilter.setTextQuery}
+              setDateRange={facetFilter.setDateRange}
+              setNumberRange={facetFilter.setNumberRange}
+              clearField={facetFilter.clearField}
+              clearAll={facetFilter.clearAll}
+            />
+          )}
+          {shouldVirtualize ? (
+            <div
+              ref={scrollRef}
+              className={cn('overflow-auto flex-1', SPACING.panelPaddingCompact)}
+            >
+              <VirtualizedList
+                items={displayItems}
+                listRef={listRef}
+                scrollRef={scrollRef}
+                title={title}
+                handleListKeyDown={handleListKeyDown}
                 selectedId={selectedId}
+                multiSelectedIds={hasBulkActions ? multiSelect.selectedIds : undefined}
+                onMultiClick={hasBulkActions ? multiSelect.handleClick : undefined}
                 highlightIds={highlightIds}
                 highlightField={highlightField}
                 accentStyles={accentStyles}
@@ -182,43 +233,136 @@ export default function DataList({
                 avatarField={avatarField}
                 titleField={titleField}
                 subtitleField={subtitleField}
+                onContextMenu={contextMenuItems ? ctxMenu.open : undefined}
               />
-            ))}
-          </AnimatePresence>
-        </div>
+            </div>
+          ) : (
+            <div
+              ref={listRef}
+              role="listbox"
+              aria-label={title}
+              onKeyDown={handleListKeyDown}
+              className={cn(SPACING.listGap, SPACING.panelPaddingCompact)}
+            >
+              <AnimatePresence mode="popLayout">
+                {displayItems.map((item, index) => (
+                  <DataListRow
+                    key={renderFieldValue(getFieldValue(item, 'id')) || `item-${index}`}
+                    item={item}
+                    index={index}
+                    animated
+                    selectedId={selectedId}
+                    multiSelectedIds={hasBulkActions ? multiSelect.selectedIds : undefined}
+                    onMultiClick={hasBulkActions ? multiSelect.handleClick : undefined}
+                    highlightIds={highlightIds}
+                    highlightField={highlightField}
+                    accentStyles={accentStyles}
+                    onItemClick={onItemClick}
+                    onSelect={onSelect}
+                    numberedItems={numberedItems}
+                    itemBadge={itemBadge}
+                    avatarField={avatarField}
+                    titleField={titleField}
+                    subtitleField={subtitleField}
+                    onContextMenu={contextMenuItems ? ctxMenu.open : undefined}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </>
+      )}
+
+      {ctxMenu.position && ctxMenu.entity && contextMenuItems && (
+        <ContextMenu
+          position={ctxMenu.position}
+          items={contextMenuItems(ctxMenu.entity)}
+          onAction={(actionId) => onContextMenuAction?.(actionId, ctxMenu.entity!)}
+          onClose={ctxMenu.close}
+        />
       )}
     </PanelFrame>
   );
 }
 
+// ─── Sort Header ─────────────────────────────────────────
+
+interface SortHeaderProps {
+  fields: FieldSchema[];
+  sortState: SortState | null;
+  onToggle: (key: string) => void;
+}
+
+function SortHeader({ fields, sortState, onToggle }: SortHeaderProps) {
+  return (
+    <div
+      className="flex items-center gap-1 px-3 py-1 border-b border-slate-800/60"
+      role="toolbar"
+      aria-label="Sort controls"
+    >
+      <span className="text-[10px] uppercase tracking-wider text-slate-600 mr-1 select-none">
+        Sort
+      </span>
+      {fields.map((field) => {
+        const isActive = sortState?.key === field.key;
+        const direction = isActive ? sortState!.direction : null;
+        return (
+          <button
+            key={field.key}
+            type="button"
+            onClick={() => onToggle(field.key)}
+            className={cn(
+              'inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors',
+              isActive
+                ? 'bg-cyan-500/15 text-cyan-300'
+                : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/40',
+            )}
+            aria-label={`Sort by ${field.label}${direction ? ` ${direction}ending` : ''}`}
+            aria-pressed={isActive}
+          >
+            {field.label}
+            {direction === 'asc' && <ArrowUp className="w-3 h-3" />}
+            {direction === 'desc' && <ArrowDown className="w-3 h-3" />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Virtualized List ────────────────────────────────────
 
-interface VirtualizedListProps {
-  items: Record<string, unknown>[];
+interface VirtualizedListProps<T extends object> {
+  items: T[];
   listRef: React.RefObject<HTMLDivElement | null>;
   scrollRef: React.RefObject<HTMLDivElement | null>;
   title: string;
   handleListKeyDown: (e: React.KeyboardEvent) => void;
   selectedId?: string;
+  multiSelectedIds?: Set<string>;
+  onMultiClick?: (id: string, index: number, e: React.MouseEvent) => boolean;
   highlightIds?: Set<string>;
   highlightField?: string;
   accentStyles: ReturnType<typeof getAccent>;
-  onItemClick?: (item: Record<string, unknown>) => void;
-  onSelect?: (item: Record<string, unknown>) => void;
+  onItemClick?: (item: T) => void;
+  onSelect?: (item: T) => void;
   numberedItems?: boolean;
-  itemBadge?: (item: Record<string, unknown>) => { label: string; className: string } | null;
+  itemBadge?: (item: T) => { label: string; className: string } | null;
   avatarField?: FieldSchema;
   titleField?: FieldSchema;
   subtitleField?: FieldSchema;
+  onContextMenu?: (e: React.MouseEvent, item: T) => void;
 }
 
-function VirtualizedList({
+function VirtualizedList<T extends object>({
   items,
   listRef,
   scrollRef,
   title,
   handleListKeyDown,
   selectedId,
+  multiSelectedIds,
+  onMultiClick,
   highlightIds,
   highlightField,
   accentStyles,
@@ -229,7 +373,8 @@ function VirtualizedList({
   avatarField,
   titleField,
   subtitleField,
-}: VirtualizedListProps) {
+  onContextMenu,
+}: VirtualizedListProps<T>) {
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => scrollRef.current,
@@ -271,6 +416,8 @@ function VirtualizedList({
               index={virtualRow.index}
               animated={shouldAnimate}
               selectedId={selectedId}
+              multiSelectedIds={multiSelectedIds}
+              onMultiClick={onMultiClick}
               highlightIds={highlightIds}
               highlightField={highlightField}
               accentStyles={accentStyles}
@@ -281,6 +428,7 @@ function VirtualizedList({
               avatarField={avatarField}
               titleField={titleField}
               subtitleField={subtitleField}
+              onContextMenu={onContextMenu}
             />
           </div>
         );
@@ -291,28 +439,33 @@ function VirtualizedList({
 
 // ─── Row Component ───────────────────────────────────────
 
-interface DataListRowProps {
-  item: Record<string, unknown>;
+interface DataListRowProps<T extends object> {
+  item: T;
   index: number;
   animated: boolean;
   selectedId?: string;
+  multiSelectedIds?: Set<string>;
+  onMultiClick?: (id: string, index: number, e: React.MouseEvent) => boolean;
   highlightIds?: Set<string>;
   highlightField?: string;
   accentStyles: ReturnType<typeof getAccent>;
-  onItemClick?: (item: Record<string, unknown>) => void;
-  onSelect?: (item: Record<string, unknown>) => void;
+  onItemClick?: (item: T) => void;
+  onSelect?: (item: T) => void;
   numberedItems?: boolean;
-  itemBadge?: (item: Record<string, unknown>) => { label: string; className: string } | null;
+  itemBadge?: (item: T) => { label: string; className: string } | null;
   avatarField?: FieldSchema;
   titleField?: FieldSchema;
   subtitleField?: FieldSchema;
+  onContextMenu?: (e: React.MouseEvent, item: T) => void;
 }
 
-const DataListRow = React.memo(function DataListRow({
+function DataListRowInner<T extends object>({
   item,
   index,
   animated,
   selectedId,
+  multiSelectedIds,
+  onMultiClick,
   highlightIds,
   highlightField,
   accentStyles,
@@ -323,15 +476,21 @@ const DataListRow = React.memo(function DataListRow({
   avatarField,
   titleField,
   subtitleField,
-}: DataListRowProps) {
+  onContextMenu,
+}: DataListRowProps<T>) {
   const id = renderFieldValue(getFieldValue(item, 'id'));
   const isSelected = selectedId != null && id === selectedId;
+  const isMultiSelected = multiSelectedIds?.has(id) ?? false;
   const highlightKey = highlightField ?? 'id';
   const highlightValue = renderFieldValue(getFieldValue(item, highlightKey));
   const isHighlighted = highlightIds?.has(highlightValue) ?? false;
   const badge = itemBadge?.(item) ?? null;
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onMultiClick) {
+      const consumed = onMultiClick(id, index, e);
+      if (consumed) return;
+    }
     if (onItemClick) {
       onItemClick(item);
     } else {
@@ -343,13 +502,14 @@ const DataListRow = React.memo(function DataListRow({
     `group flex w-full items-center gap-2 rounded-md ${SPACING.rowPx} ${SPACING.rowPy} min-h-[30px] text-left transition-all ${MOTION.hoverDuration} border`,
     'border-transparent',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50',
-    !isSelected && !isHighlighted && 'hover:bg-slate-800/40',
-    (isSelected || isHighlighted) && 'hover:brightness-[1.15]',
-    isHighlighted && cn(accentStyles.border, 'border-l-2', accentStyles.leftBorder),
-    isHighlighted && !isSelected && accentStyles.bg,
-    isSelected && 'bg-amber-500/[0.08] border-l-2 border-l-amber-500/40',
-    isSelected && !isHighlighted && 'border-amber-500/25',
-    isSelected && isHighlighted && 'shadow-[inset_0_0_0_1px_rgba(245,158,11,0.25),0_0_0_2px_var(--highlight-ring)]',
+    !isSelected && !isMultiSelected && !isHighlighted && 'hover:bg-slate-800/40',
+    (isSelected || isHighlighted || isMultiSelected) && 'hover:brightness-[1.15]',
+    isMultiSelected && 'bg-cyan-500/[0.08] border-l-2 border-l-cyan-500/40 border-cyan-500/25',
+    isHighlighted && !isMultiSelected && cn(accentStyles.border, 'border-l-2', accentStyles.leftBorder),
+    isHighlighted && !isSelected && !isMultiSelected && accentStyles.bg,
+    isSelected && !isMultiSelected && 'bg-amber-500/[0.08] border-l-2 border-l-amber-500/40',
+    isSelected && !isHighlighted && !isMultiSelected && 'border-amber-500/25',
+    isSelected && isHighlighted && !isMultiSelected && 'shadow-[inset_0_0_0_1px_rgba(245,158,11,0.25),0_0_0_2px_var(--highlight-ring)]',
   );
 
   const style = isSelected && isHighlighted
@@ -401,16 +561,21 @@ const DataListRow = React.memo(function DataListRow({
     </>
   );
 
+  const handleRightClick = onContextMenu
+    ? (e: React.MouseEvent) => onContextMenu(e, item)
+    : undefined;
+
   if (animated) {
     return (
       <motion.button
         role="option"
-        aria-selected={isSelected}
+        aria-selected={isSelected || isMultiSelected}
         tabIndex={isSelected || (selectedId == null && index === 0) ? 0 : -1}
         initial={MOTION.listEnter}
         animate={{ ...MOTION.show, transition: { delay: MOTION.stagger(index) } }}
         type="button"
         onClick={handleClick}
+        onContextMenu={handleRightClick}
         className={className}
         style={style}
       >
@@ -422,17 +587,19 @@ const DataListRow = React.memo(function DataListRow({
   return (
     <button
       role="option"
-      aria-selected={isSelected}
+      aria-selected={isSelected || isMultiSelected}
       tabIndex={isSelected || (selectedId == null && index === 0) ? 0 : -1}
       type="button"
       onClick={handleClick}
+      onContextMenu={handleRightClick}
       className={className}
       style={style}
     >
       {content}
     </button>
   );
-});
+}
+const DataListRow = React.memo(DataListRowInner) as typeof DataListRowInner;
 
 function ListAvatar({ value }: { value: unknown }) {
   const src = typeof value === 'string' ? value : null;

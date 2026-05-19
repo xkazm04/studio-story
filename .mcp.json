@@ -4,7 +4,7 @@
       "type": "stdio",
       "command": "node",
       "args": [
-        "dist/mcp-server/index.js"
+        "dist/mcp-server/src/mcp-server/index.js"
       ],
       "env": {
         "STORY_BASE_URL": "http://localhost:3001",

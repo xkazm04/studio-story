@@ -6,9 +6,8 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { McpConfig } from '../config.js';
 import { dbSelect, dbSelectOne, dbInsert, dbUpdate } from '../db.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
+import { BEAT_TYPE_VALUES, beatTypeSchema } from '../../lib/beats/schemas.js';
 
 export function registerStoryStructureTools(server: McpServer, config: McpConfig) {
   // ---- Acts ----
@@ -99,12 +98,12 @@ export function registerStoryStructureTools(server: McpServer, config: McpConfig
 
   server.tool(
     'create_beat',
-    `Create a new beat. Required: act_id, name, type. Optional: description, order. The project_id is auto-filled. Beat types: "setup", "conflict", "resolution", "climax", "transition", "reveal", "action".`,
+    `Create a new beat. Required: act_id, name, type. Optional: description, order. The project_id is auto-filled. Beat types: ${BEAT_TYPE_VALUES.join(', ')}.`,
     {
       actId: z.string().describe('Act UUID this beat belongs to (required).'),
       projectId: z.string().optional().describe('Project UUID. Auto-filled from server config if omitted.'),
       name: z.string().describe('Beat name (required).'),
-      type: z.string().describe('Beat type (required): setup, conflict, resolution, climax, transition, reveal, action.'),
+      type: beatTypeSchema.describe('Beat type (required).'),
       description: z.string().optional().describe('What happens in this beat.'),
       order: z.number().optional().describe('Position in sequence (0-based).'),
     },

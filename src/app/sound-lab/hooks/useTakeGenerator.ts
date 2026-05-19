@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import { extractData } from '@/app/utils/api';
 import { applyModifiers } from '../lib/voiceModifiers';
 import { extractWaveformFromUrl } from '../lib/waveformExtractor';
+import { audioTakeApi } from '@/app/hooks/integration/useNarrationSessions';
 import type { VoiceSettings } from '../lib/voiceModifiers';
 import type { ScriptLine, ScriptLineTake } from '../types';
 
@@ -10,6 +12,8 @@ interface TakeGenerationConfig {
   emotions: string[];
   delivery: string;
   intensity: number;
+  /** Session ID — if provided, takes are persisted to Supabase */
+  sessionId?: string;
 }
 
 interface UseTakeGeneratorReturn {
@@ -63,7 +67,8 @@ export function useTakeGenerator(): UseTakeGeneratorReturn {
           signal: controller.signal,
         });
 
-        const data = await res.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data: any = extractData(await res.json());
         if (!data.success) {
           // Skip failed takes
           setProgress({ done: i + 1, total: config.emotions.length });
@@ -91,6 +96,26 @@ export function useTakeGenerator(): UseTakeGeneratorReturn {
       }
 
       setProgress({ done: i + 1, total: config.emotions.length });
+    }
+
+    // ── Persist takes to Supabase if session is active ──
+    if (config.sessionId && takes.length > 0) {
+      try {
+        await audioTakeApi.createTakes(takes.map((tk) => ({
+          session_id: config.sessionId!,
+          line_id: line.id,
+          character: line.character,
+          voice_id: line.voiceId,
+          text: line.text,
+          emotion: tk.emotion,
+          delivery: tk.delivery,
+          intensity: tk.intensity,
+          audio_url: tk.audioUrl,
+          duration: tk.duration,
+          waveform_data: tk.waveformData,
+          cost_chars: line.text.length,
+        })));
+      } catch { /* best-effort persistence */ }
     }
 
     setIsGenerating(false);

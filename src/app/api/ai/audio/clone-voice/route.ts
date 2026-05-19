@@ -7,7 +7,8 @@
  * the new voice_id.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,8 +20,7 @@ interface CloneVoiceRequest {
 
 // ── Route Handler ────────────────────────────────────────────────────────────
 
-export async function POST(request: Request) {
-  try {
+export const POST = withApiHandler('POST /api/ai/audio/clone-voice', async (request: NextRequest) => {
     const body: CloneVoiceRequest = await request.json();
     const { name, audioUrl, description } = body;
 
@@ -95,11 +95,4 @@ export async function POST(request: Request) {
       voice_id: result.voice_id,
       name,
     });
-  } catch (error) {
-    console.error('Voice cloning error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to clone voice' },
-      { status: 500 },
-    );
-  }
-}
+});

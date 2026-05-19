@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, forwardRef, InputHTMLAttributes } from 're
 import { clsx } from 'clsx';
 import { Loader2, Sparkles, Check } from 'lucide-react';
 import { EntityType, NameSuggestion } from '@/app/types/NameSuggestion';
+import { extractData } from '@/app/utils/api';
 
 export interface SmartNameInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   entityType: EntityType;
@@ -91,7 +92,7 @@ export const SmartNameInput = forwardRef<HTMLInputElement, SmartNameInputProps>(
           throw new Error('Failed to fetch suggestions');
         }
 
-        const data = await response.json();
+        const data = extractData<any>(await response.json());
 
         if (!signal.aborted && data.success && data.suggestions) {
           setSuggestions(data.suggestions);

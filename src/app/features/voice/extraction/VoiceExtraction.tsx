@@ -102,7 +102,7 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
           value={voiceName}
           onChange={(e) => setVoiceName(e.target.value)}
           placeholder="e.g., Hero Voice, Narrator, etc."
-          className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-voice-primary focus:border-transparent"
         />
       </div>
 
@@ -149,7 +149,7 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
                 className="flex items-center justify-between p-3 bg-slate-900 border border-slate-700 rounded-lg"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-voice-primary flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-slate-200 truncate">{file.name}</p>
                     <p className="text-sm text-slate-400">
@@ -184,7 +184,7 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-4 bg-emerald-900/20 border border-emerald-900/30 rounded-lg text-emerald-300 text-sm"
+          className="p-4 bg-voice-primary/15 border border-voice-primary/20 rounded-lg text-voice-primary/80 text-sm"
         >
           {success}
         </motion.div>
@@ -194,7 +194,7 @@ const VoiceExtraction = ({ projectId }: VoiceExtractionProps) => {
       <button
         onClick={handleSubmit}
         disabled={isProcessing || !voiceName.trim() || audioFiles.length === 0}
-        className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-voice-primary/80 text-white font-medium hover:bg-voice-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? (
           <>

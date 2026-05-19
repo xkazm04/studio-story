@@ -9,6 +9,7 @@ import { actApi } from "@/app/hooks/integration/useActs";
 import { Button } from "@/app/components/UI/Button";
 import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import { useToast } from '@/app/components/UI/ToastContainer';
+import { extractData } from '@/app/utils/api';
 
 type Props = {
     recommendations: ActRecommendation[];
@@ -33,12 +34,12 @@ const ActRecommendations = ({ recommendations, overallAssessment, onClose, onApp
             const response = await fetch(`/api/acts/${recommendation.act_id}`);
             if (!response.ok) throw new Error('Failed to fetch act');
 
-            const currentAct = await response.json();
+            const currentAct = extractData<Record<string, unknown>>(await response.json());
             let newDescription = '';
 
             if (recommendation.change_type === 'replace' && recommendation.before) {
                 // Replace specific text
-                newDescription = (currentAct.description || '').replace(
+                newDescription = ((currentAct.description as string) || '').replace(
                     recommendation.before,
                     recommendation.after
                 );

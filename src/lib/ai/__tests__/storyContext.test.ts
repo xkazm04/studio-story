@@ -36,6 +36,7 @@ function makeContext(overrides: Partial<StoryContext> = {}): StoryContext {
     currentSceneTextBefore: 'The door creaked open, revealing a staircase leading down.',
     selectedText: 'She hesitated.',
     currentSceneTextAfter: 'Then she took the first step.',
+    contextPins: [],
     ...overrides,
   };
 }

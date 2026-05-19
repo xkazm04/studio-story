@@ -129,7 +129,7 @@ ${projectId ? `- Active project: \`${projectId}\`\n` : ''}
 - **list_acts** → all acts (id, name, description, order)
 - **create_act**(name, description?, order?) → creates act. Only \`name\` is required.
 - **list_beats**(actId?) → beats in an act or project
-- **create_beat**(actId, name, type, description?, order?) → creates beat. Type: setup/conflict/resolution/climax/transition.
+- **create_beat**(actId, name, type, description?, order?) → creates beat. Type: setup/conflict/resolution/climax/transition/reveal/action.
 - **get_beat**(beatId) / **update_beat**(beatId, updates: JSON string)
 
 ### Scenes (DB table: scenes)

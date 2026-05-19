@@ -17,6 +17,7 @@ import { LayoutGrid, List, Map as MapIcon, CheckCircle2, Circle, Clock, Sparkles
 import NarrativeMap from './NarrativeMap';
 import { BeatFilterPanel, BeatFilters, filterBeats } from './BeatFilterPanel';
 import { cn } from '@/lib/utils';
+import { useToggleBeatCompletion } from './useToggleBeatCompletion';
 import DistributionChart from './DistributionChart';
 import { BeatClassifierCompact } from './BeatClassifier';
 import {
@@ -252,24 +253,13 @@ const BeatsOverview = () => {
         }
     }, [backendBeats]);
 
+    const { toggleCompletion } = useToggleBeatCompletion({ setBeats, onSuccess: refreshBeats });
+
     const toggleBeatCompletion = (id: string) => {
-        const beat = sortedBeats.find(beat => beat.id === id);
+        const beat = sortedBeats.find(b => b.id === id);
         if (!beat) return;
-
-        const newCompletedState = !beat.completed;
-
-        setBeats(prevBeats => prevBeats.map(b =>
-            b.id === id ? { ...b, completed: newCompletedState } : b
-        ));
-
-        beatApi.editBeat(id, 'completed', newCompletedState)
-            .then(() => refreshBeats())
-            .catch(() => {
-                setBeats(prevBeats => prevBeats.map(b =>
-                    b.id === id ? { ...b, completed: !newCompletedState } : b
-                ));
-            });
-    }
+        toggleCompletion(beat);
+    };
 
     const handleBeatUpdate = async (beatId: string, updates: Partial<Beat>) => {
         setBeats(prevBeats => prevBeats.map(b =>

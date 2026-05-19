@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Beat } from '../../types/Beat';
-import { apiFetch, useApiGet, API_BASE_URL, USE_MOCK_DATA } from '../../utils/api';
-
-const BEATS_URL = `${API_BASE_URL}/beats`;
+import { apiFetch, useApiGet, USE_MOCK_DATA } from '../../utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 // Mock beats data for development/testing
 const MOCK_BEATS: Beat[] = [
@@ -117,7 +116,7 @@ export const beatApi = {
             return useMockBeats(projectId, enabled);
         }
 
-        const url = projectId ? `${BEATS_URL}?projectId=${projectId}` : '';
+        const url = projectId ? `${BEAT_URLS.beats}?projectId=${projectId}` : '';
         return useApiGet<Beat[]>(url, enabled && !!projectId);
     },
 
@@ -139,7 +138,7 @@ export const beatApi = {
             queryFn: async () => [],
             enabled: false,
         });
-        const url = `${BEATS_URL}?actId=${actId}`;
+        const url = `${BEAT_URLS.beats}?actId=${actId}`;
         return useApiGet<Beat[]>(url, enabled && !!actId);
     },
 
@@ -163,7 +162,7 @@ export const beatApi = {
         }
 
         return apiFetch<Beat>({
-            url: BEATS_URL,
+            url: BEAT_URLS.beats,
             method: 'POST',
             body: { ...data, type: 'story' },
         });
@@ -190,7 +189,7 @@ export const beatApi = {
         }
 
         return apiFetch<Beat>({
-            url: BEATS_URL,
+            url: BEAT_URLS.beats,
             method: 'POST',
             body: { ...data, type: 'act' },
         });
@@ -207,7 +206,7 @@ export const beatApi = {
         }
 
         return apiFetch<Beat>({
-            url: `${BEATS_URL}/${id}`,
+            url: BEAT_URLS.beat(id),
             method: 'PUT',
             body: { [field]: value },
         });
@@ -222,7 +221,7 @@ export const beatApi = {
         }
 
         return apiFetch<void>({
-            url: `${BEATS_URL}/${id}`,
+            url: BEAT_URLS.beat(id),
             method: 'DELETE',
         });
     },
@@ -236,7 +235,7 @@ export const beatApi = {
         }
 
         return apiFetch<void>({
-            url: `${BEATS_URL}/project/${projectId}`,
+            url: BEAT_URLS.beatsByProject(projectId),
             method: 'DELETE',
         });
     },

@@ -12,13 +12,29 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI, Type, type FunctionDeclaration } from '@google/genai';
+import { GoogleGenAI, type FunctionDeclaration } from '@google/genai';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 import {
   startExecution,
   getActiveExecutions,
   getExecution,
   abortExecution,
 } from '@/lib/claude-terminal/cli-service';
+import { TOOL_NAMES, type AdvisorError } from '@/agents/types';
+import {
+  validateToolArgs,
+  createCliSessionArgsSchema,
+  getCliStatusArgsSchema,
+  stopCliSessionArgsSchema,
+} from '@/agents/advisorSchemas';
+import {
+  CANONICAL_ADVISOR_TOOLS,
+  CLIENT_TOOL_NAMES,
+  SERVER_TOOL_NAMES,
+  toGeminiSDKDeclarations,
+  toSystemInstructionToolDocs,
+} from '@/agents/advisorToolSchema';
+import { buildHttpSystemInstruction } from '@/agents/advisorSystemInstruction';
 
 // ─── Types ──────────────────────────────────────
 
@@ -42,21 +58,7 @@ interface AdvisorToolCall {
   args: Record<string, unknown>;
 }
 
-// ─── Tool Classification ────────────────────────
-
-/** Tools that run server-side and feed results back to Gemini */
-const SERVER_SIDE_TOOLS = new Set([
-  'create_cli_session',
-  'get_cli_sessions',
-  'get_cli_status',
-  'stop_cli_session',
-]);
-
-/** Tools that pass through to the client */
-const CLIENT_SIDE_TOOLS = new Set([
-  'compose_workspace',
-  'suggest_action',
-]);
+// ─── Tool Classification (derived from canonical schema) ─
 
 const MAX_ORCHESTRATOR_TURNS = 4;
 const MAX_CONCURRENT_SESSIONS = 3;
@@ -64,225 +66,28 @@ const MAX_CONCURRENT_SESSIONS = 3;
 /** Map tool names to user-visible processing status strings */
 function toolStatusLabel(toolName: string): string {
   switch (toolName) {
-    case 'create_cli_session': return 'Spawning CLI session...';
-    case 'get_cli_sessions': return 'Checking active sessions...';
-    case 'get_cli_status': return 'Checking session status...';
-    case 'stop_cli_session': return 'Stopping CLI session...';
-    case 'compose_workspace': return 'Composing workspace...';
-    case 'suggest_action': return 'Preparing suggestion...';
+    case TOOL_NAMES.CREATE_CLI_SESSION: return 'Spawning CLI session...';
+    case TOOL_NAMES.GET_CLI_SESSIONS: return 'Checking active sessions...';
+    case TOOL_NAMES.GET_CLI_STATUS: return 'Checking session status...';
+    case TOOL_NAMES.STOP_CLI_SESSION: return 'Stopping CLI session...';
+    case TOOL_NAMES.COMPOSE_WORKSPACE: return 'Composing workspace...';
+    case TOOL_NAMES.SUGGEST_ACTION: return 'Preparing suggestion...';
     default: return 'Processing...';
   }
 }
 
-// ─── Gemini Tool Declarations ───────────────────
+// ─── Gemini Tool Declarations (projected from canonical schema) ──
 
-const ADVISOR_FUNCTION_DECLARATIONS: FunctionDeclaration[] = [
-  // ── Client-side tools ──
-  {
-    name: 'compose_workspace',
-    description: 'Rearrange workspace panels for the current user task. For story authoring: use primary-sidebar for scene editing, split-2 for story structure, show action for smart merge, relationship-map for character relationships.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        action: {
-          type: Type.STRING,
-          description: 'show: add panels. hide: remove panels. replace: clear and set new. clear: remove all.',
-          enum: ['show', 'hide', 'replace', 'clear'],
-        },
-        layout: {
-          type: Type.STRING,
-          description: 'Optional layout preset.',
-          enum: ['stack', 'single', 'split-2', 'split-3', 'grid-4', 'primary-sidebar', 'triptych', 'studio'],
-        },
-        panels: {
-          type: Type.STRING,
-          description: 'JSON array of panel objects: [{"type":"panel-type","role":"primary|secondary|sidebar","density":"full|compact|micro","dataSlice":{"entityId":"..."}}]. Panel types: scene-editor, scene-metadata, dialogue-view, scene-list, scene-gallery, character-cards, character-detail, character-creator, relationship-map, story-map, beats-manager, story-evaluator, story-graph, script-editor, theme-manager, beats-sidebar, image-canvas, image-generator, art-style, voice-manager, voice-casting, writing-desk, cast-sidebar, storyboard, narrative-suggestions, reader-view',
-        },
-        reasoning: {
-          type: Type.STRING,
-          description: 'Brief explanation of why these panels were chosen.',
-        },
-      },
-      required: ['action'],
-    },
-  },
-  {
-    name: 'suggest_action',
-    description: 'Send a proactive suggestion to the user as a dismissible card.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        content: {
-          type: Type.STRING,
-          description: 'The suggestion text (1-3 sentences).',
-        },
-        compose_on_accept: {
-          type: Type.STRING,
-          description: 'Optional JSON for a compose_workspace call if user accepts.',
-        },
-      },
-      required: ['content'],
-    },
-  },
+const ADVISOR_FUNCTION_DECLARATIONS = toGeminiSDKDeclarations(
+  CANONICAL_ADVISOR_TOOLS,
+) as FunctionDeclaration[];
 
-  // ── Server-side orchestrator tools ──
-  {
-    name: 'create_cli_session',
-    description: 'Spawn a new Claude Code CLI session to perform a creative storytelling task. The session runs autonomously and can use MCP tools.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        prompt: {
-          type: Type.STRING,
-          description: 'The task prompt for Claude Code. Be specific about what to create/edit.',
-        },
-        domain: {
-          type: Type.STRING,
-          description: 'Task domain for UI tab categorization.',
-          enum: ['scene', 'character', 'story', 'image', 'general'],
-        },
-      },
-      required: ['prompt'],
-    },
-  },
-  {
-    name: 'get_cli_sessions',
-    description: 'List all active (running) CLI sessions. Check this before spawning new sessions to respect the concurrent limit.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {},
-    },
-  },
-  {
-    name: 'get_cli_status',
-    description: 'Check the status of a specific CLI execution.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        executionId: {
-          type: Type.STRING,
-          description: 'The execution ID returned by create_cli_session.',
-        },
-      },
-      required: ['executionId'],
-    },
-  },
-  {
-    name: 'stop_cli_session',
-    description: 'Abort a running CLI session.',
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        executionId: {
-          type: Type.STRING,
-          description: 'The execution ID to abort.',
-        },
-      },
-      required: ['executionId'],
-    },
-  },
-];
+// ─── System Instruction (built from shared composable segments) ───
 
-// ─── System Instruction ─────────────────────────
-
-const SYSTEM_INSTRUCTION = `You are the Workspace Advisor for Studio Story. You observe CLI tool activity, dynamically arrange workspace panels, and orchestrate CLI sessions for automated storytelling workflows.
-
-## CLI Tool → Panel Mapping (use compose_workspace)
-- generate_image_gemini / generate_image_leonardo → show scene-gallery (primary) + image-canvas (secondary)
-- evaluate_image / describe_image → show image-canvas (primary)
-- create_character / update_character → show character-detail (primary) + character-cards (sidebar)
-- create_trait / update_trait → show character-detail (primary)
-- create_scene / update_scene → show scene-editor (primary) + scene-list (sidebar)
-- create_act → show story-map (primary) + beats-manager (secondary)
-- create_beat / update_beat → show beats-manager (primary)
-- create_faction / update_faction → show story-map (secondary)
-- create_relationship → show relationship-map (primary) + character-detail (secondary)
-- extract_art_style → show art-style (primary)
-- create_branch → show story-graph (primary) + scene-editor (secondary) to see new branches
-- create_choice → show story-graph (primary) to see new connection
-- generate_scene_illustration → show image-generator (primary) + scene-editor (secondary)
-- check_illustration_status → show image-generator (primary)
-- save_scene_illustration → show scene-gallery (primary) + scene-editor (secondary)
-
-## Story Intelligence
-- When user asks "what should happen next?" or "any suggestions?": compose narrative-suggestions panel as sidebar
-- narrative-suggestions shows AI-analyzed insights about relationship tensions, plot gaps, character underuse
-- When user asks to test or preview their story: compose reader-view (primary) optionally with story-graph
-- When user says "add a choice" or "create a branch": CLI handles via create_branch, then compose story-graph
-
-## Visual Pipeline
-
-The user can generate scene illustrations with character and art style consistency.
-
-### Available Tools
-- generate_scene_illustration: Start 4-image generation for a scene
-- check_illustration_status: Poll generation progress
-- save_scene_illustration: Persist selected image to scene
-
-### Workflow Guidance
-1. First: Help user define art style (art-style panel, upload reference images)
-2. Then: Illustrate scenes (image-generator panel with scene context)
-3. Visual consistency comes from: character reference images (avatar_url) and project art style
-
-### Character Reference Setup
-When the user wants consistent characters in illustrations:
-- Check if key characters have avatar_url set. If not, guide user to upload reference images first (character-detail panel).
-- For best results, reference images should show the character clearly (face, distinctive features, outfit).
-- If character has no avatar_url, the illustration will still work but without character visual consistency -- mention this trade-off.
-- Troubleshooting: "characters look different each time" -> check avatar_url is set, suggest uploading a clear reference image.
-
-### Panel Composition
-- "Illustrate a scene" -> split-2: scene-editor + image-generator
-- "Set art style" -> primary-sidebar: art-style + scene-gallery
-- "Review illustrations" -> split-2: scene-gallery + image-canvas
-- "Show character for reference" -> triptych: scene-editor + image-generator + character-detail
-
-## Story Authoring Composition Patterns
-When user discusses characters (e.g., "show me Elena"):
-- Use action 'show' (smart merge), primary: character-detail with dataSlice { entityId }
-- Add relationship-map if character has many relationships
-- Add scene-list as sidebar if character appears in scenes
-
-When user discusses a scene (e.g., "edit the castle scene"):
-- Use action 'replace', layout 'primary-sidebar'
-- Primary: scene-editor with dataSlice { entityId }, sidebar: scene-metadata or beats-sidebar
-
-When user discusses story structure:
-- Use action 'replace', layout 'split-2' or 'triptych'
-- story-map (primary) + beats-manager (secondary), add story-evaluator for quality analysis
-
-When user discusses relationships or factions:
-- Use relationship-map as primary, add character-detail as secondary if specific character
-
-## Workspace Rules
-- When you see CLI tool events, call compose_workspace DIRECTLY — the user expects automatic UI updates
-- Use "show" for additive changes, "replace" only when domain shifts (e.g., scenes→images)
-- Keep workspace focused: 1-3 panels max
-- One primary panel max; companions are secondary or sidebar
-
-## CLI Orchestration
-You can spawn Claude Code CLI sessions to perform creative tasks autonomously:
-- create_cli_session: Start a new session with a specific prompt and domain
-- get_cli_sessions: Check what sessions are currently running
-- get_cli_status: Check progress of a specific session
-- stop_cli_session: Abort a stuck or unnecessary session
-
-Use orchestration for multi-step workflows when the user asks for complex operations:
-- "Create a full character" → spawn CLI with character creation prompt
-- "Generate scene images" → spawn CLI with image generation prompt
-- "Write all scene scripts for Act 1" → spawn multiple CLIs, one per scene
-- "Build out the story beats" → spawn CLI with beat creation prompt
-
-Guardrails:
-- Max ${MAX_CONCURRENT_SESSIONS} concurrent sessions — always check get_cli_sessions before spawning new ones
-- If at capacity, wait or suggest the user what's running
-- After spawning a session, compose workspace panels to show relevant content
-- Keep task prompts specific and actionable
-
-## Response Style
-- Keep responses very concise (1-2 sentences)
-- If no CLI events and user asks a question, respond conversationally
-- When spawning sessions, briefly confirm what you started`;
+const SYSTEM_INSTRUCTION = buildHttpSystemInstruction(
+  toSystemInstructionToolDocs(CANONICAL_ADVISOR_TOOLS),
+  MAX_CONCURRENT_SESSIONS,
+);
 
 // ─── Server-side Tool Execution ─────────────────
 
@@ -292,7 +97,12 @@ function executeServerTool(
   requestOrigin: string,
 ): Record<string, unknown> {
   switch (name) {
-    case 'create_cli_session': {
+    case TOOL_NAMES.CREATE_CLI_SESSION: {
+      const parsed = validateToolArgs(createCliSessionArgsSchema, args, 'create_cli_session');
+      if (!parsed) {
+        return { error: 'Invalid create_cli_session args: missing or malformed "prompt" field.' };
+      }
+
       const activeSessions = getActiveExecutions();
       if (activeSessions.length >= MAX_CONCURRENT_SESSIONS) {
         return {
@@ -301,16 +111,12 @@ function executeServerTool(
         };
       }
 
-      const prompt = args.prompt as string;
-      const domain = (args.domain as string) ?? 'general';
       const projectPath = process.cwd();
-
-      // Use the project ID from env if available
       const projectId = process.env.STORY_PROJECT_ID;
 
       const executionId = startExecution(
         projectPath,
-        prompt,
+        parsed.prompt,
         undefined, // no resume
         undefined, // no onEvent callback (SSE handles streaming)
         projectId,
@@ -322,12 +128,12 @@ function executeServerTool(
         success: true,
         executionId,
         sessionId: execution?.sessionId,
-        domain,
+        domain: parsed.domain ?? 'general',
         streamUrl: `/api/claude-terminal/stream?executionId=${executionId}`,
       };
     }
 
-    case 'get_cli_sessions': {
+    case TOOL_NAMES.GET_CLI_SESSIONS: {
       const sessions = getActiveExecutions();
       return {
         count: sessions.length,
@@ -342,11 +148,14 @@ function executeServerTool(
       };
     }
 
-    case 'get_cli_status': {
-      const executionId = args.executionId as string;
-      const execution = getExecution(executionId);
+    case TOOL_NAMES.GET_CLI_STATUS: {
+      const parsed = validateToolArgs(getCliStatusArgsSchema, args, 'get_cli_status');
+      if (!parsed) {
+        return { error: 'Invalid get_cli_status args: missing or malformed "executionId" field.' };
+      }
+      const execution = getExecution(parsed.executionId);
       if (!execution) {
-        return { error: `Execution ${executionId} not found.` };
+        return { error: `Execution ${parsed.executionId} not found.` };
       }
       return {
         id: execution.id,
@@ -358,10 +167,13 @@ function executeServerTool(
       };
     }
 
-    case 'stop_cli_session': {
-      const execId = args.executionId as string;
-      const success = abortExecution(execId);
-      return { success, executionId: execId };
+    case TOOL_NAMES.STOP_CLI_SESSION: {
+      const parsed = validateToolArgs(stopCliSessionArgsSchema, args, 'stop_cli_session');
+      if (!parsed) {
+        return { error: 'Invalid stop_cli_session args: missing or malformed "executionId" field.' };
+      }
+      const success = abortExecution(parsed.executionId);
+      return { success, executionId: parsed.executionId };
     }
 
     default:
@@ -381,11 +193,15 @@ function getClient(): InstanceType<typeof GoogleGenAI> | null {
   return cachedClient;
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withApiHandler('POST /api/agents/advisor', async (request: NextRequest) => {
   const client = getClient();
   if (!client) {
+    const advisorError: AdvisorError = {
+      code: 'API_KEY_MISSING',
+      message: 'Gemini API key not configured. Set GEMINI_API_KEY in .env.local.',
+    };
     return NextResponse.json(
-      { error: 'Gemini API key not configured. Set GEMINI_API_KEY in .env.local.' },
+      { error: advisorError.message, advisorError },
       { status: 503 }
     );
   }
@@ -496,9 +312,9 @@ export async function POST(request: NextRequest) {
             const callName = part.functionCall.name;
             const callArgs = (part.functionCall.args ?? {}) as Record<string, unknown>;
 
-            if (SERVER_SIDE_TOOLS.has(callName)) {
+            if (SERVER_TOOL_NAMES.has(callName)) {
               serverToolCalls.push({ name: callName, args: callArgs });
-            } else if (CLIENT_SIDE_TOOLS.has(callName)) {
+            } else if (CLIENT_TOOL_NAMES.has(callName)) {
               writeSSE({ type: 'tool_call', toolCall: { name: callName, args: callArgs }, turn: turns });
             }
           }
@@ -533,17 +349,17 @@ export async function POST(request: NextRequest) {
           });
 
           // If this was a create_cli_session, also pass it as a client tool call
-          if (tc.name === 'create_cli_session' && (toolResult as { success?: boolean }).success) {
+          if (tc.name === TOOL_NAMES.CREATE_CLI_SESSION && toolResult.success) {
             writeSSE({
               type: 'tool_call',
               toolCall: {
-                name: '_session_spawned',
+                name: TOOL_NAMES.SESSION_SPAWNED,
                 args: {
-                  executionId: (toolResult as { executionId?: string }).executionId,
-                  sessionId: (toolResult as { sessionId?: string }).sessionId,
-                  domain: tc.args.domain ?? 'general',
-                  streamUrl: (toolResult as { streamUrl?: string }).streamUrl,
-                  prompt: tc.args.prompt,
+                  executionId: toolResult.executionId as string | undefined,
+                  sessionId: toolResult.sessionId as string | undefined,
+                  domain: toolResult.domain as string | undefined,
+                  streamUrl: toolResult.streamUrl as string | undefined,
+                  prompt: tc.args.prompt as string | undefined,
                 },
               },
               turn: turns,
@@ -561,7 +377,12 @@ export async function POST(request: NextRequest) {
       writeSSE({ type: 'done' });
     } catch (error) {
       console.error('[advisor] Gemini API error:', error);
-      writeSSE({ type: 'error', error: error instanceof Error ? error.message : 'Gemini API call failed' });
+      const message = error instanceof Error ? error.message : 'Gemini API call failed';
+      const advisorError: AdvisorError = {
+        code: 'GEMINI_ERROR',
+        message,
+      };
+      writeSSE({ type: 'error', error: message, advisorError });
     } finally {
       writer.close().catch(() => {/* already closed */});
     }
@@ -574,8 +395,8 @@ export async function POST(request: NextRequest) {
       'Connection': 'keep-alive',
       'X-Content-Type-Options': 'nosniff',
     },
-  });
-}
+  }) as unknown as NextResponse;
+});
 
 /** GET — health check */
 export async function GET() {

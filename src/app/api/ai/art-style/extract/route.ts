@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGeminiProvider, parseJsonFromGeminiResponse } from '@/app/lib/ai';
 import { fetchImageAsDataUrl } from '@/app/lib/ai/image-utils';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 const STYLE_EXTRACTION_PROMPT = `You are an expert art director. Analyze this image and extract its visual style.
 Focus ONLY on HOW the image is rendered, NOT what it depicts.
@@ -42,8 +43,7 @@ export async function GET() {
   });
 }
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/ai/art-style/extract', async (request: NextRequest) => {
     const body = await request.json();
     const { imageUrl } = body;
 
@@ -88,11 +88,4 @@ export async function POST(request: NextRequest) {
       detailLevel: parsed.detailLevel,
       influences: parsed.influences,
     });
-  } catch (error) {
-    console.error('Art style extraction error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+});

@@ -6,12 +6,9 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { StoryHttpClient } from '../http-client.js';
-import type { McpConfig } from '../config.js';
+import { textContent, errorContent } from './helpers.js';
 
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
-
-export function registerImageTools(server: McpServer, _config: McpConfig, client: StoryHttpClient) {
+export function registerImageTools(server: McpServer, client: StoryHttpClient) {
   server.tool(
     'generate_image_gemini',
     'Generate or transform an image using Gemini. Requires a source image URL and a prompt describing the desired result. Returns a base64 image data URL.',

@@ -12,7 +12,6 @@
 export {
   PDFGenerator,
   pdfGenerator,
-  convertToScriptElements,
   DEFAULT_EXPORT_OPTIONS as DEFAULT_PDF_OPTIONS,
   type ScriptElement,
   type ScriptElementType,
@@ -54,8 +53,46 @@ export {
   type BuildVNExportParams,
 } from './vnExportBridge';
 
+// Canonical Script Element Type
+export {
+  type ScriptElementType as CanonicalScriptElementType,
+  type PdfElementType,
+  type FountainElementType as CanonicalFountainElementType,
+  type ScreenplayElementType as CanonicalScreenplayElementType,
+} from './types';
+
+// Canonical Script Block — single type replacing FountainElement, ScriptElement, etc.
+export {
+  type ScriptBlock,
+  type ScriptBlockInput,
+  type ScriptBlockMetadata,
+  convertToScriptBlocks,
+} from './types';
+
 // Shared Story Export Types
 export { type StoryExportData, type StoryExportScene, slugify } from './types';
+
+// Unified Export Result
+export { type ExportMetadata, type LegacyExportResult } from './types';
+
+// Standardized Result Contract
+export {
+  ExportError,
+  exportSuccess,
+  exportFailure,
+  type ExportErrorCode,
+  type ExportData,
+  type ExportResult,
+} from './result';
+
+// Script Block Validator
+export {
+  validateScriptBlocks,
+  type ValidationResult,
+  type ValidationIssue,
+  type ValidationSeverity,
+  type ValidatableBlock,
+} from './validator';
 
 // Fountain Exporter
 export {
@@ -63,7 +100,6 @@ export {
   FountainParser,
   fountainExporter,
   fountainParser,
-  convertToFountainElements,
   validateFountain,
   DEFAULT_FOUNTAIN_OPTIONS,
   type FountainElement,
@@ -93,29 +129,23 @@ export interface ExportOptions {
   fountain?: Partial<import('./FountainExporter').FountainExportOptions>;
 }
 
-export interface ExportResult {
-  blob: Blob;
-  filename: string;
-  format: ExportFormat;
-  metadata: {
-    pageCount?: number;
-    chapterCount?: number;
-    sceneCount?: number;
-    wordCount?: number;
-  };
-}
+// ExportResult is now imported from './types' and re-exported above
 
 // ============================================================================
 // Unified Export Function
 // ============================================================================
 
-import { PDFGenerator, convertToScriptElements, type TitlePageInfo } from './PDFGenerator';
+import { PDFGenerator, type TitlePageInfo } from './PDFGenerator';
 import { EPUBBuilder, convertToEPUBChapters, type EPUBMetadata } from './EPUBBuilder';
-import { FountainExporter, convertToFountainElements, type FountainTitlePage } from './FountainExporter';
+import { FountainExporter, type FountainTitlePage } from './FountainExporter';
+import { convertToScriptBlocks } from './types';
 import { StoryPDFGenerator as _StoryPDFGenerator } from './StoryPDFGenerator';
 import { HTML5BundleGenerator as _HTML5BundleGenerator } from './HTML5BundleGenerator';
 import { VisualNovelGenerator as _VisualNovelGenerator } from './VisualNovelGenerator';
 import type { StoryExportData } from './types';
+import type { ExportResult, ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
+import { validateScriptBlocks } from './validator';
 
 export interface ScriptData {
   title: string;
@@ -146,12 +176,24 @@ export interface ScriptData {
 }
 
 /**
- * Export script to specified format
+ * Export script to specified format.
+ *
+ * Returns a discriminated ExportResult — check `result.success` before
+ * accessing `result.data`.
  */
 export async function exportScript(
   data: ScriptData,
   options: ExportOptions
-): Promise<ExportResult> {
+): Promise<ExportResult<ExportData>> {
+  // Pre-export validation — fail fast on structural errors
+  const validation = validateScriptBlocks(data.blocks);
+  if (!validation.valid) {
+    const summary = validation.errors
+      .map(e => `Block ${e.blockIndex}: ${e.message}`)
+      .join('; ');
+    return exportFailure('INVALID_INPUT', `Script validation failed: ${summary}`);
+  }
+
   const { format } = options;
 
   switch (format) {
@@ -170,21 +212,21 @@ export async function exportScript(
     case 'visual-novel':
       return exportToVisualNovel(data);
     default:
-      throw new Error(`Unsupported export format: ${format}`);
+      return exportFailure('INVALID_INPUT', `Unsupported export format: ${format}`);
   }
 }
 
 async function exportToPDF(
   data: ScriptData,
   options: ExportOptions
-): Promise<ExportResult> {
+): Promise<ExportResult<ExportData>> {
   const generator = new PDFGenerator({
     includeTitlePage: options.includeTitlePage,
     includeSceneNumbers: options.includeSceneNumbers,
     ...options.pdf,
   });
 
-  const elements = convertToScriptElements(data.blocks);
+  const elements = convertToScriptBlocks(data.blocks);
 
   const titleInfo: TitlePageInfo = {
     title: data.title,
@@ -194,22 +236,23 @@ async function exportToPDF(
   };
 
   const result = await generator.generateScreenplay(elements, titleInfo);
+  if (!result.success) return result;
 
-  return {
-    blob: result.blob,
-    filename: options.filename || result.filename,
+  return exportSuccess({
+    blob: result.data.blob,
+    filename: options.filename || result.data.filename,
     format: 'pdf',
     metadata: {
-      pageCount: result.pageCount,
+      pageCount: result.data.metadata.pageCount,
       sceneCount: data.blocks.filter(b => b.type === 'scene-header').length,
     },
-  };
+  });
 }
 
 async function exportToEPUB(
   data: ScriptData,
   options: ExportOptions
-): Promise<ExportResult> {
+): Promise<ExportResult<ExportData>> {
   const builder = new EPUBBuilder({
     includeTableOfContents: options.includeTitlePage,
     ...options.epub,
@@ -249,29 +292,30 @@ async function exportToEPUB(
   builder.addChapters(chapters);
 
   const result = await builder.build();
+  if (!result.success) return result;
 
-  return {
-    blob: result.blob,
-    filename: options.filename || result.filename,
+  return exportSuccess({
+    blob: result.data.blob,
+    filename: options.filename || result.data.filename,
     format: 'epub',
     metadata: {
-      chapterCount: result.chapterCount,
-      wordCount: result.wordCount,
+      chapterCount: result.data.metadata.chapterCount,
+      wordCount: result.data.metadata.wordCount,
     },
-  };
+  });
 }
 
 async function exportToFountain(
   data: ScriptData,
   options: ExportOptions
-): Promise<ExportResult> {
+): Promise<ExportResult<ExportData>> {
   const exporter = new FountainExporter({
     includeTitlePage: options.includeTitlePage,
     includeSceneNumbers: options.includeSceneNumbers,
     ...options.fountain,
   });
 
-  const elements = convertToFountainElements(data.blocks);
+  const elements = convertToScriptBlocks(data.blocks);
 
   const titlePage: FountainTitlePage = {
     title: data.title,
@@ -289,23 +333,23 @@ async function exportToFountain(
 
   const result = exporter.export(elements, titlePage);
 
-  const blob = new Blob([result.content], { type: 'text/plain;charset=utf-8' });
+  const blob = new Blob([result.content!], { type: 'text/plain;charset=utf-8' });
 
-  return {
+  return exportSuccess({
     blob,
     filename: options.filename || result.filename,
     format: 'fountain',
     metadata: {
-      pageCount: result.pageEstimate,
-      sceneCount: result.sceneCount,
+      pageCount: result.metadata.pageEstimate,
+      sceneCount: result.metadata.sceneCount,
     },
-  };
+  });
 }
 
 async function exportToPlainText(
   data: ScriptData,
   options: ExportOptions
-): Promise<ExportResult> {
+): Promise<ExportResult<ExportData>> {
   const lines: string[] = [];
 
   // Title
@@ -348,7 +392,7 @@ async function exportToPlainText(
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   const filename = options.filename || `${data.title.toLowerCase().replace(/\s+/g, '_')}.txt`;
 
-  return {
+  return exportSuccess({
     blob,
     filename,
     format: 'txt',
@@ -356,14 +400,13 @@ async function exportToPlainText(
       sceneCount: data.blocks.filter(b => b.type === 'scene-header').length,
       wordCount: content.split(/\s+/).length,
     },
-  };
+  });
 }
 
 /**
  * Convert ScriptData to StoryExportData for story-pdf export.
- * Maps screenplay blocks to prose scenes with basic content concatenation.
  */
-async function exportToStoryPDF(data: ScriptData): Promise<ExportResult> {
+async function exportToStoryPDF(data: ScriptData): Promise<ExportResult<ExportData>> {
   const sceneMap = new Map<string, string[]>();
   for (const block of data.blocks) {
     const existing = sceneMap.get(block.sceneId) || [];
@@ -397,7 +440,7 @@ async function exportToStoryPDF(data: ScriptData): Promise<ExportResult> {
 /**
  * Export story data as a self-contained HTML5 bundle.
  */
-async function exportToHTML5(data: ScriptData): Promise<ExportResult> {
+async function exportToHTML5(data: ScriptData): Promise<ExportResult<ExportData>> {
   const sceneMap = new Map<string, string[]>();
   for (const block of data.blocks) {
     const existing = sceneMap.get(block.sceneId) || [];
@@ -431,7 +474,7 @@ async function exportToHTML5(data: ScriptData): Promise<ExportResult> {
 /**
  * Export story data as an interactive visual novel HTML file.
  */
-async function exportToVisualNovel(data: ScriptData): Promise<ExportResult> {
+async function exportToVisualNovel(data: ScriptData): Promise<ExportResult<ExportData>> {
   const sceneMap = new Map<string, string[]>();
   for (const block of data.blocks) {
     const existing = sceneMap.get(block.sceneId) || [];
@@ -463,13 +506,16 @@ async function exportToVisualNovel(data: ScriptData): Promise<ExportResult> {
 }
 
 /**
- * Download exported file
+ * Download an exported file. Accepts the data payload from a successful result.
+ * Callers should check `result.success` before calling this.
  */
-export function downloadExport(result: ExportResult): void {
-  const url = URL.createObjectURL(result.blob);
+export function downloadExport(data: ExportData): void {
+  const blob = data.blob ?? (data.content ? new Blob([data.content], { type: data.mimeType || 'text/plain' }) : null);
+  if (!blob) throw new Error('Export data has no blob or content to download');
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = result.filename;
+  link.download = data.filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeStory, type StorySnapshot } from '../StoryAnalyzer';
+import { TOOL_NAMES } from '../types';
 
 function makeSnapshot(overrides: Partial<StorySnapshot> = {}): StorySnapshot {
   return {
@@ -37,7 +38,7 @@ describe('insight accept payload', () => {
 
     expect(tension).toBeDefined();
     expect(tension!.action).toBeDefined();
-    expect(tension!.action!.type).toBe('compose_workspace');
+    expect(tension!.action!.type).toBe(TOOL_NAMES.COMPOSE_WORKSPACE);
     expect(tension!.action!.payload.layout).toBe('triptych');
     expect(Array.isArray(tension!.action!.payload.panels)).toBe(true);
   });
@@ -62,7 +63,7 @@ describe('insight accept payload', () => {
     const insights = analyzeStory(snapshot);
     for (const insight of insights) {
       if (insight.action) {
-        expect(insight.action.type).toBe('compose_workspace');
+        expect(insight.action.type).toBe(TOOL_NAMES.COMPOSE_WORKSPACE);
         expect(insight.action.payload).toBeDefined();
         expect(typeof insight.action.payload.layout).toBe('string');
       }

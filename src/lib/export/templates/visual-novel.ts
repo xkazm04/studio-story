@@ -5,6 +5,8 @@
  * branching choices, auto-play audio, and scene transitions with fade effects.
  */
 
+import { escapeHtml as escapeHTML } from '../utils';
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -227,10 +229,3 @@ ${bodyHTML}
 </html>`;
 }
 
-function escapeHTML(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}

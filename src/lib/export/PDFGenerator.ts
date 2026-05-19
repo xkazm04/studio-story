@@ -9,28 +9,20 @@
  * - Title page and cover generation
  */
 
+import type { PdfElementType, ScriptBlock } from './types';
+import type { ExportResult, ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
+import { sanitizeFilename, escapePdfText } from './utils';
+
+// Re-export for backward compatibility
+export type { PdfElementType as ScriptElementType } from './types';
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export type ScriptElementType =
-  | 'scene-header'
-  | 'action'
-  | 'character'
-  | 'dialogue'
-  | 'parenthetical'
-  | 'transition'
-  | 'note'
-  | 'centered'
-  | 'page-break';
-
-export interface ScriptElement {
-  type: ScriptElementType;
-  content: string;
-  sceneNumber?: number;
-  dualDialogue?: 'left' | 'right';
-  metadata?: Record<string, string>;
-}
+/** @deprecated Use ScriptBlock from './types' directly. */
+export type ScriptElement = ScriptBlock;
 
 export interface TitlePageInfo {
   title: string;
@@ -70,11 +62,8 @@ export interface PDFExportOptions {
   fontSize: number;
 }
 
-export interface PDFGeneratorResult {
-  blob: Blob;
-  pageCount: number;
-  filename: string;
-}
+/** @deprecated Use ExportResult<ExportData> from './result' directly */
+export type PDFGeneratorResult = ExportResult<ExportData>;
 
 // ============================================================================
 // Constants - Industry Standard Measurements
@@ -331,31 +320,41 @@ export class PDFGenerator {
     elements: ScriptElement[],
     titleInfo: TitlePageInfo
   ): Promise<PDFGeneratorResult> {
-    const builder = new PDFDocumentBuilder(this.options);
-    this.sceneCount = 0;
+    try {
+      const builder = new PDFDocumentBuilder(this.options);
+      this.sceneCount = 0;
 
-    // Generate title page
-    if (this.options.includeTitlePage) {
-      this.generateTitlePage(builder, titleInfo);
+      // Generate title page
+      if (this.options.includeTitlePage) {
+        this.generateTitlePage(builder, titleInfo);
+      }
+
+      // Generate script content
+      for (const element of elements) {
+        this.renderElement(builder, element);
+      }
+
+      // Finalize and create blob
+      const pages = builder.finalize();
+      const pdfContent = this.serializeToPDFFormat(pages, titleInfo.title);
+
+      const blob = new Blob([pdfContent], { type: 'application/pdf' });
+      const filename = sanitizeFilename(titleInfo.title) + '.pdf';
+
+      return exportSuccess({
+        blob,
+        filename,
+        metadata: {
+          pageCount: pages.length,
+        },
+      });
+    } catch (err) {
+      return exportFailure(
+        'GENERATION_FAILED',
+        err instanceof Error ? err.message : 'PDF generation failed',
+        err,
+      );
     }
-
-    // Generate script content
-    for (const element of elements) {
-      this.renderElement(builder, element);
-    }
-
-    // Finalize and create blob
-    const pages = builder.finalize();
-    const pdfContent = this.serializeToPDFFormat(pages, titleInfo.title);
-
-    const blob = new Blob([pdfContent], { type: 'application/pdf' });
-    const filename = this.sanitizeFilename(titleInfo.title) + '.pdf';
-
-    return {
-      blob,
-      pageCount: pages.length,
-      filename,
-    };
   }
 
   /**
@@ -457,7 +456,7 @@ export class PDFGenerator {
    */
   private renderElement(builder: PDFDocumentBuilder, element: ScriptElement): void {
     switch (element.type) {
-      case 'scene-header':
+      case 'scene-heading':
         this.renderSceneHeader(builder, element);
         break;
       case 'action':
@@ -492,7 +491,7 @@ export class PDFGenerator {
     // Add scene number if enabled
     if (this.options.includeSceneNumbers) {
       this.sceneCount++;
-      const sceneNum = element.sceneNumber || this.sceneCount;
+      const sceneNum = element.metadata?.sceneNumber || this.sceneCount;
 
       if (this.options.draftMode === 'shooting') {
         content = `${sceneNum}    ${content}    ${sceneNum}`;
@@ -636,19 +635,9 @@ export class PDFGenerator {
   }
 
   private escapeText(text: string): string {
-    return text
-      .replace(/\\/g, '\\\\')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/[^\x20-\x7E]/g, ''); // Remove non-ASCII
+    return escapePdfText(text);
   }
 
-  private sanitizeFilename(name: string): string {
-    return name
-      .replace(/[^a-zA-Z0-9\s-_]/g, '')
-      .replace(/\s+/g, '_')
-      .toLowerCase();
-  }
 
   /**
    * Update options
@@ -669,44 +658,7 @@ export class PDFGenerator {
 // Utility Functions
 // ============================================================================
 
-/**
- * Convert script blocks to PDF elements
- */
-export function convertToScriptElements(
-  blocks: Array<{
-    type: string;
-    content: string;
-    speaker?: string;
-  }>
-): ScriptElement[] {
-  const elements: ScriptElement[] = [];
-
-  for (const block of blocks) {
-    switch (block.type) {
-      case 'scene-header':
-        elements.push({ type: 'scene-header', content: block.content });
-        break;
-      case 'description':
-      case 'content':
-        elements.push({ type: 'action', content: block.content });
-        break;
-      case 'dialogue':
-        if (block.speaker) {
-          elements.push({ type: 'character', content: block.speaker });
-        }
-        elements.push({ type: 'dialogue', content: block.content });
-        break;
-      case 'actor':
-        elements.push({ type: 'character', content: block.content });
-        break;
-      case 'direction':
-        elements.push({ type: 'parenthetical', content: block.content });
-        break;
-    }
-  }
-
-  return elements;
-}
+// convertToScriptElements removed — use convertToScriptBlocks from './types'
 
 // Export singleton instance
 export const pdfGenerator = new PDFGenerator();

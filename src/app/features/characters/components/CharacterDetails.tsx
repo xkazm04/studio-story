@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { User, BookOpen, Palette, Heart, Shield, Image as ImageIcon, Sparkles, Clock } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import { extractData } from '@/app/utils/api';
 import { characterApi } from '@/app/api/characters';
 import ColoredBorder from '@/app/components/UI/ColoredBorder';
 import CharacterAbout from '../sub_CharacterTraits/CharacterAbout';
@@ -50,7 +51,7 @@ const CharacterDetails: React.FC<CharacterDetailsProps> = ({ characterId }) => {
     queryFn: async () => {
       const response = await fetch(`/api/char-appearance?character_id=${characterId}`);
       if (!response.ok) return null;
-      const data = await response.json();
+      const data = extractData<Appearance | null>(await response.json());
       return data || defaultAppearance;
     },
     enabled: !!characterId,

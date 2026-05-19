@@ -167,9 +167,7 @@ const extractAudio: MultimodalTool = {
 
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
 
 /**
  * Register multimodal tools with the MCP server.

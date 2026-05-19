@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { Upload, FileAudio, X, Check, Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 
 interface VoiceCloneUploadProps {
   onClose: () => void;
@@ -64,7 +65,8 @@ export default function VoiceCloneUpload({ onClose, onCloned }: VoiceCloneUpload
         body: formData,
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
 
       if (!data.success) {
         throw new Error(data.error || 'Clone failed');

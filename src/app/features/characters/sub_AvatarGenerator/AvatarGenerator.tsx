@@ -26,8 +26,10 @@ import {
   Download,
   Smile,
   Shirt,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { Appearance } from '@/app/types/Character';
 import { useAvatarGenerator, GeneratedAvatar, OutfitInfo } from '../hooks/useAvatarGenerator';
 import StyleSelector from './components/StyleSelector';
@@ -40,6 +42,10 @@ import BatchGenerator from './components/BatchGenerator';
 import ExpressionBlender, { BlendResult } from './components/ExpressionBlender';
 import AvatarSheetExporter from './components/AvatarSheetExporter';
 import OutfitSelector from './components/OutfitSelector';
+import AgeProgressor, { buildAgePrompt, getAgingModifier } from './components/AgeProgressor';
+import { useAvatarTimeline } from '@/app/hooks/integration/useAvatarTimeline';
+import type { AgeStage } from '@/app/hooks/integration/useAvatarTimeline';
+import { GENERATION_PRESETS } from '../lib/promptComposer';
 
 // ============================================================================
 // Types
@@ -54,7 +60,7 @@ interface AvatarGeneratorProps {
   onAvatarUpdated?: (avatar: GeneratedAvatar) => Promise<void>;
 }
 
-type TabId = 'single' | 'expression' | 'outfit' | 'batch' | 'blend' | 'export';
+type TabId = 'single' | 'expression' | 'outfit' | 'age' | 'batch' | 'blend' | 'export';
 
 interface Tab {
   id: TabId;
@@ -85,6 +91,12 @@ const TABS: Tab[] = [
     label: 'outfit',
     icon: <Shirt size={14} />,
     description: 'Generate with outfit',
+  },
+  {
+    id: 'age',
+    label: 'age',
+    icon: <Clock size={14} />,
+    description: 'Age progression timeline',
   },
   {
     id: 'batch',
@@ -129,6 +141,25 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
 
   // Avatar updating state
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Age progression state
+  const [ageStage, setAgeStage] = useState<AgeStage>('young_adult');
+  const [estimatedAge, setEstimatedAge] = useState<number>(25);
+  const [agedAvatars, setAgedAvatars] = useState<GeneratedAvatar[]>([]);
+  const [selectedAgedAvatar, setSelectedAgedAvatar] = useState<GeneratedAvatar | null>(null);
+  const [isGeneratingAged, setIsGeneratingAged] = useState(false);
+  const [pendingAgeProgression, setPendingAgeProgression] = useState<{
+    fromStage: AgeStage;
+    toStage: AgeStage;
+    age: number;
+  } | null>(null);
+
+  // Avatar timeline hook for recording progressions
+  const {
+    latestEntry,
+    recordAgeProgression,
+    isCreating: isRecordingProgression,
+  } = useAvatarTimeline(characterId);
 
   // All generated avatars (for export)
   const [allAvatars, setAllAvatars] = useState<GeneratedAvatar[]>([]);
@@ -215,6 +246,107 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
         createdAt: new Date().toISOString(),
       };
       setAllAvatars(prev => [...prev, avatar]);
+    }
+  };
+
+  // Handle age progression generation
+  const handleGenerateAged = async (stage: AgeStage, age: number) => {
+    setIsGeneratingAged(true);
+    setAgedAvatars([]);
+    setSelectedAgedAvatar(null);
+
+    // Track from → to for recording later
+    const fromStage = latestEntry?.age_stage || 'young_adult';
+    setPendingAgeProgression({ fromStage, toStage: stage, age });
+
+    try {
+      // Compose base prompt with age modifier appended
+      const composeRes = await fetch('/api/ai/compose-avatar-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId,
+          appearance,
+          style: selectedStyle,
+          artStyle,
+        }),
+      });
+
+      if (!composeRes.ok) {
+        const data = await composeRes.json();
+        throw new Error(data.error || 'Failed to compose prompt');
+      }
+
+      const { prompt: basePrompt } = extractData<any>(await composeRes.json());
+      const ageModifier = buildAgePrompt(stage, age);
+      const fullPrompt = `${basePrompt}, ${ageModifier}`;
+
+      // Generate images
+      const preset = GENERATION_PRESETS.avatar;
+      const requestBody: Record<string, unknown> = {
+        prompt: fullPrompt,
+        numImages: preset.numImages,
+        width: preset.width,
+        height: preset.height,
+      };
+
+      if (currentAvatarUrl) {
+        requestBody.referenceImages = [currentAvatarUrl];
+        requestBody.referenceStrength = 0.5;
+      }
+
+      const genRes = await fetch('/api/ai/generate-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!genRes.ok) {
+        const data = await genRes.json();
+        throw new Error(data.error || 'Failed to generate aged avatars');
+      }
+
+      const genData = extractData<any>(await genRes.json());
+      const generated: GeneratedAvatar[] = genData.images.map((url: string, index: number) => ({
+        id: `aged-${Date.now()}-${index}`,
+        url,
+        prompt: fullPrompt,
+        style: selectedStyle,
+        createdAt: new Date().toISOString(),
+      }));
+
+      setAgedAvatars(generated);
+      setAllAvatars(prev => [...prev, ...generated]);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to generate aged avatar';
+      console.error('Age generation failed:', message);
+    } finally {
+      setIsGeneratingAged(false);
+    }
+  };
+
+  // Handle selecting an aged avatar → auto-record to timeline
+  const handleSelectAgedAvatar = async (avatar: GeneratedAvatar) => {
+    setSelectedAgedAvatar(avatar);
+
+    if (pendingAgeProgression) {
+      const { fromStage, toStage, age } = pendingAgeProgression;
+      const modifier = getAgingModifier(toStage);
+      const visualChanges = [
+        ...modifier.physicalChanges.map(change => `physical: ${change}`),
+        ...modifier.facialChanges.map(change => `facial: ${change}`),
+      ].join('; ');
+
+      try {
+        await recordAgeProgression(
+          avatar.url,
+          fromStage,
+          toStage,
+          `Aged to ${toStage.replace('_', ' ')} (~${age}y). Changes: ${visualChanges}`,
+        );
+      } catch (err) {
+        console.error('Failed to record age progression:', err);
+      }
     }
   };
 
@@ -523,6 +655,59 @@ const AvatarGenerator: React.FC<AvatarGeneratorProps> = ({
                   selectedAvatar={selectedAvatar}
                   onSelectAvatar={selectAvatar}
                   isLoading={isGenerating}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Age Progression Tab */}
+          {activeTab === 'age' && (
+            <div className="space-y-4">
+              {/* Current Avatar Display */}
+              <CurrentAvatar
+                currentAvatarUrl={currentAvatarUrl}
+                selectedAvatar={selectedAgedAvatar}
+                onSetAsAvatar={handleSetAsAvatar}
+                isUpdating={isUpdating}
+              />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Left Column: Age Controls */}
+                <div className="space-y-4">
+                  <AgeProgressor
+                    currentStage={ageStage}
+                    estimatedAge={estimatedAge}
+                    onStageChange={setAgeStage}
+                    onAgeChange={setEstimatedAge}
+                    onGenerateAged={handleGenerateAged}
+                    disabled={isGeneratingAged}
+                  />
+
+                  {/* Recording status */}
+                  {isRecordingProgression && (
+                    <div className="flex items-center gap-2 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+                      <div className="w-3 h-3 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+                      <span className="font-mono text-sm text-cyan-400">
+                        Recording to timeline...
+                      </span>
+                    </div>
+                  )}
+
+                  {pendingAgeProgression && selectedAgedAvatar && !isRecordingProgression && (
+                    <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <span className="font-mono text-sm text-green-400">
+                        Recorded: {pendingAgeProgression.fromStage.replace('_', ' ')} → {pendingAgeProgression.toStage.replace('_', ' ')}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Column: Generated Aged Avatars */}
+                <AvatarGrid
+                  avatars={agedAvatars}
+                  selectedAvatar={selectedAgedAvatar}
+                  onSelectAvatar={handleSelectAgedAvatar}
+                  isLoading={isGeneratingAged}
                 />
               </div>
             </div>

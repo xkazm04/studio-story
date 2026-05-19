@@ -9,9 +9,13 @@ import { spawn, type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getExecutionStore } from './execution-store';
+import type { Execution } from './execution-types';
 import { analyzeEvent } from './signals/signal-analyzer';
-import { appendSignal, getSignals, savePatterns } from './signals/signal-store';
+import { appendSignal, getSignals, savePatterns, appendIntentSignal, getIntentSignals, saveIntentPatterns, flushSignalBuffers } from './signals/signal-store';
 import { detectPatterns } from './signals/pattern-detector';
+import { IntentChainTracker } from './signals/intent-analyzer';
+import { detectIntentPatterns } from './signals/intent-detector';
 
 // ============ Stream-json message types from Claude CLI ============
 
@@ -78,36 +82,68 @@ export type CLIMessage = CLISystemMessage | CLIAssistantMessage | CLIUserMessage
 
 // ============ Execution Events ============
 
-export interface CLIExecutionEvent {
-  type: 'init' | 'text' | 'tool_use' | 'tool_result' | 'result' | 'error' | 'stdout';
-  data: Record<string, unknown>;
-  timestamp: number;
+// ---- Per-event-type data shapes ----
+
+export interface CLIInitData {
+  sessionId: string;
+  tools: string[];
+  model?: string;
+  cwd?: string;
+  version?: string;
 }
 
-export interface CLIExecution {
+export interface CLITextData {
+  content: string;
+  model: string;
+}
+
+export interface CLIToolUseData {
   id: string;
-  projectPath: string;
-  prompt: string;
-  process: ChildProcess | null;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+export interface CLIToolResultData {
+  toolUseId: string;
+  content: string;
+}
+
+export interface CLIResultData {
   sessionId?: string;
-  status: 'running' | 'completed' | 'error' | 'aborted';
-  startTime: number;
-  endTime?: number;
-  events: CLIExecutionEvent[];
-  logFilePath?: string;
-  emitter: EventEmitter;
+  usage?: { input_tokens: number; output_tokens: number };
+  durationMs?: number;
+  costUsd?: number;
+  isError?: boolean;
+  synthetic?: boolean;
 }
 
-// Active executions map — use globalThis to persist across Next.js module reloads in dev
-const globalForExecutions = globalThis as unknown as {
-  cliActiveExecutions: Map<string, CLIExecution> | undefined;
-};
-
-const activeExecutions = globalForExecutions.cliActiveExecutions ?? new Map<string, CLIExecution>();
-
-if (!globalForExecutions.cliActiveExecutions) {
-  globalForExecutions.cliActiveExecutions = activeExecutions;
+export interface CLIErrorData {
+  message: string;
+  error?: string;
+  source?: string;
+  exitCode?: number;
 }
+
+export interface CLIStdoutData {
+  raw: string;
+}
+
+// ---- Discriminated union ----
+
+export type CLIExecutionEvent =
+  | { type: 'init'; data: CLIInitData; timestamp: number }
+  | { type: 'text'; data: CLITextData; timestamp: number }
+  | { type: 'tool_use'; data: CLIToolUseData; timestamp: number }
+  | { type: 'tool_result'; data: CLIToolResultData; timestamp: number }
+  | { type: 'result'; data: CLIResultData; timestamp: number }
+  | { type: 'error'; data: CLIErrorData; timestamp: number }
+  | { type: 'stdout'; data: CLIStdoutData; timestamp: number };
+
+/**
+ * CLIExecution is now an alias for the first-class Execution entity.
+ * Kept for backward compatibility with existing consumers.
+ */
+export type CLIExecution = Execution;
 
 // ============ Logging ============
 
@@ -180,20 +216,9 @@ export function startExecution(
   ensureLogsDirectory(projectPath);
   const logFilePath = getLogFilePath(projectPath, executionId);
 
-  const execution: CLIExecution = {
-    id: executionId,
-    projectPath,
-    prompt,
-    process: null,
-    status: 'running',
-    startTime: Date.now(),
-    events: [],
-    logFilePath,
-    emitter: new EventEmitter(),
-  };
-
-  activeExecutions.set(executionId, execution);
-  console.log(`[CLI] Registered execution: ${executionId}. Total active: ${activeExecutions.size}`);
+  const store = getExecutionStore();
+  const execution = store.register({ id: executionId, projectPath, prompt, logFilePath });
+  console.log(`[CLI] Registered execution: ${executionId}. Total active: ${store.size}`);
 
   // Create log file stream
   const logStream = fs.createWriteStream(logFilePath, { flags: 'a' });
@@ -214,8 +239,7 @@ export function startExecution(
   };
 
   const emitEvent = (event: CLIExecutionEvent) => {
-    execution.events.push(event);
-    execution.emitter.emit('event', event);
+    store.pushEvent(executionId, event);
     if (onEvent) onEvent(event);
   };
 
@@ -277,6 +301,7 @@ export function startExecution(
     let assistantMessageCount = 0;
     const recentEventsWindow: CLIExecutionEvent[] = [];
     const WINDOW_SIZE = 20;
+    const intentTracker = new IntentChainTracker(executionId);
 
     const trackAndAnalyze = (event: CLIExecutionEvent) => {
       recentEventsWindow.push(event);
@@ -284,9 +309,23 @@ export function startExecution(
 
       try {
         const signal = analyzeEvent(event, recentEventsWindow, execution.id);
-        if (signal) appendSignal(signal);
+        if (signal) {
+          appendSignal(signal);
+          store.pushSignal(executionId, signal);
+        }
       } catch {
         // Signal analysis is non-critical — never block execution
+      }
+
+      // Track successful tool chains for predictive intent signals
+      try {
+        const intentSignal = intentTracker.processEvent(event);
+        if (intentSignal) {
+          appendIntentSignal(intentSignal);
+          store.pushIntentSignal(executionId, intentSignal);
+        }
+      } catch {
+        // Intent tracking is non-critical
       }
     };
 
@@ -360,6 +399,17 @@ export function startExecution(
         emitEvent(event);
         trackAndAnalyze(event);
 
+        // Flush any remaining intent chain at execution end
+        try {
+          const finalIntent = intentTracker.flush();
+          if (finalIntent) {
+            appendIntentSignal(finalIntent);
+            store.pushIntentSignal(executionId, finalIntent);
+          }
+        } catch {
+          // Intent flush is non-critical
+        }
+
         // Run pattern detection at end of execution
         try {
           const signals = getSignals(Date.now() - 7 * 24 * 3600 * 1000);
@@ -368,6 +418,20 @@ export function startExecution(
         } catch {
           // Pattern detection is non-critical
         }
+
+        // Run intent pattern detection at end of execution
+        try {
+          const intentSignals = getIntentSignals(Date.now() - 30 * 24 * 3600 * 1000);
+          const intentPatterns = detectIntentPatterns(intentSignals);
+          saveIntentPatterns(intentPatterns);
+        } catch {
+          // Intent pattern detection is non-critical
+        }
+
+        // Flush buffered signals to disk before execution ends
+        flushSignalBuffers().catch(() => {
+          // Signal flush is non-critical
+        });
       }
     };
 
@@ -403,7 +467,7 @@ export function startExecution(
       if (isError) {
         emitEvent({
           type: 'error',
-          data: { error: text, source: 'stderr' },
+          data: { message: text, error: text, source: 'stderr' },
           timestamp: Date.now(),
         });
       }
@@ -426,8 +490,12 @@ export function startExecution(
       logMessage('=== Claude Terminal Execution Finished ===');
       closeLogStream();
 
-      execution.endTime = Date.now();
-      execution.status = code === 0 ? 'completed' : 'error';
+      const endTime = Date.now();
+      const finalStatus = code === 0 ? 'completed' as const : 'error' as const;
+      store.updateStatus(executionId, finalStatus, {
+        endTime,
+        durationMs: endTime - execution.startTime,
+      });
 
       if (code !== 0) {
         emitEvent({
@@ -460,8 +528,7 @@ export function startExecution(
       logMessage(`[ERROR] ${err.message}`);
       closeLogStream();
 
-      execution.endTime = Date.now();
-      execution.status = 'error';
+      store.updateStatus(executionId, 'error', { endTime: Date.now() });
 
       emitEvent({
         type: 'error',
@@ -475,7 +542,7 @@ export function startExecution(
       if (!childProcess.killed) {
         logMessage('[TIMEOUT] Execution exceeded 100 minutes, killing process...');
         childProcess.kill();
-        execution.status = 'error';
+        store.updateStatus(executionId, 'error', { endTime: Date.now() });
         emitEvent({
           type: 'error',
           data: { message: 'Execution timed out after 100 minutes' },
@@ -492,8 +559,7 @@ export function startExecution(
     logMessage(`[EXCEPTION] ${error instanceof Error ? error.message : String(error)}`);
     closeLogStream();
 
-    execution.status = 'error';
-    execution.endTime = Date.now();
+    store.updateStatus(executionId, 'error', { endTime: Date.now() });
 
     emitEvent({
       type: 'error',
@@ -506,51 +572,36 @@ export function startExecution(
 }
 
 /**
- * Get execution by ID
+ * Get execution by ID — delegates to ExecutionStore.
  */
-export function getExecution(executionId: string): CLIExecution | undefined {
-  return activeExecutions.get(executionId);
+export function getExecution(executionId: string): Execution | undefined {
+  return getExecutionStore().get(executionId);
 }
 
 export function subscribeExecutionEvents(
   executionId: string,
   listener: (event: CLIExecutionEvent) => void,
 ): (() => void) | null {
-  const execution = activeExecutions.get(executionId);
-  if (!execution) return null;
-  execution.emitter.on('event', listener);
-  return () => execution.emitter.off('event', listener);
+  return getExecutionStore().subscribe(executionId, listener);
 }
 
 /**
- * Abort an execution
+ * Abort an execution — delegates to ExecutionStore.
  */
 export function abortExecution(executionId: string): boolean {
-  const execution = activeExecutions.get(executionId);
-  if (!execution || !execution.process) return false;
-
-  execution.process.kill();
-  execution.status = 'aborted';
-  execution.endTime = Date.now();
-
-  return true;
+  return getExecutionStore().abort(executionId);
 }
 
 /**
- * Get all active executions
+ * Get all active (running) executions.
  */
-export function getActiveExecutions(): CLIExecution[] {
-  return Array.from(activeExecutions.values()).filter(e => e.status === 'running');
+export function getActiveExecutions(): Execution[] {
+  return getExecutionStore().getActive();
 }
 
 /**
- * Clean up completed executions older than specified age
+ * Clean up completed executions older than specified age.
  */
 export function cleanupExecutions(maxAgeMs: number = 3600000): void {
-  const now = Date.now();
-  for (const [id, execution] of activeExecutions) {
-    if (execution.status !== 'running' && execution.endTime && now - execution.endTime > maxAgeMs) {
-      activeExecutions.delete(id);
-    }
-  }
+  getExecutionStore().cleanup(maxAgeMs);
 }

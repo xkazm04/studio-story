@@ -44,6 +44,7 @@ import {
   generateGoalId,
   generateSecretId,
 } from '@/lib/politics/PoliticsEngine';
+import { CulturalCompatibility } from '@/lib/culture/CultureGenerator';
 import { cn } from '@/app/lib/utils';
 
 // ============================================================================
@@ -64,6 +65,7 @@ interface DiplomacyPanelProps {
   onAddSecret?: (secret: FactionSecret) => void;
   onRevealSecret?: (secretId: string) => void;
   predictions?: Map<string, RelationshipPrediction>;
+  culturalCompatibilities?: Map<string, CulturalCompatibility>;
   readOnly?: boolean;
 }
 
@@ -73,10 +75,188 @@ type TabView = 'overview' | 'actions' | 'treaties' | 'goals' | 'secrets';
 // Sub-Components
 // ============================================================================
 
+// ============================================================================
+// Compatibility Insight - Dual-score cultural + political display
+// ============================================================================
+
+type TensionType = 'cultural_allies_political_rivals' | 'political_allies_cultural_clash' | null;
+
+function detectNarrativeTension(
+  culturalScore: number,
+  politicalValue: number,
+  alliancePotential: CulturalCompatibility['alliance_potential'],
+): TensionType {
+  // Culturally aligned (score >= 65) but politically hostile (value <= -20)
+  if (culturalScore >= 65 && politicalValue <= -20) {
+    return 'cultural_allies_political_rivals';
+  }
+  // Politically friendly (value >= 30) but culturally incompatible (score <= 35 or unlikely/impossible)
+  if (
+    politicalValue >= 30 &&
+    (culturalScore <= 35 || alliancePotential === 'unlikely' || alliancePotential === 'impossible')
+  ) {
+    return 'political_allies_cultural_clash';
+  }
+  return null;
+}
+
+const TENSION_CONFIG: Record<
+  NonNullable<TensionType>,
+  { label: string; description: string; color: string }
+> = {
+  cultural_allies_political_rivals: {
+    label: 'Narrative Tension',
+    description: 'Culturally aligned but politically hostile — a rich source of conflict.',
+    color: 'text-amber-400',
+  },
+  political_allies_cultural_clash: {
+    label: 'Fragile Alliance',
+    description: 'Political allies despite deep cultural differences — alliance under strain.',
+    color: 'text-orange-400',
+  },
+};
+
+const ALLIANCE_POTENTIAL_CONFIG: Record<
+  CulturalCompatibility['alliance_potential'],
+  { label: string; color: string }
+> = {
+  natural_allies: { label: 'Natural Allies', color: 'text-green-400' },
+  possible: { label: 'Possible', color: 'text-cyan-400' },
+  difficult: { label: 'Difficult', color: 'text-amber-400' },
+  unlikely: { label: 'Unlikely', color: 'text-orange-400' },
+  impossible: { label: 'Impossible', color: 'text-red-400' },
+};
+
+interface CompatibilityInsightProps {
+  cultural: CulturalCompatibility;
+  prediction?: RelationshipPrediction;
+  relationshipValue: number;
+}
+
+const CompatibilityInsight: React.FC<CompatibilityInsightProps> = ({
+  cultural,
+  prediction,
+  relationshipValue,
+}) => {
+  const tension = detectNarrativeTension(
+    cultural.overall_score,
+    relationshipValue,
+    cultural.alliance_potential,
+  );
+  const allianceConfig = ALLIANCE_POTENTIAL_CONFIG[cultural.alliance_potential];
+
+  return (
+    <div className="mt-2 space-y-2">
+      {/* Dual score bars */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* Cultural score */}
+        <div className="bg-slate-900/60 rounded-md p-2">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="text-slate-400">Cultural</span>
+            <span className="text-white font-medium">{cultural.overall_score}</span>
+          </div>
+          <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${cultural.overall_score}%`,
+                backgroundColor:
+                  cultural.overall_score >= 65
+                    ? '#34d399'
+                    : cultural.overall_score >= 40
+                      ? '#fbbf24'
+                      : '#f87171',
+              }}
+            />
+          </div>
+          <div className={cn('text-xs mt-1', allianceConfig.color)}>
+            {allianceConfig.label}
+          </div>
+        </div>
+
+        {/* Political score */}
+        <div className="bg-slate-900/60 rounded-md p-2">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="text-slate-400">Political</span>
+            <span className="text-white font-medium">
+              {relationshipValue > 0 ? '+' : ''}{relationshipValue}
+            </span>
+          </div>
+          <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+            {/* Normalize -100..+100 to 0..100 for bar width */}
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${(relationshipValue + 100) / 2}%`,
+                backgroundColor:
+                  relationshipValue >= 30
+                    ? '#34d399'
+                    : relationshipValue >= -10
+                      ? '#fbbf24'
+                      : '#f87171',
+              }}
+            />
+          </div>
+          {prediction && (
+            <div className={cn(
+              'text-xs mt-1',
+              prediction.change_direction === 'improving' ? 'text-green-400' :
+              prediction.change_direction === 'worsening' ? 'text-red-400' : 'text-slate-400'
+            )}>
+              {prediction.change_direction === 'improving' ? 'Improving' :
+               prediction.change_direction === 'worsening' ? 'Worsening' : 'Stable'}
+              {prediction.confidence > 0 && ` (${prediction.confidence}%)`}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Shared/conflicting values summary */}
+      {(cultural.shared_values.length > 0 || cultural.conflicting_values.length > 0) && (
+        <div className="flex flex-wrap gap-1">
+          {cultural.shared_values.slice(0, 3).map((v) => (
+            <span key={v} className="px-1.5 py-0.5 rounded text-xs bg-green-900/30 text-green-400">
+              {v}
+            </span>
+          ))}
+          {cultural.conflicting_values.slice(0, 3).map((v) => (
+            <span key={v} className="px-1.5 py-0.5 rounded text-xs bg-red-900/30 text-red-400">
+              {v}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Narrative tension badge */}
+      {tension && (
+        <div className={cn(
+          'flex items-center gap-2 px-2 py-1.5 rounded-md border',
+          tension === 'cultural_allies_political_rivals'
+            ? 'bg-amber-900/20 border-amber-500/30'
+            : 'bg-orange-900/20 border-orange-500/30'
+        )}>
+          <AlertTriangle size={12} className={TENSION_CONFIG[tension].color} />
+          <div>
+            <div className={cn('text-xs font-medium', TENSION_CONFIG[tension].color)}>
+              {TENSION_CONFIG[tension].label}
+            </div>
+            <div className="text-xs text-slate-400">
+              {TENSION_CONFIG[tension].description}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============================================================================
+
 interface RelationshipSummaryProps {
   relationship: FactionRelationship;
   otherFaction: Faction | undefined;
   prediction?: RelationshipPrediction;
+  culturalCompatibility?: CulturalCompatibility;
   onClick?: () => void;
 }
 
@@ -84,6 +264,7 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
   relationship,
   otherFaction,
   prediction,
+  culturalCompatibility,
   onClick,
 }) => {
   const config = RELATIONSHIP_TYPE_CONFIG[relationship.relationship_type];
@@ -120,7 +301,7 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
               {activeTreaties.length}
             </div>
           )}
-          {prediction && (
+          {prediction && !culturalCompatibility && (
             <div className="flex items-center">
               {prediction.change_direction === 'improving' && (
                 <TrendingUp size={14} className="text-green-400" />
@@ -136,6 +317,15 @@ const RelationshipSummary: React.FC<RelationshipSummaryProps> = ({
           <ChevronRight size={16} className="text-slate-400" />
         </div>
       </div>
+
+      {/* Cross-engine compatibility insight */}
+      {culturalCompatibility && (
+        <CompatibilityInsight
+          cultural={culturalCompatibility}
+          prediction={prediction}
+          relationshipValue={relationship.relationship_value}
+        />
+      )}
     </button>
   );
 };
@@ -731,6 +921,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
   onAddSecret,
   onRevealSecret,
   predictions,
+  culturalCompatibilities,
   readOnly = false,
 }) => {
   const [activeTab, setActiveTab] = useState<TabView>('overview');
@@ -903,6 +1094,7 @@ const DiplomacyPanel: React.FC<DiplomacyPanelProps> = ({
                           relationship={rel}
                           otherFaction={factionMap.get(otherFactionId)}
                           prediction={predictions?.get(otherFactionId)}
+                          culturalCompatibility={culturalCompatibilities?.get(otherFactionId)}
                           onClick={() => {
                             setSelectedFactionId(otherFactionId);
                             setActiveTab('actions');

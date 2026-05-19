@@ -2,15 +2,13 @@
 
 import React, { useMemo } from 'react';
 import { Users } from 'lucide-react';
-import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { useScriptContextStore } from '../../../store/scriptContextStore';
-import type { FieldSchema } from '../types';
+import type { BaseAdapterProps, FieldSchema } from '../types';
 import DataList from '../DataList';
+import { useResolvedProjectId } from './useResolvedProjectId';
 
-interface CastSidebarAdapterProps {
-  onClose?: () => void;
-}
+type CastSidebarAdapterProps = BaseAdapterProps;
 
 const TYPE_LABELS: Record<string, string> = {
   protagonist: 'Lead',
@@ -21,14 +19,13 @@ const TYPE_LABELS: Record<string, string> = {
 
 const CAST_FIELDS: FieldSchema[] = [
   { key: 'avatar_url', label: 'Avatar', type: 'avatar', displayIn: ['list-item'] },
-  { key: 'name', label: 'Name', type: 'text', displayIn: ['list-item'] },
-  { key: 'typeLabel', label: 'Type', type: 'text', displayIn: ['list-item'] },
+  { key: 'name', label: 'Name', type: 'text', displayIn: ['list-item'], sortable: true },
+  { key: 'typeLabel', label: 'Type', type: 'text', displayIn: ['list-item'], sortable: true },
 ];
 
-export default function CastSidebarAdapter({ onClose }: CastSidebarAdapterProps) {
-  const { selectedProject } = useProjectStore();
-  const projectId = selectedProject?.id || '';
-  const { data: characters = [], isError, error, refetch } = characterApi.useProjectCharacters(projectId, !!projectId);
+export default function CastSidebarAdapter({ onClose, density }: CastSidebarAdapterProps) {
+  const { projectId, hasProject } = useResolvedProjectId();
+  const { data: characters = [], isError, error, refetch } = characterApi.useProjectCharacters(projectId, hasProject);
   const referencedSpeakers = useScriptContextStore((s) => s.referencedSpeakers);
   const requestInsert = useScriptContextStore((s) => s.requestInsert);
 
@@ -42,17 +39,18 @@ export default function CastSidebarAdapter({ onClose }: CastSidebarAdapterProps)
     [characters],
   );
 
-  const handleItemClick = (item: Record<string, unknown>) => {
-    requestInsert({ type: 'dialogue', speaker: item.name as string });
+  const handleItemClick = (item: typeof items[number]) => {
+    requestInsert({ type: 'dialogue', speaker: item.name });
   };
 
-  if (!projectId) {
+  if (!hasProject) {
     return (
       <DataList
         title="Cast"
         icon={Users}
         headerAccent="cyan"
         onClose={onClose}
+        density={density}
         items={[]}
         fields={CAST_FIELDS}
         emptyTitle="Select a project first"
@@ -66,10 +64,11 @@ export default function CastSidebarAdapter({ onClose }: CastSidebarAdapterProps)
       icon={Users}
       headerAccent="cyan"
       onClose={onClose}
+      density={density}
       isError={isError}
       errorMessage={error?.message}
       onRetry={() => refetch()}
-      items={items as unknown as Record<string, unknown>[]}
+      items={items}
       fields={CAST_FIELDS}
       highlightIds={highlightSet}
       highlightField="name"

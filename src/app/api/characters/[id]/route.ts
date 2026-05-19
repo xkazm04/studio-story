@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Character } from '@/app/types/Character';
-import { createErrorResponse, handleDatabaseError, HTTP_STATUS } from '@/app/utils/apiErrorHandling';
+import { handleDatabaseError, HTTP_STATUS, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * Fetches a character by ID from the database
@@ -46,71 +46,56 @@ async function deleteCharacter(id: string) {
  * GET /api/characters/[id]
  * Get a single character by ID
  */
-export async function GET(
+export const GET = withApiHandler('GET /api/characters/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { data, error } = await fetchCharacter(id);
+  const { data, error } = await fetchCharacter(id);
 
-    if (error) {
-      return handleDatabaseError('fetch character', error, `GET /api/characters/${id}`);
-    }
-
-    return NextResponse.json(data as Character);
-  } catch (error) {
-    console.error('Unexpected error in GET /api/characters/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('fetch character', error, `GET /api/characters/${id}`);
   }
-}
+
+  return NextResponse.json(data as Character);
+});
 
 /**
  * PUT /api/characters/[id]
  * Update a character
  */
-export async function PUT(
+export const PUT = withApiHandler('PUT /api/characters/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
-    const body = await request.json();
+) => {
+  const { id } = await context.params;
+  const body = await request.json();
 
-    const { data, error } = await updateCharacter(id, body);
+  const { data, error } = await updateCharacter(id, body);
 
-    if (error) {
-      return handleDatabaseError('update character', error, `PUT /api/characters/${id}`);
-    }
-
-    return NextResponse.json(data as Character);
-  } catch (error) {
-    console.error('Unexpected error in PUT /api/characters/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('update character', error, `PUT /api/characters/${id}`);
   }
-}
+
+  return NextResponse.json(data as Character);
+});
 
 /**
  * DELETE /api/characters/[id]
  * Delete a character
  */
-export async function DELETE(
+export const DELETE = withApiHandler('DELETE /api/characters/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { error } = await deleteCharacter(id);
+  const { error } = await deleteCharacter(id);
 
-    if (error) {
-      return handleDatabaseError('delete character', error, `DELETE /api/characters/${id}`);
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    console.error('Unexpected error in DELETE /api/characters/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('delete character', error, `DELETE /api/characters/${id}`);
   }
-}
+
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

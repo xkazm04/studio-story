@@ -8,10 +8,12 @@ import { Tooltip } from '@/app/components/UI/Tooltip';
 import ProjectSelector from './ProjectSelector';
 import ActSelector from './ActSelector';
 import SceneSelector from './SceneSelector';
+import SceneProgressIndicator from './SceneProgressIndicator';
 import LayoutPicker from './LayoutPicker';
 import type { LLMTransportStatus } from '@dzin/core';
 import AdvisorOverlay from '@/agents/AdvisorOverlay';
 import LLMStatusDot from './LLMStatusDot';
+import SnapshotTabs from '@/workspace/components/SnapshotTabs';
 
 export interface WorkspaceHeaderProps {
   llmStatus?: LLMTransportStatus;
@@ -38,17 +40,22 @@ const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({ llmStatus = 'disconne
   return (
     <div className="flex items-center justify-between px-3 py-1 bg-slate-950/95 border-b border-slate-800/60 backdrop-blur-sm shrink-0">
       {/* Left side — Project / Act / Scene selectors */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <ProjectSelector />
 
-        <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+        <ChevronRight className="w-3.5 h-3.5 text-slate-700 shrink-0" />
         <ActSelector />
 
-        <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+        <SceneProgressIndicator />
+
+        <ChevronRight className="w-3.5 h-3.5 text-slate-700 shrink-0" />
         <SceneSelector />
 
         <div className="mx-1 h-4 w-px bg-slate-700/40" />
         <LayoutPicker />
+
+        <div className="mx-1 h-4 w-px bg-slate-700/40" />
+        <SnapshotTabs />
       </div>
 
       {/* Center — Advisor */}

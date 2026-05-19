@@ -8,6 +8,8 @@
 
 import type { Scene } from '@/app/types/Scene';
 import type { Beat } from '@/app/types/Beat';
+import type { AnalysisIssue } from './index';
+import { sortScenes } from './utils';
 
 // ============================================================================
 // Types
@@ -19,7 +21,7 @@ export type ThemeCategory =
   | 'personal'     // Identity, growth, redemption, etc.
   | 'philosophical'; // Good vs evil, fate vs free will, etc.
 
-export interface Theme {
+export interface DetectedTheme {
   id: string;
   name: string;
   category: ThemeCategory;
@@ -52,14 +54,11 @@ export interface ThematicThread {
   gapPositions: { start: number; end: number }[]; // Where does it disappear?
 }
 
-export interface ThematicIssue {
+export interface ThematicIssue extends AnalysisIssue {
   type: 'abandoned' | 'introduced-late' | 'weak' | 'inconsistent' | 'competing' | 'unresolved';
-  severity: 'critical' | 'warning' | 'info';
   themeId?: string;
   themeName?: string;
   position?: number;
-  message: string;
-  suggestion: string;
 }
 
 export interface ThematicAnalysisResult {
@@ -79,7 +78,7 @@ export interface ThematicAnalysisResult {
 // Theme Library
 // ============================================================================
 
-const THEME_LIBRARY: Theme[] = [
+const THEME_LIBRARY: DetectedTheme[] = [
   // Universal Themes
   {
     id: 'love',
@@ -286,18 +285,10 @@ const THEME_LIBRARY: Theme[] = [
 // ============================================================================
 
 class ThematicAnalyzerClass {
-  private static instance: ThematicAnalyzerClass;
-  private themeMap: Map<string, Theme>;
+  private themeMap: Map<string, DetectedTheme>;
 
-  private constructor() {
+  constructor() {
     this.themeMap = new Map(THEME_LIBRARY.map(t => [t.id, t]));
-  }
-
-  static getInstance(): ThematicAnalyzerClass {
-    if (!ThematicAnalyzerClass.instance) {
-      ThematicAnalyzerClass.instance = new ThematicAnalyzerClass();
-    }
-    return ThematicAnalyzerClass.instance;
   }
 
   // ============================================================================
@@ -309,10 +300,10 @@ class ThematicAnalyzerClass {
    */
   analyzeThemes(
     scenes: Scene[],
-    beats: Beat[]
+    beats: Beat[],
+    options?: { preSorted?: boolean }
   ): ThematicAnalysisResult {
-    // Sort scenes
-    const sortedScenes = this.sortScenes(scenes, beats);
+    const sortedScenes = options?.preSorted ? scenes : sortScenes(scenes, beats);
 
     // Detect theme presence throughout story
     const detectedThemes = this.detectThemes(sortedScenes);
@@ -406,7 +397,7 @@ class ThematicAnalyzerClass {
       .sort((a, b) => b.presencePercentage - a.presencePercentage);
   }
 
-  private calculateThemeStrength(content: string, theme: Theme): number {
+  private calculateThemeStrength(content: string, theme: DetectedTheme): number {
     let matchCount = 0;
     let weightedScore = 0;
 
@@ -737,35 +728,19 @@ class ThematicAnalyzerClass {
   // Helpers
   // ============================================================================
 
-  private sortScenes(scenes: Scene[], beats: Beat[]): Scene[] {
-    const actOrderMap = new Map<string, number>();
-    beats.forEach(beat => {
-      if (beat.act_id && beat.order !== undefined) {
-        actOrderMap.set(beat.act_id, Math.min(actOrderMap.get(beat.act_id) ?? Infinity, beat.order));
-      }
-    });
-
-    return [...scenes].sort((a, b) => {
-      const orderA = (a.act_id ? actOrderMap.get(a.act_id) : undefined) ?? 0;
-      const orderB = (b.act_id ? actOrderMap.get(b.act_id) : undefined) ?? 0;
-      if (orderA !== orderB) return orderA - orderB;
-      return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
-    });
-  }
-
   // ============================================================================
   // Accessors
   // ============================================================================
 
-  getThemeLibrary(): Theme[] {
+  getThemeLibrary(): DetectedTheme[] {
     return [...THEME_LIBRARY];
   }
 
-  getTheme(id: string): Theme | undefined {
+  getTheme(id: string): DetectedTheme | undefined {
     return this.themeMap.get(id);
   }
 
-  getThemesByCategory(category: ThemeCategory): Theme[] {
+  getThemesByCategory(category: ThemeCategory): DetectedTheme[] {
     return THEME_LIBRARY.filter(t => t.category === category);
   }
 }
@@ -774,7 +749,7 @@ class ThematicAnalyzerClass {
 // Export
 // ============================================================================
 
-export const thematicAnalyzer = ThematicAnalyzerClass.getInstance();
+export const thematicAnalyzer = new ThematicAnalyzerClass();
 
 export { ThematicAnalyzerClass, THEME_LIBRARY };
 

@@ -5,6 +5,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { Appearance } from '@/app/types/Character';
+import { extractData } from '@/app/utils/api';
 import {
   GenerationSelections,
   GENERATION_PRESETS,
@@ -111,7 +112,7 @@ export function useImageGenerator({
         throw new Error(data.error || 'Failed to compose prompt');
       }
 
-      const data = await response.json();
+      const data = extractData<{ prompt: string }>(await response.json());
       setComposedPrompt(data.prompt);
       return data.prompt;
     } catch (err) {
@@ -172,7 +173,7 @@ export function useImageGenerator({
         throw new Error(data.error || 'Failed to generate sketches');
       }
 
-      const data = await response.json();
+      const data = extractData<{ images: string[] }>(await response.json());
       const generatedSketches: GeneratedImage[] = data.images.map((url: string, index: number) => ({
         id: `sketch-${Date.now()}-${index}`,
         url,
@@ -244,7 +245,7 @@ export function useImageGenerator({
         throw new Error(data.error || 'Failed to generate final image');
       }
 
-      const data = await response.json();
+      const data = extractData<{ images?: string[] }>(await response.json());
       if (data.images && data.images.length > 0) {
         const final: GeneratedImage = {
           id: `final-${Date.now()}`,

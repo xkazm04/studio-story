@@ -5,18 +5,19 @@ import { Film, Loader2 } from 'lucide-react';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { SCENE_SCHEMA } from '@/workspace/schemas/entitySchemas';
+import type { BaseAdapterProps } from '../types';
 import CardGrid from '../CardGrid';
+import { useResolvedProjectId } from './useResolvedProjectId';
 
-interface SceneGalleryAdapterProps {
-  onClose?: () => void;
-}
+type SceneGalleryAdapterProps = BaseAdapterProps;
 
-export default function SceneGalleryAdapter({ onClose }: SceneGalleryAdapterProps) {
-  const { selectedProject, selectedAct, selectedScene, setSelectedScene } = useProjectStore();
-  const projectId = selectedProject?.id || '';
+export default function SceneGalleryAdapter({ onClose, density }: SceneGalleryAdapterProps) {
+  const { projectId, hasProject } = useResolvedProjectId();
+  const { selectedAct, selectedScene, setSelectedScene } = useProjectStore();
   const actId = selectedAct?.id || '';
+  const hasContext = hasProject && !!actId;
   const { data: scenes = [], isLoading, isFetching, isError, error, refetch } = sceneApi.useScenesByProjectAndAct(
-    projectId, actId, !!projectId && !!actId,
+    projectId, actId, hasContext,
   );
 
   return (
@@ -25,14 +26,15 @@ export default function SceneGalleryAdapter({ onClose }: SceneGalleryAdapterProp
       icon={Film}
       headerAccent="amber"
       onClose={onClose}
+      density={density}
       isLoading={isLoading}
       isError={isError}
       errorMessage={error?.message}
       onRetry={() => refetch()}
-      items={scenes as unknown as Record<string, unknown>[]}
+      items={scenes}
       fields={SCENE_SCHEMA.fields}
       selectedId={selectedScene?.id}
-      onSelect={(item) => setSelectedScene(item as any)}
+      onSelect={(item) => setSelectedScene(item)}
       cardVariant="gallery"
       actions={
         isFetching && !isLoading ? (
@@ -43,8 +45,8 @@ export default function SceneGalleryAdapter({ onClose }: SceneGalleryAdapterProp
         ) : undefined
       }
       emptyIcon={Film}
-      emptyTitle={!projectId || !actId ? 'Pick a project and act' : 'No scenes in this act'}
-      emptyDescription={!projectId || !actId
+      emptyTitle={!hasContext ? 'Pick a project and act' : 'No scenes in this act'}
+      emptyDescription={!hasContext
         ? 'Select context to preview and switch between scene visuals.'
         : 'Add scenes to build a visual gallery for this storyline.'
       }

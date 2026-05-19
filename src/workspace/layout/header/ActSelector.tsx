@@ -95,7 +95,7 @@ const ActSelector: React.FC = () => {
   return (
     <HeaderDropdown
       triggerContent={
-        <span className={`font-medium ${!selectedAct ? 'text-slate-400' : ''}`}>
+        <span className={`font-medium text-slate-300 ${!selectedAct ? '!text-slate-500' : ''}`}>
           {selectedAct?.name || 'Select Act'}
         </span>
       }

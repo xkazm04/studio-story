@@ -18,6 +18,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { getScoreColor } from '@/lib/scoreColors';
 import type { AnalysisResult, DetectedAsset } from '../../types';
 import type {
   FullAnalysisResult,
@@ -234,18 +235,18 @@ function ColorAnalysisSection({ colors }: { colors: ColorAnalysis }) {
 
 // Quality assessment section
 function QualitySection({ quality }: { quality: QualityAssessment }) {
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-400';
-    if (score >= 60) return 'text-amber-400';
-    return 'text-red-400';
-  };
+  const QUALITY_SCORE_COLORS = [
+    { min: 80, value: 'text-green-400' },
+    { min: 60, value: 'text-amber-400' },
+    { min: 0, value: 'text-red-400' },
+  ] as const;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Gauge className="w-4 h-4 text-green-400" />
         <span className="text-sm font-medium text-slate-300">Quality Assessment</span>
-        <span className={clsx('text-sm font-bold', getScoreColor(quality.overall))}>
+        <span className={clsx('text-sm font-bold', getScoreColor(quality.overall, QUALITY_SCORE_COLORS))}>
           {quality.overall}/100
         </span>
       </div>

@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { getScoreColor } from '@/lib/scoreColors';
 import { useAnalyzeConsistency, useResolveConsistencyIssue } from '@/app/hooks/useCharacterConsistency';
 import {
   CharacterConsistencyReport,
@@ -74,13 +75,13 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-400';
-    if (score >= 70) return 'text-blue-400';
-    if (score >= 50) return 'text-yellow-400';
-    if (score >= 30) return 'text-orange-400';
-    return 'text-red-400';
-  };
+  const CHARACTER_SCORE_COLORS = [
+    { min: 90, value: 'text-green-400' },
+    { min: 70, value: 'text-blue-400' },
+    { min: 50, value: 'text-yellow-400' },
+    { min: 30, value: 'text-orange-400' },
+    { min: 0, value: 'text-red-400' },
+  ] as const;
 
   const getScoreBorderColor = (score: number): 'blue' | 'green' | 'purple' | 'yellow' | 'pink' | 'orange' | 'gray' => {
     if (score >= 90) return 'green';
@@ -127,7 +128,7 @@ const CharacterConsistencyPanel: React.FC<CharacterConsistencyPanelProps> = ({
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h4 className="text-sm font-medium text-slate-400">Overall Consistency Score</h4>
-                <p className={cn('text-4xl font-bold', getScoreColor(report.consistency_score))}>
+                <p className={cn('text-4xl font-bold', getScoreColor(report.consistency_score, CHARACTER_SCORE_COLORS))}>
                   {report.consistency_score}
                   <span className="text-xl text-slate-400">/100</span>
                 </p>

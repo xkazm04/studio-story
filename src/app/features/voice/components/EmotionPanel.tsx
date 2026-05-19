@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Smile,
@@ -22,10 +22,15 @@ import {
 } from 'lucide-react';
 import { Slider } from '@/app/components/UI/Slider';
 import {
-  emotionController,
   type EmotionType,
   type EmotionConfig,
 } from '@/lib/voice';
+import {
+  EMOTION_ENTRIES,
+  VALENCE_GROUPS,
+  getEmotionLabel,
+  getEmotionHexColor,
+} from '@/lib/voice/EmotionTaxonomy';
 
 interface EmotionPanelProps {
   emotion: EmotionConfig;
@@ -33,45 +38,33 @@ interface EmotionPanelProps {
   className?: string;
 }
 
-// Icon mapping for emotions
-const EMOTION_ICONS: Record<EmotionType, React.ElementType> = {
-  neutral: Minus,
-  happy: Smile,
-  sad: Frown,
-  angry: Angry,
-  fearful: AlertTriangle,
-  surprised: Zap,
-  disgusted: ThumbsDown,
-  contemptuous: EyeOff,
-  excited: Star,
-  tender: Heart,
-  anxious: Activity,
-  melancholy: CloudRain,
-  confident: Shield,
-  sarcastic: MessageCircle,
-  whispered: Volume,
-  shouted: Volume2,
+// Icon mapping for emotions — built from taxonomy icon names to Lucide components
+const ICON_COMPONENTS: Record<string, React.ElementType> = {
+  'minus': Minus,
+  'smile': Smile,
+  'frown': Frown,
+  'angry': Angry,
+  'alert-triangle': AlertTriangle,
+  'zap': Zap,
+  'thumbs-down': ThumbsDown,
+  'eye-off': EyeOff,
+  'star': Star,
+  'heart': Heart,
+  'activity': Activity,
+  'cloud-rain': CloudRain,
+  'shield': Shield,
+  'message-circle': MessageCircle,
+  'volume': Volume,
+  'volume-2': Volume2,
 };
 
-// Emotion display names
-const EMOTION_LABELS: Record<EmotionType, string> = {
-  neutral: 'Neutral',
-  happy: 'Happy',
-  sad: 'Sad',
-  angry: 'Angry',
-  fearful: 'Fearful',
-  surprised: 'Surprised',
-  disgusted: 'Disgusted',
-  contemptuous: 'Contemptuous',
-  excited: 'Excited',
-  tender: 'Tender',
-  anxious: 'Anxious',
-  melancholy: 'Melancholy',
-  confident: 'Confident',
-  sarcastic: 'Sarcastic',
-  whispered: 'Whispered',
-  shouted: 'Shouted',
-};
+const EMOTION_ICONS: Record<EmotionType, React.ElementType> = Object.fromEntries(
+  EMOTION_ENTRIES.map((e) => [e.type, ICON_COMPONENTS[e.icon] ?? Minus]),
+) as Record<EmotionType, React.ElementType>;
+
+const EMOTION_LABELS: Record<EmotionType, string> = Object.fromEntries(
+  EMOTION_ENTRIES.map((e) => [e.type, e.label]),
+) as Record<EmotionType, string>;
 
 export default function EmotionPanel({
   emotion,
@@ -79,9 +72,6 @@ export default function EmotionPanel({
   className = '',
 }: EmotionPanelProps) {
   const [showBlend, setShowBlend] = useState(!!emotion.blend);
-
-  // Get available emotions
-  const emotions = useMemo(() => emotionController.getEmotionTypes(), []);
 
   // Handle primary emotion change
   const handleEmotionSelect = (type: EmotionType) => {
@@ -146,7 +136,7 @@ export default function EmotionPanel({
             onClick={toggleBlend}
             className={`text-sm px-2 py-1 rounded transition-colors ${
               showBlend
-                ? 'bg-purple-500/20 text-purple-400'
+                ? 'bg-voice-muted/20 text-voice-muted'
                 : 'bg-slate-800 text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -154,38 +144,48 @@ export default function EmotionPanel({
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
-          {emotions.map((type) => {
-            const Icon = EMOTION_ICONS[type];
-            const color = emotionController.getEmotionColor(type);
-            const isSelected = emotion.type === type;
+        <div className="space-y-3">
+          {VALENCE_GROUPS.map((group) => (
+            <div key={group.label}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">{group.label}</span>
+                <div className="flex-1 border-b border-slate-800/50" />
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {group.emotions.map((type) => {
+                  const Icon = EMOTION_ICONS[type];
+                  const color = getEmotionHexColor(type);
+                  const isSelected = emotion.type === type;
 
-            return (
-              <motion.button
-                key={type}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleEmotionSelect(type)}
-                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${
-                  isSelected
-                    ? 'border-cyan-500/50 bg-cyan-500/10'
-                    : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
-                }`}
-              >
-                <Icon
-                  className="w-5 h-5"
-                  style={{ color: isSelected ? color : undefined }}
-                />
-                <span
-                  className={`text-sm ${
-                    isSelected ? 'text-slate-200' : 'text-slate-400'
-                  }`}
-                >
-                  {EMOTION_LABELS[type]}
-                </span>
-              </motion.button>
-            );
-          })}
+                  return (
+                    <motion.button
+                      key={type}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleEmotionSelect(type)}
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${
+                        isSelected
+                          ? 'border-voice-primary/50 bg-voice-primary/10'
+                          : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
+                      }`}
+                    >
+                      <Icon
+                        className="w-5 h-5"
+                        style={{ color: isSelected ? color : undefined }}
+                      />
+                      <span
+                        className={`text-sm ${
+                          isSelected ? 'text-slate-200' : 'text-slate-400'
+                        }`}
+                      >
+                        {EMOTION_LABELS[type]}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -228,40 +228,52 @@ export default function EmotionPanel({
             </p>
           </div>
 
-          <div className="grid grid-cols-4 gap-2">
-            {emotions
-              .filter((type) => type !== emotion.type)
-              .map((type) => {
-                const Icon = EMOTION_ICONS[type];
-                const color = emotionController.getEmotionColor(type);
-                const isSelected = emotion.blend === type;
+          <div className="space-y-3">
+            {VALENCE_GROUPS.map((group) => {
+              const filtered = group.emotions.filter((type) => type !== emotion.type);
+              if (filtered.length === 0) return null;
+              return (
+                <div key={group.label}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">{group.label}</span>
+                    <div className="flex-1 border-b border-slate-800/50" />
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {filtered.map((type) => {
+                      const Icon = EMOTION_ICONS[type];
+                      const color = getEmotionHexColor(type);
+                      const isSelected = emotion.blend === type;
 
-                return (
-                  <motion.button
-                    key={type}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleBlendSelect(type)}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
-                      isSelected
-                        ? 'border-purple-500/50 bg-purple-500/10'
-                        : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
-                    }`}
-                  >
-                    <Icon
-                      className="w-4 h-4"
-                      style={{ color: isSelected ? color : undefined }}
-                    />
-                    <span
-                      className={`text-sm ${
-                        isSelected ? 'text-slate-200' : 'text-slate-400'
-                      }`}
-                    >
-                      {EMOTION_LABELS[type]}
-                    </span>
-                  </motion.button>
-                );
-              })}
+                      return (
+                        <motion.button
+                          key={type}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => handleBlendSelect(type)}
+                          className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                            isSelected
+                              ? 'border-voice-muted/50 bg-voice-muted/10'
+                              : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
+                          }`}
+                        >
+                          <Icon
+                            className="w-4 h-4"
+                            style={{ color: isSelected ? color : undefined }}
+                          />
+                          <span
+                            className={`text-sm ${
+                              isSelected ? 'text-slate-200' : 'text-slate-400'
+                            }`}
+                          >
+                            {EMOTION_LABELS[type]}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Blend Ratio */}
@@ -295,7 +307,7 @@ export default function EmotionPanel({
         <div className="flex items-center gap-3">
           {(() => {
             const Icon = EMOTION_ICONS[emotion.type];
-            const color = emotionController.getEmotionColor(emotion.type);
+            const color = getEmotionHexColor(emotion.type);
             return (
               <>
                 <div

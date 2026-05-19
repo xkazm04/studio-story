@@ -405,7 +405,11 @@ export function ExportDialog({
         const generator = new VisualNovelGenerator();
         setExportProgress('Generating visual novel...');
         const result = await generator.generate(vnExportData.storyExportData);
-        downloadExport(result);
+        if (!result.success) {
+          setExportError(result.error.message);
+          return;
+        }
+        downloadExport(result.data);
       } else {
         // All other formats (and VN fallback without projectId) use exportScript
         setExportProgress('Assembling scene data...');
@@ -429,7 +433,11 @@ export function ExportDialog({
         };
 
         const result = await exportScript(scriptData, options);
-        downloadExport(result);
+        if (!result.success) {
+          setExportError(result.error.message);
+          return;
+        }
+        downloadExport(result.data);
       }
 
       // Close dialog after successful export

@@ -11,6 +11,7 @@ import { Copy, Check, Wand2, Loader2, Image as ImageIcon, RefreshCw } from 'luci
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
 import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION, fmStagger } from '@/workspace/theme/tokens';
+import { MAX_PROMPT_LENGTH } from '../types';
 
 interface PromptPreviewProps {
   prompt: string;
@@ -127,8 +128,8 @@ export function PromptPreview({
       {prompt && (
         <div className="flex items-center justify-between text-sm text-slate-400">
           <span>{prompt.length} characters</span>
-          <span className={prompt.length > 1400 ? 'text-amber-400' : ''}>
-            {Math.round((prompt.length / 1500) * 100)}% of limit
+          <span className={prompt.length > MAX_PROMPT_LENGTH - 100 ? 'text-amber-400' : ''}>
+            {Math.round((prompt.length / MAX_PROMPT_LENGTH) * 100)}% of limit
           </span>
         </div>
       )}

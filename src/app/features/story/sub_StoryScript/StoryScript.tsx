@@ -14,6 +14,7 @@ import { actApi } from "@/app/hooks/integration/useActs";
 import { sceneApi } from "@/app/hooks/integration/useScenes";
 import { characterApi } from "@/app/hooks/integration/useCharacters";
 import { cn } from '@/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { EmptyState } from '@/app/components/UI';
 import {
     FileText,
@@ -45,11 +46,13 @@ import {
     Headphones,
     Radio,
     Download,
+    BarChart3,
 } from 'lucide-react';
 import { VoiceAssigner } from './components/VoiceAssigner';
 import { AudioTimeline } from './components/AudioTimeline';
 import { ScriptRenderer } from './components/ScriptRenderer';
 import { ExportDialog } from './components/ExportDialog';
+import ScriptStatistics from './components/ScriptStatistics';
 import {
     narrationGenerator,
     type NarrationBlock,
@@ -490,6 +493,7 @@ const StoryScript = () => {
 
     // Export State
     const [showExportDialog, setShowExportDialog] = useState(false);
+    const [showStats, setShowStats] = useState(false);
 
     const sortedActs = useMemo(() =>
         acts?.sort((a, b) => (a.order || 0) - (b.order || 0)) || [],
@@ -657,11 +661,11 @@ const StoryScript = () => {
                 }),
             });
 
-            const data = await response.json();
+            const data = extractData<Record<string, unknown>>(await response.json());
 
             if (data.success && data.audioUrl) {
                 setBlocks(prev => prev.map(b =>
-                    b.id === blockId ? { ...b, audioUrl: data.audioUrl } : b
+                    b.id === blockId ? { ...b, audioUrl: data.audioUrl as string } : b
                 ));
             } else {
                 console.error('Failed to generate audio:', data.error);
@@ -810,6 +814,43 @@ const StoryScript = () => {
         return { totalBlocks, contentBlocks, withAudio, totalWords, scenes: allScenes?.length || 0 };
     }, [blocks, allScenes]);
 
+    // Full stats for ScriptStatistics panel
+    const fullStats = useMemo(() => {
+        const sceneCount = allScenes?.length || 0;
+        const actCount = sortedActs.length;
+        const totalWords = blocks.reduce((acc, b) => {
+            return acc + (b.content.trim() ? b.content.trim().split(/\s+/).length : 0);
+        }, 0);
+        const readingMinutes = Math.ceil(totalWords / 200);
+
+        const sceneIds = new Set(allScenes?.map(s => s.id) || []);
+        const dialogueSceneIds = new Set(blocks.filter(b => b.type === 'dialogue').map(b => b.sceneId));
+        const locationSceneIds = new Set(allScenes?.filter(s => s.location).map(s => s.id) || []);
+        const contentSceneIds = new Set(blocks.filter(b => b.type === 'content' && b.content.trim()).map(b => b.sceneId));
+
+        const withDialogue = [...sceneIds].filter(id => dialogueSceneIds.has(id)).length;
+        const withLocation = [...sceneIds].filter(id => locationSceneIds.has(id)).length;
+        const withContent = [...sceneIds].filter(id => contentSceneIds.has(id)).length;
+        const completionRate = sceneCount > 0 ? withContent / sceneCount : 0;
+
+        return {
+            stats: { acts: actCount, scenes: sceneCount, words: totalWords, readingMinutes, withDialogue, withLocation, withContent, completionRate },
+            actBreakdown: scenesByAct.map(({ act, scenes }) => {
+                const actSceneIds = new Set(scenes.map(s => s.id));
+                const actBlocks = blocks.filter(b => actSceneIds.has(b.sceneId));
+                const actWords = actBlocks.reduce((acc, b) => acc + (b.content.trim() ? b.content.trim().split(/\s+/).length : 0), 0);
+                return {
+                    actName: act.name,
+                    words: actWords,
+                    withDialogue: scenes.filter(s => actBlocks.some(b => b.sceneId === s.id && b.type === 'dialogue')).length,
+                    withLocation: scenes.filter(s => s.location).length,
+                    withContent: scenes.filter(s => actBlocks.some(b => b.sceneId === s.id && b.type === 'content' && b.content.trim())).length,
+                    scenes: scenes.length,
+                };
+            }),
+        };
+    }, [blocks, allScenes, sortedActs, scenesByAct]);
+
     // Prepare script data for export
     const scriptExportData = useMemo<ScriptData>(() => ({
         title: selectedProject?.name || 'Untitled Script',
@@ -875,6 +916,18 @@ const StoryScript = () => {
                             </span>
                         )}
                         <button
+                            onClick={() => setShowStats(!showStats)}
+                            className={cn(
+                                'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors',
+                                showStats
+                                    ? 'bg-purple-600/20 text-purple-400 hover:bg-purple-600/30'
+                                    : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-slate-300'
+                            )}
+                        >
+                            <BarChart3 className="w-3.5 h-3.5" />
+                            Stats
+                        </button>
+                        <button
                             onClick={() => setShowExportDialog(true)}
                             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30 transition-colors"
                         >
@@ -924,6 +977,17 @@ const StoryScript = () => {
                     <span>Voices</span>
                 </button>
             </div>
+
+            {/* Statistics Panel */}
+            {showStats && (
+                <div className="shrink-0 px-4 py-3 border-b border-slate-800 bg-slate-900/40 overflow-y-auto max-h-[50vh]">
+                    <ScriptStatistics
+                        stats={fullStats.stats}
+                        actBreakdown={fullStats.actBreakdown}
+                        blocks={blocks}
+                    />
+                </div>
+            )}
 
             {/* Main Content */}
             <div className="flex-1 overflow-hidden">

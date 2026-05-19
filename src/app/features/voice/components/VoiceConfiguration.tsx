@@ -135,7 +135,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
           >
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium text-slate-200">{slider.label}</label>
-              <span className="text-sm font-mono text-emerald-400">{value.toFixed(2)}</span>
+              <span className="text-sm font-mono text-voice-primary">{value.toFixed(2)}</span>
             </div>
 
             <input
@@ -150,18 +150,18 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
                 [&::-webkit-slider-thumb]:w-4
                 [&::-webkit-slider-thumb]:h-4
                 [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-emerald-500
+                [&::-webkit-slider-thumb]:bg-voice-primary
                 [&::-webkit-slider-thumb]:cursor-pointer
                 [&::-webkit-slider-thumb]:shadow-lg
-                [&::-webkit-slider-thumb]:shadow-emerald-500/50
+                [&::-webkit-slider-thumb]:shadow-voice-primary/50
                 [&::-moz-range-thumb]:w-4
                 [&::-moz-range-thumb]:h-4
                 [&::-moz-range-thumb]:rounded-full
-                [&::-moz-range-thumb]:bg-emerald-500
+                [&::-moz-range-thumb]:bg-voice-primary
                 [&::-moz-range-thumb]:cursor-pointer
                 [&::-moz-range-thumb]:border-0
                 [&::-moz-range-thumb]:shadow-lg
-                [&::-moz-range-thumb]:shadow-emerald-500/50"
+                [&::-moz-range-thumb]:shadow-voice-primary/50"
             />
 
             <p className="text-sm text-slate-400">{slider.description}</p>
@@ -188,7 +188,7 @@ const VoiceConfiguration = ({ voice }: VoiceConfigurationProps) => {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-50 flex-1"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-voice-primary/80 text-white hover:bg-voice-primary transition-colors disabled:opacity-50 flex-1"
           >
             {isSaving ? (
               <>

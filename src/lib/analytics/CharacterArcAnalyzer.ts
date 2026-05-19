@@ -9,6 +9,8 @@
 import type { Character } from '@/app/types/Character';
 import type { Scene } from '@/app/types/Scene';
 import type { Beat } from '@/app/types/Beat';
+import type { AnalysisIssue } from './index';
+import { sortScenes } from './utils';
 
 // ============================================================================
 // Types
@@ -48,15 +50,12 @@ export interface CharacterScreenTime {
   presencePattern: 'continuous' | 'intermittent' | 'bookend' | 'front-loaded' | 'back-loaded';
 }
 
-export interface CharacterConsistencyIssue {
+export interface CharacterConsistencyIssue extends AnalysisIssue {
   characterId: string;
   characterName: string;
   type: 'trait-contradiction' | 'behavior-shift' | 'motivation-unclear' | 'relationship-inconsistent' | 'disappearance';
-  severity: 'critical' | 'warning' | 'info';
   sceneId?: string;
   position?: number;
-  message: string;
-  suggestion: string;
 }
 
 export interface CharacterArc {
@@ -151,17 +150,6 @@ const ARC_PATTERNS: Record<ArcType, {
 // ============================================================================
 
 class CharacterArcAnalyzerClass {
-  private static instance: CharacterArcAnalyzerClass;
-
-  private constructor() {}
-
-  static getInstance(): CharacterArcAnalyzerClass {
-    if (!CharacterArcAnalyzerClass.instance) {
-      CharacterArcAnalyzerClass.instance = new CharacterArcAnalyzerClass();
-    }
-    return CharacterArcAnalyzerClass.instance;
-  }
-
   // ============================================================================
   // Main Analysis
   // ============================================================================
@@ -172,10 +160,10 @@ class CharacterArcAnalyzerClass {
   analyzeCharacters(
     characters: Character[],
     scenes: Scene[],
-    beats: Beat[]
+    beats: Beat[],
+    options?: { preSorted?: boolean }
   ): CharacterAnalysisResult {
-    // Sort scenes by order
-    const sortedScenes = this.sortScenes(scenes, beats);
+    const sortedScenes = options?.preSorted ? scenes : sortScenes(scenes, beats);
 
     // Analyze screen time for each character
     const screenTimeAnalysis = characters.map(char =>
@@ -885,23 +873,6 @@ class CharacterArcAnalyzerClass {
   // Helpers
   // ============================================================================
 
-  private sortScenes(scenes: Scene[], beats: Beat[]): Scene[] {
-    // Sort by act/beat order if available, otherwise by creation
-    const actOrderMap = new Map<string, number>();
-    beats.forEach(beat => {
-      if (beat.act_id && beat.order !== undefined) {
-        actOrderMap.set(beat.act_id, Math.min(actOrderMap.get(beat.act_id) ?? Infinity, beat.order));
-      }
-    });
-
-    return [...scenes].sort((a, b) => {
-      const orderA = (a.act_id ? actOrderMap.get(a.act_id) : undefined) ?? 0;
-      const orderB = (b.act_id ? actOrderMap.get(b.act_id) : undefined) ?? 0;
-      if (orderA !== orderB) return orderA - orderB;
-      return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
-    });
-  }
-
   // ============================================================================
   // Accessors
   // ============================================================================
@@ -919,7 +890,7 @@ class CharacterArcAnalyzerClass {
 // Export
 // ============================================================================
 
-export const characterArcAnalyzer = CharacterArcAnalyzerClass.getInstance();
+export const characterArcAnalyzer = new CharacterArcAnalyzerClass();
 
 export { CharacterArcAnalyzerClass, ARC_PATTERNS };
 

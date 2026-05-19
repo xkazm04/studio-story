@@ -6,6 +6,8 @@
  * when starting over, or when selecting a specific sketch.
  */
 
+import { extractData } from '@/app/utils/api';
+
 // Simple logger wrapper for consistent logging
 const logger = {
   debug: (message: string, data?: Record<string, unknown>) => {
@@ -98,7 +100,7 @@ async function performDeletion(generationIds: string[]): Promise<void> {
       return;
     }
 
-    const result: BatchDeleteResponse = await response.json();
+    const result: BatchDeleteResponse = extractData<BatchDeleteResponse>(await response.json());
 
     // Log successful deletions at debug level
     if (result.deleted.length > 0) {

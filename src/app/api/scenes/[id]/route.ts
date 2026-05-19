@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Scene } from '@/app/types/Scene';
-import { HTTP_STATUS, createErrorResponse, handleDatabaseError } from '@/app/utils/apiErrorHandling';
+import { HTTP_STATUS, handleDatabaseError, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * Fetches a scene by ID from the database
@@ -46,71 +46,56 @@ async function deleteScene(id: string) {
  * GET /api/scenes/[id]
  * Get a single scene by ID
  */
-export async function GET(
+export const GET = withApiHandler('GET /api/scenes/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { data, error } = await fetchScene(id);
+  const { data, error } = await fetchScene(id);
 
-    if (error) {
-      return handleDatabaseError('fetch scene', error, `GET /api/scenes/${id}`);
-    }
-
-    return NextResponse.json(data as Scene);
-  } catch (error) {
-    console.error('GET /api/scenes/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('fetch scene', error, `GET /api/scenes/${id}`);
   }
-}
+
+  return NextResponse.json(data as Scene);
+});
 
 /**
  * PUT /api/scenes/[id]
  * Update a scene
  */
-export async function PUT(
+export const PUT = withApiHandler('PUT /api/scenes/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
-    const body = await request.json();
+) => {
+  const { id } = await context.params;
+  const body = await request.json();
 
-    const { data, error } = await updateScene(id, body);
+  const { data, error } = await updateScene(id, body);
 
-    if (error) {
-      return handleDatabaseError('update scene', error, `PUT /api/scenes/${id}`);
-    }
-
-    return NextResponse.json(data as Scene);
-  } catch (error) {
-    console.error('PUT /api/scenes/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('update scene', error, `PUT /api/scenes/${id}`);
   }
-}
+
+  return NextResponse.json(data as Scene);
+});
 
 /**
  * DELETE /api/scenes/[id]
  * Delete a scene
  */
-export async function DELETE(
+export const DELETE = withApiHandler('DELETE /api/scenes/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { error } = await deleteScene(id);
+  const { error } = await deleteScene(id);
 
-    if (error) {
-      return handleDatabaseError('delete scene', error, `DELETE /api/scenes/${id}`);
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    console.error('DELETE /api/scenes/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('delete scene', error, `DELETE /api/scenes/${id}`);
   }
-}
+
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

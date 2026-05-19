@@ -3,22 +3,35 @@
  *
  * Processes ScriptLines one at a time (to avoid rate limits), applies
  * emotion/delivery modifiers, and computes auto-placement on the voice lane.
+ *
+ * Persistence: When projectId is provided, creates a narration_session in
+ * Supabase and saves each generated take to audio_takes.
  */
 
 import { useState, useRef, useCallback } from 'react';
+import { extractData } from '@/app/utils/api';
 import { applyModifiers } from '../lib/voiceModifiers';
+import { narrationSessionApi, audioTakeApi } from '@/app/hooks/integration/useNarrationSessions';
+import { useAudioProductionStore } from '@/app/store/slices/audioProductionSlice';
 import type { VoiceSettings } from '../lib/voiceModifiers';
 import type { ScriptLine, NarrationResult, AudioAsset } from '../types';
+
+export interface SoundLabGenerateOptions {
+  projectId?: string;
+  sceneId?: string;
+  sessionId?: string;
+}
 
 interface UseNarrationBatchReturn {
   lines: ScriptLine[];
   setLines: React.Dispatch<React.SetStateAction<ScriptLine[]>>;
   isGenerating: boolean;
   progress: { done: number; total: number };
-  generateAll: (baseSettings: VoiceSettings) => Promise<void>;
+  generateAll: (baseSettings: VoiceSettings, options?: SoundLabGenerateOptions) => Promise<void>;
   regenerateLine: (lineId: string, baseSettings: VoiceSettings) => Promise<void>;
   cancel: () => void;
   result: NarrationResult | null;
+  sessionId: string | null;
 }
 
 const GAP_SAME_CHARACTER = 0.5;   // seconds between lines from same character
@@ -29,7 +42,9 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [result, setResult] = useState<NarrationResult | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const store = useAudioProductionStore;
 
   const generateLine = async (
     line: ScriptLine,
@@ -49,7 +64,8 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
       signal,
     });
 
-    const data = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = extractData(await res.json());
     if (!data.success) {
       throw new Error(data.error || 'TTS generation failed');
     }
@@ -97,7 +113,7 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     return { clips, totalDuration: currentTime };
   }, []);
 
-  const generateAll = useCallback(async (baseSettings: VoiceSettings) => {
+  const generateAll = useCallback(async (baseSettings: VoiceSettings, options?: SoundLabGenerateOptions) => {
     const controller = new AbortController();
     abortRef.current = controller;
     setIsGenerating(true);
@@ -107,6 +123,26 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
 
     // Reset all lines to pending
     setLines((prev) => prev.map((l) => ({ ...l, status: 'pending' as const, error: undefined })));
+
+    // ── Persistence: create or resume a session ──
+    let sid = options?.sessionId ?? null;
+    if (!sid && options?.projectId) {
+      try {
+        const session = await narrationSessionApi.createSession({
+          project_id: options.projectId,
+          scene_id: options.sceneId ?? null,
+          name: options.sceneId ? `Scene narration` : 'Sound lab narration',
+          status: 'generating',
+          voice_settings: baseSettings as unknown as Record<string, unknown>,
+          lines_total: total,
+          lines_done: 0,
+        });
+        sid = session.id;
+        setSessionId(sid);
+        store.getState().setActiveSession(sid, options.projectId, options.sceneId);
+        store.getState().setGenerationProgress(true, 0);
+      } catch { /* best-effort */ }
+    }
 
     let done = 0;
 
@@ -122,12 +158,37 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
       try {
         const { audioUrl, duration } = await generateLine(line, baseSettings, controller.signal);
 
+        // ── Persist take ──
+        if (sid) {
+          try {
+            await audioTakeApi.createTakes({
+              session_id: sid,
+              line_id: line.id,
+              character: line.character,
+              voice_id: line.voiceId,
+              text: line.text,
+              emotion: line.emotion,
+              delivery: line.delivery ?? 'narration',
+              intensity: 70,
+              audio_url: audioUrl,
+              duration,
+              selected: true,
+              cost_chars: line.text.length,
+            });
+          } catch { /* best-effort */ }
+        }
+
         setLines((prev) => prev.map((l, idx) =>
           idx === i ? { ...l, status: 'done' as const, audioUrl, duration } : l
         ));
 
         done++;
         setProgress({ done, total });
+
+        if (sid) {
+          store.getState().setGenerationProgress(true, i);
+          narrationSessionApi.updateSession(sid, { lines_done: done }).catch(() => {});
+        }
       } catch (err) {
         if (controller.signal.aborted) break;
 
@@ -147,9 +208,22 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     setLines((prev) => {
       const placement = computePlacement(prev);
       setResult(placement);
+
+      // ── Finalize session ──
+      if (sid) {
+        const doneCount = prev.filter((l) => l.status === 'done').length;
+        const finalStatus = doneCount === prev.length ? 'complete' : 'partial';
+        narrationSessionApi.updateSession(sid, {
+          status: finalStatus,
+          lines_done: doneCount,
+          total_duration: placement.totalDuration,
+        }).catch(() => {});
+        store.getState().setGenerationProgress(false, -1);
+      }
+
       return prev;
     });
-  }, [lines, computePlacement]);
+  }, [lines, computePlacement, store]);
 
   const regenerateLine = useCallback(async (lineId: string, baseSettings: VoiceSettings) => {
     const line = lines.find((l) => l.id === lineId);
@@ -196,6 +270,7 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     regenerateLine,
     cancel,
     result,
+    sessionId,
   };
 }
 

@@ -8,6 +8,7 @@ import {
   Scissors, HardDrive,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import WaveformVisualizer from '../shared/WaveformVisualizer';
 import StemSeparator from '../sound-designer/StemSeparator';
 import { extractWaveformFromUrl } from '../../lib/waveformExtractor';
@@ -706,7 +707,8 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (!data.success) throw new Error(data.error || 'Composition failed');
 
       const totalDurationMs = compositionPlan.sections.reduce((sum, s) => sum + s.duration_ms, 0);
@@ -759,7 +761,8 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (!data.success) throw new Error(data.error || 'Generation failed');
 
       let waveformData: number[];
@@ -862,7 +865,8 @@ export default function ComposerTab({ onGenerated }: ComposerTabProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ audioUrl, name, type }),
       });
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (!data.success) throw new Error(data.error || 'Save failed');
     } catch {
       setError('Failed to save audio file');

@@ -45,7 +45,7 @@ export default function SceneListPanel({ onClose, onTriggerSkill, density }: Sce
             <button
               type="button"
               onClick={() => onTriggerSkill('scene-generation')}
-              className="rounded p-0.5 text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-300"
+              className="rounded p-0.5 text-slate-400 transition-colors duration-150 hover:bg-slate-800/80 hover:text-cyan-300 active:scale-[0.98] transition-transform"
               title="Generate new scene"
             >
               <Plus className="w-3 h-3" />
@@ -69,7 +69,7 @@ export default function SceneListPanel({ onClose, onTriggerSkill, density }: Sce
           description="Create your first scene to start structuring this act."
         />
       ) : (
-        <div className="space-y-1.5 p-2">
+        <div className="space-y-1.5 p-3">
           <AnimatePresence mode="popLayout">
             {scenes.map((scene, idx) => (
               <motion.button
@@ -81,17 +81,17 @@ export default function SceneListPanel({ onClose, onTriggerSkill, density }: Sce
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={() => setSelectedSceneId(scene.id)}
                 className={cn(
-                  'group flex w-full items-start gap-2.5 rounded-lg px-3 py-2.5 text-left transition-all',
+                  'group flex w-full items-start gap-2.5 rounded-lg px-3 py-2.5 text-left transition-all duration-150 active:scale-[0.98]',
                   selectedSceneId === scene.id
-                    ? 'bg-amber-500/10 border border-amber-500/30'
-                    : 'border border-transparent hover:bg-slate-800/40',
-                  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500/40'
+                    ? 'bg-cyan-500/10 border border-cyan-500/30'
+                    : 'border border-transparent hover:bg-slate-800/80',
+                  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40'
                 )}
               >
                 <span className={cn(
                   'shrink-0 w-5 h-5 rounded flex items-center justify-center text-sm font-mono font-bold mt-0.5',
                   selectedSceneId === scene.id
-                    ? 'bg-amber-500/20 text-amber-400'
+                    ? 'bg-cyan-500/20 text-cyan-400'
                     : 'bg-slate-800/60 text-slate-400'
                 )}>
                   {idx + 1}
@@ -99,7 +99,7 @@ export default function SceneListPanel({ onClose, onTriggerSkill, density }: Sce
                 <div className="min-w-0 flex-1">
                   <p className={cn(
                     'text-sm font-medium truncate',
-                    selectedSceneId === scene.id ? 'text-amber-200' : 'text-slate-300'
+                    selectedSceneId === scene.id ? 'text-cyan-300' : 'text-slate-300'
                   )}>
                     {scene.name || 'Untitled Scene'}
                   </p>

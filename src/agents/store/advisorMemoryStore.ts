@@ -33,6 +33,15 @@ interface SuggestionOutcome {
   lastSeen: number;
 }
 
+/** Tracks user thumbs-up/thumbs-down ratings on advisor responses */
+interface ResponseRating {
+  /** First 80 chars of the response content as a key */
+  pattern: string;
+  positive: number;
+  negative: number;
+  lastRated: number;
+}
+
 /** Tracks common domain transitions (e.g. story→image, character→scene) */
 interface WorkflowTransition {
   from: string;
@@ -45,6 +54,8 @@ interface AdvisorMemoryState {
   layoutPreferences: LayoutPreference[];
   suggestionOutcomes: SuggestionOutcome[];
   workflowTransitions: WorkflowTransition[];
+  /** User ratings on advisor responses */
+  responseRatings: ResponseRating[];
   /** Preferred panel density per panel type */
   densityPreferences: Record<string, string>;
   /** Total advisor interactions for decay calculations */
@@ -56,6 +67,7 @@ interface AdvisorMemoryState {
   recordLayoutUsage: (layout: string, panels: string[]) => void;
   recordSuggestionOutcome: (pattern: string, accepted: boolean) => void;
   recordWorkflowTransition: (from: string, to: string) => void;
+  recordResponseRating: (content: string, positive: boolean) => void;
   recordDensityPreference: (panelType: string, density: string) => void;
   incrementInteractions: () => void;
 
@@ -68,6 +80,7 @@ interface AdvisorMemoryState {
 const MAX_LAYOUT_PREFERENCES = 10;
 const MAX_SUGGESTION_OUTCOMES = 20;
 const MAX_WORKFLOW_TRANSITIONS = 15;
+const MAX_RESPONSE_RATINGS = 30;
 
 // ─── Store ──────────────────────────────────────
 
@@ -77,6 +90,7 @@ export const useAdvisorMemoryStore = create<AdvisorMemoryState>()(
       layoutPreferences: [],
       suggestionOutcomes: [],
       workflowTransitions: [],
+      responseRatings: [],
       densityPreferences: {},
       totalInteractions: 0,
       lastUpdated: Date.now(),
@@ -170,6 +184,42 @@ export const useAdvisorMemoryStore = create<AdvisorMemoryState>()(
           };
         }),
 
+      recordResponseRating: (content, positive) =>
+        set((state) => {
+          const trimmed = content.slice(0, 80);
+          const existing = state.responseRatings.find((r) => r.pattern === trimmed);
+
+          let updated: ResponseRating[];
+          if (existing) {
+            updated = state.responseRatings.map((r) =>
+              r.pattern === trimmed
+                ? {
+                    ...r,
+                    positive: r.positive + (positive ? 1 : 0),
+                    negative: r.negative + (positive ? 0 : 1),
+                    lastRated: Date.now(),
+                  }
+                : r,
+            );
+          } else {
+            updated = [
+              ...state.responseRatings,
+              {
+                pattern: trimmed,
+                positive: positive ? 1 : 0,
+                negative: positive ? 0 : 1,
+                lastRated: Date.now(),
+              },
+            ];
+          }
+
+          updated.sort((a, b) => b.lastRated - a.lastRated);
+          return {
+            responseRatings: updated.slice(0, MAX_RESPONSE_RATINGS),
+            lastUpdated: Date.now(),
+          };
+        }),
+
       recordDensityPreference: (panelType, density) =>
         set((state) => ({
           densityPreferences: { ...state.densityPreferences, [panelType]: density },
@@ -229,6 +279,27 @@ export const useAdvisorMemoryStore = create<AdvisorMemoryState>()(
           );
         }
 
+        // Response rating patterns
+        const likedResponses = state.responseRatings
+          .filter((r) => r.positive > r.negative && r.positive >= 2)
+          .slice(0, 3);
+        const dislikedResponses = state.responseRatings
+          .filter((r) => r.negative > r.positive && r.negative >= 2)
+          .slice(0, 3);
+
+        if (likedResponses.length > 0) {
+          parts.push(
+            'User upvotes responses like: ' +
+              likedResponses.map((r) => `"${r.pattern}"`).join(', '),
+          );
+        }
+        if (dislikedResponses.length > 0) {
+          parts.push(
+            'User downvotes responses like: ' +
+              dislikedResponses.map((r) => `"${r.pattern}"`).join(', '),
+          );
+        }
+
         // Density preferences
         const densityEntries = Object.entries(state.densityPreferences);
         if (densityEntries.length > 0) {
@@ -251,6 +322,7 @@ export const useAdvisorMemoryStore = create<AdvisorMemoryState>()(
         layoutPreferences: state.layoutPreferences,
         suggestionOutcomes: state.suggestionOutcomes,
         workflowTransitions: state.workflowTransitions,
+        responseRatings: state.responseRatings,
         densityPreferences: state.densityPreferences,
         totalInteractions: state.totalInteractions,
         lastUpdated: state.lastUpdated,

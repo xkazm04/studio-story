@@ -4,23 +4,13 @@
  * Implements industry-standard screenplay conventions
  */
 
-export type ScreenplayElementType =
-  | 'scene_heading'
-  | 'action'
-  | 'character'
-  | 'dialogue'
-  | 'parenthetical'
-  | 'transition'
-  | 'centered'
-  | 'note'
-  | 'section'
-  | 'synopsis'
-  | 'page_break'
-  | 'blank';
+import type { ScreenplayElementType, ScriptBlock } from '../export/types';
 
-export interface ScreenplayElement {
+// Re-export for backward compatibility
+export type { ScreenplayElementType } from '../export/types';
+
+export interface ScreenplayElement extends ScriptBlock {
   type: ScreenplayElementType;
-  content: string;
   raw: string;
   lineNumber: number;
   dual?: boolean; // For dual dialogue
@@ -149,7 +139,7 @@ export class ScreenplayFormatter {
       // Check for page break
       if (PATTERNS.pageBreak.test(trimmed)) {
         elements.push({
-          type: 'page_break',
+          type: 'page-break',
           content: '',
           raw: line,
           lineNumber: i,
@@ -206,7 +196,7 @@ export class ScreenplayFormatter {
       if (this.isSceneHeading(trimmed)) {
         inDialogue = false;
         elements.push({
-          type: 'scene_heading',
+          type: 'scene-heading',
           content: trimmed.startsWith('.') ? trimmed.slice(1) : trimmed,
           raw: line,
           lineNumber: i,
@@ -374,7 +364,7 @@ export class ScreenplayFormatter {
    */
   formatElement(element: ScreenplayElement): string {
     switch (element.type) {
-      case 'scene_heading':
+      case 'scene-heading':
         return element.content.toUpperCase();
       case 'character':
         return element.extension
@@ -425,7 +415,7 @@ export class ScreenplayFormatter {
     // Elements
     for (const element of this.document.elements) {
       switch (element.type) {
-        case 'scene_heading':
+        case 'scene-heading':
           lines.push('');
           lines.push(element.content.toUpperCase());
           break;
@@ -453,7 +443,7 @@ export class ScreenplayFormatter {
         case 'centered':
           lines.push(`> ${element.content} <`);
           break;
-        case 'page_break':
+        case 'page-break':
           lines.push('===');
           break;
         case 'section':
@@ -486,7 +476,7 @@ export class ScreenplayFormatter {
    */
   static getShortcuts(): { key: string; action: string; description: string }[] {
     return [
-      { key: 'Ctrl+1', action: 'scene_heading', description: 'Insert scene heading' },
+      { key: 'Ctrl+1', action: 'scene-heading', description: 'Insert scene heading' },
       { key: 'Ctrl+2', action: 'action', description: 'Insert action line' },
       { key: 'Ctrl+3', action: 'character', description: 'Insert character name' },
       { key: 'Ctrl+4', action: 'dialogue', description: 'Insert dialogue' },
@@ -502,7 +492,7 @@ export class ScreenplayFormatter {
    */
   static getSuggestions(type: ScreenplayElementType): string[] {
     switch (type) {
-      case 'scene_heading':
+      case 'scene-heading':
         return SCENE_PREFIXES;
       case 'transition':
         return TRANSITIONS;
@@ -518,7 +508,7 @@ export class ScreenplayFormatter {
    */
   insertElement(type: ScreenplayElementType): string {
     switch (type) {
-      case 'scene_heading':
+      case 'scene-heading':
         return '\nINT. ';
       case 'character':
         return '\n\n';
@@ -528,7 +518,7 @@ export class ScreenplayFormatter {
         return '\n\n> CUT TO:';
       case 'centered':
         return '\n>  <';
-      case 'page_break':
+      case 'page-break':
         return '\n\n===\n\n';
       default:
         return '\n';

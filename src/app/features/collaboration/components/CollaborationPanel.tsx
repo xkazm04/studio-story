@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@/app/components/UI/Card';
 import { IconButton } from '@/app/components/UI/Button';
+import { extractData } from '@/app/utils/api';
 import { CollaborationChat } from './CollaborationChat';
 import { PresenceIndicator } from './PresenceIndicator';
 import { UsersView } from './UsersView';
@@ -65,13 +66,13 @@ export function CollaborationPanel({
     // Fetch messages
     fetch(`/api/collaboration/messages?projectId=${projectId}`)
       .then((res) => res.json())
-      .then((data) => setMessages(data))
+      .then((data) => setMessages(extractData<CollaborationMessage[]>(data)))
       .catch(console.error);
 
     // Fetch collaborators
     fetch(`/api/collaboration/collaborators?projectId=${projectId}`)
       .then((res) => res.json())
-      .then((data) => setCollaborators(data))
+      .then((data) => setCollaborators(extractData<ProjectCollaborator[]>(data)))
       .catch(console.error);
   }, [isOpen, projectId]);
 
@@ -88,7 +89,7 @@ export function CollaborationPanel({
         }),
       });
 
-      const newMessage = await response.json();
+      const newMessage = extractData<CollaborationMessage>(await response.json());
       setMessages((prev) => [...prev, newMessage]);
 
       // Broadcast to other users
@@ -110,7 +111,7 @@ export function CollaborationPanel({
         }),
       });
 
-      const updated = await response.json();
+      const updated = extractData<CollaborationMessage>(await response.json());
       setMessages((prev) =>
         prev.map((m) => (m.id === messageId ? updated : m))
       );

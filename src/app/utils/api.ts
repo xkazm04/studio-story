@@ -80,33 +80,42 @@ const apiFetchInternal = async <T>({
       if (timeoutId) clearTimeout(timeoutId);
 
       if (!response.ok) {
-        // Attempt to parse error response body for additional details
-        let errorDetails: Record<string, any> | undefined;
         let errorMessage = response.statusText || 'Request failed';
+        let errorDetails: Record<string, any> | undefined;
 
         try {
           const errorBody = await response.json();
-          errorDetails = errorBody;
-          // Use server-provided message if available
-          if (errorBody.message) {
-            errorMessage = errorBody.message;
-          } else if (errorBody.error) {
-            errorMessage = errorBody.error;
+          // Handle standardized API envelope error format
+          if (errorBody?.success === false && errorBody.error) {
+            errorMessage = errorBody.error.message || errorMessage;
+            errorDetails = errorBody.error.details;
+          } else {
+            // Legacy error format
+            errorDetails = errorBody;
+            if (errorBody.message) {
+              errorMessage = errorBody.message;
+            } else if (errorBody.error) {
+              errorMessage = errorBody.error;
+            }
           }
         } catch {
           // If response body is not JSON or can't be parsed, use status text
         }
 
-        // Log for debugging
         if (response.status === 404) {
           console.log("No data found at:", url);
         }
 
-        // Throw typed ApiError with status, message, and details
         throw new ApiError(response.status, errorMessage, errorDetails);
       }
 
-      return await response.json();
+      const json = await response.json();
+
+      // Unwrap standardized API envelope if present
+      if (json && typeof json === 'object' && !Array.isArray(json) && 'success' in json && json.success && 'data' in json) {
+        return json.data as T;
+      }
+      return json as T;
     } catch (error) {
       // Clear timeout if error occurs
       if (timeoutId) clearTimeout(timeoutId);
@@ -196,3 +205,54 @@ export const useApiMutation = <TData = any, TVariables = any>(
     ...options,
   });
 };
+
+/**
+ * Extracts data from a parsed JSON response that may be in envelope format.
+ * Use this as a lightweight wrapper around `response.json()` for raw fetch calls:
+ *
+ *   const data = extractData(await response.json());
+ *
+ * Handles both `{ success: true, data: T }` envelopes and raw JSON.
+ */
+export function extractData<T>(json: unknown): T {
+  if (json && typeof json === 'object' && !Array.isArray(json)) {
+    const obj = json as Record<string, unknown>;
+    if (obj.success === true && 'data' in obj) {
+      return obj.data as T;
+    }
+  }
+  return json as T;
+}
+
+/**
+ * Unwraps an API response that may use the standardized envelope format.
+ * Use this for raw `fetch()` calls outside of `apiFetch` / `useApiGet`.
+ *
+ * - Throws on non-OK responses with a descriptive error message.
+ * - Extracts `data` from `{ success: true, data }` envelopes.
+ * - Falls through to raw JSON for non-envelope responses (backward compat).
+ */
+export async function unwrapApiResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    let errorMessage = response.statusText || 'Request failed';
+    try {
+      const body = await response.json();
+      if (body?.success === false && body.error) {
+        errorMessage = body.error.message || errorMessage;
+      } else if (body?.message) {
+        errorMessage = body.message;
+      } else if (body?.error && typeof body.error === 'string') {
+        errorMessage = body.error;
+      }
+    } catch { /* non-JSON body */ }
+    throw new ApiError(response.status, errorMessage);
+  }
+
+  const json = await response.json();
+
+  // Unwrap envelope if present
+  if (json && typeof json === 'object' && !Array.isArray(json) && 'success' in json && json.success && 'data' in json) {
+    return json.data as T;
+  }
+  return json as T;
+}

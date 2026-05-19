@@ -15,6 +15,7 @@ import {
   Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { expandVariants } from './motion';
 import { presenceDetector, type CharacterPresence, type PresenceRole } from '@/lib/context';
 import type { Character, CharRelationship } from '@/app/types/Character';
 
@@ -111,7 +112,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
         animate={{ opacity: 1, x: 0 }}
         className={cn(
           'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors',
-          'bg-slate-900/50 border border-slate-800 hover:border-slate-700'
+          'bg-slate-900/50 border border-slate-700/40/40 hover:border-slate-700/60'
         )}
         onClick={() => onCharacterClick?.(charPresence.characterId)}
       >
@@ -167,7 +168,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
   };
 
   return (
-    <div className={cn('bg-slate-900/30 border border-slate-800 rounded-lg overflow-hidden', className)}>
+    <div className={cn('bg-slate-900/30 border border-slate-700/40/40 rounded-lg overflow-hidden', className)}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -190,9 +191,10 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            variants={expandVariants}
+            initial="collapsed"
+            animate="expanded"
+            exit="collapsed"
             className="overflow-hidden"
           >
             <div className="px-3 pb-3 space-y-2">
@@ -226,7 +228,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
 
               {/* Relevant relationships */}
               {relevantRelationships.length > 0 && (
-                <div className="pt-2 border-t border-slate-800">
+                <div className="pt-2 border-t border-slate-700/40">
                   <div className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-1.5">
                     Active Relationships
                   </div>
@@ -255,7 +257,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
               {/* Add character button */}
               <button
                 onClick={() => setShowAddDialog(!showAddDialog)}
-                className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 border border-dashed border-slate-700 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
+                className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 border border-dashed border-slate-700/40 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
               >
                 <Plus className="w-3 h-3" />
                 Add character mention
@@ -268,7 +270,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="bg-slate-800/50 border border-slate-700 rounded-lg p-2 space-y-2"
+                    className="bg-slate-800/50 border border-slate-700/40 rounded-lg p-2 space-y-2"
                   >
                     {/* Search */}
                     <div className="relative">
@@ -278,7 +280,7 @@ export const PresenceTracker: React.FC<PresenceTrackerProps> = ({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search characters..."
-                        className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                        className="w-full pl-7 pr-2 py-1.5 bg-slate-900/50 border border-slate-700/40 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                         autoFocus
                       />
                     </div>

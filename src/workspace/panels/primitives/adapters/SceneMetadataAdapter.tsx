@@ -5,12 +5,11 @@ import { Info } from 'lucide-react';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { useQueryClient } from '@tanstack/react-query';
+import type { BaseAdapterProps, DetailSection } from '../types';
 import DetailView from '../DetailView';
-import type { DetailSection } from '../types';
 
-interface SceneMetadataAdapterProps {
+interface SceneMetadataAdapterProps extends BaseAdapterProps {
   sceneId?: string;
-  onClose?: () => void;
 }
 
 const SECTIONS: DetailSection[] = [
@@ -35,6 +34,7 @@ const SECTIONS: DetailSection[] = [
 
 export default function SceneMetadataAdapter({
   sceneId: propSceneId,
+  density,
   onClose,
 }: SceneMetadataAdapterProps) {
   const { selectedScene } = useProjectStore();
@@ -53,10 +53,11 @@ export default function SceneMetadataAdapter({
       icon={Info}
       headerAccent="amber"
       onClose={onClose}
+      density={density}
       isError={isError}
       errorMessage={error?.message}
       onRetry={() => refetch()}
-      data={scene ? (scene as unknown as Record<string, unknown>) : null}
+      data={scene ?? null}
       sections={SECTIONS}
       onSave={resolvedSceneId ? handleSave : undefined}
       emptyIcon={Info}

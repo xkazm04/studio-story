@@ -72,7 +72,7 @@ export interface AuditionConfig {
   characterId: string;
   voiceId: string;
   lines: AuditionLine[];
-  direction?: VoiceDirection;
+  performanceTuning?: PerformanceTuning;
   status: 'pending' | 'generated' | 'reviewed';
   rating?: number;
   notes?: string;
@@ -91,9 +91,9 @@ export interface AuditionLine {
 }
 
 /**
- * Voice direction parameters
+ * Performance tuning parameters for voice delivery
  */
-export interface VoiceDirection {
+export interface PerformanceTuning {
   // Tone adjustments
   warmth: number; // -1 to 1
   authority: number; // -1 to 1
@@ -131,9 +131,9 @@ export interface VoiceLibraryFilter {
 }
 
 /**
- * Default voice direction
+ * Default performance tuning
  */
-const DEFAULT_DIRECTION: VoiceDirection = {
+const DEFAULT_PERFORMANCE_TUNING: PerformanceTuning = {
   warmth: 0,
   authority: 0,
   friendliness: 0,
@@ -199,7 +199,7 @@ class VoiceMatcher {
   private favorites: Set<string> = new Set();
   private shortlist: Map<string, Set<string>> = new Map(); // characterId -> voiceIds
   private auditions: Map<string, AuditionConfig[]> = new Map(); // characterId -> auditions
-  private directions: Map<string, VoiceDirection> = new Map(); // characterId -> direction
+  private performanceTunings: Map<string, PerformanceTuning> = new Map(); // characterId -> tuning
   private castings: Map<string, string> = new Map(); // characterId -> selectedVoiceId
 
   private constructor() {}
@@ -491,7 +491,7 @@ class VoiceMatcher {
       characterId: character.id,
       voiceId: voice.voice_id,
       lines,
-      direction: this.getDirection(character.id),
+      performanceTuning: this.getPerformanceTuning(character.id),
       status: 'pending',
     };
 
@@ -529,20 +529,20 @@ class VoiceMatcher {
   }
 
   /**
-   * Set voice direction for a character
+   * Set performance tuning for a character
    */
-  setDirection(characterId: string, direction: Partial<VoiceDirection>): VoiceDirection {
-    const current = this.directions.get(characterId) || { ...DEFAULT_DIRECTION };
-    const updated = { ...current, ...direction };
-    this.directions.set(characterId, updated);
+  setPerformanceTuning(characterId: string, tuning: Partial<PerformanceTuning>): PerformanceTuning {
+    const current = this.performanceTunings.get(characterId) || { ...DEFAULT_PERFORMANCE_TUNING };
+    const updated = { ...current, ...tuning };
+    this.performanceTunings.set(characterId, updated);
     return updated;
   }
 
   /**
-   * Get voice direction for a character
+   * Get performance tuning for a character
    */
-  getDirection(characterId: string): VoiceDirection {
-    return this.directions.get(characterId) || { ...DEFAULT_DIRECTION };
+  getPerformanceTuning(characterId: string): PerformanceTuning {
+    return this.performanceTunings.get(characterId) || { ...DEFAULT_PERFORMANCE_TUNING };
   }
 
   /**
@@ -662,5 +662,5 @@ export const voiceMatcher = VoiceMatcher.getInstance();
 // Export class for testing
 export { VoiceMatcher };
 
-// Export default direction
-export { DEFAULT_DIRECTION };
+// Export default performance tuning
+export { DEFAULT_PERFORMANCE_TUNING };

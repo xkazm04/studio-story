@@ -6,6 +6,7 @@ import {
   PanelLeftClose, PanelRightClose, Sliders,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import VoiceLibrary, { CollapsedVoiceLibrary } from './VoiceLibrary';
 import VoiceCaster from './VoiceCaster';
 import PerformanceDirector, { CollapsedPerformance } from './PerformanceDirector';
@@ -57,6 +58,8 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
     let cancelled = false;
     fetch('/api/ai/audio/voices')
       .then((r) => r.json())
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((raw) => extractData<any>(raw))
       .then((data) => {
         if (cancelled || !data.success || !data.voices?.length) return;
         const mapped = (data.voices as ElevenLabsVoiceData[]).map(mapElevenLabsVoice);
@@ -116,7 +119,8 @@ export default function VoiceStudioTab({ onNarrationComplete }: VoiceStudioTabPr
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
 
       if (!data.success) {
         throw new Error(data.error || 'TTS generation failed');

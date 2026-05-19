@@ -7,30 +7,34 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '@/app/lib/utils';
 import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelErrorState, PanelSkeletonList } from '../shared/PanelPrimitives';
-import type { BasePrimitiveProps, FieldSchema } from './types';
+import type { BasePrimitiveProps, BulkAction, FieldSchema } from './types';
+import { getFieldValue, renderFieldValue } from './utils';
 import { SPACING, MOTION } from '@/workspace/theme/tokens';
+import { useKeyboardNavigation } from './useKeyboardNavigation';
+import { useMultiSelect } from './useMultiSelect';
+import BulkActionBar from './BulkActionBar';
+import { useFacetedFilter } from './useFacetedFilter';
+import FacetedFilterBar from './FacetedFilterBar';
+import ContextMenu, { useContextMenu } from './ContextMenu';
 
-interface CardGridProps extends BasePrimitiveProps {
-  items: Record<string, unknown>[];
+interface CardGridProps<T extends object = Record<string, unknown>> extends BasePrimitiveProps {
+  items: T[];
   fields: FieldSchema[];
   selectedId?: string;
   highlightIds?: Set<string>;
   highlightField?: string;
-  onSelect?: (item: Record<string, unknown>) => void;
+  onSelect?: (item: T) => void;
   searchable?: boolean;
   searchField?: string;
   cardVariant?: 'compact' | 'standard' | 'gallery';
-}
-
-function getFieldValue(item: Record<string, unknown>, key: string): unknown {
-  return item[key];
-}
-
-function renderFieldValue(value: unknown): string {
-  if (value == null) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return '';
+  /** Bulk actions shown when multiple items are selected via Ctrl/Shift+click */
+  bulkActions?: BulkAction[];
+  /** Called when a bulk action button is clicked */
+  onBulkAction?: (action: string, ids: string[]) => void;
+  /** Returns context menu items for a right-clicked entity */
+  contextMenuItems?: (entity: T) => import('./ContextMenu').ContextMenuItem[];
+  /** Called when a context menu action is selected */
+  onContextMenuAction?: (actionId: string, entity: T) => void;
 }
 
 /** Threshold: virtualize grids above this size */
@@ -48,7 +52,7 @@ function getColumnCount(variant: 'compact' | 'standard' | 'gallery'): number {
   return 1; // gallery is horizontal
 }
 
-export default function CardGrid({
+export default function CardGrid<T extends object>({
   title,
   icon,
   headerAccent,
@@ -71,10 +75,15 @@ export default function CardGrid({
   emptyTitle,
   emptyDescription,
   density,
-}: CardGridProps) {
+  bulkActions,
+  onBulkAction,
+  contextMenuItems,
+  onContextMenuAction,
+}: CardGridProps<T>) {
   const [query, setQuery] = useState('');
+  const ctxMenu = useContextMenu<T>();
 
-  const filteredItems = useMemo(() => {
+  const textFiltered = useMemo(() => {
     if (!searchable || !query.trim()) return items;
     const lowerQuery = query.toLowerCase();
     const fieldKey = searchField ?? fields[0]?.key;
@@ -84,6 +93,18 @@ export default function CardGrid({
       return renderFieldValue(val).toLowerCase().includes(lowerQuery);
     });
   }, [items, query, searchable, searchField, fields]);
+
+  // Faceted filtering runs on top of text search
+  const facetFilter = useFacetedFilter(textFiltered, fields);
+  const hasFilterableFields = facetFilter.facets.length > 0;
+  const filteredItems = hasFilterableFields ? facetFilter.filteredItems : textFiltered;
+
+  const allFilteredIds = useMemo(
+    () => filteredItems.map((item) => renderFieldValue(getFieldValue(item, 'id'))),
+    [filteredItems],
+  );
+  const multiSelect = useMultiSelect(allFilteredIds);
+  const hasBulkActions = bulkActions && bulkActions.length > 0;
 
   const cardFields = fields.filter(
     (f) => !f.displayIn || f.displayIn.includes('card')
@@ -107,46 +128,31 @@ export default function CardGrid({
 
   const shouldVirtualize = filteredItems.length > VIRTUALIZE_THRESHOLD && cardVariant !== 'gallery';
 
-  const handleGridKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      const container = gridRef.current;
-      if (!container) return;
-      const focusable = Array.from(
-        container.querySelectorAll<HTMLElement>('[role="gridcell"]')
-      );
-      const currentIndex = focusable.indexOf(document.activeElement as HTMLElement);
-      if (currentIndex === -1) return;
-
-      let nextIndex = -1;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        nextIndex = Math.min(currentIndex + 1, focusable.length - 1);
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        nextIndex = Math.max(currentIndex - 1, 0);
-      } else if (e.key === 'Home') {
-        nextIndex = 0;
-      } else if (e.key === 'End') {
-        nextIndex = focusable.length - 1;
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        (document.activeElement as HTMLElement)?.click();
-        return;
-      }
-
-      if (nextIndex >= 0 && nextIndex !== currentIndex) {
-        e.preventDefault();
-        focusable[nextIndex].focus();
-      }
-    },
-    []
-  );
+  const handleGridKeyDown = useKeyboardNavigation(gridRef, {
+    selector: '[role="gridcell"]',
+    mode: 'grid',
+  });
 
   const renderCard = useCallback(
-    (item: Record<string, unknown>, animated: boolean) => {
+    (item: T, animated: boolean, index: number) => {
       const id = renderFieldValue(getFieldValue(item, 'id'));
       const isSelected = selectedId != null && id === selectedId;
+      const isMultiSelected = multiSelect.selectedIds.has(id);
       const highlightKey = highlightField ?? 'id';
       const highlightValue = renderFieldValue(getFieldValue(item, highlightKey));
       const isHighlighted = highlightIds?.has(highlightValue) ?? false;
+
+      const handleCardClick = (e: React.MouseEvent) => {
+        if (hasBulkActions) {
+          const consumed = multiSelect.handleClick(id, index, e);
+          if (consumed) return;
+        }
+        onSelect?.(item);
+      };
+
+      const handleContextMenu = contextMenuItems
+        ? (e: React.MouseEvent) => ctxMenu.open(e, item)
+        : undefined;
 
       const cardClassName = cn(
         `flex flex-col items-start ${SPACING.itemGap} rounded-md ${SPACING.panelPaddingCompact} text-left min-h-[28px]`,
@@ -156,7 +162,8 @@ export default function CardGrid({
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50',
         `transition-all ${MOTION.hoverDuration}`,
         isSelected && 'ring-1 ring-cyan-500/40 bg-cyan-500/[0.06] border-cyan-500/20',
-        isHighlighted && 'ring-1 ring-emerald-500/35 border-emerald-500/25 bg-emerald-500/[0.06]',
+        isMultiSelected && 'ring-1 ring-cyan-500/40 bg-cyan-500/[0.08] border-cyan-500/25',
+        isHighlighted && !isMultiSelected && 'ring-1 ring-emerald-500/35 border-emerald-500/25 bg-emerald-500/[0.06]',
         cardVariant === 'gallery' && 'w-36 shrink-0'
       );
 
@@ -192,13 +199,14 @@ export default function CardGrid({
           <motion.button
             key={id || Math.random().toString()}
             role="gridcell"
-            aria-selected={isSelected}
+            aria-selected={isSelected || isMultiSelected}
             tabIndex={isSelected || selectedId == null ? 0 : -1}
             initial={MOTION.cardEnter}
             animate={MOTION.show}
             exit={{ opacity: 0 }}
             type="button"
-            onClick={() => onSelect?.(item)}
+            onClick={handleCardClick}
+            onContextMenu={handleContextMenu}
             className={cardClassName}
           >
             {cardContent}
@@ -210,17 +218,18 @@ export default function CardGrid({
         <button
           key={id || Math.random().toString()}
           role="gridcell"
-          aria-selected={isSelected}
+          aria-selected={isSelected || isMultiSelected}
           tabIndex={isSelected || selectedId == null ? 0 : -1}
           type="button"
-          onClick={() => onSelect?.(item)}
+          onClick={handleCardClick}
+          onContextMenu={handleContextMenu}
           className={cardClassName}
         >
           {cardContent}
         </button>
       );
     },
-    [selectedId, highlightIds, highlightField, onSelect, avatarField, imageField, titleField, subtitleFields, cardVariant]
+    [selectedId, multiSelect, highlightIds, highlightField, onSelect, hasBulkActions, avatarField, imageField, titleField, subtitleFields, cardVariant, contextMenuItems, ctxMenu]
   );
 
   return (
@@ -246,6 +255,32 @@ export default function CardGrid({
             />
           </div>
         </div>
+      )}
+
+      {hasFilterableFields && (
+        <FacetedFilterBar
+          facets={facetFilter.facets}
+          activeFilterCount={facetFilter.activeFilterCount}
+          toggleValue={facetFilter.toggleValue}
+          setTextQuery={facetFilter.setTextQuery}
+          setDateRange={facetFilter.setDateRange}
+          setNumberRange={facetFilter.setNumberRange}
+          clearField={facetFilter.clearField}
+          clearAll={facetFilter.clearAll}
+        />
+      )}
+
+      {hasBulkActions && (
+        <BulkActionBar
+          selectedCount={multiSelect.selectedIds.size}
+          totalCount={filteredItems.length}
+          actions={bulkActions!}
+          onAction={(actionId) =>
+            onBulkAction?.(actionId, Array.from(multiSelect.selectedIds))
+          }
+          onSelectAll={() => multiSelect.selectAll(allFilteredIds)}
+          onClear={multiSelect.clearSelection}
+        />
       )}
 
       {isLoading ? (
@@ -283,10 +318,19 @@ export default function CardGrid({
             className={gridClassName}
           >
             <AnimatePresence mode="popLayout">
-              {filteredItems.map((item) => renderCard(item, true))}
+              {filteredItems.map((item, idx) => renderCard(item, true, idx))}
             </AnimatePresence>
           </div>
         </div>
+      )}
+
+      {ctxMenu.position && ctxMenu.entity && contextMenuItems && (
+        <ContextMenu
+          position={ctxMenu.position}
+          items={contextMenuItems(ctxMenu.entity)}
+          onAction={(actionId) => onContextMenuAction?.(actionId, ctxMenu.entity!)}
+          onClose={ctxMenu.close}
+        />
       )}
     </PanelFrame>
   );
@@ -294,17 +338,17 @@ export default function CardGrid({
 
 // ─── Virtualized Card Grid ───────────────────────────────
 
-interface VirtualizedCardGridProps {
-  items: Record<string, unknown>[];
+interface VirtualizedCardGridProps<T extends object> {
+  items: T[];
   gridRef: React.RefObject<HTMLDivElement | null>;
   scrollRef: React.RefObject<HTMLDivElement | null>;
   title: string;
   handleGridKeyDown: (e: React.KeyboardEvent) => void;
   cardVariant: 'compact' | 'standard' | 'gallery';
-  renderCard: (item: Record<string, unknown>, animated: boolean) => React.ReactNode;
+  renderCard: (item: T, animated: boolean, index: number) => React.ReactNode;
 }
 
-function VirtualizedCardGrid({
+function VirtualizedCardGrid<T extends object>({
   items,
   gridRef,
   scrollRef,
@@ -312,7 +356,7 @@ function VirtualizedCardGrid({
   handleGridKeyDown,
   cardVariant,
   renderCard,
-}: VirtualizedCardGridProps) {
+}: VirtualizedCardGridProps<T>) {
   const cols = getColumnCount(cardVariant);
 
   const rowCount = Math.ceil(items.length / cols);
@@ -357,7 +401,7 @@ function VirtualizedCardGrid({
             }}
             className={cn('grid', gridColsClass, gridGapClass)}
           >
-            {rowItems.map((item) => renderCard(item, shouldAnimate))}
+            {rowItems.map((item, colIdx) => renderCard(item, shouldAnimate, startIdx + colIdx))}
           </div>
         );
       })}

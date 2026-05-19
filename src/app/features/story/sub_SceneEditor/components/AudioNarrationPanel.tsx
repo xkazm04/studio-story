@@ -8,6 +8,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Volume2, Play, Pause, RefreshCw, Trash2, Loader2, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { SceneMetadata } from '@/app/types/Scene';
+import { extractData } from '@/app/utils/api';
+
+/** Build a tone hint string from scene metadata for narration style */
+function buildNarrationToneHint(meta?: SceneMetadata): string | undefined {
+  if (!meta) return undefined;
+  const parts: string[] = [];
+  if (meta.mood) parts.push(meta.mood);
+  if (meta.timeOfDay) parts.push(`${meta.timeOfDay} atmosphere`);
+  if (meta.weather && meta.weather !== 'clear') parts.push(`${meta.weather} weather`);
+  return parts.length > 0 ? parts.join(', ') : undefined;
+}
 
 interface AudioNarrationPanelProps {
   /** The text content to generate audio from */
@@ -18,6 +30,8 @@ interface AudioNarrationPanelProps {
   sceneId: string;
   /** Current audio URL if exists */
   audioUrl: string | null;
+  /** Scene metadata for tone hints */
+  sceneMetadata?: SceneMetadata;
   /** Callback when audio URL changes */
   onAudioUrlChange: (url: string | null) => void;
   /** Whether the panel is disabled */
@@ -39,6 +53,7 @@ export function AudioNarrationPanel({
   projectId,
   sceneId,
   audioUrl,
+  sceneMetadata,
   onAudioUrlChange,
   disabled = false,
 }: AudioNarrationPanelProps) {
@@ -58,8 +73,8 @@ export function AudioNarrationPanel({
     async function checkAvailability() {
       try {
         const response = await fetch('/api/ai/elevenlabs');
-        const data = await response.json();
-        setIsAvailable(data.available);
+        const data = extractData<Record<string, unknown>>(await response.json());
+        setIsAvailable(data.available as boolean);
       } catch {
         setIsAvailable(false);
       }
@@ -107,6 +122,7 @@ export function AudioNarrationPanel({
     setError(null);
 
     try {
+      const toneHint = buildNarrationToneHint(sceneMetadata);
       const response = await fetch('/api/ai/elevenlabs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,22 +130,23 @@ export function AudioNarrationPanel({
           text: content,
           projectId,
           sceneId,
+          ...(toneHint ? { toneHint } : {}),
         }),
       });
 
-      const data = await response.json();
+      const data = extractData<Record<string, unknown>>(await response.json());
 
       if (!data.success) {
-        throw new Error(data.error || 'Failed to generate audio');
+        throw new Error((data.error as string) || 'Failed to generate audio');
       }
 
-      onAudioUrlChange(data.audioUrl);
+      onAudioUrlChange(data.audioUrl as string);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate audio');
     } finally {
       setIsGenerating(false);
     }
-  }, [content, projectId, sceneId, isGenerating, onAudioUrlChange]);
+  }, [content, projectId, sceneId, isGenerating, onAudioUrlChange, sceneMetadata]);
 
   // Delete audio
   const handleDelete = useCallback(async () => {
@@ -152,10 +169,10 @@ export function AudioNarrationPanel({
         body: JSON.stringify({ audioUrl }),
       });
 
-      const data = await response.json();
+      const data = extractData<Record<string, unknown>>(await response.json());
 
       if (!data.success) {
-        throw new Error(data.error || 'Failed to delete audio');
+        throw new Error((data.error as string) || 'Failed to delete audio');
       }
 
       onAudioUrlChange(null);
@@ -263,8 +280,8 @@ export function AudioNarrationPanel({
       {/* Panel */}
       <div
         className={cn(
-          'flex items-center gap-2 px-3 py-2 rounded-lg',
-          'bg-slate-800/50 border border-slate-700',
+          'flex items-center gap-2 p-3 rounded-lg',
+          'bg-slate-800/50 border border-slate-700/60',
           'transition-all duration-150'
         )}
       >
@@ -312,8 +329,8 @@ export function AudioNarrationPanel({
                 disabled={!canGenerate || isGenerating}
                 className={cn(
                   'flex items-center gap-1 px-2 py-1 rounded text-sm',
-                  'text-slate-400 hover:text-slate-200 hover:bg-slate-700',
-                  'transition-colors disabled:opacity-50'
+                  'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80',
+                  'transition-colors duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed'
                 )}
                 aria-label="Regenerate audio"
                 title="Regenerate audio"

@@ -6,9 +6,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { McpConfig } from '../config.js';
 import { dbSelect, dbSelectOne, dbInsert, dbUpdate } from '../db.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
 
 export function registerFactionTools(server: McpServer, config: McpConfig) {
   server.tool(

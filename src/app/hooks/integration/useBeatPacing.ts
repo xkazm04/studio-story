@@ -1,7 +1,6 @@
 import { BeatPacingSuggestion } from '@/app/types/Beat';
-import { apiFetch, useApiGet, API_BASE_URL } from '@/app/utils/api';
-
-const PACING_URL = `${API_BASE_URL}/beat-pacing`;
+import { apiFetch, useApiGet } from '@/app/utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 export const beatPacingApi = {
   // Get all pacing suggestions for a project
@@ -10,7 +9,7 @@ export const beatPacingApi = {
     applied?: boolean,
     enabled: boolean = true
   ) => {
-    let url = projectId ? `${PACING_URL}?projectId=${projectId}` : '';
+    let url = projectId ? `${BEAT_URLS.pacing}?projectId=${projectId}` : '';
     if (applied !== undefined && url) {
       url += `&applied=${applied}`;
     }
@@ -19,7 +18,7 @@ export const beatPacingApi = {
 
   // Get pacing suggestions for a specific beat
   useGetBeatPacingSuggestions: (beatId: string | undefined, enabled: boolean = true) => {
-    const url = beatId ? `${PACING_URL}?beatId=${beatId}` : '';
+    const url = beatId ? `${BEAT_URLS.pacing}?beatId=${beatId}` : '';
     return useApiGet<BeatPacingSuggestion[]>(url, enabled && !!beatId);
   },
 
@@ -34,7 +33,7 @@ export const beatPacingApi = {
     confidence?: number;
   }) => {
     return apiFetch<BeatPacingSuggestion>({
-      url: PACING_URL,
+      url: BEAT_URLS.pacing,
       method: 'POST',
       body: data,
     });
@@ -43,7 +42,7 @@ export const beatPacingApi = {
   // Update pacing suggestion (apply/unapply)
   updatePacingSuggestion: async (id: string, applied: boolean) => {
     return apiFetch<BeatPacingSuggestion>({
-      url: `${PACING_URL}?id=${id}`,
+      url: `${BEAT_URLS.pacing}?id=${id}`,
       method: 'PUT',
       body: { applied },
     });
@@ -52,7 +51,7 @@ export const beatPacingApi = {
   // Delete a pacing suggestion
   deletePacingSuggestion: async (id: string) => {
     return apiFetch<void>({
-      url: `${PACING_URL}?id=${id}`,
+      url: `${BEAT_URLS.pacing}?id=${id}`,
       method: 'DELETE',
     });
   },

@@ -1,9 +1,14 @@
 /**
  * Prompt Composer Utilities
  * Shared constants and utilities for character image/avatar generation
+ *
+ * composeBasicPrompt and composeBasicAvatarPrompt now delegate to the
+ * centralized PromptRegistry. Constants are still exported from here
+ * since they are UI option lists, not prompt logic.
  */
 
 import { Appearance } from '@/app/types/Character';
+import { promptRegistry } from '@/lib/prompts';
 
 /**
  * Pose options for character generation
@@ -98,142 +103,37 @@ export interface GenerationSelections {
 }
 
 /**
- * Compose a basic prompt from appearance data (client-side fallback)
+ * Compose a basic prompt from appearance data (client-side fallback).
+ * Delegates to the centralized PromptRegistry (character.fullBody generator).
  */
 export function composeBasicPrompt(
   appearance: Appearance,
   selections: GenerationSelections,
   artStyle?: string
 ): string {
-  const parts: string[] = [];
-
-  // Art style first
-  if (artStyle) {
-    parts.push(artStyle);
-  }
-
-  // Full-body directive
-  parts.push('Full-body character illustration,');
-
-  // Archetype
-  const archetypeOption = ARCHETYPE_OPTIONS.find(a => a.id === selections.archetype);
-  if (archetypeOption) {
-    parts.push(archetypeOption.description + ',');
-  }
-
-  // Character basics
-  const basicDetails = [
-    appearance.age,
-    appearance.gender,
-    appearance.skinColor ? `${appearance.skinColor} skin` : '',
-    appearance.bodyType,
-    appearance.height,
-  ].filter(Boolean).join(' ');
-  if (basicDetails) {
-    parts.push(basicDetails + ',');
-  }
-
-  // Facial features
-  const face = appearance.face;
-  if (face) {
-    const faceDetails = [
-      face.hairColor && face.hairStyle ? `${face.hairColor} ${face.hairStyle} hair` : '',
-      face.eyeColor ? `${face.eyeColor} eyes` : '',
-      face.features || '',
-    ].filter(Boolean).join(', ');
-    if (faceDetails) {
-      parts.push(faceDetails + ',');
-    }
-  }
-
-  // Clothing
-  const clothing = appearance.clothing;
-  if (clothing) {
-    const clothingDetails = [
-      clothing.style || '',
-      clothing.color ? `in ${clothing.color}` : '',
-      clothing.accessories || '',
-    ].filter(Boolean).join(' ');
-    if (clothingDetails) {
-      parts.push(`wearing ${clothingDetails},`);
-    }
-  }
-
-  // Pose
-  const poseOption = POSE_OPTIONS.find(p => p.id === selections.pose);
-  if (poseOption) {
-    parts.push(poseOption.description + ',');
-  }
-
-  // Expression
-  const expressionOption = EXPRESSION_OPTIONS.find(e => e.id === selections.expression);
-  if (expressionOption) {
-    parts.push(expressionOption.description + ',');
-  }
-
-  // Custom features
-  if (appearance.customFeatures) {
-    parts.push(appearance.customFeatures + ',');
-  }
-
-  // Quality suffix
-  parts.push('highly detailed, professional illustration quality');
-
-  return parts.join(' ').replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+  return promptRegistry.generate('character.fullBody', {
+    appearance,
+    archetype: selections.archetype,
+    pose: selections.pose,
+    expression: selections.expression,
+    artStyle,
+  }).text;
 }
 
 /**
- * Compose a basic avatar prompt (client-side fallback)
+ * Compose a basic avatar prompt (client-side fallback).
+ * Delegates to the centralized PromptRegistry (character.avatar generator).
  */
 export function composeBasicAvatarPrompt(
   appearance: Appearance,
   style: string,
   artStyle?: string
 ): string {
-  const parts: string[] = [];
-  const styleOption = AVATAR_STYLES.find(s => s.id === style);
-
-  // Art style first
-  if (artStyle) {
-    parts.push(artStyle);
-  }
-
-  // Style
-  if (styleOption) {
-    parts.push(styleOption.description + ',');
-  }
-
-  // Portrait directive
-  parts.push('Character portrait,');
-
-  // Face details
-  const face = appearance.face;
-  if (face) {
-    const faceDetails = [
-      face.hairColor && face.hairStyle ? `${face.hairColor} ${face.hairStyle} hair` : '',
-      face.eyeColor ? `${face.eyeColor} eyes` : '',
-      face.shape ? `${face.shape} face` : '',
-      face.features || '',
-    ].filter(Boolean).join(', ');
-    if (faceDetails) {
-      parts.push(faceDetails + ',');
-    }
-  }
-
-  // Character basics (limited for avatar)
-  const basicDetails = [
-    appearance.age,
-    appearance.gender,
-    appearance.skinColor ? `${appearance.skinColor} skin` : '',
-  ].filter(Boolean).join(' ');
-  if (basicDetails) {
-    parts.push(basicDetails + ',');
-  }
-
-  // Quality suffix
-  parts.push('high quality, detailed portrait');
-
-  return parts.join(' ').replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+  return promptRegistry.generate('character.avatar', {
+    appearance,
+    avatarStyle: style,
+    artStyle,
+  }).text;
 }
 
 /**

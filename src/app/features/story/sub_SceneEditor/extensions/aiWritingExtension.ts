@@ -12,6 +12,7 @@
 
 import { Extension } from '@tiptap/core';
 import type { WritingToolType, ContinueLength } from '@/lib/ai/writingPrompts';
+import { extractData } from '@/app/utils/api';
 
 interface AIWritingStorage {
   isProcessing: boolean;
@@ -91,11 +92,11 @@ export const AIWritingExtension = Extension.create<Record<string, never>, AIWrit
                 );
               }
 
-              const data = (await response.json()) as {
+              const data = extractData<{
                 result: string;
                 tool: string;
                 originalText: string;
-              };
+              }>(await response.json());
 
               // For 'continue', insert at cursor position (no diff needed)
               if (tool === 'continue') {

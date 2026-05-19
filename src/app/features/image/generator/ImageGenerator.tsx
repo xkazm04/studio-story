@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Wand2, PenTool, ChevronDown, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import PromptBuilder from '../components/PromptBuilder';
@@ -10,6 +10,7 @@ import ImageGallery from '../components/ImageGallery';
 import SceneToImage from './components/SceneToImage';
 import { useProjectStore } from '@/app/store/projectStore';
 import { useCreateImage } from '@/app/hooks/useImages';
+import { useGenerativeSelection, isPhase } from '@/app/hooks/useGenerativeSelection';
 import type { PromptComponents } from '@/app/types/Image';
 
 interface GenerationParams {
@@ -22,7 +23,6 @@ interface GenerationParams {
 }
 
 type PromptMode = 'manual' | 'scene';
-type GenerationStatus = 'idle' | 'generating' | 'success' | 'error';
 
 // Inline toast for status messages
 function StatusToast({
@@ -146,10 +146,30 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ sceneId }) => {
     provider: 'leonardo',
   });
 
-  const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle');
+  // Generation state machine via shared hook (quick-path: idle→generating→idle)
+  const gen = useGenerativeSelection<{ id: string; url: string }>({
+    queryKey: 'image-generator',
+    startGeneration: async (prompt: string) => {
+      // TODO: Call actual image generation API
+      console.log('Generating image with:', {
+        prompt,
+        negative_prompt: negativePrompt,
+        ...generationParams,
+      });
+      // Placeholder: would be replaced with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setStatusMessage({
+        text: 'Image generation API integration pending. Infrastructure ready!',
+        type: 'success',
+      });
+      // Quick completion — no gallery needed until real API is wired
+      return undefined;
+    },
+    persistSelection: async () => {
+      // No-op placeholder
+    },
+  });
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'error' | 'warning' | 'success' } | null>(null);
-  const [generationStartTime, setGenerationStartTime] = useState(0);
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
 
   // Handle prompt generated from SceneToImage
   const handleScenePromptGenerated = useCallback(
@@ -180,45 +200,16 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ sceneId }) => {
       return;
     }
 
-    setGenerationStatus('generating');
-    setGenerationStartTime(Date.now());
-    setGeneratedImageUrl(null);
     setStatusMessage(null);
+    await gen.start(finalPrompt);
 
-    try {
-      // TODO: Call actual image generation API
-      console.log('Generating image with:', {
-        prompt: finalPrompt,
-        negative_prompt: negativePrompt,
-        ...generationParams,
-      });
-
-      // Placeholder: This would be replaced with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Once we have the actual image URL from the API, save it
-      // await createImage.mutateAsync({
-      //   project_id: activeProjectId,
-      //   url: imageUrl,
-      //   prompt: finalPrompt,
-      //   negative_prompt: negativePrompt || null,
-      //   provider: generationParams.provider,
-      //   width: generationParams.width,
-      //   height: generationParams.height,
-      //   steps: generationParams.steps,
-      //   cfg_scale: generationParams.cfg_scale,
-      // });
-
-      setGenerationStatus('success');
-      setStatusMessage({ text: 'Image generation API integration pending. Infrastructure ready!', type: 'success' });
-    } catch (error) {
-      console.error('Generation error:', error);
-      setGenerationStatus('error');
+    if (isPhase.error(gen.state)) {
       setStatusMessage({ text: 'Failed to generate image. Please try again.', type: 'error' });
     }
   };
 
-  const isGenerating = generationStatus === 'generating';
+  const isGenerating = isPhase.busy(gen.state);
+  const generationStartTime = isPhase.generating(gen.state) ? gen.state.startTime : 0;
   const aspectRatio = generationParams.width === generationParams.height ? 'aspect-square' : generationParams.width > generationParams.height ? 'aspect-video' : 'aspect-[3/4]';
 
   return (
@@ -401,7 +392,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ sceneId }) => {
             </motion.div>
           )}
 
-          {generatedImageUrl && generationStatus === 'success' && (
+          {isPhase.gallery(gen.state) && gen.state.items.length > 0 && (
             <motion.div
               key="result"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -410,7 +401,7 @@ const ImageGenerator: React.FC<ImageGeneratorProps> = ({ sceneId }) => {
               className="mb-3"
             >
               <img
-                src={generatedImageUrl}
+                src={gen.state.items[0].url}
                 alt="Generated"
                 className={`w-full rounded-lg border border-slate-700 object-cover ${aspectRatio}`}
               />

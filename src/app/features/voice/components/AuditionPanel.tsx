@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getScoreColor } from '@/lib/scoreColors';
 import {
   Users,
   Mic,
@@ -166,12 +167,11 @@ export default function AuditionPanel({
     setAuditions(prev => new Map(prev));
   }, [selectedCharacterId]);
 
-  // Get score color
-  const getScoreColor = (score: number): string => {
-    if (score >= 80) return 'text-emerald-400';
-    if (score >= 60) return 'text-amber-400';
-    return 'text-slate-400';
-  };
+  const AUDITION_SCORE_COLORS = [
+    { min: 80, value: 'text-voice-primary' },
+    { min: 60, value: 'text-voice-accent' },
+    { min: 0, value: 'text-slate-400' },
+  ] as const;
 
   return (
     <div className={`flex h-full ${className}`}>
@@ -179,7 +179,7 @@ export default function AuditionPanel({
       <div className="w-64 border-r border-slate-800 flex flex-col">
         <div className="p-4 border-b border-slate-800">
           <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
-            <Users className="w-4 h-4 text-emerald-400" />
+            <Users className="w-4 h-4 text-voice-primary" />
             Characters
           </h3>
         </div>
@@ -195,11 +195,11 @@ export default function AuditionPanel({
                 onClick={() => onSelectCharacter(character.id)}
                 className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
                   isSelected
-                    ? 'bg-emerald-500/10 border border-emerald-500/30'
+                    ? 'bg-voice-primary/10 border border-voice-primary/30'
                     : 'hover:bg-slate-800/50 border border-transparent'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm font-medium text-slate-300 overflow-hidden ${hasCasting ? 'ring-2 ring-emerald-400' : ''}`}>
+                <div className={`w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm font-medium text-slate-300 overflow-hidden ${hasCasting ? 'ring-2 ring-voice-primary' : ''}`}>
                   {avatarUrl ? (
                     <img
                       src={avatarUrl}
@@ -219,10 +219,10 @@ export default function AuditionPanel({
                   </div>
                 </div>
                 {hasCasting && (
-                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <Check className="w-4 h-4 text-voice-primary flex-shrink-0" />
                 )}
                 {isSelected && (
-                  <ChevronRight className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-voice-primary flex-shrink-0" />
                 )}
               </button>
             );
@@ -260,11 +260,11 @@ export default function AuditionPanel({
 
               {/* Current Casting */}
               {casting && (
-                <div className="mt-4 p-3 rounded-lg bg-emerald-900/20 border border-emerald-500/30">
+                <div className="mt-4 p-3 rounded-lg bg-voice-primary/15 border border-voice-primary/30">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-emerald-400" />
-                      <span className="text-sm text-emerald-300">
+                      <Check className="w-4 h-4 text-voice-primary" />
+                      <span className="text-sm text-voice-primary/80">
                         Cast: {voices.find(v => v.voice_id === casting)?.name || 'Unknown'}
                       </span>
                     </div>
@@ -291,7 +291,7 @@ export default function AuditionPanel({
                     className="space-y-3"
                   >
                     <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <Sparkles className="w-4 h-4 text-voice-accent" />
                       Suggested Voices
                     </h3>
                     <div className="grid grid-cols-2 gap-3">
@@ -310,7 +310,7 @@ export default function AuditionPanel({
                                 <div className="text-sm font-medium text-slate-200">
                                   {match.voice.name}
                                 </div>
-                                <div className={`text-sm font-medium ${getScoreColor(match.score)}`}>
+                                <div className={`text-sm font-medium ${getScoreColor(match.score, AUDITION_SCORE_COLORS)}`}>
                                   {match.score}% match
                                 </div>
                               </div>
@@ -318,7 +318,7 @@ export default function AuditionPanel({
                                 <button
                                   onClick={() => handleToggleFavorite(match.voice.voice_id)}
                                   className={`p-1 rounded ${
-                                    isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-slate-300'
+                                    isFavorite ? 'text-voice-accent' : 'text-slate-400 hover:text-slate-300'
                                   }`}
                                 >
                                   {isFavorite ? <Star className="w-4 h-4 fill-current" /> : <StarOff className="w-4 h-4" />}
@@ -326,7 +326,7 @@ export default function AuditionPanel({
                                 <button
                                   onClick={() => handleShortlist(match.voice.voice_id)}
                                   className={`p-1 rounded ${
-                                    isShortlisted ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-300'
+                                    isShortlisted ? 'text-voice-primary' : 'text-slate-400 hover:text-slate-300'
                                   }`}
                                 >
                                   <ListPlus className="w-4 h-4" />
@@ -377,12 +377,12 @@ export default function AuditionPanel({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
-                      <Mic className="w-4 h-4 text-emerald-400" />
+                      <Mic className="w-4 h-4 text-voice-primary" />
                       Auditions
                     </h3>
                     <button
                       onClick={() => setShowCustomInput(!showCustomInput)}
-                      className="text-sm text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                      className="text-sm text-voice-primary hover:text-voice-primary/80 flex items-center gap-1"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       Add Line
@@ -410,7 +410,7 @@ export default function AuditionPanel({
                           <button
                             onClick={handleAddCustomLine}
                             disabled={!customLineText.trim()}
-                            className="p-1.5 rounded bg-emerald-500/20 text-emerald-400 disabled:opacity-50"
+                            className="p-1.5 rounded bg-voice-primary/20 text-voice-primary disabled:opacity-50"
                           >
                             <Check className="w-4 h-4" />
                           </button>
@@ -438,7 +438,7 @@ export default function AuditionPanel({
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-3">
-                              <Volume2 className="w-5 h-5 text-emerald-400" />
+                              <Volume2 className="w-5 h-5 text-voice-primary" />
                               <div>
                                 <div className="text-sm font-medium text-slate-200">
                                   {voice.name}
@@ -458,7 +458,7 @@ export default function AuditionPanel({
                                     onClick={() => handleRateAudition(audition.voiceId, star)}
                                     className={`p-0.5 ${
                                       audition.rating && star <= audition.rating
-                                        ? 'text-amber-400'
+                                        ? 'text-voice-accent'
                                         : 'text-slate-400'
                                     }`}
                                   >
@@ -488,7 +488,7 @@ export default function AuditionPanel({
                                   onClick={() => handlePlayLine(line.id)}
                                   className={`p-1.5 rounded-full flex-shrink-0 ${
                                     playingLine === line.id
-                                      ? 'bg-emerald-500 text-white'
+                                      ? 'bg-voice-primary text-white'
                                       : 'bg-slate-800 text-slate-400 hover:text-slate-200'
                                   }`}
                                 >
@@ -505,7 +505,7 @@ export default function AuditionPanel({
                                       {line.context}
                                     </span>
                                     {line.emotion && (
-                                      <span className="text-sm px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                                      <span className="text-sm px-1.5 py-0.5 rounded bg-voice-primary/20 text-voice-primary">
                                         {line.emotion}
                                       </span>
                                     )}

@@ -5,6 +5,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { Appearance } from '@/app/types/Character';
+import { extractData } from '@/app/utils/api';
 import { AVATAR_STYLES, GENERATION_PRESETS } from '../lib/promptComposer';
 
 export interface GeneratedAvatar {
@@ -138,7 +139,7 @@ export function useAvatarGenerator({
         throw new Error(data.error || 'Failed to compose avatar prompt');
       }
 
-      const data = await response.json();
+      const data = extractData<{ prompt: string }>(await response.json());
       setComposedPrompt(data.prompt);
       return data.prompt;
     } catch (err) {
@@ -206,7 +207,7 @@ export function useAvatarGenerator({
         throw new Error(data.error || 'Failed to generate avatars');
       }
 
-      const data = await response.json();
+      const data = extractData<{ images: string[] }>(await response.json());
       const generatedAvatars: GeneratedAvatar[] = data.images.map((url: string, index: number) => ({
         id: `avatar-${Date.now()}-${index}`,
         url,

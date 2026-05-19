@@ -84,12 +84,12 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
             <div
               className={`h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 ${
                 isPlaying
-                  ? 'bg-gradient-to-br from-emerald-600 to-emerald-800 animate-pulse'
+                  ? 'bg-gradient-to-br from-voice-primary/80 to-voice-primary/40 animate-pulse'
                   : 'bg-gradient-to-br from-slate-700 to-slate-800'
               }`}
             >
               {isPlaying ? (
-                <AudioWaveform className="w-5 h-5 text-emerald-200" />
+                <AudioWaveform className="w-5 h-5 text-voice-primary/80" />
               ) : (
                 <Speaker className="w-5 h-5 text-slate-300" />
               )}
@@ -118,7 +118,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
               onClick={() => setShowDescription(!showDescription)}
               className={`p-2 rounded-lg transition-all duration-200 ${
                 showDescription
-                  ? 'bg-purple-900 text-purple-200 border border-purple-600'
+                  ? 'bg-voice-muted/20 text-voice-muted/80 border border-voice-muted/60'
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
               }`}
               title="AI-Enhanced Description"
@@ -143,7 +143,7 @@ const VoiceRow = ({ voice }: VoiceRowProps) => {
             {voice.audio_sample_url && (
               <button
                 onClick={handlePlaySample}
-                className="p-2 rounded-lg bg-emerald-900 text-emerald-200 hover:bg-emerald-800 transition-all duration-200"
+                className="p-2 rounded-lg bg-voice-primary/20 text-voice-primary/80 hover:bg-voice-primary/30 transition-all duration-200"
                 title={isPlaying ? 'Pause' : 'Play Sample'}
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}

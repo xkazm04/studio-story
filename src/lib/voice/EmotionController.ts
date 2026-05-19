@@ -3,28 +3,20 @@
  *
  * Provides fine-grained emotion control, pacing adjustment,
  * emphasis marking, and dramatic delivery presets.
+ *
+ * Emotion types, colors, icons, and SSML mappings are defined in
+ * EmotionTaxonomy.ts — this module re-exports the type for convenience.
  */
 
-/**
- * Emotion types supported by the system
- */
-export type EmotionType =
-  | 'neutral'
-  | 'happy'
-  | 'sad'
-  | 'angry'
-  | 'fearful'
-  | 'surprised'
-  | 'disgusted'
-  | 'contemptuous'
-  | 'excited'
-  | 'tender'
-  | 'anxious'
-  | 'melancholy'
-  | 'confident'
-  | 'sarcastic'
-  | 'whispered'
-  | 'shouted';
+import {
+  type EmotionType,
+  ALL_EMOTION_TYPES,
+  getEmotionHexColor,
+  getEmotionIcon,
+  EMOTION_SSML_MAP as TAXONOMY_SSML_MAP,
+} from './EmotionTaxonomy';
+
+export type { EmotionType };
 
 /**
  * Emotion configuration with intensity
@@ -244,26 +236,11 @@ const BUILTIN_PRESETS: DeliveryPreset[] = [
 ];
 
 /**
- * Emotion to SSML parameter mapping
+ * Emotion to SSML parameter mapping — derived from the canonical taxonomy.
  */
-const EMOTION_SSML_MAP: Record<EmotionType, Partial<SSMLParameters>> = {
-  neutral: { rate: 'medium', pitch: 'medium', volume: 'medium' },
-  happy: { rate: '+10%', pitch: '+10%', volume: 'loud' },
-  sad: { rate: '-15%', pitch: '-10%', volume: 'soft' },
-  angry: { rate: '+5%', pitch: '+15%', volume: 'x-loud' },
-  fearful: { rate: '+20%', pitch: '+20%', volume: 'soft' },
-  surprised: { rate: '+15%', pitch: '+25%', volume: 'loud' },
-  disgusted: { rate: '-5%', pitch: '-5%', volume: 'medium' },
-  contemptuous: { rate: '-10%', pitch: '-5%', volume: 'medium' },
-  excited: { rate: '+20%', pitch: '+15%', volume: 'loud' },
-  tender: { rate: '-10%', pitch: '-5%', volume: 'soft' },
-  anxious: { rate: '+15%', pitch: '+10%', volume: 'medium' },
-  melancholy: { rate: '-20%', pitch: '-15%', volume: 'soft' },
-  confident: { rate: 'medium', pitch: '-5%', volume: 'loud' },
-  sarcastic: { rate: '-5%', pitch: '+5%', volume: 'medium' },
-  whispered: { rate: '-15%', pitch: '-10%', volume: 'x-soft' },
-  shouted: { rate: '+10%', pitch: '+20%', volume: 'x-loud' },
-};
+const EMOTION_SSML_MAP: Record<EmotionType, Partial<SSMLParameters>> = Object.fromEntries(
+  Object.entries(TAXONOMY_SSML_MAP).map(([k, v]) => [k, v as Partial<SSMLParameters>]),
+) as Record<EmotionType, Partial<SSMLParameters>>;
 
 /**
  * EmotionController singleton class
@@ -286,7 +263,7 @@ class EmotionController {
    * Get all available emotion types
    */
   getEmotionTypes(): EmotionType[] {
-    return Object.keys(EMOTION_SSML_MAP) as EmotionType[];
+    return [...ALL_EMOTION_TYPES];
   }
 
   /**
@@ -595,53 +572,17 @@ class EmotionController {
   }
 
   /**
-   * Get emotion color for UI display
+   * Get emotion color for UI display (delegates to EmotionTaxonomy)
    */
   getEmotionColor(emotion: EmotionType): string {
-    const colors: Record<EmotionType, string> = {
-      neutral: '#94a3b8',
-      happy: '#fbbf24',
-      sad: '#60a5fa',
-      angry: '#ef4444',
-      fearful: '#a855f7',
-      surprised: '#f472b6',
-      disgusted: '#84cc16',
-      contemptuous: '#78716c',
-      excited: '#fb923c',
-      tender: '#f9a8d4',
-      anxious: '#c084fc',
-      melancholy: '#6366f1',
-      confident: '#22c55e',
-      sarcastic: '#eab308',
-      whispered: '#cbd5e1',
-      shouted: '#dc2626',
-    };
-    return colors[emotion] || colors.neutral;
+    return getEmotionHexColor(emotion);
   }
 
   /**
-   * Get emotion icon name for UI display
+   * Get emotion icon name for UI display (delegates to EmotionTaxonomy)
    */
   getEmotionIcon(emotion: EmotionType): string {
-    const icons: Record<EmotionType, string> = {
-      neutral: 'minus',
-      happy: 'smile',
-      sad: 'frown',
-      angry: 'angry',
-      fearful: 'alert-triangle',
-      surprised: 'zap',
-      disgusted: 'thumbs-down',
-      contemptuous: 'eye-off',
-      excited: 'star',
-      tender: 'heart',
-      anxious: 'activity',
-      melancholy: 'cloud-rain',
-      confident: 'shield',
-      sarcastic: 'message-circle',
-      whispered: 'volume',
-      shouted: 'volume-2',
-    };
-    return icons[emotion] || icons.neutral;
+    return getEmotionIcon(emotion);
   }
 }
 

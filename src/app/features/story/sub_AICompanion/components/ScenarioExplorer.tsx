@@ -14,9 +14,6 @@ import {
   ChevronRight,
   ChevronDown,
   Plus,
-  Trash2,
-  Maximize2,
-  Minimize2,
   Sparkles,
   Users,
   AlertCircle,
@@ -55,173 +52,28 @@ type ExplorerTab = 'what-if' | 'escalation' | 'twist';
 // Sub-Components
 // ============================================================================
 
-interface ScenarioCardProps {
-  scenario: WhatIfScenario;
-  depth?: number;
-  onExploreDeeper: (id: string) => void;
-  disabled?: boolean;
+interface ExpandableCardProps {
+  header: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: ScenarioCardProps) {
-  const [isExpanded, setIsExpanded] = useState(depth === 0);
-
-  const likelihoodColors = {
-    likely: cn(SEMANTIC_COLORS.success.text, SEMANTIC_COLORS.success.bg),
-    possible: cn(SEMANTIC_COLORS.warning.text, SEMANTIC_COLORS.warning.bg),
-    unlikely: cn(SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.bg),
-  };
+function ExpandableCard({ header, children, defaultExpanded = false, className, style }: ExpandableCardProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
     <div
-      className={cn(
-        'rounded-lg border transition-all',
-        depth === 0 ? 'border-slate-700 bg-slate-800/50' : 'border-slate-700/50 bg-slate-800/30'
-      )}
-      style={{ marginLeft: depth > 0 ? `${depth * 16}px` : 0 }}
+      className={cn('rounded-lg border border-slate-700 bg-slate-800/50', className)}
+      style={style}
     >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-start gap-2 p-3 text-left"
       >
-        <span className="text-slate-400 mt-0.5">
-          {isExpanded ? (
-            <ChevronDown className="w-3.5 h-3.5" />
-          ) : (
-            <ChevronRight className="w-3.5 h-3.5" />
-          )}
-        </span>
-        <div className="flex-1 min-w-0">
-          <h4 className={TYPOGRAPHY.h3}>{scenario.premise}</h4>
-          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{scenario.description}</p>
-        </div>
-        <span className="text-sm text-slate-400 shrink-0">Depth {scenario.explorationDepth}</span>
-      </button>
-
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            {...FM_VARIANTS.collapse}
-            transition={FM_TRANSITION.slow}
-            className="overflow-hidden"
-          >
-            <div className="p-3 space-y-3 border-t border-slate-700/50">
-              {/* Possible Outcomes */}
-              <div className="pt-3">
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-2')}>Possible Outcomes</h5>
-                <div className="space-y-1.5">
-                  {scenario.possibleOutcomes.map((outcome, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-2 p-2 rounded bg-slate-900/50"
-                    >
-                      <span
-                        className={cn(
-                          'px-1.5 py-0.5 text-[8px] rounded shrink-0',
-                          likelihoodColors[outcome.likelihood]
-                        )}
-                      >
-                        {outcome.likelihood}
-                      </span>
-                      <span className="text-sm text-slate-400">{outcome.outcome}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Affected Characters */}
-              {scenario.affectedCharacters.length > 0 && (
-                <div>
-                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
-                    <Users className="w-3 h-3" />
-                    Affected Characters
-                  </h5>
-                  <div className="flex flex-wrap gap-1">
-                    {scenario.affectedCharacters.map((char, i) => (
-                      <span
-                        key={i}
-                        className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
-                      >
-                        {char}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Story Implications */}
-              <div>
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
-                  <AlertCircle className="w-3 h-3" />
-                  Implications
-                </h5>
-                <ul className="space-y-0.5">
-                  {scenario.storyImplications.map((impl, i) => (
-                    <li key={i} className="text-sm text-slate-400 flex items-start gap-1.5">
-                      <ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" />
-                      {impl}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Explore Deeper */}
-              <button
-                onClick={() => onExploreDeeper(scenario.id)}
-                disabled={disabled || scenario.explorationDepth >= 3}
-                className={cn(
-                  'w-full flex items-center justify-center gap-1.5 py-2 rounded text-sm font-medium transition-colors',
-                  SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text, SEMANTIC_COLORS.brand.hover,
-                  'disabled:opacity-50 disabled:cursor-not-allowed'
-                )}
-              >
-                <GitBranch className="w-3.5 h-3.5" />
-                Explore Deeper
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-interface EscalationCardProps {
-  escalation: ConflictEscalation;
-}
-
-function EscalationCard({ escalation }: EscalationCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const levelColors = {
-    1: 'bg-slate-500',
-    2: 'bg-blue-500',
-    3: 'bg-amber-500',
-    4: 'bg-orange-500',
-    5: 'bg-red-500',
-  };
-
-  return (
-    <div className="rounded-lg border border-slate-700 bg-slate-800/50">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-start gap-2 p-3 text-left"
-      >
-        <div className="flex gap-0.5 shrink-0 mt-1">
-          {[1, 2, 3, 4, 5].map((level) => (
-            <div
-              key={level}
-              className={cn(
-                'w-2 h-2 rounded-full',
-                level <= escalation.escalationLevel ? levelColors[escalation.escalationLevel] : 'bg-slate-700'
-              )}
-            />
-          ))}
-        </div>
-        <div className="flex-1 min-w-0">
-          <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{escalation.originalConflict}</h4>
-          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{escalation.escalatedDescription}</p>
-        </div>
-        <span className="text-slate-400 shrink-0">
+        {header}
+        <span className="text-slate-400 shrink-0 mt-0.5">
           {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
         </span>
       </button>
@@ -234,44 +86,7 @@ function EscalationCard({ escalation }: EscalationCardProps) {
             className="overflow-hidden"
           >
             <div className="p-3 space-y-3 border-t border-slate-700/50">
-              {/* New Stakes */}
-              <div className="pt-3">
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>New Stakes</h5>
-                <ul className="space-y-1">
-                  {escalation.newStakes.map((stake, i) => (
-                    <li key={i} className="text-sm text-red-400/80 flex items-start gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0" />
-                      {stake}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Character Reactions */}
-              <div>
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Character Reactions</h5>
-                <div className="space-y-1.5">
-                  {escalation.characterReactions.map((reaction, i) => (
-                    <div key={i} className="p-2 rounded bg-slate-900/50">
-                      <span className="text-sm font-medium text-amber-400">{reaction.characterName}</span>
-                      <p className="text-sm text-slate-400 mt-0.5">{reaction.reaction}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Potential Resolutions */}
-              <div>
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Possible Resolutions</h5>
-                <ul className="space-y-1">
-                  {escalation.potentialResolutions.map((resolution, i) => (
-                    <li key={i} className="text-sm text-emerald-400/80 flex items-start gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
-                      {resolution}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {children}
             </div>
           </motion.div>
         )}
@@ -280,13 +95,196 @@ function EscalationCard({ escalation }: EscalationCardProps) {
   );
 }
 
+interface ScenarioCardProps {
+  scenario: WhatIfScenario;
+  depth?: number;
+  onExploreDeeper: (id: string) => void;
+  disabled?: boolean;
+}
+
+function ScenarioCard({ scenario, depth = 0, onExploreDeeper, disabled }: ScenarioCardProps) {
+  const likelihoodColors = {
+    likely: cn(SEMANTIC_COLORS.success.text, SEMANTIC_COLORS.success.bg),
+    possible: cn(SEMANTIC_COLORS.warning.text, SEMANTIC_COLORS.warning.bg),
+    unlikely: cn(SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.bg),
+  };
+
+  return (
+    <ExpandableCard
+      defaultExpanded={depth === 0}
+      className={cn(
+        'transition-all',
+        depth > 0 && 'border-slate-700/50 bg-slate-800/30'
+      )}
+      style={depth > 0 ? { marginLeft: `${depth * 16}px` } : undefined}
+      header={
+        <>
+          <div className="flex-1 min-w-0">
+            <h4 className={TYPOGRAPHY.h3}>{scenario.premise}</h4>
+            <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{scenario.description}</p>
+          </div>
+          <span className="text-sm text-slate-400 shrink-0">Depth {scenario.explorationDepth}</span>
+        </>
+      }
+    >
+      {/* Possible Outcomes */}
+      <div className="pt-3">
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-2')}>Possible Outcomes</h5>
+        <div className="space-y-1.5">
+          {scenario.possibleOutcomes.map((outcome, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-2 p-2 rounded bg-slate-900/50"
+            >
+              <span
+                className={cn(
+                  'px-1.5 py-0.5 text-[8px] rounded shrink-0',
+                  likelihoodColors[outcome.likelihood]
+                )}
+              >
+                {outcome.likelihood}
+              </span>
+              <span className="text-sm text-slate-400">{outcome.outcome}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Affected Characters */}
+      {scenario.affectedCharacters.length > 0 && (
+        <div>
+          <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
+            <Users className="w-3 h-3" />
+            Affected Characters
+          </h5>
+          <div className="flex flex-wrap gap-1">
+            {scenario.affectedCharacters.map((char, i) => (
+              <span
+                key={i}
+                className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
+              >
+                {char}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Story Implications */}
+      <div>
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5 flex items-center gap-1')}>
+          <AlertCircle className="w-3 h-3" />
+          Implications
+        </h5>
+        <ul className="space-y-0.5">
+          {scenario.storyImplications.map((impl, i) => (
+            <li key={i} className="text-sm text-slate-400 flex items-start gap-1.5">
+              <ArrowRight className="w-2.5 h-2.5 mt-0.5 shrink-0" />
+              {impl}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Explore Deeper */}
+      <button
+        onClick={() => onExploreDeeper(scenario.id)}
+        disabled={disabled || scenario.explorationDepth >= 3}
+        className={cn(
+          'w-full flex items-center justify-center gap-1.5 py-2 rounded text-sm font-medium transition-colors',
+          SEMANTIC_COLORS.brand.bg, SEMANTIC_COLORS.brand.text, SEMANTIC_COLORS.brand.hover,
+          'disabled:opacity-50 disabled:cursor-not-allowed'
+        )}
+      >
+        <GitBranch className="w-3.5 h-3.5" />
+        Explore Deeper
+      </button>
+    </ExpandableCard>
+  );
+}
+
+interface EscalationCardProps {
+  escalation: ConflictEscalation;
+}
+
+function EscalationCard({ escalation }: EscalationCardProps) {
+  const levelColors: Record<number, string> = {
+    1: 'bg-slate-500',
+    2: 'bg-blue-500',
+    3: 'bg-amber-500',
+    4: 'bg-orange-500',
+    5: 'bg-red-500',
+  };
+
+  return (
+    <ExpandableCard
+      header={
+        <>
+          <div className="flex gap-0.5 shrink-0 mt-1">
+            {[1, 2, 3, 4, 5].map((level) => (
+              <div
+                key={level}
+                className={cn(
+                  'w-2 h-2 rounded-full',
+                  level <= escalation.escalationLevel ? levelColors[escalation.escalationLevel] : 'bg-slate-700'
+                )}
+              />
+            ))}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{escalation.originalConflict}</h4>
+            <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{escalation.escalatedDescription}</p>
+          </div>
+        </>
+      }
+    >
+      {/* New Stakes */}
+      <div className="pt-3">
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>New Stakes</h5>
+        <ul className="space-y-1">
+          {escalation.newStakes.map((stake, i) => (
+            <li key={i} className="text-sm text-red-400/80 flex items-start gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0" />
+              {stake}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Character Reactions */}
+      <div>
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Character Reactions</h5>
+        <div className="space-y-1.5">
+          {escalation.characterReactions.map((reaction, i) => (
+            <div key={i} className="p-2 rounded bg-slate-900/50">
+              <span className="text-sm font-medium text-amber-400">{reaction.characterName}</span>
+              <p className="text-sm text-slate-400 mt-0.5">{reaction.reaction}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Potential Resolutions */}
+      <div>
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Possible Resolutions</h5>
+        <ul className="space-y-1">
+          {escalation.potentialResolutions.map((resolution, i) => (
+            <li key={i} className="text-sm text-emerald-400/80 flex items-start gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
+              {resolution}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ExpandableCard>
+  );
+}
+
 interface TwistCardProps {
   twist: PlotTwist;
 }
 
 function TwistCard({ twist }: TwistCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const typeColors: Record<PlotTwist['twistType'], string> = {
     revelation: cn(SEMANTIC_COLORS.accent.text, SEMANTIC_COLORS.accent.bg),
     betrayal: cn(SEMANTIC_COLORS.danger.text, SEMANTIC_COLORS.danger.bg),
@@ -297,74 +295,58 @@ function TwistCard({ twist }: TwistCardProps) {
   };
 
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-800/50">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-start gap-2 p-3 text-left"
-      >
-        <span className={cn('px-1.5 py-0.5 text-sm rounded shrink-0 capitalize', typeColors[twist.twistType])}>
-          {twist.twistType}
-        </span>
-        <div className="flex-1 min-w-0">
-          <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{twist.title}</h4>
-          <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{twist.description}</p>
+    <ExpandableCard
+      header={
+        <>
+          <span className={cn('px-1.5 py-0.5 text-sm rounded shrink-0 capitalize', typeColors[twist.twistType])}>
+            {twist.twistType}
+          </span>
+          <div className="flex-1 min-w-0">
+            <h4 className={cn(TYPOGRAPHY.h3, 'truncate')}>{twist.title}</h4>
+            <p className="text-sm text-slate-400 line-clamp-1 mt-0.5">{twist.description}</p>
+          </div>
+        </>
+      }
+    >
+      {/* Setup & Payoff */}
+      <div className="pt-3 grid grid-cols-2 gap-2">
+        <div>
+          <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Setup</h5>
+          <p className="text-sm text-slate-400">{twist.setup}</p>
         </div>
-        <span className="text-slate-400 shrink-0">
-          {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-        </span>
-      </button>
+        <div>
+          <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Payoff</h5>
+          <p className="text-sm text-slate-400">{twist.payoff}</p>
+        </div>
+      </div>
 
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            {...FM_VARIANTS.collapse}
-            transition={FM_TRANSITION.slow}
-            className="overflow-hidden"
-          >
-            <div className="p-3 space-y-3 border-t border-slate-700/50">
-              {/* Setup & Payoff */}
-              <div className="pt-3 grid grid-cols-2 gap-2">
-                <div>
-                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Setup</h5>
-                  <p className="text-sm text-slate-400">{twist.setup}</p>
-                </div>
-                <div>
-                  <h5 className={cn(TYPOGRAPHY.h3, 'mb-1')}>Payoff</h5>
-                  <p className="text-sm text-slate-400">{twist.payoff}</p>
-                </div>
-              </div>
+      {/* Foreshadowing */}
+      <div>
+        <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Foreshadowing Hints</h5>
+        <ul className="space-y-1">
+          {twist.foreshadowingHints.map((hint, i) => (
+            <li key={i} className="text-sm text-purple-400/80 flex items-start gap-1.5">
+              <Sparkles className="w-2.5 h-2.5 mt-0.5 shrink-0" />
+              {hint}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-              {/* Foreshadowing */}
-              <div>
-                <h5 className={cn(TYPOGRAPHY.h3, 'mb-1.5')}>Foreshadowing Hints</h5>
-                <ul className="space-y-1">
-                  {twist.foreshadowingHints.map((hint, i) => (
-                    <li key={i} className="text-sm text-purple-400/80 flex items-start gap-1.5">
-                      <Sparkles className="w-2.5 h-2.5 mt-0.5 shrink-0" />
-                      {hint}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Affected Characters */}
-              {twist.affectedCharacters.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {twist.affectedCharacters.map((char, i) => (
-                    <span
-                      key={i}
-                      className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
-                    >
-                      {char}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {/* Affected Characters */}
+      {twist.affectedCharacters.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {twist.affectedCharacters.map((char, i) => (
+            <span
+              key={i}
+              className="px-1.5 py-0.5 text-sm rounded bg-slate-700 text-slate-300"
+            >
+              {char}
+            </span>
+          ))}
+        </div>
+      )}
+    </ExpandableCard>
   );
 }
 

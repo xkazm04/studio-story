@@ -1,9 +1,7 @@
 import { BeatSceneMapping, BeatSceneSuggestion } from '@/app/types/Beat';
 import { Scene } from '@/app/types/Scene';
-import { apiFetch, useApiGet, API_BASE_URL } from '@/app/utils/api';
-
-const BEAT_SCENE_MAPPINGS_URL = `${API_BASE_URL}/beat-scene-mappings`;
-const BEAT_SCENE_MAPPING_URL = `${API_BASE_URL}/beat-scene-mapping`;
+import { apiFetch, useApiGet } from '@/app/utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 export const beatSceneMappingApi = {
   /**
@@ -11,7 +9,7 @@ export const beatSceneMappingApi = {
    */
   useGetBeatMappings: (beatId: string | undefined, enabled: boolean = true) => {
     const url = beatId
-      ? `${BEAT_SCENE_MAPPINGS_URL}?beatId=${beatId}`
+      ? `${BEAT_URLS.sceneMappings}?beatId=${beatId}`
       : '';
     return useApiGet<BeatSceneMapping[]>(url, enabled && !!beatId);
   },
@@ -24,7 +22,7 @@ export const beatSceneMappingApi = {
     enabled: boolean = true
   ) => {
     const url = projectId
-      ? `${BEAT_SCENE_MAPPINGS_URL}?projectId=${projectId}`
+      ? `${BEAT_URLS.sceneMappings}?projectId=${projectId}`
       : '';
     return useApiGet<BeatSceneMapping[]>(url, enabled && !!projectId);
   },
@@ -39,7 +37,7 @@ export const beatSceneMappingApi = {
   ) => {
     const url =
       projectId && status
-        ? `${BEAT_SCENE_MAPPINGS_URL}?projectId=${projectId}&status=${status}`
+        ? `${BEAT_URLS.sceneMappings}?projectId=${projectId}&status=${status}`
         : '';
     return useApiGet<BeatSceneMapping[]>(url, enabled && !!projectId);
   },
@@ -62,7 +60,7 @@ export const beatSceneMappingApi = {
     includeNewScenes?: boolean;
   }): Promise<{ suggestions: BeatSceneSuggestion[]; model: string }> => {
     return apiFetch<{ suggestions: BeatSceneSuggestion[]; model: string }>({
-      url: BEAT_SCENE_MAPPING_URL,
+      url: BEAT_URLS.sceneMappingGenerate,
       method: 'POST',
       body: params,
     });
@@ -86,7 +84,7 @@ export const beatSceneMappingApi = {
     confidence_score?: number;
   }): Promise<BeatSceneMapping> => {
     return apiFetch<BeatSceneMapping>({
-      url: BEAT_SCENE_MAPPINGS_URL,
+      url: BEAT_URLS.sceneMappings,
       method: 'POST',
       body: params,
     });
@@ -108,7 +106,7 @@ export const beatSceneMappingApi = {
     }
   ): Promise<BeatSceneMapping> => {
     return apiFetch<BeatSceneMapping>({
-      url: `${BEAT_SCENE_MAPPINGS_URL}/${id}`,
+      url: BEAT_URLS.sceneMapping(id),
       method: 'PUT',
       body: updates,
     });
@@ -119,7 +117,7 @@ export const beatSceneMappingApi = {
    */
   deleteMapping: async (id: string): Promise<void> => {
     return apiFetch<void>({
-      url: `${BEAT_SCENE_MAPPINGS_URL}/${id}`,
+      url: BEAT_URLS.sceneMapping(id),
       method: 'DELETE',
     });
   },
@@ -129,7 +127,7 @@ export const beatSceneMappingApi = {
    */
   acceptSuggestion: async (id: string): Promise<BeatSceneMapping> => {
     return apiFetch<BeatSceneMapping>({
-      url: `${BEAT_SCENE_MAPPINGS_URL}/${id}`,
+      url: BEAT_URLS.sceneMapping(id),
       method: 'PUT',
       body: { status: 'accepted' },
     });
@@ -143,7 +141,7 @@ export const beatSceneMappingApi = {
     feedback?: string
   ): Promise<BeatSceneMapping> => {
     return apiFetch<BeatSceneMapping>({
-      url: `${BEAT_SCENE_MAPPINGS_URL}/${id}`,
+      url: BEAT_URLS.sceneMapping(id),
       method: 'PUT',
       body: { status: 'rejected', user_feedback: feedback },
     });

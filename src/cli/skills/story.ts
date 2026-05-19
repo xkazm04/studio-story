@@ -237,7 +237,7 @@ ${TOOL_PREAMBLE}**Tool Usage Order:**
 \`\`\`json
 [{
   "name": "Beat Name",
-  "type": "setup|conflict|resolution|climax|transition|revelation|reversal",
+  "type": "setup|conflict|resolution|climax|transition|reveal|action",
   "description": "2-3 sentence description of what happens",
   "actId": "target act ID",
   "order": 5,

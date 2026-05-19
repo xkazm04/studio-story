@@ -3,11 +3,10 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Faction } from '@/app/types/Faction';
 import { validateFactionBrandingColors, validateFactionColor } from '@/app/utils/colorValidation';
 import {
-  logger,
   handleDatabaseError,
-  handleUnexpectedError,
   createErrorResponse,
   validateRequiredParams,
+  withApiHandler,
 } from '@/app/utils/apiErrorHandling';
 
 /**
@@ -58,84 +57,76 @@ function validateBranding(branding: any): { error?: NextResponse; sanitized?: an
  * GET /api/factions?projectId=xxx
  * Get all factions for a project
  */
-export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams;
-    const projectId = searchParams.get('projectId');
+export const GET = withApiHandler('GET /api/factions', async (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams;
+  const projectId = searchParams.get('projectId');
 
-    if (!projectId) {
-      return createErrorResponse('projectId is required', 400);
-    }
-
-    const { data, error } = await supabaseServer
-      .from('factions')
-      .select('*')
-      .eq('project_id', projectId)
-      .order('name', { ascending: true });
-
-    if (error) {
-      return handleDatabaseError('fetch factions', error, 'GET /api/factions');
-    }
-
-    return NextResponse.json(data as Faction[]);
-  } catch (error) {
-    return handleUnexpectedError('GET /api/factions', error);
+  if (!projectId) {
+    return createErrorResponse('projectId is required', 400);
   }
-}
+
+  const { data, error } = await supabaseServer
+    .from('factions')
+    .select('*')
+    .eq('project_id', projectId)
+    .order('name', { ascending: true });
+
+  if (error) {
+    return handleDatabaseError('fetch factions', error, 'GET /api/factions');
+  }
+
+  return NextResponse.json(data as Faction[]);
+});
 
 /**
  * POST /api/factions
  * Create a new faction
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { name, project_id, description, color, logo_url, branding } = body;
+export const POST = withApiHandler('POST /api/factions', async (request: NextRequest) => {
+  const body = await request.json();
+  const { name, project_id, description, color, logo_url, branding } = body;
 
-    // Validate required parameters
-    const paramValidation = validateRequiredParams(
-      { name, project_id },
-      ['name', 'project_id']
-    );
-    if (paramValidation) return paramValidation;
+  // Validate required parameters
+  const paramValidation = validateRequiredParams(
+    { name, project_id },
+    ['name', 'project_id']
+  );
+  if (paramValidation) return paramValidation;
 
-    // Validate color if provided
-    const colorError = validateColor(color);
-    if (colorError) return colorError;
+  // Validate color if provided
+  const colorError = validateColor(color);
+  if (colorError) return colorError;
 
-    // Validate and sanitize branding colors if provided
-    const brandingValidation = validateBranding(branding);
-    if (brandingValidation.error) return brandingValidation.error;
+  // Validate and sanitize branding colors if provided
+  const brandingValidation = validateBranding(branding);
+  if (brandingValidation.error) return brandingValidation.error;
 
-    // Use sanitized branding colors if available
-    const sanitizedBranding = brandingValidation.sanitized
-      ? {
-          ...branding,
-          primary_color: brandingValidation.sanitized.primary_color,
-          secondary_color: brandingValidation.sanitized.secondary_color,
-          accent_color: brandingValidation.sanitized.accent_color,
-        }
-      : branding;
+  // Use sanitized branding colors if available
+  const sanitizedBranding = brandingValidation.sanitized
+    ? {
+        ...branding,
+        primary_color: brandingValidation.sanitized.primary_color,
+        secondary_color: brandingValidation.sanitized.secondary_color,
+        accent_color: brandingValidation.sanitized.accent_color,
+      }
+    : branding;
 
-    const { data, error } = await supabaseServer
-      .from('factions')
-      .insert({
-        name,
-        project_id,
-        description,
-        color,
-        logo_url,
-        branding: sanitizedBranding,
-      })
-      .select()
-      .single();
+  const { data, error } = await supabaseServer
+    .from('factions')
+    .insert({
+      name,
+      project_id,
+      description,
+      color,
+      logo_url,
+      branding: sanitizedBranding,
+    })
+    .select()
+    .single();
 
-    if (error) {
-      return handleDatabaseError('create faction', error, 'POST /api/factions');
-    }
-
-    return NextResponse.json(data as Faction, { status: 201 });
-  } catch (error) {
-    return handleUnexpectedError('POST /api/factions', error);
+  if (error) {
+    return handleDatabaseError('create faction', error, 'POST /api/factions');
   }
-}
+
+  return NextResponse.json(data as Faction, { status: 201 });
+});

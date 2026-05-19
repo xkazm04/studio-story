@@ -6,6 +6,7 @@
  */
 
 import { logger } from '@/app/utils/logger';
+import { extractData } from '@/app/utils/api';
 
 export interface AppearanceData {
   gender?: string;
@@ -156,8 +157,8 @@ async function callLLM(systemPrompt: string, userPrompt: string): Promise<string
       throw new Error(error.error || `LLM API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data.content || data.message || '';
+    const data = extractData<Record<string, unknown>>(await response.json());
+    return (data.content as string) || (data.message as string) || '';
   } catch (error) {
     logger.error('Error calling LLM API', error);
     throw error;

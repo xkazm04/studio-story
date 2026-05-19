@@ -23,6 +23,7 @@ import type { ActiveSuggestion } from '@/agents/ambient-observer';
 import { PANEL_REGISTRY } from '../engine/panelRegistry';
 import { TOOL_PANEL_HINTS } from '../config/workflowHints';
 import { useWorkspaceStore } from '../store/workspaceStore';
+import { extractData } from '@/app/utils/api';
 
 // ---------------------------------------------------------------------------
 // Default initial state for the workspace state engine
@@ -108,7 +109,7 @@ export function useIntentDispatch(): {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ context }),
       });
-      return res.json() as Promise<LLMResponse>;
+      return extractData<LLMResponse>(await res.json());
     }
 
     /**

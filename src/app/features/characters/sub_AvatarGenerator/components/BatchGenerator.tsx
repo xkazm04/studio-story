@@ -31,8 +31,10 @@ import {
 import { cn } from '@/app/lib/utils';
 import { Expression, EXPRESSION_LIBRARY } from './ExpressionLibrary';
 import { Pose, Angle, POSE_PRESETS, ANGLE_PRESETS } from './PoseSelector';
-import type { StyleDefinition, CharacterStyleProfile, ClosedLoopConfig } from '../lib/styleEngine';
-import { DEFAULT_CLOSED_LOOP_CONFIG, calculateStyleDeviation, strengthenStylePrompt, evaluateGenerationResult } from '../lib/styleEngine';
+import type { StyleDefinition, CharacterStyleProfile } from '../lib/styleEngine';
+import { DEFAULT_CLOSED_LOOP_CONFIG } from '../lib/styleEngine';
+import { QualityController } from '@/lib/quality/QualityController';
+import { createStyleDeviationScorer, createStylePromptStrengthener } from '@/lib/quality/scoringAdapters';
 
 // ============================================================================
 // Types
@@ -342,9 +344,13 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
     setIsPaused(false);
     setShowConfig(false);
 
-    const closedLoopActive = closedLoopEnabled && styleDefinition;
-    const loopConfig: ClosedLoopConfig | null = closedLoopActive
-      ? { enabled: true, deviationThreshold, maxRetries, styleDefinition }
+    const qualityController = closedLoopEnabled && styleDefinition
+      ? new QualityController<CharacterStyleProfile>({
+          deviationThreshold,
+          maxRetries,
+          scorer: createStyleDeviationScorer(styleDefinition),
+          strengthener: createStylePromptStrengthener(styleDefinition),
+        })
       : null;
 
     for (let i = 0; i < items.length; i++) {
@@ -382,25 +388,25 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
 
         const imageUrl = `https://picsum.photos/seed/${item.id}-${currentAttempt}/512/512`;
 
-        // Closed-loop evaluation
-        if (loopConfig) {
+        // Quality gate evaluation
+        if (qualityController) {
           const mockProfile: CharacterStyleProfile = {
             characterId,
             characterName: item.expression.label,
             avatarUrl: imageUrl,
             styleDeviationScore: 0,
             extractedFeatures: {
-              dominantColors: loopConfig.styleDefinition.colorPalette.primaryColors.slice(0, 2),
-              colorHarmony: loopConfig.styleDefinition.colorPalette.harmonyType,
+              dominantColors: styleDefinition!.colorPalette.primaryColors.slice(0, 2),
+              colorHarmony: styleDefinition!.colorPalette.harmonyType,
               brightness: 50 + Math.random() * 30 - 15,
               contrast: 50 + Math.random() * 30 - 15,
               saturation: 50 + Math.random() * 30 - 15,
-              detectedArtStyle: [loopConfig.styleDefinition.artDirection],
+              detectedArtStyle: [styleDefinition!.artDirection],
             },
             lastAnalyzedAt: new Date().toISOString(),
           };
 
-          const result = evaluateGenerationResult(mockProfile, loopConfig, currentAttempt);
+          const result = qualityController.evaluate(mockProfile, currentAttempt);
 
           if (result.accepted) {
             accepted = true;
@@ -412,20 +418,19 @@ const BatchGenerator: React.FC<BatchGeneratorProps> = ({
                   imageUrl,
                   deviationScore: Math.round(result.deviationScore),
                   retryCount: currentAttempt,
-                  wasRetried: currentAttempt > 0,
+                  wasRetried: result.wasRetried,
                   completedAt: new Date().toISOString(),
                 }
                 : it
             ));
             onItemGenerated?.(items[i]);
           } else {
-            // Retry with strengthened prompt
+            // Retry with strengthened prompt via QualityController
             currentAttempt++;
-            // strengthenStylePrompt adjusts the prompt for next iteration
-            strengthenStylePrompt(basePrompt, loopConfig.styleDefinition, currentAttempt);
+            qualityController.strengthenPrompt(basePrompt, currentAttempt);
           }
         } else {
-          // No closed-loop — accept immediately
+          // No quality gate — accept immediately
           accepted = true;
           setBatchItems(prev => prev.map((it, idx) =>
             idx === i

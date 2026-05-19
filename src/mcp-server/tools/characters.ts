@@ -6,9 +6,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { McpConfig } from '../config.js';
 import { dbSelect, dbSelectOne, dbInsert, dbUpdate, resolveStoryStackId } from '../db.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
 
 export function registerCharacterTools(server: McpServer, config: McpConfig) {
   server.tool(
@@ -33,7 +31,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig) {
 
   server.tool(
     'get_character',
-    `Get full details for one character by ID. Returns: id, project_id, faction_id, name, type, voice, avatar_url, transparent_avatar_url, body_url, transparent_body_url, created_at, updated_at.`,
+    `Get full details for one character by ID. Returns: id, project_id, faction_id, faction_hierarchy_node_id, name, type, voice, avatar_url, transparent_avatar_url, body_url, transparent_body_url, created_at, updated_at.`,
     {
       characterId: z.string().describe('Character UUID.'),
     },
@@ -54,8 +52,9 @@ export function registerCharacterTools(server: McpServer, config: McpConfig) {
       type: z.string().optional().describe('Role type: "protagonist", "antagonist", "supporting", "minor", etc.'),
       voice: z.string().optional().describe('Voice/personality description for dialogue generation.'),
       factionId: z.string().optional().describe('Faction UUID to assign this character to (must exist).'),
+      factionHierarchyNodeId: z.string().optional().describe('Hierarchy node UUID to bind this character to a specific position in the faction org chart.'),
     },
-    async ({ projectId, name, type, voice, factionId }) => {
+    async ({ projectId, name, type, voice, factionId, factionHierarchyNodeId }) => {
       const pid = projectId || config.projectId;
       if (!pid) return errorContent('No projectId available. Pass projectId explicitly.');
 
@@ -63,6 +62,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig) {
       if (type) row.type = type;
       if (voice) row.voice = voice;
       if (factionId) row.faction_id = factionId;
+      if (factionHierarchyNodeId) row.faction_hierarchy_node_id = factionHierarchyNodeId;
 
       // Resolve story_stack_id (mirrors POST /api/characters logic)
       const stackId = await resolveStoryStackId();
@@ -77,7 +77,7 @@ export function registerCharacterTools(server: McpServer, config: McpConfig) {
 
   server.tool(
     'update_character',
-    `Update character fields. Pass a JSON object with only the fields to change. Updatable columns: name, type, voice, faction_id, avatar_url, transparent_avatar_url, body_url, transparent_body_url.`,
+    `Update character fields. Pass a JSON object with only the fields to change. Updatable columns: name, type, voice, faction_id, faction_hierarchy_node_id, avatar_url, transparent_avatar_url, body_url, transparent_body_url.`,
     {
       characterId: z.string().describe('Character UUID to update.'),
       updates: z.string().describe('JSON string of fields to update. Example: {"voice":"gruff warrior","type":"antagonist"}'),

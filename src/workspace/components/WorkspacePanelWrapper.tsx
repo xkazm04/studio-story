@@ -1,11 +1,12 @@
 'use client';
 
 import React, { Suspense, useMemo, useCallback } from 'react';
-import { Loader2, MessageCircle, X } from 'lucide-react';
+import { Loader2, MessageCircle, X, ArrowLeftRight, Maximize2 } from 'lucide-react';
 import { getPanelEntry } from '../engine/panelRegistry';
 import type { WorkspacePanelInstance } from '../types';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import { useCommandBarStore } from '../store/commandBarStore';
+import { usePanelPaletteStore } from '../store/panelPaletteStore';
 import { useResizeHandle } from '../hooks/useResizeHandle';
 import { useIntent, type PanelDefinition, type Intent } from '@dzin/core';
 
@@ -52,6 +53,8 @@ export default function WorkspacePanelWrapper({
   onTriggerPrompt,
 }: WorkspacePanelWrapperProps) {
   const closePanelById = useWorkspaceStore((s) => s.closePanelById);
+  const isAutoCompacted = useWorkspaceStore((s) => s.autoCompactedPanels.has(panel.id));
+  const updatePanelDensity = useWorkspaceStore((s) => s.updatePanelDensity);
   const expand = useCommandBarStore((s) => s.expand);
   const focusInput = useCommandBarStore((s) => s.focusInput);
   const entry = getPanelEntry(panel.type);
@@ -115,15 +118,35 @@ export default function WorkspacePanelWrapper({
         <LazyComponent {...panelProps} />
       </Suspense>
 
-      {/* Close button -- appears on panel hover */}
-      <button
-        type="button"
-        onClick={handleClose}
-        title="Close panel"
-        className="absolute top-1 right-1 z-20 flex h-5 w-5 items-center justify-center rounded bg-slate-900/80 text-slate-400 opacity-0 transition-opacity hover:bg-slate-800 hover:text-slate-200 group-hover/panel:opacity-70 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40"
-      >
-        <X className="h-3 w-3" />
-      </button>
+      {/* Panel hover buttons — restore + swap + close */}
+      <div className="absolute top-1 right-1 z-20 flex items-center gap-0.5 opacity-0 transition-opacity group-hover/panel:opacity-70 focus-within:opacity-100">
+        {isAutoCompacted && (
+          <button
+            type="button"
+            onClick={() => updatePanelDensity(panel.id, 'full')}
+            title="Restore full density"
+            className="flex h-5 w-5 items-center justify-center rounded bg-amber-900/60 text-amber-400 transition-colors hover:bg-amber-800/80 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500/40"
+          >
+            <Maximize2 className="h-3 w-3" />
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => usePanelPaletteStore.getState().openPalette(panel.id)}
+          title="Swap panel (Ctrl+K)"
+          className="flex h-5 w-5 items-center justify-center rounded bg-slate-900/80 text-slate-400 transition-colors hover:bg-slate-800 hover:text-cyan-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40"
+        >
+          <ArrowLeftRight className="h-3 w-3" />
+        </button>
+        <button
+          type="button"
+          onClick={handleClose}
+          title="Close panel"
+          className="flex h-5 w-5 items-center justify-center rounded bg-slate-900/80 text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
 
       {/* Resize handle -- right edge */}
       <div

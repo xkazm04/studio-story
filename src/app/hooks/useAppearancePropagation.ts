@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { extractData } from '@/app/utils/api';
 import { logger } from '@/app/utils/logger';
 
 export interface PropagationStatus {
@@ -51,7 +52,7 @@ export function useAppearancePropagation() {
         throw new Error(error.error || 'Failed to process propagation');
       }
 
-      const data = await response.json();
+      const data = extractData<{ targetsProcessed?: number; successCount?: number; failureCount?: number }>(await response.json());
       setPropagationStatus({
         changeLogId,
         status: 'completed',
@@ -90,7 +91,7 @@ export function useAppearancePropagation() {
         throw new Error('Failed to fetch pending changes');
       }
 
-      const data = await response.json();
+      const data = extractData(await response.json());
       return data;
     } catch (error) {
       logger.error('Error fetching pending changes', error);
@@ -114,7 +115,7 @@ export function useAppearancePropagation() {
         throw new Error('Failed to fetch propagation targets');
       }
 
-      const data = await response.json();
+      const data = extractData<PropagationTarget[]>(await response.json());
       setTargets(data);
       return data;
     } catch (error) {
@@ -141,7 +142,7 @@ export function useAppearancePropagation() {
         throw new Error(error.error || 'Failed to apply updates');
       }
 
-      const data = await response.json();
+      const data = extractData(await response.json());
       return data;
     } catch (error) {
       logger.error('Error applying updates', error);
@@ -167,7 +168,7 @@ export function useAppearancePropagation() {
         throw new Error(error.error || 'Failed to apply update');
       }
 
-      const data = await response.json();
+      const data = extractData(await response.json());
       return data;
     } catch (error) {
       logger.error('Error applying single update', error);

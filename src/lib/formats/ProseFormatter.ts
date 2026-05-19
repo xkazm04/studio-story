@@ -4,17 +4,8 @@
  * Supports chapter structure, paragraph formatting, and dialogue conventions
  */
 
-export type ProseElementType =
-  | 'chapter_heading'
-  | 'section_break'
-  | 'paragraph'
-  | 'dialogue'
-  | 'thought'
-  | 'letter'
-  | 'quote'
-  | 'flashback'
-  | 'note'
-  | 'epigraph';
+export type { ProseBlockType as ProseElementType } from '../types/scriptElement';
+import type { ProseBlockType as ProseElementType } from '../types/scriptElement';
 
 export interface ProseElement {
   type: ProseElementType;

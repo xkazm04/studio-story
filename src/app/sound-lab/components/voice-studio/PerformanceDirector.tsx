@@ -5,6 +5,7 @@ import {
   Sliders, Play, Volume2, Loader2, PanelRightClose, ChevronLeft, Save,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import WaveformVisualizer from '../shared/WaveformVisualizer';
 import {
   EMOTIONS, DELIVERY_PRESETS, applyModifiers,
@@ -79,7 +80,8 @@ export default function PerformanceDirector({
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && data.audioUrl) {
         const audio = new Audio(data.audioUrl);
         audio.onended = () => setIsGenerating(false);

@@ -133,18 +133,18 @@ export default function DeliveryPresets({
                 onClick={() => handleSelect(preset)}
                 className={`flex items-start gap-3 p-3 rounded-lg border text-left transition-all ${
                   isSelected
-                    ? 'border-cyan-500/50 bg-cyan-500/10'
+                    ? 'border-voice-primary/50 bg-voice-primary/10'
                     : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    isSelected ? 'bg-cyan-500/20' : 'bg-slate-800'
+                    isSelected ? 'bg-voice-primary/20' : 'bg-slate-800'
                   }`}
                 >
                   <Icon
                     className={`w-4 h-4 ${
-                      isSelected ? 'text-cyan-400' : 'text-slate-400'
+                      isSelected ? 'text-voice-primary' : 'text-slate-400'
                     }`}
                   />
                 </div>
@@ -158,7 +158,7 @@ export default function DeliveryPresets({
                       {preset.name}
                     </span>
                     {isSelected && (
-                      <Check className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-voice-primary flex-shrink-0" />
                     )}
                   </div>
                   <p className="text-sm text-slate-400 truncate mt-0.5">
@@ -179,7 +179,7 @@ export default function DeliveryPresets({
             {!showCreateForm && onSaveAsPreset && (
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300"
+                className="flex items-center gap-1 text-sm text-voice-primary hover:text-voice-primary/80"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Save Current
@@ -212,7 +212,7 @@ export default function DeliveryPresets({
                   <button
                     onClick={handleCreate}
                     disabled={!newPresetName.trim()}
-                    className="p-1.5 rounded bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1.5 rounded bg-voice-primary/20 text-voice-primary hover:bg-voice-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Check className="w-4 h-4" />
                   </button>
@@ -239,7 +239,7 @@ export default function DeliveryPresets({
                     key={preset.id}
                     className={`flex items-center gap-2 p-2 rounded-lg border transition-all ${
                       isSelected
-                        ? 'border-cyan-500/50 bg-cyan-500/10'
+                        ? 'border-voice-primary/50 bg-voice-primary/10'
                         : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
                     }`}
                   >
@@ -258,7 +258,7 @@ export default function DeliveryPresets({
                         />
                         <button
                           onClick={() => handleSaveEdit(preset.id)}
-                          className="p-1 rounded bg-cyan-500/20 text-cyan-400"
+                          className="p-1 rounded bg-voice-primary/20 text-voice-primary"
                         >
                           <Check className="w-3.5 h-3.5" />
                         </button>
@@ -277,7 +277,7 @@ export default function DeliveryPresets({
                         >
                           <Sparkles
                             className={`w-4 h-4 ${
-                              isSelected ? 'text-cyan-400' : 'text-slate-400'
+                              isSelected ? 'text-voice-primary' : 'text-slate-400'
                             }`}
                           />
                           <span
@@ -288,7 +288,7 @@ export default function DeliveryPresets({
                             {preset.name}
                           </span>
                           {isSelected && (
-                            <Check className="w-3.5 h-3.5 text-cyan-400" />
+                            <Check className="w-3.5 h-3.5 text-voice-primary" />
                           )}
                         </button>
                         <button
@@ -330,7 +330,7 @@ export default function DeliveryPresets({
             return (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Icon className="w-4 h-4 text-cyan-400" />
+                  <Icon className="w-4 h-4 text-voice-primary" />
                   <span className="text-sm font-medium text-slate-200">
                     {preset.name}
                   </span>

@@ -162,47 +162,52 @@ function executeCLI(
       prompt,
       resumeSessionId,
       (event) => {
-        if (event.type === 'init') {
-          capturedSessionId = (event.data.sessionId as string) ?? null;
-        } else if (event.type === 'text') {
-          textParts.push(event.data.content as string);
-        } else if (event.type === 'tool_use') {
-          const toolId = event.data.id as string;
-          const toolName = event.data.name as string;
-          pendingTools.set(toolId, toolName);
-        } else if (event.type === 'tool_result') {
-          const toolUseId = event.data.toolUseId as string;
-          const toolName = pendingTools.get(toolUseId) ?? 'unknown';
-          let parsed: unknown;
-          try {
-            parsed = JSON.parse(event.data.content as string);
-          } catch {
-            parsed = event.data.content;
+        switch (event.type) {
+          case 'init':
+            capturedSessionId = event.data.sessionId ?? null;
+            break;
+          case 'text':
+            textParts.push(event.data.content);
+            break;
+          case 'tool_use':
+            pendingTools.set(event.data.id, event.data.name);
+            break;
+          case 'tool_result': {
+            const toolName = pendingTools.get(event.data.toolUseId) ?? 'unknown';
+            let parsed: unknown;
+            try {
+              parsed = JSON.parse(event.data.content);
+            } catch {
+              parsed = event.data.content;
+            }
+            toolResults.push({ name: toolName, result: parsed });
+            break;
           }
-          toolResults.push({ name: toolName, result: parsed });
-        } else if (event.type === 'result') {
-          if (event.data.sessionId) {
-            capturedSessionId = event.data.sessionId as string;
-          }
-          if (event.data.isError) {
+          case 'result':
+            if (event.data.sessionId) {
+              capturedSessionId = event.data.sessionId;
+            }
+            if (event.data.isError) {
+              hasError = true;
+              errorMessage = 'CLI execution reported error';
+            }
+            settle();
+            if (hasError) {
+              reject(new Error(errorMessage));
+            } else {
+              resolve({
+                sessionId: capturedSessionId,
+                text: textParts.join('\n'),
+                toolResults: toolResults.length > 0 ? toolResults : undefined as unknown as Array<{ name: string; result: unknown }>,
+              });
+            }
+            break;
+          case 'error':
             hasError = true;
-            errorMessage = 'CLI execution reported error';
-          }
-          settle();
-          if (hasError) {
+            errorMessage = event.data.message ?? 'Unknown CLI error';
+            settle();
             reject(new Error(errorMessage));
-          } else {
-            resolve({
-              sessionId: capturedSessionId,
-              text: textParts.join('\n'),
-              toolResults: toolResults.length > 0 ? toolResults : undefined as unknown as Array<{ name: string; result: unknown }>,
-            });
-          }
-        } else if (event.type === 'error') {
-          hasError = true;
-          errorMessage = (event.data.message as string) ?? 'Unknown CLI error';
-          settle();
-          reject(new Error(errorMessage));
+            break;
         }
       },
     );

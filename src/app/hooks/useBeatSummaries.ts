@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { apiFetch } from '../utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 interface BeatSummaryData {
   beatId: string;
@@ -60,7 +61,7 @@ export function useBeatSummaries() {
 
     try {
       const response = await apiFetch<BeatSummaryResponse>({
-        url: '/api/beat-summary',
+        url: BEAT_URLS.summary,
         method: 'POST',
         body: {
           beatName: beatData.beatName,
@@ -121,7 +122,7 @@ export function useBeatSummaries() {
 
     try {
       const response = await apiFetch<BatchSummaryResponse>({
-        url: '/api/beat-summary',
+        url: BEAT_URLS.summary,
         method: 'PUT',
         body: {
           beats: beats.map((beat) => ({

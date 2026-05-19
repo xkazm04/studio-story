@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Dataset } from '@/app/types/Dataset';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 
 interface DatasetSketchWizardProps {
   dataset: Dataset;
@@ -69,7 +70,7 @@ const DatasetSketchWizard = ({ dataset, onClose }: DatasetSketchWizardProps) => 
         }),
       });
 
-      const data = await res.json();
+      const data = extractData<any>(await res.json());
 
       if (!data.success) {
         setError(data.error || 'Failed to generate variations');
@@ -124,7 +125,7 @@ const DatasetSketchWizard = ({ dataset, onClose }: DatasetSketchWizardProps) => 
           const res = await fetch(
             `/api/ai/generate-images?generationId=${generationId}`
           );
-          const data = await res.json();
+          const data = extractData<any>(await res.json());
 
           if (data.status === 'COMPLETE' && data.images?.[0]) {
             const imageUrl = data.images[0].url;
@@ -199,7 +200,7 @@ const DatasetSketchWizard = ({ dataset, onClose }: DatasetSketchWizardProps) => 
         }),
       });
 
-      const data = await res.json();
+      const data = extractData<any>(await res.json());
 
       if (!data.success) {
         setError(data.error || 'Failed to start generation');

@@ -18,9 +18,9 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
 import { PresenceTracker } from './PresenceTracker';
-import { LocationReference, type LocationData, type SceneMetadata } from './LocationReference';
+import { LocationReference, type LocationData } from './LocationReference';
 import type { Character, CharRelationship } from '@/app/types/Character';
-import type { Scene } from '@/app/types/Scene';
+import type { Scene, SceneMetadata } from '@/app/types/Scene';
 
 interface ContextPanelProps {
   scene: Scene;
@@ -76,11 +76,10 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
     };
   }, [scene.location, scene.description]);
 
-  // Parse metadata from scene (could be stored in a metadata field)
+  // Parse metadata from scene
   const metadata: SceneMetadata = useMemo(() => {
-    // For now, return empty metadata - this could be extended to parse from scene properties
-    return {};
-  }, []);
+    return scene.metadata ?? {};
+  }, [scene.metadata]);
 
   // Find linked scenes
   const linkedScenes: SceneLink[] = useMemo(() => {
@@ -127,11 +126,10 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
     });
   }, [onUpdateScene]);
 
-  // Handle metadata update
+  // Handle metadata update — persists to DB via onUpdateScene
   const handleMetadataChange = useCallback((newMetadata: SceneMetadata) => {
-    // Store metadata - could be extended with a dedicated metadata field
-    console.log('Metadata updated:', newMetadata);
-  }, []);
+    onUpdateScene?.({ metadata: newMetadata });
+  }, [onUpdateScene]);
 
   // Add character mention to content
   const handleAddCharacter = useCallback((characterId: string) => {
@@ -166,7 +164,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
       >
         <button
           onClick={onToggle}
-          className="p-2 bg-slate-900/80 border border-slate-800 rounded-lg text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
+          className="p-2 bg-slate-900/80 border border-slate-700/60 rounded-lg text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
           title="Open Context Panel"
         >
           <PanelRightOpen className="w-4 h-4" />
@@ -180,13 +178,17 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
+      transition={{
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.25, ease: 'easeOut' },
+      }}
       className={cn(
-        'w-72 h-full flex flex-col bg-slate-900/80 border-l border-slate-800 backdrop-blur-sm',
+        'w-72 h-full flex flex-col bg-slate-900/80 border-l border-slate-700/60 backdrop-blur-sm',
         className
       )}
     >
       {/* Header */}
-      <div className="shrink-0 px-3 py-2 border-b border-slate-800 flex items-center justify-between">
+      <div className="shrink-0 p-3 border-b border-slate-700/60 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-cyan-400" />
           <span className="text-sm font-medium text-slate-200">Scene Context</span>
@@ -201,7 +203,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
       </div>
 
       {/* Scene Info */}
-      <div className="shrink-0 px-3 py-2 border-b border-slate-800 bg-slate-900/50">
+      <div className="shrink-0 p-3 border-b border-slate-700/40 bg-slate-900/50">
         <div className="text-sm font-medium text-slate-300 truncate">{scene.name || 'Untitled Scene'}</div>
         {scene.description && (
           <div className="text-sm text-slate-400 truncate mt-0.5">{scene.description}</div>
@@ -209,7 +211,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="shrink-0 px-2 py-1.5 border-b border-slate-800 flex items-center gap-1">
+      <div className="shrink-0 p-3 border-b border-slate-700/40 flex items-center gap-1">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -293,7 +295,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                           <button
                             key={link.sceneId}
                             onClick={() => onNavigateToScene?.(link.sceneId)}
-                            className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors text-left"
+                            className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-700/40 rounded-lg hover:border-slate-700/60 transition-colors text-left"
                           >
                             <div className={cn(
                               'px-1.5 py-0.5 rounded text-sm font-medium',
@@ -319,7 +321,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                           <button
                             key={link.sceneId}
                             onClick={() => onNavigateToScene?.(link.sceneId)}
-                            className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors text-left"
+                            className="w-full flex items-center gap-2 p-2 bg-slate-900/50 border border-slate-700/40 rounded-lg hover:border-slate-700/60 transition-colors text-left"
                           >
                             <Link2 className="w-3 h-3 text-slate-400" />
                             <span className="text-sm text-slate-300 truncate">{link.sceneName}</span>
@@ -354,7 +356,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
                   {contextHistory.map((entry, index) => (
                     <div
                       key={index}
-                      className="p-2 bg-slate-900/50 border border-slate-800 rounded-lg"
+                      className="p-2 bg-slate-900/50 border border-slate-700/40 rounded-lg"
                     >
                       <div className="text-sm text-slate-400">
                         {new Date(entry.timestamp).toLocaleTimeString()}
@@ -385,7 +387,7 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
       </div>
 
       {/* Footer - Quick Info */}
-      <div className="shrink-0 px-3 py-2 border-t border-slate-800 bg-slate-900/50">
+      <div className="shrink-0 p-3 border-t border-slate-700/40 bg-slate-900/50">
         <div className="flex items-center gap-2 text-sm text-slate-400">
           <Info className="w-3 h-3" />
           <span>{content.length} chars • {content.split(/\s+/).filter(Boolean).length} words</span>

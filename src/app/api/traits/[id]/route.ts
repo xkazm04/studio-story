@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Trait } from '@/app/types/Character';
-import { logger } from '@/app/utils/logger';
-import { HTTP_STATUS, createErrorResponse } from '@/app/utils/apiErrorHandling';
+import { HTTP_STATUS, createErrorResponse, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * Updates a trait in the database
@@ -34,49 +33,31 @@ async function deleteTrait(id: string) {
  * PUT /api/traits/[id]
  * Update a trait
  */
-export async function PUT(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
-    const body = await request.json();
+export const PUT = withApiHandler('PUT /api/traits/[id]', async (request: NextRequest, context) => {
+  const { id } = await context.params;
+  const body = await request.json();
 
-    const { data, error } = await updateTrait(id, body);
+  const { data, error } = await updateTrait(id, body);
 
-    if (error) {
-      logger.apiError('PUT /api/traits/[id]', error, { traitId: id });
-      return createErrorResponse('Failed to update trait', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json(data as Trait);
-  } catch (error) {
-    logger.apiError('PUT /api/traits/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return createErrorResponse('Failed to update trait', HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-}
+
+  return NextResponse.json(data as Trait);
+});
 
 /**
  * DELETE /api/traits/[id]
  * Delete a trait
  */
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+export const DELETE = withApiHandler('DELETE /api/traits/[id]', async (request: NextRequest, context) => {
+  const { id } = await context.params;
 
-    const { error } = await deleteTrait(id);
+  const { error } = await deleteTrait(id);
 
-    if (error) {
-      logger.apiError('DELETE /api/traits/[id]', error, { traitId: id });
-      return createErrorResponse('Failed to delete trait', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    logger.apiError('DELETE /api/traits/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return createErrorResponse('Failed to delete trait', HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-}
+
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

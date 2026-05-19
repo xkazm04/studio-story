@@ -1146,6 +1146,52 @@ export class HierarchyEngine {
     this.hierarchy.updated_at = new Date().toISOString();
   }
 
+  // Character-bound queries
+
+  /**
+   * Find the node a character is assigned to by character ID.
+   */
+  findNodeByCharacterId(characterId: string): HierarchyNode | undefined {
+    return this.hierarchy.nodes.find(n => n.character_id === characterId);
+  }
+
+  /**
+   * Get the role + permissions for a character bound to a hierarchy node.
+   */
+  getCharacterPermissions(characterId: string): RolePermission[] {
+    const node = this.findNodeByCharacterId(characterId);
+    if (!node) return [];
+    const role = this.hierarchy.roles.find(r => r.id === node.role_id);
+    return role?.permissions ?? [];
+  }
+
+  /**
+   * Who reports to this character? Returns direct subordinate nodes.
+   */
+  getDirectReports(characterId: string): HierarchyNode[] {
+    const node = this.findNodeByCharacterId(characterId);
+    if (!node) return [];
+    return this.hierarchy.nodes.filter(n => n.parent_id === node.id);
+  }
+
+  /**
+   * Full chain of command above a character (root → ... → character).
+   */
+  getCharacterCommandChain(characterId: string): HierarchyNode[] {
+    const node = this.findNodeByCharacterId(characterId);
+    if (!node) return [];
+    return getCommandChain(node.id, this.hierarchy.nodes);
+  }
+
+  /**
+   * All nodes beneath a character in the hierarchy.
+   */
+  getCharacterDescendants(characterId: string): HierarchyNode[] {
+    const node = this.findNodeByCharacterId(characterId);
+    if (!node) return [];
+    return getDescendants(node.id, this.hierarchy.nodes);
+  }
+
   // Template Application
   applyTemplate(template: RoleTemplate): void {
     // Clear existing roles and nodes

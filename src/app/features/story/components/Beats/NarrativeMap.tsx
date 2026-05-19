@@ -14,6 +14,7 @@ import { Button } from '@/app/components/UI/Button';
 import { ZoomIn, ZoomOut, Maximize2, Grid3x3, Sparkles, Loader2 } from 'lucide-react';
 import { DATA_VIZ, ChartGrid } from './dataVizTheme';
 import { BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
+import { extractData } from '@/app/utils/api';
 
 interface NarrativeMapProps {
   beats: BeatTableItem[];
@@ -218,7 +219,7 @@ const NarrativeMap = ({ beats, onBeatUpdate, onReorder }: NarrativeMapProps) => 
                       })),
                     }),
                   });
-                  const data = await res.json();
+                  const data = extractData<Record<string, unknown>>(await res.json());
                   if (data.success && Array.isArray(data.suggestions)) {
                     for (const s of data.suggestions) {
                       const matchingBeat = beats.find((b) => b.id === s.beat_id);

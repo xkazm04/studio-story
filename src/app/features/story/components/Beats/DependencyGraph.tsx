@@ -27,16 +27,7 @@ import {
   type CausalityChain,
   DependencyManager,
 } from '@/lib/beats/DependencyManager';
-
-// Beat summary for graph display
-interface BeatSummary {
-  id: string;
-  title: string;
-  order: number;
-  type?: string;
-  sceneId?: string;
-  sceneName?: string;
-}
+import { type BeatSummary } from '@/app/types/Beat';
 
 interface DependencyGraphProps {
   beats: BeatSummary[];

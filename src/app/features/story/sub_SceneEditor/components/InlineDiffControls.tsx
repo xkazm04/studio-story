@@ -84,7 +84,7 @@ export function InlineDiffControls({ editor }: InlineDiffControlsProps) {
     <div
       className={cn(
         'absolute z-50 flex items-center gap-1.5',
-        'rounded-lg border border-slate-600 bg-slate-800/95 px-2 py-1.5',
+        'rounded-lg border border-slate-700/60 bg-slate-800/95 p-3',
         'shadow-2xl backdrop-blur-sm'
       )}
       style={{

@@ -6,6 +6,7 @@
  */
 
 import type { ChapterAudio, ChapterMetadata } from './ChapterAssembler';
+import { sanitizeFilename } from '../export/utils';
 
 /**
  * Supported export formats
@@ -317,27 +318,18 @@ class ExportPipeline {
 
     // Add album/project name if available
     if (metadata.album) {
-      parts.push(this.sanitizeFilename(metadata.album));
+      parts.push(sanitizeFilename(metadata.album));
     }
 
     // Add chapter number
     parts.push(`Chapter_${String(index + 1).padStart(2, '0')}`);
 
     // Add chapter name
-    parts.push(this.sanitizeFilename(chapter.actName));
+    parts.push(sanitizeFilename(chapter.actName));
 
     return `${parts.join('_')}.${format}`;
   }
 
-  /**
-   * Sanitize filename
-   */
-  private sanitizeFilename(name: string): string {
-    return name
-      .replace(/[<>:"/\\|?*]/g, '')
-      .replace(/\s+/g, '_')
-      .slice(0, 50);
-  }
 
   /**
    * Add metadata tags to output (mock implementation)

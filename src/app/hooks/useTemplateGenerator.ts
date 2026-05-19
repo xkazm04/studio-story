@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { extractData } from '@/app/utils/api';
 import { ProjectTemplate } from '@/app/constants/templateCorpus';
 
 interface GenerateTemplateParams {
@@ -43,7 +44,7 @@ export function useTemplateGenerator() {
         throw new Error(errorData.message || 'Failed to generate template');
       }
 
-      const data: GenerateTemplateResponse = await response.json();
+      const data: GenerateTemplateResponse = extractData<GenerateTemplateResponse>(await response.json());
 
       setGeneratedTemplate(data.template);
       setSource(data.source);
@@ -104,7 +105,7 @@ export function useTemplateList() {
         throw new Error('Failed to fetch templates');
       }
 
-      const data = await response.json();
+      const data = extractData<{ templates?: ProjectTemplate[] }>(await response.json());
       setTemplates(data.templates || []);
       return data.templates || [];
     } catch (err) {

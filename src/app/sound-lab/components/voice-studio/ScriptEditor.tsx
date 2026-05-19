@@ -128,6 +128,7 @@ export default function ScriptEditor({
         return (
           <div
             key={line.id}
+            data-line-id={line.id}
             className="flex gap-1.5 items-start p-2 rounded-lg border border-slate-800/40 bg-slate-900/30"
           >
             {/* Line Number + Status */}

@@ -4,15 +4,15 @@
  * CompactTerminal — Inline CLI terminal component for Story features
  *
  * Renders a streaming terminal that connects to Claude Code CLI via SSE.
- * Used inline in feature panels (Simulator, Characters, Story, etc.)
+ * Uses useExecutionStream for SSE connection, protocol parsing, and log state.
  *
  * Features:
  * - SSE streaming with protocol-typed events
  * - RAF-batched log rendering for performance
- * - Virtualized scrolling for 50+ log entries
  * - File change tracking from tool_use events
  * - Session chaining via resumeSessionId
  * - Manual prompt input for interactive sessions
+ * - Signal pattern detection + /fix command
  */
 
 import React, {
@@ -24,11 +24,6 @@ import React, {
 } from 'react';
 import {
   Terminal,
-  User,
-  Bot,
-  Wrench,
-  CheckCircle,
-  AlertCircle,
   ChevronDown,
   Send,
   Square,
@@ -39,44 +34,42 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/app/lib/utils';
-import {
-  createEventProtocol,
-  decodeEvent,
-  messageToLog,
-  toolUseToLog,
-  toolResultToLog,
-  errorToLog,
-  toolUseToFileChange,
-} from './protocol';
 import CLIMarkdown from './CLIMarkdown';
 import { MCPConnectionIndicator } from './MCPConnectionIndicator';
 import type {
   CompactTerminalProps,
   LogEntry,
-  FileChange,
-  ExecutionResult,
+  SignalPatternSummary,
 } from './types';
 import { buildSkillsPrompt, buildBaseSystemPrompt } from './skills';
+import { extractData } from '@/app/utils/api';
+import SignalNotificationCard from './SignalNotificationCard';
+import { useExecutionStream } from './useExecutionStream';
+import { LOG_ICONS, LOG_COLORS } from './logMaps';
 
-// ============ Icon & Color Maps ============
+// ============ Animation Config ============
 
-const LOG_ICONS: Record<LogEntry['type'], React.ElementType> = {
-  user: User,
-  assistant: Bot,
-  tool_use: Wrench,
-  tool_result: CheckCircle,
-  system: Terminal,
-  error: AlertCircle,
-};
+const LOG_ANIMATION = {
+  /** Standard per-entry slide-in for normal interaction pace */
+  normal: {
+    initial: { opacity: 0, x: -4 },
+    animate: { opacity: 1, x: 0 },
+    transition: { duration: 0.15 },
+  },
+  /** Fast fade-only for burst streaming (>5 entries batched) */
+  burst: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.05 },
+  },
+} as const;
 
-const LOG_COLORS: Record<LogEntry['type'], string> = {
-  user: 'text-blue-400',
-  assistant: 'text-slate-200',
-  tool_use: 'text-amber-400',
-  tool_result: 'text-emerald-400',
-  system: 'text-slate-400',
-  error: 'text-red-400',
-};
+const STREAMING_INDICATOR_ANIMATION = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.15 },
+} as const;
 
 // ============ Component ============
 
@@ -93,59 +86,98 @@ export default function CompactTerminal({
   onQueueEmpty,
   autoStart,
   enabledSkills = [],
-  currentExecutionId: externalExecutionId,
-  currentStoredTaskId: externalStoredTaskId,
+  currentExecutionId,
+  currentStoredTaskId,
   onExecutionChange,
   onToolUse,
   onPromptSubmit,
   onExecutionComplete,
+  pendingPrompt,
+  onPendingPromptConsumed,
 }: CompactTerminalProps) {
-  // State
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [fileChanges, setFileChanges] = useState<FileChange[]>([]);
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<ExecutionResult | null>(null);
+  // ============ Execution Stream Hook ============
+
+  const stream = useExecutionStream({
+    instanceId,
+    projectPath,
+    enabledSkills,
+    taskQueue,
+    autoStart,
+    onTaskStart,
+    onTaskComplete,
+    onQueueEmpty,
+    currentExecutionId,
+    currentStoredTaskId,
+    onExecutionChange,
+    onExecutionComplete,
+    trackFileChanges: true,
+    buildPrompt: useCallback(
+      (prompt: string) => {
+        const basePrompt = buildBaseSystemPrompt(projectPath || undefined);
+        const contextLines: string[] = [];
+        if (actId) contextLines.push(`- Active act ID: \`${actId}\``);
+        if (sceneId) contextLines.push(`- Active scene ID: \`${sceneId}\``);
+        const contextBlock = contextLines.length
+          ? `\n## Current Selection\n${contextLines.join('\n')}\n\nUse these IDs for get_scene, list_beats(actId), etc. When the user says "this scene" or "this act", they mean these.\n\n`
+          : '';
+        const skillsPrefix =
+          enabledSkills.length > 0 ? buildSkillsPrompt(enabledSkills) : '';
+        return basePrompt + contextBlock + skillsPrefix + prompt;
+      },
+      [projectPath, actId, sceneId, enabledSkills],
+    ),
+    onToolUse: useCallback(
+      (event: import('./protocol').ToolUseEvent) => {
+        const intercepted = onToolUse?.(event.data.toolName, event.data.toolInput);
+        if (intercepted) {
+          return {
+            id: `ws-${Date.now()}`,
+            type: 'system' as const,
+            content: `[workspace] ${event.data.toolName}`,
+            timestamp: event.timestamp,
+            toolName: event.data.toolName,
+          };
+        }
+        return undefined;
+      },
+      [onToolUse],
+    ),
+  });
+
+  const {
+    logs,
+    fileChanges,
+    isStreaming,
+    sessionId,
+    lastResult,
+    lastBatchSize,
+    addLog,
+    executeTask,
+    connectToStream,
+    abort: handleAbort,
+    clear: handleClear,
+  } = stream;
+
+  // ============ Local UI State ============
+
   const [inputValue, setInputValue] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [isFixing, setIsFixing] = useState(false);
 
-  // Refs
   const logsEndRef = useRef<HTMLDivElement>(null);
   const logsContainerRef = useRef<HTMLDivElement>(null);
-  const eventSourceRef = useRef<EventSource | null>(null);
-  const pendingLogsRef = useRef<LogEntry[]>([]);
-  const rafIdRef = useRef<number | null>(null);
-  const currentTaskRef = useRef<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // ============ RAF-Batched Log Adding ============
+  // ============ Pending Prompt Injection ============
 
-  const flushPendingLogs = useCallback(() => {
-    if (pendingLogsRef.current.length > 0) {
-      const batch = [...pendingLogsRef.current];
-      pendingLogsRef.current = [];
-      setLogs((prev) => [...prev, ...batch]);
+  useEffect(() => {
+    if (pendingPrompt) {
+      setInputValue(pendingPrompt);
+      onPendingPromptConsumed?.();
+      textareaRef.current?.focus();
     }
-    rafIdRef.current = null;
-  }, []);
-
-  const addLog = useCallback(
-    (entry: LogEntry | null) => {
-      if (!entry) return;
-      pendingLogsRef.current.push(entry);
-      if (rafIdRef.current === null) {
-        rafIdRef.current = requestAnimationFrame(flushPendingLogs);
-      }
-    },
-    [flushPendingLogs]
-  );
-
-  const addFileChange = useCallback((fc: FileChange | null) => {
-    if (!fc) return;
-    setFileChanges((prev) => [...prev, fc]);
-  }, []);
+  }, [pendingPrompt, onPendingPromptConsumed]);
 
   // ============ Auto-scroll ============
 
@@ -172,204 +204,14 @@ export default function CompactTerminal({
     el.style.height = `${Math.min(el.scrollHeight, 100)}px`;
   }, []);
 
-  // ============ SSE Connection ============
-
-  const connectToStream = useCallback(
-    (streamUrl: string) => {
-      // Close existing connection
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
-
-      setIsStreaming(true);
-      setError(null);
-
-      const eventSource = new EventSource(streamUrl);
-      eventSourceRef.current = eventSource;
-
-      const protocol = createEventProtocol({
-        connected: (event) => {
-          if (event.data.sessionId) {
-            setSessionId(event.data.sessionId);
-          }
-        },
-        message: (event) => {
-          addLog(messageToLog(event));
-        },
-        tool_use: (event) => {
-          // V2 workspace interception
-          const intercepted = onToolUse?.(event.data.toolName, event.data.toolInput);
-          if (intercepted) {
-            addLog({
-              id: `ws-${Date.now()}`,
-              type: 'system',
-              content: `[workspace] ${event.data.toolName}`,
-              timestamp: event.timestamp,
-              toolName: event.data.toolName,
-            });
-            return;
-          }
-          addLog(toolUseToLog(event));
-          addFileChange(toolUseToFileChange(event, instanceId));
-        },
-        tool_result: (event) => {
-          addLog(toolResultToLog(event));
-        },
-        result: (event) => {
-          setLastResult(event.data);
-          setIsStreaming(false);
-          finalizeTask(true);
-          onExecutionComplete?.(true);
-
-          // Check for detected patterns after execution
-          fetch('/api/claude-terminal/improve')
-            .then(r => r.json())
-            .then(data => {
-              if (data.success && data.patterns?.length > 0) {
-                const count = data.patterns.length;
-                const highCount = data.patterns.filter(
-                  (p: { severity: string }) => p.severity === 'high'
-                ).length;
-                const summary = data.patterns
-                  .slice(0, 3)
-                  .map((p: { type: string; toolName?: string }) =>
-                    `${p.type}${p.toolName ? ` (${p.toolName})` : ''}`
-                  )
-                  .join(', ');
-                addLog({
-                  id: `signal-${Date.now()}`,
-                  type: 'system',
-                  content: `[signals] ${count} issue${count > 1 ? 's' : ''} detected${highCount ? ` (${highCount} high)` : ''}: ${summary}. Type /fix to resolve.`,
-                  timestamp: Date.now(),
-                });
-              }
-            })
-            .catch(() => {}); // Non-critical
-        },
-        error: (event) => {
-          setError(event.data.error);
-          addLog(errorToLog(event));
-          setIsStreaming(false);
-          finalizeTask(false);
-          onExecutionComplete?.(false);
-        },
-      });
-
-      eventSource.onmessage = (raw) => {
-        const event = decodeEvent(raw.data);
-        if (event) protocol.handle(event);
-      };
-
-      eventSource.onerror = () => {
-        setIsStreaming(false);
-        eventSource.close();
-        eventSourceRef.current = null;
-      };
-    },
-    [instanceId, addLog, addFileChange] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  // ============ Task Execution ============
-
-  const finalizeTask = useCallback(
-    (success: boolean) => {
-      const taskId = currentTaskRef.current;
-      if (taskId && onTaskComplete) {
-        onTaskComplete(taskId, success);
-      }
-      currentTaskRef.current = null;
-    },
-    [onTaskComplete]
-  );
-
-  const executeTask = useCallback(
-    async (prompt: string) => {
-      try {
-        // Build full prompt with base system instructions + context + skills prefix
-        const basePrompt = buildBaseSystemPrompt(projectPath || undefined);
-        const contextLines: string[] = [];
-        if (actId) contextLines.push(`- Active act ID: \`${actId}\``);
-        if (sceneId) contextLines.push(`- Active scene ID: \`${sceneId}\``);
-        const contextBlock = contextLines.length
-          ? `\n## Current Selection\n${contextLines.join('\n')}\n\nUse these IDs for get_scene, list_beats(actId), etc. When the user says "this scene" or "this act", they mean these.\n\n`
-          : '';
-        const skillsPrefix =
-          enabledSkills.length > 0 ? buildSkillsPrompt(enabledSkills) : '';
-        const fullPrompt = basePrompt + contextBlock + skillsPrefix + prompt;
-
-        const response = await fetch('/api/claude-terminal/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectPath,
-            projectId: projectPath || undefined, // projectPath carries the Story project ID
-            prompt: fullPrompt,
-            resumeSessionId: sessionId || undefined,
-          }),
-        });
-
-        if (!response.ok) {
-          const err = await response.json();
-          setError(err.error || 'Failed to start execution');
-          return;
-        }
-
-        const { streamUrl, executionId } = await response.json();
-
-        if (onExecutionChange) {
-          onExecutionChange(executionId, currentTaskRef.current);
-        }
-
-        connectToStream(streamUrl);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        setIsStreaming(false);
-      }
-    },
-    [
-      projectPath,
-      sessionId,
-      enabledSkills,
-      connectToStream,
-      onExecutionChange,
-    ]
-  );
-
-  // ============ Queue Processing ============
-
-  useEffect(() => {
-    if (!autoStart || !taskQueue || taskQueue.length === 0 || isStreaming) return;
-
-    const nextTask = taskQueue.find((t) => t.status === 'pending');
-    if (!nextTask) {
-      if (onQueueEmpty) onQueueEmpty();
-      return;
-    }
-
-    currentTaskRef.current = nextTask.id;
-    if (onTaskStart) onTaskStart(nextTask.id);
-
-    const prompt = nextTask.directPrompt || `Execute skill: ${nextTask.skillId}`;
-    executeTask(prompt);
-  }, [autoStart, taskQueue, isStreaming, executeTask, onTaskStart, onQueueEmpty]);
-
-  // ============ Reconnect to existing execution ============
-
-  useEffect(() => {
-    if (externalExecutionId && !isStreaming) {
-      const streamUrl = `/api/claude-terminal/stream?executionId=${externalExecutionId}`;
-      currentTaskRef.current = externalStoredTaskId || null;
-      connectToStream(streamUrl);
-    }
-  }, [externalExecutionId, externalStoredTaskId]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // ============ Self-Improvement (/fix) ============
 
   const executeImprovement = useCallback(async () => {
+    setIsFixing(true);
     try {
-      // Fetch current patterns
       const res = await fetch('/api/claude-terminal/improve');
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (!data.success || !data.patterns?.length) {
         addLog({
           id: `system-${Date.now()}`,
@@ -377,16 +219,15 @@ export default function CompactTerminal({
           content: '[signals] No unresolved patterns to fix.',
           timestamp: Date.now(),
         });
+        setIsFixing(false);
         return;
       }
 
-      // Build improvement prompt
       const { buildImprovementPrompt } = await import(
         '@/lib/claude-terminal/signals/improvement-prompt'
       );
       const improvementPrompt = buildImprovementPrompt(data.patterns);
 
-      // Send via normal query route — resumeSessionId preserves context
       const response = await fetch('/api/claude-terminal/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -399,30 +240,62 @@ export default function CompactTerminal({
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        setError(err.error || 'Failed to start improvement');
+        setIsFixing(false);
         return;
       }
 
-      const { streamUrl, executionId } = await response.json();
-      if (onExecutionChange) onExecutionChange(executionId, null);
+      const { streamUrl, executionId } = extractData<{ streamUrl: string; executionId: string }>(await response.json());
+      onExecutionChange?.(executionId, null);
       connectToStream(streamUrl);
 
-      // Mark patterns as resolved (optimistic)
       fetch('/api/claude-terminal/improve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           patternFingerprints: data.patterns.map(
-            (p: { fingerprint: string }) => p.fingerprint
+            (p: { fingerprint: string }) => p.fingerprint,
           ),
         }),
       }).catch(() => {});
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Improvement failed');
-      setIsStreaming(false);
+    } catch {
+      // Non-critical
+    } finally {
+      setIsFixing(false);
     }
-  }, [projectPath, sessionId, addLog, connectToStream, onExecutionChange]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [projectPath, sessionId, addLog, connectToStream, onExecutionChange]);
+
+  // ============ Signal Detection (after result) ============
+
+  useEffect(() => {
+    if (!lastResult || lastResult.isError) return;
+    // Check for detected patterns after execution completes
+    fetch('/api/claude-terminal/improve')
+      .then((r) => r.json())
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((raw) => extractData<any>(raw))
+      .then((data) => {
+        if (data.success && data.patterns?.length > 0) {
+          const signalPatterns: SignalPatternSummary[] = data.patterns.map(
+            (p: SignalPatternSummary) => ({
+              fingerprint: p.fingerprint,
+              type: p.type,
+              severity: p.severity,
+              count: p.count,
+              toolName: p.toolName,
+              suggestedFix: p.suggestedFix,
+            }),
+          );
+          addLog({
+            id: `signal-${Date.now()}`,
+            type: 'system',
+            content: `[signals] ${signalPatterns.length} issue(s) detected`,
+            timestamp: Date.now(),
+            signalPatterns,
+          });
+        }
+      })
+      .catch(() => {});
+  }, [lastResult, addLog]);
 
   // ============ Manual Input ============
 
@@ -430,8 +303,6 @@ export default function CompactTerminal({
     if (!inputValue.trim() || isStreaming) return;
 
     const prompt = inputValue.trim();
-
-    // Notify parent before execution (V2 workspace intent detection)
     onPromptSubmit?.(prompt);
 
     addLog({
@@ -446,41 +317,12 @@ export default function CompactTerminal({
       textareaRef.current.style.height = 'auto';
     }
 
-    // Handle /fix command — resume session to fix detected issues
     if (prompt === '/fix') {
       executeImprovement();
     } else {
       executeTask(prompt);
     }
   }, [inputValue, isStreaming, executeTask, executeImprovement, addLog, onPromptSubmit]);
-
-  const handleAbort = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-    setIsStreaming(false);
-  }, []);
-
-  const handleClear = useCallback(() => {
-    setLogs([]);
-    setFileChanges([]);
-    setError(null);
-    setLastResult(null);
-  }, []);
-
-  // ============ Cleanup ============
-
-  useEffect(() => {
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current);
-      }
-    };
-  }, []);
 
   // ============ Computed Values ============
 
@@ -517,32 +359,33 @@ export default function CompactTerminal({
   return (
     <div
       className={cn(
-        'flex flex-col bg-slate-950 border border-slate-800 rounded-lg overflow-hidden',
+        'flex flex-col border rounded-lg overflow-hidden',
+        'bg-[var(--ms-bg-base)] border-[var(--ms-border-subtle)]',
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border-b border-slate-800 text-xs">
-        <Terminal className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-slate-400 font-medium">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--ms-bg-surface)]/80 border-b border-[var(--ms-border-subtle)] text-xs">
+        <Terminal className="w-3.5 h-3.5 text-[var(--ms-text-muted)]" />
+        <span className="text-[var(--ms-text-muted)] font-medium">
           {title || 'CLI Terminal'}
         </span>
 
         <MCPConnectionIndicator />
 
         {sessionId && (
-          <span className="text-purple-400/70 font-mono text-xs">
+          <span className="text-[var(--ms-info)]/70 font-mono text-xs">
             {sessionId.slice(0, 6)}
           </span>
         )}
 
         {fileChangeStats.edits > 0 && (
-          <span className="text-amber-400/70 font-mono text-xs">
+          <span className="text-[var(--ms-warning)]/70 font-mono text-xs">
             {fileChangeStats.edits}E
           </span>
         )}
         {fileChangeStats.writes > 0 && (
-          <span className="text-emerald-400/70 font-mono text-xs">
+          <span className="text-[var(--ms-success)]/70 font-mono text-xs">
             {fileChangeStats.writes}W
           </span>
         )}
@@ -550,13 +393,13 @@ export default function CompactTerminal({
         <div className="flex-1" />
 
         {tokenDisplay && (
-          <span className="text-slate-400 font-mono text-xs">
+          <span className="text-[var(--ms-text-muted)] font-mono text-xs">
             {tokenDisplay}
           </span>
         )}
 
         {isStreaming && (
-          <Loader2 className="w-3 h-3 text-blue-400 animate-spin" />
+          <Loader2 className="w-3 h-3 ms-log-user animate-spin" />
         )}
 
         {!isStreaming && logs.some((l) => l.type === 'assistant') && (
@@ -564,9 +407,10 @@ export default function CompactTerminal({
             onClick={handleCopyOutput}
             className={cn(
               'transition-colors',
-              copied ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-300',
+              copied ? 'ms-log-result' : 'text-[var(--ms-text-muted)] hover:text-[var(--ms-text-secondary)]',
             )}
             title={copied ? 'Copied!' : 'Copy output'}
+            aria-label={copied ? 'Copied!' : 'Copy output'}
           >
             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
           </button>
@@ -574,8 +418,9 @@ export default function CompactTerminal({
 
         <button
           onClick={handleClear}
-          className="text-slate-400 hover:text-slate-300 transition-colors"
+          className="text-[var(--ms-text-muted)] hover:text-[var(--ms-text-secondary)] transition-colors"
           title="Clear logs"
+          aria-label="Clear logs"
         >
           <Trash2 className="w-3 h-3" />
         </button>
@@ -585,49 +430,102 @@ export default function CompactTerminal({
       <div
         ref={logsContainerRef}
         onScroll={handleScroll}
+        role="log"
+        aria-live="polite"
+        aria-label="Terminal output"
         className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5 min-h-[100px] max-h-[400px] font-mono text-xs"
       >
         {logs.length === 0 && !isStreaming && (
-          <div className="flex items-center justify-center h-full text-slate-400 text-sm">
-            Ready. Type a prompt or queue a skill.
+          <div className="flex flex-col items-center justify-center h-full gap-3 py-4">
+            <Terminal className="w-8 h-8 text-slate-700" />
+            <p className="text-sm text-slate-500">
+              Ready. Type a prompt or queue a skill.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                'Describe this scene in detail',
+                'List all characters',
+                'Summarize the story so far',
+              ].map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => {
+                    setInputValue(prompt);
+                    textareaRef.current?.focus();
+                  }}
+                  className="rounded-full bg-slate-800/50 px-3 py-1 text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-600 space-x-3">
+              <span><kbd className="text-slate-500">Enter</kbd> send</span>
+              <span><kbd className="text-slate-500">Shift+Enter</kbd> newline</span>
+              <span><kbd className="text-slate-500">/fix</kbd> resolve signals</span>
+            </p>
           </div>
         )}
 
-        {logs.map((log) => {
-          const Icon = LOG_ICONS[log.type];
-          const color = LOG_COLORS[log.type];
-          return (
+        <AnimatePresence mode="popLayout">
+          {logs.map((log) => {
+            if (log.signalPatterns && log.signalPatterns.length > 0) {
+              return (
+                <SignalNotificationCard
+                  key={log.id}
+                  patterns={log.signalPatterns}
+                  onFix={executeImprovement}
+                  isFixing={isFixing}
+                />
+              );
+            }
+
+            const Icon = LOG_ICONS[log.type];
+            const color = LOG_COLORS[log.type];
+            const anim = lastBatchSize > 5 ? LOG_ANIMATION.burst : LOG_ANIMATION.normal;
+            return (
+              <motion.div
+                key={log.id}
+                initial={anim.initial}
+                animate={anim.animate}
+                transition={anim.transition}
+                className="flex items-start gap-1.5 leading-relaxed"
+              >
+                <Icon className={cn('w-3 h-3 mt-0.5 shrink-0', color)} />
+                <span className={cn('break-words whitespace-pre-wrap', color)}>
+                  {log.toolName && (
+                    <span className="text-[var(--ms-warning)] mr-1">{log.toolName}</span>
+                  )}
+                  {log.type === 'assistant'
+                    ? <CLIMarkdown content={log.content} />
+                    : log.type === 'user'
+                      ? log.content
+                      : log.content.slice(0, 500)}
+                  {log.type !== 'user' && log.type !== 'assistant' && log.content.length > 500 && (
+                    <span className="text-[var(--ms-text-muted)]">...</span>
+                  )}
+                </span>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {isStreaming && (
             <motion.div
-              key={log.id}
-              initial={{ opacity: 0, x: -4 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.15 }}
-              className="flex items-start gap-1.5 leading-relaxed"
+              key="streaming-indicator"
+              initial={STREAMING_INDICATOR_ANIMATION.initial}
+              animate={STREAMING_INDICATOR_ANIMATION.animate}
+              exit={STREAMING_INDICATOR_ANIMATION.exit}
+              transition={STREAMING_INDICATOR_ANIMATION.transition}
+              className="flex items-center gap-1.5 ms-log-user opacity-60"
             >
-              <Icon className={cn('w-3 h-3 mt-0.5 shrink-0', color)} />
-              <span className={cn('break-words whitespace-pre-wrap', color)}>
-                {log.toolName && (
-                  <span className="text-amber-300 mr-1">{log.toolName}</span>
-                )}
-                {log.type === 'assistant'
-                  ? <CLIMarkdown content={log.content} />
-                  : log.type === 'user'
-                    ? log.content
-                    : log.content.slice(0, 500)}
-                {log.type !== 'user' && log.type !== 'assistant' && log.content.length > 500 && (
-                  <span className="text-slate-400">...</span>
-                )}
-              </span>
+              <Loader2 className="w-3 h-3 animate-spin" />
+              <span>Working...</span>
             </motion.div>
-          );
-        })}
-
-        {isStreaming && (
-          <div className="flex items-center gap-1.5 text-blue-400/60">
-            <Loader2 className="w-3 h-3 animate-spin" />
-            <span>Working...</span>
-          </div>
-        )}
+          )}
+        </AnimatePresence>
 
         <div ref={logsEndRef} />
       </div>
@@ -640,14 +538,15 @@ export default function CompactTerminal({
             logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
           }}
           className="absolute bottom-12 right-4 bg-slate-800 rounded-full p-1 shadow-lg border border-slate-700 text-slate-400 hover:text-slate-200"
+          aria-label="Scroll to bottom"
         >
           <ChevronDown className="w-3.5 h-3.5" />
         </button>
       )}
 
       {/* Input */}
-      <div className="flex items-end gap-2 px-3 py-1.5 border-t border-slate-800 bg-slate-900/50">
-        <span className="text-emerald-500 text-xs font-bold select-none pb-0.5">
+      <div className="flex items-end gap-2 px-3 py-1.5 border-t border-[var(--ms-border-subtle)] bg-[var(--ms-bg-surface)]/50">
+        <span className="text-[var(--ms-success)] text-xs font-bold select-none pb-0.5">
           {'>'}
         </span>
         <textarea
@@ -666,8 +565,9 @@ export default function CompactTerminal({
           placeholder={isStreaming ? 'Working...' : 'Type a prompt...'}
           disabled={isStreaming}
           rows={1}
+          aria-label="Terminal prompt input"
           className={cn(
-            'flex-1 bg-transparent text-slate-200 text-xs outline-none',
+            'flex-1 bg-transparent text-[var(--ms-text-primary)] text-xs outline-none',
             'placeholder-slate-600 disabled:opacity-50',
             'resize-none overflow-y-auto leading-relaxed'
           )}
@@ -676,8 +576,9 @@ export default function CompactTerminal({
         {isStreaming ? (
           <button
             onClick={handleAbort}
-            className="text-red-400 hover:text-red-300 transition-colors pb-0.5"
+            className="ms-log-error hover:opacity-80 transition-colors pb-0.5"
             title="Stop"
+            aria-label="Stop execution"
           >
             <Square className="w-3.5 h-3.5" />
           </button>
@@ -685,8 +586,9 @@ export default function CompactTerminal({
           <button
             onClick={handleSubmit}
             disabled={!inputValue.trim()}
-            className="text-slate-400 hover:text-slate-300 transition-colors disabled:opacity-30 pb-0.5"
+            className="text-[var(--ms-text-muted)] hover:text-[var(--ms-text-secondary)] transition-colors disabled:opacity-30 pb-0.5"
             title="Send"
+            aria-label="Send prompt"
           >
             <Send className="w-3.5 h-3.5" />
           </button>

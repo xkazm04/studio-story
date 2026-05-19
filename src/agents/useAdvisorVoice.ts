@@ -6,22 +6,22 @@
  * Bridges GeminiLiveClient (ephemeral token, AUDIO mode) with
  * AudioIOManager and the existing agentStore/workspaceStore.
  *
- * Features:
- * - Auto-connect on first voice interaction (no separate activation step)
- * - Push-to-talk via Space key (when no text input is focused)
- * - Idle disconnect after 2 min silence (prevents WebSocket drain)
- * - onTranscription callback for wiring to useMultimodalInput
- *
- * Tool calls (compose_workspace, suggest_action) work the same
- * as in HTTP mode --- handled via useAdvisor's shared handlers.
+ * The connection lifecycle (state machine, token refresh, idle disconnect,
+ * auto-reconnect, cleanup) is delegated to useConnectionLifecycle.
+ * This hook adds Gemini-specific wiring: tool calls, audio I/O,
+ * push-to-talk, and transcription bridging.
  */
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { GeminiLiveClient } from './GeminiLiveClient';
-import { AudioIOManager } from './AudioIOManager';
+import { GeminiLiveClient } from '@dzin/voice';
+import { AudioIOManager } from '@dzin/voice';
 import { useAgentStore } from './store/agentStore';
-import { useWorkspaceStore } from '@/workspace/store/workspaceStore';
+import { dispatchWorkspaceAction } from './dispatchWorkspaceAction';
 import type { AgentSuggestion } from './types';
+import { TOOL_NAMES } from './types';
+import { useConnectionLifecycle } from '@/lib/useConnectionLifecycle';
+import type { TokenData } from '@/lib/useConnectionLifecycle';
+import { extractData } from '@/app/utils/api';
 
 type VoiceName = 'Aoede' | 'Charon' | 'Fenrir' | 'Kore' | 'Puck';
 
@@ -62,37 +62,21 @@ export interface UseAdvisorVoiceOptions {
 }
 
 export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
-  const clientRef = useRef<GeminiLiveClient | null>(null);
+  const liveClientRef = useRef<GeminiLiveClient | null>(null);
   const audioRef = useRef<AudioIOManager | null>(null);
   const audioUnsubRef = useRef<(() => void) | null>(null);
-  const tokenRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const tokenExpiresAtRef = useRef<number | null>(null);
-
-  // Auto-connect state
-  const pendingRecordAfterConnectRef = useRef(false);
-
-  // Idle disconnect timer
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Push-to-talk state
   const [pushToTalkEnabled, setPushToTalkEnabled] = useState(true);
-
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceConnectionState, setVoiceConnectionState] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
   const [selectedVoice, setSelectedVoice] = useState<VoiceName>('Puck');
 
-  // Keep a ref to track isRecording for keyup handler (avoids stale closure)
+  // Ref mirrors for use in callbacks (avoids stale closures)
   const isRecordingRef = useRef(false);
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
-
-  // Keep a ref to voiceConnectionState for push-to-talk handler
-  const voiceConnectionStateRef = useRef(voiceConnectionState);
-  useEffect(() => {
-    voiceConnectionStateRef.current = voiceConnectionState;
-  }, [voiceConnectionState]);
 
   const addMessage = useAgentStore((s) => s.addMessage);
   const addSuggestion = useAgentStore((s) => s.addSuggestion);
@@ -106,50 +90,19 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
   // ─── Tool Call Handler (shared with HTTP mode logic) ──
 
   const handleToolCalls = useCallback((calls: Array<{ id: string; name: string; args: Record<string, unknown> }>) => {
-    const liveClient = clientRef.current;
+    const liveClient = liveClientRef.current;
 
     for (const call of calls) {
       switch (call.name) {
-        case 'compose_workspace': {
-          const { action, layout, panels: panelsJson, reasoning } = call.args as {
+        case TOOL_NAMES.COMPOSE_WORKSPACE: {
+          const { reasoning, ...workspacePayload } = call.args as {
             action: string;
             layout?: string;
             panels?: string | Array<{ type: string; role?: string; props?: Record<string, unknown> }>;
             reasoning?: string;
           };
 
-          let panels: Array<{ type: string; role?: string; props?: Record<string, unknown> }> = [];
-          if (panelsJson) {
-            try {
-              panels = typeof panelsJson === 'string' ? JSON.parse(panelsJson) : panelsJson;
-            } catch {
-              panels = [];
-            }
-          }
-
-          const store = useWorkspaceStore.getState();
-          const directives = panels.map((p) => ({
-            type: p.type as Parameters<typeof store.showPanels>[0][0]['type'],
-            role: p.role as 'primary' | 'secondary' | 'tertiary' | 'sidebar' | undefined,
-            props: p.props,
-          }));
-
-          switch (action) {
-            case 'replace':
-              store.replaceAllPanels(directives, layout as Parameters<typeof store.replaceAllPanels>[1]);
-              break;
-            case 'show':
-              store.showPanels(directives);
-              break;
-            case 'hide':
-              store.hidePanels(panels.map((p) => p.type) as Parameters<typeof store.hidePanels>[0]);
-              break;
-            case 'clear':
-              store.clearPanels();
-              break;
-          }
-
-          // Respond to the tool call so Gemini can continue
+          dispatchWorkspaceAction(workspacePayload);
           liveClient?.respondToToolCall(call.id, call.name, { success: true });
 
           if (reasoning) {
@@ -163,7 +116,7 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
           break;
         }
 
-        case 'suggest_action': {
+        case TOOL_NAMES.SUGGEST_ACTION: {
           const { content, compose_on_accept } = call.args as {
             content: string;
             compose_on_accept?: string;
@@ -182,7 +135,7 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
             id: nextId('sug'),
             content,
             action: composePayload
-              ? { type: 'compose_workspace', payload: composePayload }
+              ? { type: TOOL_NAMES.COMPOSE_WORKSPACE, payload: composePayload }
               : undefined,
             timestamp: Date.now(),
             dismissed: false,
@@ -194,28 +147,21 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
         }
 
         default:
-          // Unknown tool --- respond with error
           liveClient?.respondToToolCall(call.id, call.name, { error: `Unknown tool: ${call.name}` });
           break;
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addMessage, addSuggestion]);
 
-  // ─── Connect Voice ─────────────────────────────
+  // ─── Connection Lifecycle ─────────────────────────────
 
-  const connectVoice = useCallback(async (voice?: VoiceName) => {
-    if (voiceConnectionState !== 'disconnected') return;
-    setVoiceConnectionState('connecting');
-
-    const voiceToUse = voice ?? selectedVoice;
-    if (voice) setSelectedVoice(voice);
-
-    try {
-      // Fetch ephemeral token from server
+  const lifecycle = useConnectionLifecycle<GeminiLiveClient, VoiceName>({
+    fetchToken: async (voice) => {
       const res = await fetch('/api/agents/live-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ voice: voiceToUse }),
+        body: JSON.stringify({ voice }),
       });
 
       if (!res.ok) {
@@ -223,40 +169,21 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
         throw new Error((err as { error?: string }).error ?? `HTTP ${res.status}`);
       }
 
-      const data = await res.json() as { token: string; voice: string; expiresIn?: number; expiresAt?: string };
-      tokenExpiresAtRef.current = data.expiresAt
-        ? new Date(data.expiresAt).getTime()
-        : Date.now() + (data.expiresIn ?? 1800) * 1000;
+      const data = extractData<{ token: string; voice: string; expiresIn?: number; expiresAt?: string }>(await res.json());
+      const tokenData: TokenData = { token: data.token };
+      if (data.expiresAt) {
+        tokenData.expiresAt = new Date(data.expiresAt).getTime();
+      } else if (data.expiresIn) {
+        tokenData.expiresInMs = data.expiresIn * 1000;
+      }
+      return tokenData;
+    },
 
-      // Create Live client
-      const liveClient = new GeminiLiveClient();
-      clientRef.current = liveClient;
+    createClient: (voice) => {
+      const client = new GeminiLiveClient();
+      liveClientRef.current = client;
 
-      // Wire handlers
-      liveClient.onStateChange((state) => {
-        if (state === 'connected') setVoiceConnectionState('connected');
-        else if (state === 'disconnected') {
-          setVoiceConnectionState('disconnected');
-          fetch('/api/agents/live-token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ voice: voiceToUse }),
-          })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-            .then((fresh: { token: string; expiresIn?: number; expiresAt?: string }) => {
-              tokenExpiresAtRef.current = fresh.expiresAt
-                ? new Date(fresh.expiresAt).getTime()
-                : Date.now() + (fresh.expiresIn ?? 1800) * 1000;
-              liveClient.connect({ ephemeralToken: fresh.token, audioMode: true, voice: voiceToUse });
-            })
-            .catch(() => {
-              // keep disconnected state if refresh fails
-            });
-        }
-        else if (state === 'connecting' || state === 'reconnecting') setVoiceConnectionState('connecting');
-      });
-
-      liveClient.onMessage((text) => {
+      client.onMessage((text) => {
         addMessage({
           id: nextId('msg'),
           role: 'agent',
@@ -265,67 +192,62 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
         });
       });
 
-      liveClient.onToolCall(handleToolCalls);
+      client.onToolCall(handleToolCalls);
 
-      // Wire inputTranscription to onTranscription callback
-      liveClient.onInputTranscription((text) => {
+      client.onInputTranscription((text) => {
         onTranscriptionRef.current?.(text);
       });
 
-      // Wire audio output
+      // Create audio manager alongside the client
       const audio = new AudioIOManager();
       audioRef.current = audio;
 
-      liveClient.onAudio((base64Pcm) => {
+      client.onAudio((base64Pcm) => {
         audio.playAudioChunk(base64Pcm);
         setIsSpeaking(true);
-        // Reset speaking state after a short delay (audio buffer drains)
         setTimeout(() => setIsSpeaking(false), 500);
       });
 
-      // On setup complete, check if we should auto-start recording
-      liveClient.onSetupComplete(() => {
-        if (pendingRecordAfterConnectRef.current) {
-          pendingRecordAfterConnectRef.current = false;
-          // Trigger recording after connection is established
-          const audioMgr = audioRef.current;
-          if (audioMgr && liveClient.isConnected) {
-            audioMgr.startCapture().then(() => {
-              audioUnsubRef.current = audioMgr.onAudioChunk((base64Pcm) => {
-                liveClient.sendAudio(base64Pcm);
-              });
-              setIsRecording(true);
-            }).catch(() => {
-              // Mic access failed after auto-connect
-            });
-          }
-        }
-      });
+      return client;
+    },
 
-      // Connect with ephemeral token
-      liveClient.connect({ ephemeralToken: data.token, audioMode: true, voice: voiceToUse });
+    connectClient: (client, token, voice) => {
+      client.connect({ ephemeralToken: token, audioMode: true, voice });
+    },
 
-      if (tokenRefreshTimerRef.current) clearTimeout(tokenRefreshTimerRef.current);
-      const expiresAt = tokenExpiresAtRef.current;
-      if (expiresAt) {
-        const refreshIn = Math.max(5000, expiresAt - Date.now() - 5 * 60 * 1000);
-        tokenRefreshTimerRef.current = setTimeout(() => {
-          fetch('/api/agents/live-token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ voice: voiceToUse }),
-          })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-            .then((fresh: { token: string; expiresIn?: number; expiresAt?: string }) => {
-              tokenExpiresAtRef.current = fresh.expiresAt
-                ? new Date(fresh.expiresAt).getTime()
-                : Date.now() + (fresh.expiresIn ?? 1800) * 1000;
-            })
-            .catch(() => {
-              // ignore refresh failures; reconnect path will request another token
-            });
-        }, refreshIn);
-      }
+    destroyClient: (client) => {
+      client.disconnect();
+      liveClientRef.current = null;
+      audioRef.current?.destroy();
+      audioRef.current = null;
+      audioUnsubRef.current?.();
+      audioUnsubRef.current = null;
+      setIsSpeaking(false);
+      setIsRecording(false);
+    },
+
+    subscribeToState: (client, handler) => {
+      client.onStateChange(handler);
+    },
+
+    subscribeToReady: (client, handler) => {
+      client.onSetupComplete(handler);
+    },
+
+    idleTimeoutMs: IDLE_DISCONNECT_MS,
+    autoReconnect: true,
+  });
+
+  // ─── Connect Voice ─────────────────────────────
+
+  const connectVoice = useCallback(async (voice?: VoiceName) => {
+    if (lifecycle.connectionStateRef.current !== 'disconnected') return;
+
+    const voiceToUse = voice ?? selectedVoice;
+    if (voice) setSelectedVoice(voice);
+
+    try {
+      await lifecycle.connect(voiceToUse);
 
       addMessage({
         id: nextId('msg'),
@@ -335,8 +257,6 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
       });
     } catch (error) {
       console.error('[voice] Connection failed:', error);
-      pendingRecordAfterConnectRef.current = false;
-      setVoiceConnectionState('disconnected');
       addMessage({
         id: nextId('msg'),
         role: 'system',
@@ -344,32 +264,41 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
         timestamp: Date.now(),
       });
     }
-  }, [voiceConnectionState, selectedVoice, addMessage, handleToolCalls]);
+  }, [selectedVoice, addMessage, lifecycle]);
 
   // ─── Recording Toggle ─────────────────────────
 
   const startRecording = useCallback(async () => {
     // Clear idle timer when recording starts
-    if (idleTimerRef.current) {
-      clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = null;
-    }
+    lifecycle.resetIdleTimer();
 
     // Auto-connect: if disconnected, connect first then record after setup
-    if (voiceConnectionStateRef.current === 'disconnected') {
-      pendingRecordAfterConnectRef.current = true;
+    if (lifecycle.connectionStateRef.current === 'disconnected') {
+      lifecycle.onReadyRef.current = () => {
+        const audio = audioRef.current;
+        const client = liveClientRef.current;
+        if (audio && client?.isConnected) {
+          audio.startCapture().then(() => {
+            audioUnsubRef.current = audio.onAudioChunk((base64Pcm) => {
+              client.sendAudio(base64Pcm);
+            });
+            setIsRecording(true);
+          }).catch(() => {
+            // Mic access failed after auto-connect
+          });
+        }
+      };
       connectVoice();
       return;
     }
 
     const audio = audioRef.current;
-    const liveClient = clientRef.current;
+    const liveClient = liveClientRef.current;
     if (!audio || !liveClient?.isConnected || isRecording) return;
 
     try {
       await audio.startCapture();
 
-      // Send mic audio chunks to Gemini
       audioUnsubRef.current = audio.onAudioChunk((base64Pcm) => {
         liveClient.sendAudio(base64Pcm);
       });
@@ -384,7 +313,7 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
         timestamp: Date.now(),
       });
     }
-  }, [isRecording, addMessage, connectVoice]);
+  }, [isRecording, addMessage, connectVoice, lifecycle]);
 
   const stopRecording = useCallback(() => {
     const audio = audioRef.current;
@@ -396,49 +325,20 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
     setIsRecording(false);
 
     // Start idle disconnect timer
-    if (idleTimerRef.current) {
-      clearTimeout(idleTimerRef.current);
-    }
-    idleTimerRef.current = setTimeout(() => {
-      // Disconnect voice after idle period
-      clientRef.current?.disconnect();
-      clientRef.current = null;
-      audioRef.current?.destroy();
-      audioRef.current = null;
-      setVoiceConnectionState('disconnected');
-      setIsSpeaking(false);
-      if (tokenRefreshTimerRef.current) {
-        clearTimeout(tokenRefreshTimerRef.current);
-        tokenRefreshTimerRef.current = null;
-      }
-    }, IDLE_DISCONNECT_MS);
-  }, [isRecording]);
+    lifecycle.startIdleTimer();
+  }, [isRecording, lifecycle]);
 
   // ─── Disconnect Voice ─────────────────────────
 
   const disconnectVoice = useCallback(() => {
-    // Clear idle timer
-    if (idleTimerRef.current) {
-      clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = null;
-    }
     stopRecording();
-    clientRef.current?.disconnect();
-    clientRef.current = null;
-    audioRef.current?.destroy();
-    audioRef.current = null;
-    setVoiceConnectionState('disconnected');
-    setIsSpeaking(false);
-    if (tokenRefreshTimerRef.current) {
-      clearTimeout(tokenRefreshTimerRef.current);
-      tokenRefreshTimerRef.current = null;
-    }
-  }, [stopRecording]);
+    lifecycle.disconnect();
+  }, [stopRecording, lifecycle]);
 
   // ─── Send Text (fallback while in voice mode) ─
 
   const sendText = useCallback((text: string) => {
-    const liveClient = clientRef.current;
+    const liveClient = liveClientRef.current;
     if (!liveClient?.isConnected) return;
 
     addMessage({
@@ -458,8 +358,8 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code !== 'Space') return;
-      if (e.repeat) return; // Ignore held key repeats
-      if (isTypingInInput(e)) return; // Don't interfere with text inputs
+      if (e.repeat) return;
+      if (isTypingInInput(e)) return;
 
       e.preventDefault();
       startRecording();
@@ -481,20 +381,10 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
     };
   }, [pushToTalkEnabled, startRecording, stopRecording]);
 
-  // ─── Cleanup on unmount ───────────────────────
-
-  useEffect(() => {
-    return () => {
-      if (tokenRefreshTimerRef.current) clearTimeout(tokenRefreshTimerRef.current);
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      audioRef.current?.destroy();
-      clientRef.current?.disconnect();
-    };
-  }, []);
-
   return {
     // State
-    voiceConnectionState,
+    voiceConnectionState: lifecycle.connectionState,
+    voiceConnectionPhase: lifecycle.connectionPhase,
     isRecording,
     isSpeaking,
     selectedVoice,
@@ -510,6 +400,7 @@ export function useAdvisorVoice(options?: UseAdvisorVoiceOptions) {
     setPushToTalkEnabled,
 
     // Refs for external wiring
-    liveClientRef: clientRef,
+    liveClientRef,
+    audioRef,
   };
 }

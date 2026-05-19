@@ -147,16 +147,19 @@ describe('VisualNovelGenerator', () => {
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(makeData());
 
-    expect(result.format).toBe('visual-novel');
-    expect(result.blob).toBeInstanceOf(Blob);
-    expect(result.filename).toContain('.html');
-    expect(result.metadata.sceneCount).toBe(3);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.format).toBe('visual-novel');
+    expect(result.data.blob).toBeInstanceOf(Blob);
+    expect(result.data.filename).toContain('.html');
+    expect(result.data.metadata.sceneCount).toBe(3);
   });
 
   it('output HTML contains scene data as JSON embedded in script', async () => {
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(makeData());
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
 
     expect(html).toContain('scenes');
     expect(html).toContain('Opening');
@@ -166,7 +169,8 @@ describe('VisualNovelGenerator', () => {
   it('scenes with choices produce choice button rendering in the engine', async () => {
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(makeData());
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
 
     expect(html).toContain('Go left');
     expect(html).toContain('Go right');
@@ -176,7 +180,8 @@ describe('VisualNovelGenerator', () => {
   it('scenes without choices and not isEnding produce The End display', async () => {
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(makeData());
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
 
     // scene-3 is a dead-end (no choices, not isEnding) -- should auto-set isEnding
     expect(html).toContain('The End');
@@ -185,7 +190,8 @@ describe('VisualNovelGenerator', () => {
   it('scene transitions use fade effect', async () => {
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(makeData());
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
 
     expect(html).toContain('transition');
     expect(html).toContain('opacity');
@@ -210,7 +216,8 @@ describe('VisualNovelGenerator', () => {
 
     const gen = new VisualNovelGenerator();
     const result = await gen.generate(data);
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
 
     // Should contain the gradient SVG data URL
     expect(html).toContain('data:image/svg+xml');

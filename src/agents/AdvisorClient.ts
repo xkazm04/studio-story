@@ -7,16 +7,13 @@
  * Stateless: each call sends current context. No persistent connection.
  */
 
-import type { ConnectionState, SSEEvent } from './types';
+import type { CLIToolEvent, ConnectionState, SSEEvent, AdvisorError } from './types';
+import { isAdvisorError } from './types';
+import { extractData } from '@/app/utils/api';
 
 export interface AdvisorToolCall {
   name: string;
   args: Record<string, unknown>;
-}
-
-export interface CLIToolEvent {
-  toolName: string;
-  summary: string;
 }
 
 interface WorkspaceSnapshot {
@@ -33,7 +30,7 @@ type MessageHandler = (text: string) => void;
 type StreamingTextHandler = (chunk: string, accumulated: string) => void;
 type StateHandler = (state: ConnectionState) => void;
 type ProcessingHandler = (isProcessing: boolean, status?: string | null) => void;
-type ErrorHandler = (errorMessage: string) => void;
+type ErrorHandler = (error: AdvisorError) => void;
 type RateLimitHandler = (readyAt: number | null) => void;
 type RetryHandler = (attempt: number, maxRetries: number) => void;
 
@@ -117,7 +114,7 @@ export class AdvisorClient {
     this.setState('connecting');
     try {
       const res = await fetch('/api/agents/advisor');
-      const data = await res.json();
+      const data = extractData<{ available?: boolean }>(await res.json());
       this._available = !!data.available;
 
       if (this._available) {
@@ -204,7 +201,7 @@ export class AdvisorClient {
       this.history.push({ role: 'user', text: userMessage });
     }
 
-    let lastError: Error | null = null;
+    let lastError: AdvisorError | null = null;
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
         // Emit retry progress for attempts > 0
@@ -221,8 +218,15 @@ export class AdvisorClient {
         });
 
         if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error((errData as { error?: string }).error ?? `HTTP ${res.status}`);
+          const errData = await res.json().catch(() => ({})) as { error?: string; advisorError?: AdvisorError };
+          if (errData.advisorError && isAdvisorError(errData.advisorError)) {
+            throw errData.advisorError;
+          }
+          throw {
+            code: 'GEMINI_ERROR' as const,
+            message: errData.error ?? `HTTP ${res.status}`,
+            httpStatus: res.status,
+          } satisfies AdvisorError;
         }
 
         // Stream newline-delimited JSON events from SSE response
@@ -232,11 +236,13 @@ export class AdvisorClient {
         this.emitProcessing(false);
         return; // Success
       } catch (error) {
-        if ((error as Error).name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
           this.emitProcessing(false);
           return;
         }
-        lastError = error as Error;
+        lastError = isAdvisorError(error)
+          ? error
+          : { code: 'GEMINI_ERROR', message: error instanceof Error ? error.message : 'Unknown error' };
         if (attempt < MAX_RETRIES) {
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
         }
@@ -245,10 +251,9 @@ export class AdvisorClient {
 
     // All retries failed — emit error via dedicated handler
     this.emitProcessing(false);
-    console.error('[advisor] Failed after retries:', lastError?.message);
-    this.onErrorHandlers.forEach(h =>
-      h(lastError?.message ?? 'unknown error')
-    );
+    const finalError: AdvisorError = lastError ?? { code: 'GEMINI_ERROR', message: 'Unknown error' };
+    console.error('[advisor] Failed after retries:', finalError.message);
+    this.onErrorHandlers.forEach(h => h(finalError));
   }
 
   // ─── Stream Consumer ────────────────────────────
@@ -313,7 +318,13 @@ export class AdvisorClient {
               break;
 
             case 'error':
-              throw new Error(event.error ?? 'Stream error');
+              if (event.advisorError && isAdvisorError(event.advisorError)) {
+                throw event.advisorError;
+              }
+              throw {
+                code: 'STREAM_CORRUPTED' as const,
+                message: event.error ?? 'Stream error',
+              } satisfies AdvisorError;
 
             case 'done':
               // Stream complete — emit final accumulated text as a message

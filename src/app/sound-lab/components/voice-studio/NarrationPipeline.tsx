@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   BookOpen, Play, Send, Loader2, ChevronDown, ChevronRight, Square,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import ScriptEditor from './ScriptEditor';
+import SegmentedProgress from '@/app/features/voice/components/SegmentedProgress';
 import TakesModal from './TakesModal';
 import { useNarrationBatch } from '../../hooks/useNarrationBatch';
 import type { NarrationResult, ScriptLineTake } from '../../types';
@@ -23,6 +24,7 @@ export default function NarrationPipeline({
 }: NarrationPipelineProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [takesLineId, setTakesLineId] = useState<string | null>(null);
+  const [genStartTime, setGenStartTime] = useState<number | null>(null);
   const {
     lines,
     setLines,
@@ -33,6 +35,15 @@ export default function NarrationPipeline({
     cancel,
     result,
   } = useNarrationBatch();
+
+  // Track generation start time for ETA calculation
+  useEffect(() => {
+    if (isGenerating && genStartTime === null) {
+      setGenStartTime(Date.now());
+    } else if (!isGenerating && genStartTime !== null) {
+      setGenStartTime(null);
+    }
+  }, [isGenerating, genStartTime]);
 
   const castingCount = Object.keys(castings).length;
   const hasCastings = castingCount > 0;
@@ -133,28 +144,27 @@ export default function NarrationPipeline({
             onOpenTakes={setTakesLineId}
           />
 
+          {/* Segmented Progress */}
+          {isGenerating && (
+            <SegmentedProgress
+              lines={lines}
+              generationStartTime={genStartTime}
+              doneCount={progress.done}
+              totalCount={progress.total}
+            />
+          )}
+
           {/* Generate / Cancel */}
           <div className="flex items-center gap-2">
             {isGenerating ? (
-              <>
-                <button
-                  onClick={cancel}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium
-                    bg-red-600/80 text-white hover:bg-red-500 transition-colors"
-                >
-                  <Square className="w-3 h-3" />
-                  Cancel
-                </button>
-                <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300"
-                    style={{ width: progress.total > 0 ? `${(progress.done / progress.total) * 100}%` : '0%' }}
-                  />
-                </div>
-                <span className="text-sm text-orange-400 font-mono shrink-0">
-                  {progress.done}/{progress.total}
-                </span>
-              </>
+              <button
+                onClick={cancel}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium
+                  bg-red-600/80 text-white hover:bg-red-500 transition-colors"
+              >
+                <Square className="w-3 h-3" />
+                Cancel
+              </button>
             ) : (
               <button
                 onClick={handleGenerateAll}

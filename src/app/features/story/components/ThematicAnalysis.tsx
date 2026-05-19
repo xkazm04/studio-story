@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { getScoreColor, SCORE_3TIER_TEXT, SCORE_3TIER_STROKE, SCORE_3TIER_BG } from '@/lib/scoreColors';
 import type {
   Theme,
   ThemeCoverage,
@@ -64,17 +65,8 @@ function ScoreRing({
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (score / 100) * circumference;
 
-  const getScoreColor = (s: number) => {
-    if (s >= 75) return 'text-emerald-400';
-    if (s >= 50) return 'text-amber-400';
-    return 'text-red-400';
-  };
-
-  const getStrokeColor = (s: number) => {
-    if (s >= 75) return 'stroke-emerald-400';
-    if (s >= 50) return 'stroke-amber-400';
-    return 'stroke-red-400';
-  };
+  const scoreTextColor = (s: number) => getScoreColor(s, SCORE_3TIER_TEXT);
+  const scoreStrokeColor = (s: number) => getScoreColor(s, SCORE_3TIER_STROKE);
 
   return (
     <div className="flex flex-col items-center">
@@ -89,7 +81,7 @@ function ScoreRing({
             cy={size / 2}
           />
           <motion.circle
-            className={cn('transition-colors', getStrokeColor(score))}
+            className={cn('transition-colors', scoreStrokeColor(score))}
             fill="none"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
@@ -105,7 +97,7 @@ function ScoreRing({
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={cn('text-xl font-bold', getScoreColor(score))}>
+          <span className={cn('text-xl font-bold', scoreTextColor(score))}>
             {score}
           </span>
         </div>
@@ -455,12 +447,6 @@ function ComponentScoreBar({
   label: string;
   score: number;
 }) {
-  const getScoreColor = (s: number) => {
-    if (s >= 75) return 'bg-emerald-500';
-    if (s >= 50) return 'bg-amber-500';
-    return 'bg-red-500';
-  };
-
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-sm">
@@ -469,7 +455,7 @@ function ComponentScoreBar({
       </div>
       <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
         <motion.div
-          className={cn('h-full rounded-full', getScoreColor(score))}
+          className={cn('h-full rounded-full', getScoreColor(score, SCORE_3TIER_BG))}
           initial={{ width: 0 }}
           animate={{ width: `${score}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}

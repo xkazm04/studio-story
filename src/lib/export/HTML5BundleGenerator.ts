@@ -8,7 +8,8 @@
 
 import type { StoryExportData, StoryExportScene } from './types';
 import { slugify } from './types';
-import type { ExportResult } from './index';
+import type { ExportResult, ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
 import { generateReaderCSS } from './templates/reader-styles';
 import { generateReaderBody, generateReaderHTML, generateReaderJS } from './templates/html5-reader';
 import type { RenderedScene } from './templates/html5-reader';
@@ -21,36 +22,44 @@ export class HTML5BundleGenerator {
   /**
    * Generate a self-contained HTML5 bundle from story export data.
    */
-  async generate(data: StoryExportData): Promise<ExportResult> {
-    // Render each scene with inlined assets
-    const renderedScenes: RenderedScene[] = await Promise.all(
-      data.scenes.map((scene) => this.renderScene(scene))
-    );
+  async generate(data: StoryExportData): Promise<ExportResult<ExportData>> {
+    try {
+      // Render each scene with inlined assets
+      const renderedScenes: RenderedScene[] = await Promise.all(
+        data.scenes.map((scene) => this.renderScene(scene))
+      );
 
-    // Assemble template parts
-    const css = generateReaderCSS(data.artStyle);
-    const body = generateReaderBody(renderedScenes);
-    const js = generateReaderJS(data.scenes.length);
-    const html = generateReaderHTML(data.title, css, body, js);
+      // Assemble template parts
+      const css = generateReaderCSS(data.artStyle);
+      const body = generateReaderBody(renderedScenes);
+      const js = generateReaderJS(data.scenes.length);
+      const html = generateReaderHTML(data.title, css, body, js);
 
-    // Build result
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const filename = `${slugify(data.title) || 'story'}.html`;
+      // Build result
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const filename = `${slugify(data.title) || 'story'}.html`;
 
-    const wordCount = data.scenes.reduce(
-      (sum, s) => sum + s.content.split(/\s+/).filter(Boolean).length,
-      0
-    );
+      const wordCount = data.scenes.reduce(
+        (sum, s) => sum + s.content.split(/\s+/).filter(Boolean).length,
+        0
+      );
 
-    return {
-      blob,
-      filename,
-      format: 'html5',
-      metadata: {
-        sceneCount: data.scenes.length,
-        wordCount,
-      },
-    };
+      return exportSuccess({
+        blob,
+        filename,
+        format: 'html5',
+        metadata: {
+          sceneCount: data.scenes.length,
+          wordCount,
+        },
+      });
+    } catch (err) {
+      return exportFailure(
+        'GENERATION_FAILED',
+        err instanceof Error ? err.message : 'HTML5 bundle generation failed',
+        err,
+      );
+    }
   }
 
   // --------------------------------------------------------------------------

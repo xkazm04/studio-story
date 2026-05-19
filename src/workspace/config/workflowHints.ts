@@ -44,8 +44,7 @@ export const TOOL_PANEL_HINTS: Record<string, PanelDirective[]> = {
 
   // Voice/narration — narrate scenes, assign voices, manage voice pipeline
   generate_scene_narration: [
-    { type: 'narration', role: 'primary' },
-    { type: 'script-dialog', role: 'secondary' },
+    { type: 'audio-production', role: 'primary' },
   ],
   check_voice_assignments: [
     { type: 'voice-casting', role: 'primary' },
@@ -58,42 +57,12 @@ export const TOOL_PANEL_HINTS: Record<string, PanelDirective[]> = {
     { type: 'voice-casting', role: 'primary' },
     { type: 'character-detail', role: 'secondary' },
   ],
-};
 
-/**
- * Narration composition patterns — maps natural language intents
- * to recommended panel layouts for voice/narration workflows.
- *
- * Used by the advisor system instruction and TOOL_PANEL_HINTS for
- * contextual panel suggestions when the user works with voice features.
- */
-export const NARRATION_COMPOSITION_PATTERNS = {
-  'narrate this scene': {
-    layout: 'split-2' as const,
-    panels: [
-      { type: 'narration' as WorkspacePanelType, role: 'primary' as const },
-      { type: 'script-dialog' as WorkspacePanelType, role: 'secondary' as const },
-    ],
-    description: 'Narration pipeline alongside script dialogue view',
-  },
-  'assign voices': {
-    layout: 'split-2' as const,
-    panels: [
-      { type: 'voice-casting' as WorkspacePanelType, role: 'primary' as const },
-      { type: 'voice-manager' as WorkspacePanelType, role: 'secondary' as const },
-    ],
-    description: 'Voice casting with voice library browser',
-  },
-  'record audio drama': {
-    layout: 'triptych' as const,
-    panels: [
-      { type: 'narration' as WorkspacePanelType, role: 'primary' as const },
-      { type: 'voice-performance' as WorkspacePanelType, role: 'secondary' as const },
-      { type: 'script-dialog' as WorkspacePanelType, role: 'tertiary' as const },
-    ],
-    description: 'Full audio drama workspace: narration + performance controls + script',
-  },
-} as const;
+  // Prompt templates — show writing desk as closest equivalent
+  save_prompt_template: [{ type: 'writing-desk', role: 'primary' }],
+  list_prompt_templates: [{ type: 'writing-desk', role: 'primary' }],
+  fill_prompt_template: [{ type: 'writing-desk', role: 'primary' }],
+};
 
 export const TOOL_PRIMARY_PANEL_TYPES: Record<string, WorkspacePanelType[]> = Object.fromEntries(
   Object.entries(TOOL_PANEL_HINTS).map(([tool, directives]) => [tool, directives.map((d) => d.type)])

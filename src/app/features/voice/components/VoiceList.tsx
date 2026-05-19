@@ -55,7 +55,7 @@ const VoiceList = ({ projectId }: VoiceListProps) => {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="inline-block h-2 w-2 rounded-full animate-pulse bg-emerald-500" />
+          <span className="inline-block h-2 w-2 rounded-full animate-pulse bg-voice-primary" />
           <h2 className="ms-h2">
             Project Voices ({voices.length})
           </h2>

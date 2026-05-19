@@ -7,10 +7,11 @@
  * with specialized fiction writing prompts.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { assembleStoryContext, formatStoryContextForPrompt } from '@/lib/ai/storyContext';
 import { getSystemPrompt, type WritingToolType, type ContinueLength } from '@/lib/ai/writingPrompts';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,8 +57,7 @@ export function _resetClient() {
 
 // ── Route Handler ────────────────────────────────────────────────────────────
 
-export async function POST(request: Request) {
-  try {
+export const POST = withApiHandler('POST /api/ai/writing', async (request: NextRequest) => {
     const body: WritingRequest = await request.json();
     const { projectId, sceneId, tool, selectedText, selectionFrom, selectionTo, options } = body;
 
@@ -147,11 +147,4 @@ export async function POST(request: Request) {
       tool,
       originalText: selectedText ?? '',
     });
-  } catch (error) {
-    console.error('Writing API error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to process writing request' },
-      { status: 500 }
-    );
-  }
-}
+});

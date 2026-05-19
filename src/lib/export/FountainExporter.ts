@@ -12,36 +12,18 @@
  * @see https://fountain.io/syntax
  */
 
+import type { FountainElementType, LegacyExportResult, ScriptBlock } from './types';
+import { sanitizeFilename } from './utils';
+
+// Re-export for backward compatibility
+export type { FountainElementType } from './types';
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export type FountainElementType =
-  | 'title-page'
-  | 'scene-heading'
-  | 'action'
-  | 'character'
-  | 'dialogue'
-  | 'parenthetical'
-  | 'transition'
-  | 'centered'
-  | 'section'
-  | 'synopsis'
-  | 'note'
-  | 'boneyard'
-  | 'page-break'
-  | 'line-break';
-
-export interface FountainElement {
-  type: FountainElementType;
-  content: string;
-  metadata?: {
-    dual?: boolean;           // Dual dialogue
-    forced?: boolean;         // Forced element type
-    sceneNumber?: string;     // Scene number for production scripts
-    level?: number;           // Section level (1-6)
-  };
-}
+/** @deprecated Use ScriptBlock from './types' directly. */
+export type FountainElement = ScriptBlock;
 
 export interface FountainTitlePage {
   title: string;
@@ -80,13 +62,8 @@ export interface FountainExportOptions {
   variant: 'standard' | 'minimal' | 'verbose';
 }
 
-export interface FountainExportResult {
-  content: string;
-  filename: string;
-  elementCount: number;
-  sceneCount: number;
-  pageEstimate: number;
-}
+/** @deprecated Use ExportData from './result' directly */
+export type FountainExportResult = LegacyExportResult;
 
 // ============================================================================
 // Constants
@@ -172,11 +149,13 @@ export class FountainExporter {
     return {
       content,
       filename: titlePage?.title
-        ? this.sanitizeFilename(titlePage.title) + '.fountain'
+        ? sanitizeFilename(titlePage.title) + '.fountain'
         : 'screenplay.fountain',
-      elementCount: elements.length,
-      sceneCount,
-      pageEstimate,
+      metadata: {
+        elementCount: elements.length,
+        sceneCount,
+        pageEstimate,
+      },
     };
   }
 
@@ -420,12 +399,6 @@ export class FountainExporter {
     return `/*\n${element.content}\n*/\n`;
   }
 
-  private sanitizeFilename(name: string): string {
-    return name
-      .replace(/[^a-zA-Z0-9\s-_]/g, '')
-      .replace(/\s+/g, '_')
-      .toLowerCase();
-  }
 
   /**
    * Update options
@@ -675,44 +648,7 @@ export class FountainParser {
 // Utility Functions
 // ============================================================================
 
-/**
- * Convert script blocks to Fountain elements
- */
-export function convertToFountainElements(
-  blocks: Array<{
-    type: string;
-    content: string;
-    speaker?: string;
-  }>
-): FountainElement[] {
-  const elements: FountainElement[] = [];
-
-  for (const block of blocks) {
-    switch (block.type) {
-      case 'scene-header':
-        elements.push({ type: 'scene-heading', content: block.content });
-        break;
-      case 'description':
-      case 'content':
-        elements.push({ type: 'action', content: block.content });
-        break;
-      case 'dialogue':
-        if (block.speaker) {
-          elements.push({ type: 'character', content: block.speaker });
-        }
-        elements.push({ type: 'dialogue', content: block.content });
-        break;
-      case 'actor':
-        elements.push({ type: 'character', content: block.content });
-        break;
-      case 'direction':
-        elements.push({ type: 'parenthetical', content: block.content });
-        break;
-    }
-  }
-
-  return elements;
-}
+// convertToFountainElements removed — use convertToScriptBlocks from './types'
 
 /**
  * Validate Fountain syntax

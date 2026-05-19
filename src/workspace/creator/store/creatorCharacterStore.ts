@@ -1,9 +1,29 @@
 'use client';
 
+/**
+ * Character creator store — selection state for the character appearance spec.
+ *
+ * This store follows the generic FacetedSpecBuilder pattern (see `@/lib/faceted-spec`).
+ * New domains (scene environments, art styles, voice profiles) should use
+ * `createFacetedSpecStore(config)` directly instead of duplicating this store.
+ *
+ * Selectors delegate to the generic `createFacetedSpecSelectors` to prove
+ * parity between the domain-specific and generic implementations.
+ */
+
 import { create } from 'zustand';
+import { createFacetedSpecSelectors } from '@/lib/faceted-spec';
+import type { FacetedSpecState } from '@/lib/faceted-spec';
+import { characterSpecConfig } from '../characterSpecConfig';
 import type { CategoryId, CategorySelection } from '../types';
-import { CATEGORIES, PROMPT_ORDER, getCategoryById } from '../constants/categories';
+import { CATEGORIES } from '../constants/categories';
 import { getOptionsForCategory } from '../constants/options';
+
+// ── Generic selectors bound to character config ─────────────────────
+
+const _genericSelectors = createFacetedSpecSelectors(characterSpecConfig);
+
+// ── Initial state ───────────────────────────────────────────────────
 
 const createInitialSelections = (): Record<CategoryId, CategorySelection> => {
   const selections = {} as Record<CategoryId, CategorySelection>;
@@ -17,6 +37,8 @@ const createInitialSelections = (): Record<CategoryId, CategorySelection> => {
   });
   return selections;
 };
+
+// ── Types ───────────────────────────────────────────────────────────
 
 interface CliCategoryUpdate {
   optionId?: number | string;
@@ -35,6 +57,8 @@ interface CreatorCharacterState {
   applyCliUpdate: (update: Record<string, CliCategoryUpdate>) => void;
   loadFromCharacter: (name: string, appearance: Record<string, string>) => void;
 }
+
+// ── Store ───────────────────────────────────────────────────────────
 
 export const useCreatorCharacterStore = create<CreatorCharacterState>((set) => ({
   name: 'Unnamed Character',
@@ -101,7 +125,7 @@ export const useCreatorCharacterStore = create<CreatorCharacterState>((set) => (
     }),
 
   loadFromCharacter: (name, appearance) =>
-    set((state) => {
+    set(() => {
       const next = { ...createInitialSelections() };
 
       for (const [catId, text] of Object.entries(appearance)) {
@@ -129,35 +153,37 @@ export const useCreatorCharacterStore = create<CreatorCharacterState>((set) => (
     }),
 }));
 
-// Derived selectors
-export const selectComposedPrompt = (state: CreatorCharacterState): string => {
-  const parts: string[] = ['A character portrait of'];
+// ── Helpers: convert character state → generic FacetedSpecState ─────
 
-  PROMPT_ORDER.forEach((categoryId) => {
-    const selection = state.selections[categoryId];
-    if (!selection) return;
+function toFacetState(state: CreatorCharacterState): FacetedSpecState {
+  const selections: FacetedSpecState['selections'] = {};
+  for (const [dimId, sel] of Object.entries(state.selections)) {
+    selections[dimId] = {
+      dimensionId: dimId,
+      optionId: sel.optionId,
+      customPrompt: sel.customPrompt,
+      isCustom: sel.isCustom,
+    };
+  }
+  return {
+    label: state.name,
+    selections,
+    activeDimensionId: null,
+    setSelection: () => {},
+    setCustomPrompt: () => {},
+    clearCustomPrompt: () => {},
+    setLabel: () => {},
+    setActiveDimension: () => {},
+    reset: () => {},
+    applyBulkUpdate: () => {},
+    loadFromData: () => {},
+  };
+}
 
-    if (selection.isCustom && selection.customPrompt) {
-      parts.push(selection.customPrompt);
-      return;
-    }
+// ── Selectors (delegate to generic implementations) ─────────────────
 
-    if (selection.optionId !== null) {
-      const options = getOptionsForCategory(categoryId);
-      const option = options.find((o) => o.id === selection.optionId);
-      if (option && option.promptValue) {
-        const category = getCategoryById(categoryId);
-        if (category) {
-          parts.push(category.promptTemplate.replace('{value}', option.promptValue));
-        }
-      }
-    }
-  });
-
-  return parts.join(', ') + '.';
-};
+export const selectComposedPrompt = (state: CreatorCharacterState): string =>
+  _genericSelectors.selectComposedPrompt(toFacetState(state));
 
 export const selectActiveSelectionCount = (state: CreatorCharacterState): number =>
-  Object.values(state.selections).filter(
-    (s) => s.optionId !== null || s.isCustom
-  ).length;
+  _genericSelectors.selectActiveSelectionCount(toFacetState(state));

@@ -5,129 +5,36 @@
  * and twists based on story context for creative exploration.
  */
 
-// ============================================================================
-// Types
-// ============================================================================
+import type {
+  IdeaType,
+  IdeaImpact,
+  IdeaTone,
+  BrainstormStoryContext,
+  GeneratedIdea,
+  WhatIfScenario,
+  ConflictEscalation,
+  PlotTwist,
+  BrainstormSession,
+  GenerationOptions,
+} from '@/app/features/story/types/ai-writing';
+import { templateManager } from '@/lib/templates';
 
-export type IdeaType =
-  | 'plot-direction'
-  | 'character-decision'
-  | 'conflict-escalation'
-  | 'twist'
-  | 'what-if'
-  | 'theme-exploration'
-  | 'setting-change'
-  | 'relationship-shift';
+// Re-export all types for backwards compatibility.
+// The canonical definitions now live in @/app/features/story/types/ai-writing.
+export type {
+  IdeaType,
+  IdeaImpact,
+  IdeaTone,
+  GeneratedIdea,
+  WhatIfScenario,
+  ConflictEscalation,
+  PlotTwist,
+  BrainstormSession,
+  GenerationOptions,
+} from '@/app/features/story/types/ai-writing';
 
-export type IdeaImpact = 'minor' | 'moderate' | 'major' | 'transformative';
-
-export type IdeaTone =
-  | 'dramatic'
-  | 'comedic'
-  | 'tragic'
-  | 'romantic'
-  | 'mysterious'
-  | 'action'
-  | 'contemplative';
-
-export interface StoryContext {
-  currentSceneTitle?: string;
-  currentSceneSummary?: string;
-  characters?: Array<{
-    id: string;
-    name: string;
-    role?: string;
-    traits?: string[];
-  }>;
-  recentEvents?: string[];
-  activeConflicts?: string[];
-  themes?: string[];
-  genre?: string;
-  mood?: string;
-}
-
-export interface GeneratedIdea {
-  id: string;
-  type: IdeaType;
-  title: string;
-  description: string;
-  impact: IdeaImpact;
-  tone: IdeaTone;
-  relevantCharacters?: string[];
-  potentialConsequences?: string[];
-  followUpQuestions?: string[];
-  explorationPrompts?: string[];
-  createdAt: number;
-  explored: boolean;
-  saved: boolean;
-  rating?: 1 | 2 | 3 | 4 | 5;
-}
-
-export interface WhatIfScenario {
-  id: string;
-  premise: string;
-  description: string;
-  possibleOutcomes: Array<{
-    outcome: string;
-    likelihood: 'likely' | 'possible' | 'unlikely';
-    tone: IdeaTone;
-  }>;
-  affectedCharacters: string[];
-  storyImplications: string[];
-  explorationDepth: number; // How many levels deep this was explored
-  parentScenarioId?: string;
-  childScenarioIds: string[];
-  createdAt: number;
-}
-
-export interface ConflictEscalation {
-  id: string;
-  originalConflict: string;
-  escalationLevel: 1 | 2 | 3 | 4 | 5;
-  escalatedDescription: string;
-  newStakes: string[];
-  characterReactions: Array<{
-    characterName: string;
-    reaction: string;
-  }>;
-  potentialResolutions: string[];
-  createdAt: number;
-}
-
-export interface PlotTwist {
-  id: string;
-  twistType: 'revelation' | 'betrayal' | 'reversal' | 'discovery' | 'arrival' | 'departure';
-  title: string;
-  description: string;
-  setup: string; // What needs to be established before the twist
-  payoff: string; // The impact of the twist
-  foreshadowingHints: string[];
-  affectedCharacters: string[];
-  impact: IdeaImpact;
-  createdAt: number;
-}
-
-export interface BrainstormSession {
-  id: string;
-  name: string;
-  context: StoryContext;
-  ideas: GeneratedIdea[];
-  scenarios: WhatIfScenario[];
-  escalations: ConflictEscalation[];
-  twists: PlotTwist[];
-  savedIdeas: string[]; // IDs of saved ideas
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface GenerationOptions {
-  count?: number;
-  types?: IdeaType[];
-  tones?: IdeaTone[];
-  minImpact?: IdeaImpact;
-  focusCharacters?: string[];
-  avoidClichés?: boolean;
-}
+// Re-export BrainstormStoryContext as StoryContext for backwards compatibility
+export type { BrainstormStoryContext as StoryContext } from '@/app/features/story/types/ai-writing';
 
 // ============================================================================
 // Constants
@@ -207,6 +114,23 @@ const WHAT_IF_TEMPLATES = [
 ];
 
 // ============================================================================
+// Brainstorm Template Registration
+// ============================================================================
+
+const BRAINSTORM_TEMPLATE_PREFIX = 'brainstorm_';
+
+const BRAINSTORM_TEMPLATE_CONTENT: Record<IdeaType, string> = {
+  'plot-direction': PLOT_DIRECTION_TEMPLATES.join('\n'),
+  'character-decision': CHARACTER_DECISION_TEMPLATES.join('\n'),
+  'conflict-escalation': CONFLICT_TEMPLATES.join('\n'),
+  'twist': TWIST_TEMPLATES.join('\n'),
+  'what-if': WHAT_IF_TEMPLATES.join('\n'),
+  'theme-exploration': 'Explore the story\'s central themes more deeply.\nThe current conflict mirrors a larger thematic question.\nA character\'s choice could embody the story\'s core message.',
+  'setting-change': 'A change in location could bring new challenges.\nThe environment itself could become an obstacle or ally.\nMoving to unfamiliar territory would test characters in new ways.',
+  'relationship-shift': 'An unexpected revelation changes how characters see each other.\nShared experience forces new understanding between unlikely parties.\nTrust is tested when competing interests come to light.',
+};
+
+// ============================================================================
 // IdeaGenerator Class
 // ============================================================================
 
@@ -214,6 +138,7 @@ export class IdeaGenerator {
   private static instance: IdeaGenerator;
   private sessions: Map<string, BrainstormSession> = new Map();
   private activeSessionId: string | null = null;
+  private brainstormTemplatesRegistered = false;
 
   private constructor() {
     this.loadFromStorage();
@@ -227,10 +152,39 @@ export class IdeaGenerator {
   }
 
   // -------------------------------------------------------------------------
+  // Brainstorm Template Registration
+  // -------------------------------------------------------------------------
+
+  private ensureBrainstormTemplates(): void {
+    if (this.brainstormTemplatesRegistered) return;
+
+    const allTypes = Object.keys(IDEA_TYPE_LABELS) as IdeaType[];
+    for (const ideaType of allTypes) {
+      templateManager.ensureTemplate(`${BRAINSTORM_TEMPLATE_PREFIX}${ideaType}`, {
+        name: `Brainstorm: ${IDEA_TYPE_LABELS[ideaType]}`,
+        description: IDEA_TYPE_DESCRIPTIONS[ideaType],
+        category: 'story',
+        tags: ['brainstorm', 'idea-generation', ideaType],
+        content: BRAINSTORM_TEMPLATE_CONTENT[ideaType],
+        variables: [],
+        authorId: 'system',
+        authorName: 'Brainstorm Engine',
+        visibility: 'private',
+      });
+    }
+    this.brainstormTemplatesRegistered = true;
+  }
+
+  getBrainstormTemplateId(ideaType: IdeaType): string {
+    this.ensureBrainstormTemplates();
+    return `${BRAINSTORM_TEMPLATE_PREFIX}${ideaType}`;
+  }
+
+  // -------------------------------------------------------------------------
   // Session Management
   // -------------------------------------------------------------------------
 
-  createSession(name: string, context: StoryContext): BrainstormSession {
+  createSession(name: string, context: BrainstormStoryContext): BrainstormSession {
     const id = `brainstorm_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
     const now = Date.now();
 
@@ -271,7 +225,7 @@ export class IdeaGenerator {
     return Array.from(this.sessions.values()).sort((a, b) => b.updatedAt - a.updatedAt);
   }
 
-  updateSessionContext(sessionId: string, context: Partial<StoryContext>): BrainstormSession | undefined {
+  updateSessionContext(sessionId: string, context: Partial<BrainstormStoryContext>): BrainstormSession | undefined {
     const session = this.sessions.get(sessionId);
     if (!session) return undefined;
 
@@ -300,6 +254,8 @@ export class IdeaGenerator {
     const session = this.sessions.get(sessionId);
     if (!session) return [];
 
+    this.ensureBrainstormTemplates();
+
     const {
       count = 5,
       types = ['plot-direction', 'character-decision', 'conflict-escalation', 'twist', 'what-if'],
@@ -309,8 +265,13 @@ export class IdeaGenerator {
 
     const ideas: GeneratedIdea[] = [];
 
+    // Use weighted selection based on effectiveness data
+    const weighted = this.getWeightedTypes(types);
+
     for (let i = 0; i < count; i++) {
-      const type = types[i % types.length];
+      const type = weighted.length > 1
+        ? this.selectWeightedType(weighted)
+        : weighted[0].type;
       const tone = tones[i % tones.length];
       const idea = this.generateSingleIdea(session.context, type, tone, focusCharacters);
       ideas.push(idea);
@@ -324,7 +285,7 @@ export class IdeaGenerator {
   }
 
   private generateSingleIdea(
-    context: StoryContext,
+    context: BrainstormStoryContext,
     type: IdeaType,
     tone: IdeaTone,
     focusCharacters: string[]
@@ -393,10 +354,11 @@ export class IdeaGenerator {
       createdAt: Date.now(),
       explored: false,
       saved: false,
+      templateKey: `${BRAINSTORM_TEMPLATE_PREFIX}${type}`,
     };
   }
 
-  private generatePlotDirectionTitle(context: StoryContext, characters: string[]): string {
+  private generatePlotDirectionTitle(context: BrainstormStoryContext, characters: string[]): string {
     const titles = [
       'A Different Path Forward',
       'Unexpected Alliance',
@@ -408,7 +370,7 @@ export class IdeaGenerator {
     return titles[Math.floor(Math.random() * titles.length)];
   }
 
-  private generatePlotDirectionDescription(context: StoryContext, characters: string[]): string {
+  private generatePlotDirectionDescription(context: BrainstormStoryContext, characters: string[]): string {
     const char = characters[0] || 'the protagonist';
     const descriptions = [
       `Instead of pursuing the obvious path, ${char} could discover a completely unexpected opportunity that changes everything.`,
@@ -424,7 +386,7 @@ export class IdeaGenerator {
     return `${char}'s Crossroads`;
   }
 
-  private generateCharacterDecisionDescription(context: StoryContext, characters: string[]): string {
+  private generateCharacterDecisionDescription(context: BrainstormStoryContext, characters: string[]): string {
     const char = characters[0] || 'The character';
     const descriptions = [
       `${char} faces an impossible choice that will define who they truly are.`,
@@ -435,7 +397,7 @@ export class IdeaGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private generateConflictTitle(context: StoryContext): string {
+  private generateConflictTitle(context: BrainstormStoryContext): string {
     const titles = [
       'Rising Stakes',
       'The Pressure Intensifies',
@@ -446,7 +408,7 @@ export class IdeaGenerator {
     return titles[Math.floor(Math.random() * titles.length)];
   }
 
-  private generateConflictDescription(context: StoryContext): string {
+  private generateConflictDescription(context: BrainstormStoryContext): string {
     const conflicts = context.activeConflicts || ['the main challenge'];
     const conflict = conflicts[0] || 'the situation';
     const descriptions = [
@@ -469,7 +431,7 @@ export class IdeaGenerator {
     return titles[Math.floor(Math.random() * titles.length)];
   }
 
-  private generateTwistDescription(context: StoryContext, characters: string[]): string {
+  private generateTwistDescription(context: BrainstormStoryContext, characters: string[]): string {
     const char = characters[0] || 'someone';
     const descriptions = [
       `What if ${char} has been operating under a fundamental misconception this entire time?`,
@@ -480,12 +442,12 @@ export class IdeaGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private generateWhatIfTitle(context: StoryContext, characters: string[]): string {
+  private generateWhatIfTitle(context: BrainstormStoryContext, characters: string[]): string {
     const char = characters[0] || 'they';
     return `What If ${char} Had Chosen Differently?`;
   }
 
-  private generateWhatIfDescription(context: StoryContext, characters: string[]): string {
+  private generateWhatIfDescription(context: BrainstormStoryContext, characters: string[]): string {
     const char = characters[0] || 'the protagonist';
     const descriptions = [
       `Explore an alternate path where ${char} made a different crucial decision.`,
@@ -496,12 +458,12 @@ export class IdeaGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private generateThemeTitle(context: StoryContext): string {
+  private generateThemeTitle(context: BrainstormStoryContext): string {
     const themes = context.themes || ['identity', 'choice', 'consequence'];
     return `Exploring ${themes[0] || 'Deeper Themes'}`;
   }
 
-  private generateThemeDescription(context: StoryContext): string {
+  private generateThemeDescription(context: BrainstormStoryContext): string {
     const descriptions = [
       'This moment presents an opportunity to explore the story\'s central themes more deeply.',
       'The current conflict mirrors a larger thematic question worth examining.',
@@ -510,7 +472,7 @@ export class IdeaGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private generateSettingDescription(context: StoryContext): string {
+  private generateSettingDescription(context: BrainstormStoryContext): string {
     const descriptions = [
       'A change in location could bring new challenges and opportunities.',
       'The environment itself could become an obstacle or ally.',
@@ -526,7 +488,7 @@ export class IdeaGenerator {
     return 'Relationship Evolution';
   }
 
-  private generateRelationshipDescription(context: StoryContext, characters: string[]): string {
+  private generateRelationshipDescription(context: BrainstormStoryContext, characters: string[]): string {
     const descriptions = [
       'An unexpected revelation changes how these characters see each other.',
       'Shared experience forces a new understanding between unlikely parties.',
@@ -536,7 +498,7 @@ export class IdeaGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private determineImpact(type: IdeaType, context: StoryContext): IdeaImpact {
+  private determineImpact(type: IdeaType, context: BrainstormStoryContext): IdeaImpact {
     const baseImpacts: Record<IdeaType, IdeaImpact> = {
       'plot-direction': 'major',
       'character-decision': 'moderate',
@@ -550,7 +512,7 @@ export class IdeaGenerator {
     return baseImpacts[type];
   }
 
-  private generateConsequences(type: IdeaType, context: StoryContext): string[] {
+  private generateConsequences(type: IdeaType, context: BrainstormStoryContext): string[] {
     const genericConsequences = [
       'This could change character relationships significantly',
       'The story\'s pacing might shift',
@@ -805,6 +767,10 @@ export class IdeaGenerator {
     }
     session.updatedAt = Date.now();
     this.saveToStorage();
+
+    // Pipe feedback: saving an idea signals usefulness
+    this.recordIdeaUsage(idea);
+
     return true;
   }
 
@@ -832,6 +798,10 @@ export class IdeaGenerator {
     idea.explored = true;
     session.updatedAt = Date.now();
     this.saveToStorage();
+
+    // Pipe feedback: exploring an idea signals interest
+    this.recordIdeaUsage(idea);
+
     return true;
   }
 
@@ -845,6 +815,14 @@ export class IdeaGenerator {
     idea.rating = rating;
     session.updatedAt = Date.now();
     this.saveToStorage();
+
+    // Pipe feedback: explicit quality signal into template effectiveness
+    const templateId = idea.templateKey || `${BRAINSTORM_TEMPLATE_PREFIX}${idea.type}`;
+    const qualityMap: Record<number, 'poor' | 'fair' | 'good' | 'excellent'> = {
+      1: 'poor', 2: 'poor', 3: 'fair', 4: 'good', 5: 'excellent',
+    };
+    templateManager.addRating(templateId, idea.id, rating, undefined, qualityMap[rating]);
+
     return true;
   }
 
@@ -853,6 +831,43 @@ export class IdeaGenerator {
     if (!session) return [];
 
     return session.ideas.filter(i => i.saved);
+  }
+
+  // -------------------------------------------------------------------------
+  // Effectiveness Feedback Bridge
+  // -------------------------------------------------------------------------
+
+  private recordIdeaUsage(idea: GeneratedIdea): void {
+    const templateId = idea.templateKey || `${BRAINSTORM_TEMPLATE_PREFIX}${idea.type}`;
+    templateManager.recordUsage(templateId, idea.description.length);
+  }
+
+  private getWeightedTypes(types: IdeaType[]): Array<{ type: IdeaType; weight: number }> {
+    return types.map(type => {
+      const templateId = `${BRAINSTORM_TEMPLATE_PREFIX}${type}`;
+      const report = templateManager.getEffectivenessReport(templateId);
+      // Base weight 1.0; boost up to 2.0 for highly-rated types
+      const weight = report && report.metrics.ratingCount > 0
+        ? 1 + (report.metrics.averageRating / 5)
+        : 1;
+      return { type, weight };
+    });
+  }
+
+  private selectWeightedType(weighted: Array<{ type: IdeaType; weight: number }>): IdeaType {
+    const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
+    let roll = Math.random() * totalWeight;
+    for (const entry of weighted) {
+      roll -= entry.weight;
+      if (roll <= 0) return entry.type;
+    }
+    return weighted[weighted.length - 1].type;
+  }
+
+  getIdeaTypeEffectiveness(ideaType: IdeaType) {
+    this.ensureBrainstormTemplates();
+    const templateId = `${BRAINSTORM_TEMPLATE_PREFIX}${ideaType}`;
+    return templateManager.getEffectivenessReport(templateId);
   }
 
   // -------------------------------------------------------------------------

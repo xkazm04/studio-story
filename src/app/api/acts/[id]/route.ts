@@ -1,113 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Act } from '@/app/types/Act';
-import { logger } from '@/app/utils/logger';
-import { HTTP_STATUS } from '@/app/utils/apiErrorHandling';
+import { HTTP_STATUS, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * GET /api/acts/[id]
  * Get a single act by ID
  */
-export async function GET(
+export const GET = withApiHandler('GET /api/acts/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { data, error } = await supabaseServer
-      .from('acts')
-      .select('*')
-      .eq('id', id)
-      .single();
+  const { data, error } = await supabaseServer
+    .from('acts')
+    .select('*')
+    .eq('id', id)
+    .single();
 
-    if (error) {
-      logger.apiError('GET /api/acts/[id]', error, { actId: id });
-      return NextResponse.json(
-        { error: 'Act not found' },
-        { status: HTTP_STATUS.NOT_FOUND }
-      );
-    }
-
-    return NextResponse.json(data as Act);
-  } catch (error) {
-    logger.apiError('GET /api/acts/[id]', error, { actId: await context.params.then(p => p.id) });
+  if (error) {
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      { error: 'Act not found' },
+      { status: HTTP_STATUS.NOT_FOUND }
     );
   }
-}
+
+  return NextResponse.json(data as Act);
+});
 
 /**
  * PUT /api/acts/[id]
  * Update an act
  */
-export async function PUT(
+export const PUT = withApiHandler('PUT /api/acts/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
-    const body = await request.json();
+) => {
+  const { id } = await context.params;
+  const body = await request.json();
 
-    const { data, error } = await supabaseServer
-      .from('acts')
-      .update(body)
-      .eq('id', id)
-      .select()
-      .single();
+  const { data, error } = await supabaseServer
+    .from('acts')
+    .update(body)
+    .eq('id', id)
+    .select()
+    .single();
 
-    if (error) {
-      logger.apiError('PUT /api/acts/[id]', error, { actId: id });
-      return NextResponse.json(
-        { error: 'Failed to update act' },
-        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
-      );
-    }
-
-    return NextResponse.json(data as Act);
-  } catch (error) {
-    logger.apiError('PUT /api/acts/[id]', error, { actId: await context.params.then(p => p.id) });
+  if (error) {
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to update act' },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
-}
+
+  return NextResponse.json(data as Act);
+});
 
 /**
  * DELETE /api/acts/[id]
  * Delete an act
  */
-export async function DELETE(
+export const DELETE = withApiHandler('DELETE /api/acts/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { error } = await supabaseServer
-      .from('acts')
-      .delete()
-      .eq('id', id);
+  const { error } = await supabaseServer
+    .from('acts')
+    .delete()
+    .eq('id', id);
 
-    if (error) {
-      logger.apiError('DELETE /api/acts/[id]', error, { actId: id });
-      return NextResponse.json(
-        { error: 'Failed to delete act' },
-        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
-      );
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    logger.apiError('DELETE /api/acts/[id]', error, { actId: await context.params.then(p => p.id) });
+  if (error) {
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to delete act' },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
-}
 
-
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

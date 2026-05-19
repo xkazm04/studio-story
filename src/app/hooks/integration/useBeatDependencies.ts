@@ -1,18 +1,17 @@
 import { BeatDependency } from '@/app/types/Beat';
-import { apiFetch, useApiGet, API_BASE_URL } from '@/app/utils/api';
-
-const DEPENDENCIES_URL = `${API_BASE_URL}/beat-dependencies`;
+import { apiFetch, useApiGet } from '@/app/utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 export const beatDependenciesApi = {
   // Get all dependencies for a project
   useGetProjectDependencies: (projectId: string | undefined, enabled: boolean = true) => {
-    const url = projectId ? `${DEPENDENCIES_URL}?projectId=${projectId}` : '';
+    const url = projectId ? `${BEAT_URLS.dependencies}?projectId=${projectId}` : '';
     return useApiGet<BeatDependency[]>(url, enabled && !!projectId);
   },
 
   // Get dependencies for a specific beat
   useGetBeatDependencies: (beatId: string | undefined, enabled: boolean = true) => {
-    const url = beatId ? `${DEPENDENCIES_URL}?beatId=${beatId}` : '';
+    const url = beatId ? `${BEAT_URLS.dependencies}?beatId=${beatId}` : '';
     return useApiGet<BeatDependency[]>(url, enabled && !!beatId);
   },
 
@@ -24,7 +23,7 @@ export const beatDependenciesApi = {
     strength?: 'required' | 'suggested' | 'optional';
   }) => {
     return apiFetch<BeatDependency>({
-      url: DEPENDENCIES_URL,
+      url: BEAT_URLS.dependencies,
       method: 'POST',
       body: data,
     });
@@ -33,7 +32,7 @@ export const beatDependenciesApi = {
   // Delete a dependency
   deleteDependency: async (id: string) => {
     return apiFetch<void>({
-      url: `${DEPENDENCIES_URL}?id=${id}`,
+      url: `${BEAT_URLS.dependencies}?id=${id}`,
       method: 'DELETE',
     });
   },

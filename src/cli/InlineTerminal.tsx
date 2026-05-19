@@ -4,16 +4,14 @@
  * InlineTerminal — Lightweight embedded CLI terminal
  *
  * Simplified CompactTerminal for inline embedding in feature panels.
+ * Uses useExecutionStream for SSE connection, protocol parsing, and log state.
+ *
  * - Shows streaming log output + status indicator
  * - No manual input field (programmatic execution only via useCLIFeature)
  * - Collapsible with Framer Motion animations
  * - Skill name badge in header
  * - Result action bar (Copy/Insert) on completion
  * - Calls onResult with parsed data when execution completes
- *
- * Usage:
- *   const cli = useCLIFeature({ ... });
- *   <InlineTerminal {...cli.terminalProps} height={200} collapsible onResult={handleResult} />
  */
 
 import React, {
@@ -24,11 +22,8 @@ import React, {
 } from 'react';
 import {
   Terminal,
-  Bot,
-  Wrench,
   CheckCircle,
   AlertCircle,
-  ChevronDown,
   ChevronRight,
   Loader2,
   Square,
@@ -39,38 +34,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/app/lib/utils';
-import {
-  createEventProtocol,
-  decodeEvent,
-  messageToLog,
-  toolUseToLog,
-  toolResultToLog,
-  errorToLog,
-} from './protocol';
-import type { LogEntry, ExecutionResult, InlineTerminalProps } from './types';
-import { buildSkillsPrompt } from './skills';
+import type { InlineTerminalProps } from './types';
 import type { SkillId } from './skills';
 import { MCPConnectionIndicator } from './MCPConnectionIndicator';
-
-// ============ Icon & Color Maps ============
-
-const LOG_ICONS: Record<LogEntry['type'], React.ElementType> = {
-  user: Terminal,
-  assistant: Bot,
-  tool_use: Wrench,
-  tool_result: CheckCircle,
-  system: Terminal,
-  error: AlertCircle,
-};
-
-const LOG_COLORS: Record<LogEntry['type'], string> = {
-  user: 'text-blue-400',
-  assistant: 'text-slate-200',
-  tool_use: 'text-amber-400',
-  tool_result: 'text-emerald-400',
-  system: 'text-slate-400',
-  error: 'text-red-400',
-};
+import { useExecutionStream } from './useExecutionStream';
+import { LOG_ICONS, LOG_COLORS } from './logMaps';
 
 // ============ Extended Props (includes task queue integration) ============
 
@@ -104,87 +72,34 @@ export default function InlineTerminal({
   autoStart,
   enabledSkills = [],
   onTaskStart,
-  onTaskComplete,
+  onTaskComplete: onTaskCompleteProp,
   onQueueEmpty,
-  currentExecutionId: externalExecutionId,
-  currentStoredTaskId: externalStoredTaskId,
+  currentExecutionId,
+  currentStoredTaskId,
   onExecutionChange,
   activeSkillId,
   onInsert,
 }: InlineTerminalFullProps) {
-  // State
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [isStreaming, setIsStreaming] = useState(false);
+  // ============ Result Parsing (wraps onTaskComplete) ============
+
+  const lastAssistantTextRef = useRef('');
   const [collapsed, setCollapsed] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<ExecutionResult | null>(null);
-  const [showDetails, setShowDetails] = useState(true);
-  const [copied, setCopied] = useState(false);
-
-  // Refs
-  const logsEndRef = useRef<HTMLDivElement>(null);
-  const logsContainerRef = useRef<HTMLDivElement>(null);
-  const eventSourceRef = useRef<EventSource | null>(null);
-  const pendingLogsRef = useRef<LogEntry[]>([]);
-  const rafIdRef = useRef<number | null>(null);
-  const currentTaskRef = useRef<string | null>(null);
-  const lastAssistantTextRef = useRef<string>('');
-
-  // ============ RAF-Batched Log Adding ============
-
-  const flushPendingLogs = useCallback(() => {
-    if (pendingLogsRef.current.length > 0) {
-      const batch = [...pendingLogsRef.current];
-      pendingLogsRef.current = [];
-      setLogs((prev) => [...prev, ...batch]);
-    }
-    rafIdRef.current = null;
-  }, []);
-
-  const addLog = useCallback(
-    (entry: LogEntry | null) => {
-      if (!entry) return;
-      pendingLogsRef.current.push(entry);
-
-      // Track assistant text for result extraction
-      if (entry.type === 'assistant') {
-        lastAssistantTextRef.current += entry.content;
-      }
-
-      if (rafIdRef.current === null) {
-        rafIdRef.current = requestAnimationFrame(flushPendingLogs);
-      }
-    },
-    [flushPendingLogs],
-  );
-
-  // ============ Auto-scroll ============
-
-  useEffect(() => {
-    if (logsEndRef.current && !collapsed) {
-      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [logs, collapsed]);
-
-  // ============ Result Parsing ============
 
   const parseAndEmitResult = useCallback(
     (success: boolean) => {
       if (!onResult || !success) return;
-
       const text = lastAssistantTextRef.current.trim();
       if (!text) return;
 
       if (outputFormat === 'json') {
-        // Extract JSON from assistant output (may be wrapped in ```json blocks)
-        const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) ||
-                          text.match(/(\{[\s\S]*\})/);
+        const jsonMatch =
+          text.match(/```json\s*([\s\S]*?)\s*```/) ||
+          text.match(/(\{[\s\S]*\})/);
         if (jsonMatch) {
           try {
             const parsed = JSON.parse(jsonMatch[1]);
             onResult(parsed);
           } catch {
-            // Fall back to raw text
             onResult({ raw: text });
           }
         } else {
@@ -197,165 +112,69 @@ export default function InlineTerminal({
     [onResult, outputFormat],
   );
 
-  // ============ Task Finalization ============
-
-  const finalizeTask = useCallback(
-    (success: boolean) => {
-      const taskId = currentTaskRef.current;
-      if (taskId && onTaskComplete) {
-        onTaskComplete(taskId, success);
-      }
-      currentTaskRef.current = null;
+  const handleTaskComplete = useCallback(
+    (taskId: string, success: boolean) => {
+      onTaskCompleteProp?.(taskId, success);
       parseAndEmitResult(success);
       lastAssistantTextRef.current = '';
     },
-    [onTaskComplete, parseAndEmitResult],
+    [onTaskCompleteProp, parseAndEmitResult],
   );
 
-  // ============ SSE Connection ============
+  // ============ Execution Stream Hook ============
 
-  const connectToStream = useCallback(
-    (streamUrl: string) => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+  const stream = useExecutionStream({
+    instanceId,
+    projectPath,
+    enabledSkills,
+    taskQueue,
+    autoStart,
+    onTaskStart,
+    onTaskComplete: handleTaskComplete,
+    onQueueEmpty,
+    currentExecutionId,
+    currentStoredTaskId,
+    onExecutionChange,
+    trackAssistantText: true,
+  });
 
-      setIsStreaming(true);
-      lastAssistantTextRef.current = '';
+  const {
+    logs,
+    isStreaming,
+    lastResult,
+    lastAssistantText,
+    abort: handleAbort,
+  } = stream;
 
-      // Auto-expand on new execution
-      if (collapsed) setCollapsed(false);
+  // Sync assistant text to our ref for result parsing
+  useEffect(() => {
+    lastAssistantTextRef.current = lastAssistantText;
+  }, [lastAssistantText]);
 
-      const eventSource = new EventSource(streamUrl);
-      eventSourceRef.current = eventSource;
+  // Auto-expand on new execution
+  useEffect(() => {
+    if (isStreaming && collapsed) {
+      setCollapsed(false);
+    }
+  }, [isStreaming, collapsed]);
 
-      const protocol = createEventProtocol({
-        connected: (event) => {
-          if (event.data.sessionId) {
-            setSessionId(event.data.sessionId);
-          }
-        },
-        message: (event) => {
-          addLog(messageToLog(event));
-        },
-        tool_use: (event) => {
-          addLog(toolUseToLog(event));
-        },
-        tool_result: (event) => {
-          addLog(toolResultToLog(event));
-        },
-        result: (event) => {
-          setLastResult(event.data);
-          setIsStreaming(false);
-          finalizeTask(true);
-        },
-        error: (event) => {
-          addLog(errorToLog(event));
-          setIsStreaming(false);
-          finalizeTask(false);
-        },
-      });
+  // ============ Local UI State ============
 
-      eventSource.onmessage = (raw) => {
-        const event = decodeEvent(raw.data);
-        if (event) protocol.handle(event);
-      };
+  const [showDetails, setShowDetails] = useState(true);
+  const [copied, setCopied] = useState(false);
 
-      eventSource.onerror = () => {
-        setIsStreaming(false);
-        eventSource.close();
-        eventSourceRef.current = null;
-      };
-    },
-    [addLog, finalizeTask, collapsed],
-  );
+  const logsEndRef = useRef<HTMLDivElement>(null);
+  const logsContainerRef = useRef<HTMLDivElement>(null);
 
-  // ============ Task Execution ============
-
-  const executeTask = useCallback(
-    async (prompt: string) => {
-      try {
-        const skillsPrefix =
-          enabledSkills.length > 0 ? buildSkillsPrompt(enabledSkills) : '';
-        const fullPrompt = skillsPrefix + prompt;
-
-        const response = await fetch('/api/claude-terminal/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectPath,
-            prompt: fullPrompt,
-            resumeSessionId: sessionId || undefined,
-          }),
-        });
-
-        if (!response.ok) {
-          setIsStreaming(false);
-          return;
-        }
-
-        const { streamUrl, executionId } = await response.json();
-
-        if (onExecutionChange) {
-          onExecutionChange(executionId, currentTaskRef.current);
-        }
-
-        connectToStream(streamUrl);
-      } catch {
-        setIsStreaming(false);
-      }
-    },
-    [projectPath, sessionId, enabledSkills, connectToStream, onExecutionChange],
-  );
-
-  // ============ Queue Processing ============
+  // ============ Auto-scroll ============
 
   useEffect(() => {
-    if (!autoStart || !taskQueue || taskQueue.length === 0 || isStreaming) return;
-
-    const nextTask = taskQueue.find((t) => t.status === 'pending');
-    if (!nextTask) {
-      if (onQueueEmpty) onQueueEmpty();
-      return;
+    if (logsEndRef.current && !collapsed) {
+      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [logs, collapsed]);
 
-    currentTaskRef.current = nextTask.id;
-    if (onTaskStart) onTaskStart(nextTask.id);
-
-    const prompt = nextTask.directPrompt || `Execute skill: ${nextTask.skillId}`;
-    executeTask(prompt);
-  }, [autoStart, taskQueue, isStreaming, executeTask, onTaskStart, onQueueEmpty]);
-
-  // ============ Reconnect to existing execution ============
-
-  useEffect(() => {
-    if (externalExecutionId && !isStreaming) {
-      const streamUrl = `/api/claude-terminal/stream?executionId=${externalExecutionId}`;
-      currentTaskRef.current = externalStoredTaskId || null;
-      connectToStream(streamUrl);
-    }
-  }, [externalExecutionId, externalStoredTaskId]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ============ Abort ============
-
-  const handleAbort = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-    setIsStreaming(false);
-  }, []);
-
-  // ============ Cleanup ============
-
-  useEffect(() => {
-    return () => {
-      if (eventSourceRef.current) eventSourceRef.current.close();
-      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
-    };
-  }, []);
-
-  // ============ Copy to Clipboard ============
+  // ============ Copy / Insert ============
 
   const handleCopy = useCallback(() => {
     const text = lastAssistantTextRef.current.trim();
@@ -381,8 +200,6 @@ export default function InlineTerminal({
   // ============ Render ============
 
   const heightStyle = typeof height === 'number' ? `${height}px` : height;
-
-  // Don't render anything if no logs and not streaming
   const hasContent = logs.length > 0 || isStreaming;
   const isComplete = !isStreaming && lastResult && !lastResult.isError;
   const hasResultText = lastAssistantTextRef.current.trim().length > 0;
@@ -398,14 +215,15 @@ export default function InlineTerminal({
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className={cn(
-        'flex flex-col bg-slate-950 border border-slate-800 rounded-lg overflow-hidden',
+        'flex flex-col border rounded-lg overflow-hidden',
+        'bg-[var(--ms-bg-base)] border-[var(--ms-border-subtle)]',
         className,
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          'flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border-b border-slate-800 text-xs',
+          'flex items-center gap-2 px-3 py-1.5 bg-[var(--ms-bg-surface)]/80 border-b border-[var(--ms-border-subtle)] text-xs',
           collapsible && 'cursor-pointer select-none',
         )}
         onClick={collapsible ? () => setCollapsed(!collapsed) : undefined}
@@ -415,12 +233,12 @@ export default function InlineTerminal({
             animate={{ rotate: collapsed ? 0 : 90 }}
             transition={{ duration: 0.15 }}
           >
-            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <ChevronRight className="w-3 h-3 text-[var(--ms-text-muted)]" />
           </motion.div>
         )}
 
-        <Terminal className="w-3 h-3 text-slate-400" />
-        <span className="text-slate-400 font-medium text-xs">CLI</span>
+        <Terminal className="w-3 h-3 text-[var(--ms-text-muted)]" />
+        <span className="text-[var(--ms-text-muted)] font-medium text-xs">CLI</span>
 
         <MCPConnectionIndicator />
 
@@ -437,8 +255,9 @@ export default function InlineTerminal({
         {hasContent && !collapsed && (
           <button
             onClick={(e) => { e.stopPropagation(); setShowDetails(!showDetails); }}
-            className="text-slate-400 hover:text-slate-300 transition-colors"
+            className="text-[var(--ms-text-muted)] hover:text-[var(--ms-text-secondary)] transition-colors"
             title={showDetails ? 'Hide details' : 'Show details'}
+            aria-label={showDetails ? 'Hide details' : 'Show details'}
           >
             {showDetails ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
           </button>
@@ -446,11 +265,12 @@ export default function InlineTerminal({
 
         {isStreaming && (
           <>
-            <Loader2 className="w-3 h-3 text-blue-400 animate-spin" />
+            <Loader2 className="w-3 h-3 ms-log-user animate-spin" />
             <button
               onClick={(e) => { e.stopPropagation(); handleAbort(); }}
-              className="text-red-400/70 hover:text-red-300 transition-colors"
+              className="ms-log-error opacity-70 hover:opacity-100 transition-colors"
               title="Stop generation"
+              aria-label="Stop generation"
             >
               <Square className="w-3 h-3" />
             </button>
@@ -458,11 +278,11 @@ export default function InlineTerminal({
         )}
 
         {isComplete && (
-          <CheckCircle className="w-3 h-3 text-emerald-400/70" />
+          <CheckCircle className="w-3 h-3 ms-log-result opacity-70" />
         )}
 
         {!isStreaming && lastResult?.isError && (
-          <AlertCircle className="w-3 h-3 text-red-400/70" />
+          <AlertCircle className="w-3 h-3 ms-log-error opacity-70" />
         )}
       </div>
 
@@ -480,6 +300,9 @@ export default function InlineTerminal({
             {showDetails && (
               <div
                 ref={logsContainerRef}
+                role="log"
+                aria-live="polite"
+                aria-label="Terminal output"
                 className="overflow-y-auto px-3 py-1.5 space-y-0.5 font-mono text-xs"
                 style={{ maxHeight: heightStyle }}
               >
@@ -491,11 +314,11 @@ export default function InlineTerminal({
                       <Icon className={cn('w-3 h-3 mt-0.5 shrink-0', color)} />
                       <span className={cn('break-all', color)}>
                         {log.toolName && (
-                          <span className="text-amber-300 mr-1">{log.toolName}</span>
+                          <span className="text-[var(--ms-warning)] mr-1">{log.toolName}</span>
                         )}
                         {log.content.slice(0, 300)}
                         {log.content.length > 300 && (
-                          <span className="text-slate-400">...</span>
+                          <span className="text-[var(--ms-text-muted)]">...</span>
                         )}
                       </span>
                     </div>
@@ -503,7 +326,7 @@ export default function InlineTerminal({
                 })}
 
                 {isStreaming && (
-                  <div className="flex items-center gap-1.5 text-blue-400/60">
+                  <div className="flex items-center gap-1.5 ms-log-user opacity-60">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     <span>Working...</span>
                   </div>
@@ -515,11 +338,11 @@ export default function InlineTerminal({
 
             {/* Result Action Bar */}
             {isComplete && hasResultText && (
-              <div className="flex items-center gap-2 px-3 py-1.5 border-t border-slate-800/60 bg-slate-900/40">
-                <span className="text-xs text-emerald-400/80 font-medium">Done</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 border-t border-[var(--ms-border-subtle)]/60 bg-[var(--ms-bg-surface)]/40">
+                <span className="text-xs ms-log-result opacity-80 font-medium">Done</span>
 
                 {lastResult?.usage && (
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span className="text-xs text-[var(--ms-text-muted)] font-mono">
                     {lastResult.usage.inputTokens + lastResult.usage.outputTokens} tokens
                   </span>
                 )}

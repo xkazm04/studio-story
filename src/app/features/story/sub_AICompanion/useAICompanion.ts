@@ -346,6 +346,8 @@ export function useAICompanion(options: UseAICompanionOptions = {}) {
     async (variant: ContentVariant) => {
       if (!currentScene || !projectId) return;
 
+      setState((prev) => ({ ...prev, error: null }));
+
       try {
         // Update scene content
         updateScene(currentScene.id, {
@@ -388,7 +390,8 @@ export function useAICompanion(options: UseAICompanionOptions = {}) {
           contentVariants: [],
         }));
       } catch (err) {
-        setState((prev) => ({ ...prev, error: 'Failed to apply content' }));
+        const message = err instanceof Error ? err.message : 'Failed to apply content';
+        setState((prev) => ({ ...prev, error: message }));
       }
     },
     [currentScene, projectId, scenes.length, updateScene, addScene, addChoice, getChoicesForScene]
@@ -399,7 +402,7 @@ export function useAICompanion(options: UseAICompanionOptions = {}) {
     async (suggestion: NextStepSuggestion) => {
       if (!projectId) return;
 
-      setState((prev) => ({ ...prev, isGenerating: true }));
+      setState((prev) => ({ ...prev, isGenerating: true, error: null }));
 
       try {
         // Create new scene

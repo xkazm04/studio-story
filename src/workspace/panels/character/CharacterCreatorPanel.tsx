@@ -7,6 +7,7 @@ import {
   Loader2, AlertCircle, UserCircle, Maximize, Grid3X3, Minus, Plus,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import PanelFrame from '../shared/PanelFrame';
 
 // Creator stores + constants
@@ -282,7 +283,8 @@ function GenerateButton() {
         signal: abortRef.current.signal,
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && data.imageUrl) {
         setGeneratedImage(data.imageUrl);
       } else {
@@ -523,6 +525,8 @@ export default function CharacterCreatorPanel({
 
     fetch(`/api/characters/${characterId}`)
       .then((r) => (r.ok ? r.json() : null))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((raw) => raw ? extractData<any>(raw) : null)
       .then((data) => {
         if (data?.name) setCharacterName(data.name);
       })

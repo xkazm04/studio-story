@@ -1,3 +1,37 @@
+export const BEAT_TYPES = {
+    setup: 'setup',
+    conflict: 'conflict',
+    resolution: 'resolution',
+    climax: 'climax',
+    transition: 'transition',
+    reveal: 'reveal',
+    action: 'action',
+} as const;
+
+export type BeatType = typeof BEAT_TYPES[keyof typeof BEAT_TYPES];
+
+export const BEAT_TYPE_VALUES = Object.values(BEAT_TYPES);
+
+export const BEAT_TYPE_LABELS: Record<BeatType, string> = {
+    setup: 'Setup',
+    conflict: 'Conflict',
+    resolution: 'Resolution',
+    climax: 'Climax',
+    transition: 'Transition',
+    reveal: 'Reveal',
+    action: 'Action',
+};
+
+export const BEAT_TYPE_COLORS: Record<BeatType, string> = {
+    setup: '#10B981',
+    conflict: '#EF4444',
+    resolution: '#3B82F6',
+    climax: '#F59E0B',
+    transition: '#6B7280',
+    reveal: '#8B5CF6',
+    action: '#F97316',
+};
+
 export type Beat = {
     id: string;
     act_id?: string;
@@ -63,6 +97,15 @@ export type BeatSceneMapping = {
     accepted_at?: Date;
     rejected_at?: Date;
 };
+
+export interface BeatSummary {
+    id: string;
+    title: string;
+    order: number;
+    type?: string;
+    sceneId?: string;
+    sceneName?: string;
+}
 
 export type BeatSceneSuggestion = {
     mapping_id?: string;

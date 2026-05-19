@@ -5,6 +5,8 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { EventEmitter } from 'events';
+import { TOOL_NAMES } from '@/agents/types';
+import type { CLIExecutionEvent } from '../cli-service';
 
 // ---------------------------------------------------------------------------
 // Mock cli-service BEFORE importing the module under test
@@ -15,7 +17,7 @@ const mockStartExecution = vi.fn<
     projectPath: string,
     prompt: string,
     resumeSessionId?: string,
-    onEvent?: (event: { type: string; data: Record<string, unknown>; timestamp: number }) => void,
+    onEvent?: (event: CLIExecutionEvent) => void,
   ) => string
 >();
 
@@ -45,7 +47,7 @@ import {
 
 /** Simulate CLI events firing on the execution's emitter */
 function simulateCLIEvents(
-  events: Array<{ type: string; data: Record<string, unknown> }>,
+  events: CLIExecutionEvent[],
 ) {
   // mockStartExecution will call onEvent for each event
   mockStartExecution.mockImplementation(
@@ -54,14 +56,15 @@ function simulateCLIEvents(
       // Fire events asynchronously to let promise resolve
       setTimeout(() => {
         for (const ev of events) {
-          onEvent?.({ type: ev.type, data: ev.data, timestamp: Date.now() });
+          onEvent?.(ev);
         }
       }, 5);
 
+      const initEvent = events.find((e): e is Extract<CLIExecutionEvent, { type: 'init' }> => e.type === 'init');
       mockGetExecution.mockReturnValue({
         id: execId,
         status: 'completed',
-        sessionId: events.find(e => e.type === 'init')?.data?.sessionId,
+        sessionId: initEvent?.data.sessionId,
         events: [],
         emitter: { on: vi.fn(), off: vi.fn() } as unknown as EventEmitter,
       });
@@ -69,6 +72,36 @@ function simulateCLIEvents(
       return execId;
     },
   );
+}
+
+// ---------------------------------------------------------------------------
+// Event Factories
+// ---------------------------------------------------------------------------
+
+const ts = () => Date.now();
+
+function initEvent(sessionId: string): CLIExecutionEvent {
+  return { type: 'init', data: { sessionId, tools: [], model: 'test-model' }, timestamp: ts() };
+}
+
+function textEvent(content: string): CLIExecutionEvent {
+  return { type: 'text', data: { content, model: 'test-model' }, timestamp: ts() };
+}
+
+function toolUseEvent(id: string, name: string, input: Record<string, unknown> = {}): CLIExecutionEvent {
+  return { type: 'tool_use', data: { id, name, input }, timestamp: ts() };
+}
+
+function toolResultEvent(toolUseId: string, content: string): CLIExecutionEvent {
+  return { type: 'tool_result', data: { toolUseId, content }, timestamp: ts() };
+}
+
+function resultEvent(sessionId?: string, isError = false): CLIExecutionEvent {
+  return { type: 'result', data: { sessionId, isError }, timestamp: ts() };
+}
+
+function errorEvent(message: string): CLIExecutionEvent {
+  return { type: 'error', data: { message }, timestamp: ts() };
 }
 
 // ---------------------------------------------------------------------------
@@ -99,9 +132,9 @@ describe('PersistentSession', () => {
 
     it('first send() starts a CLI execution and captures sessionId from init event', async () => {
       simulateCLIEvents([
-        { type: 'init', data: { sessionId: 'sess-abc-123' } },
-        { type: 'text', data: { content: 'Hello world' } },
-        { type: 'result', data: { sessionId: 'sess-abc-123', isError: false } },
+        initEvent('sess-abc-123'),
+        textEvent('Hello world'),
+        resultEvent('sess-abc-123'),
       ]);
 
       const session = createPersistentSession('/project');
@@ -119,9 +152,9 @@ describe('PersistentSession', () => {
 
     it('subsequent send() calls reuse sessionId via --resume flag', async () => {
       simulateCLIEvents([
-        { type: 'init', data: { sessionId: 'sess-abc-123' } },
-        { type: 'text', data: { content: 'Response 1' } },
-        { type: 'result', data: { sessionId: 'sess-abc-123', isError: false } },
+        initEvent('sess-abc-123'),
+        textEvent('Response 1'),
+        resultEvent('sess-abc-123'),
       ]);
 
       const session = createPersistentSession('/project');
@@ -129,8 +162,8 @@ describe('PersistentSession', () => {
 
       // Now send again — should resume
       simulateCLIEvents([
-        { type: 'text', data: { content: 'Response 2' } },
-        { type: 'result', data: { sessionId: 'sess-abc-123', isError: false } },
+        textEvent('Response 2'),
+        resultEvent('sess-abc-123'),
       ]);
 
       await session.send('second prompt');
@@ -145,11 +178,11 @@ describe('PersistentSession', () => {
 
     it('send() returns CLIResponse with text and toolResults', async () => {
       simulateCLIEvents([
-        { type: 'init', data: { sessionId: 'sess-1' } },
-        { type: 'text', data: { content: 'Analyzed the code.' } },
-        { type: 'tool_use', data: { id: 't1', name: 'compose_workspace', input: { layout: 'split-2' } } },
-        { type: 'tool_result', data: { toolUseId: 't1', content: '{"ok":true}' } },
-        { type: 'result', data: { sessionId: 'sess-1', isError: false } },
+        initEvent('sess-1'),
+        textEvent('Analyzed the code.'),
+        toolUseEvent('t1', TOOL_NAMES.COMPOSE_WORKSPACE, { layout: 'split-2' }),
+        toolResultEvent('t1', '{"ok":true}'),
+        resultEvent('sess-1'),
       ]);
 
       const session = createPersistentSession('/project');
@@ -157,14 +190,14 @@ describe('PersistentSession', () => {
 
       expect(response.text).toBe('Analyzed the code.');
       expect(response.toolResults).toHaveLength(1);
-      expect(response.toolResults![0].name).toBe('compose_workspace');
+      expect(response.toolResults![0].name).toBe(TOOL_NAMES.COMPOSE_WORKSPACE);
     });
 
     it('after 3 consecutive errors, status becomes disconnected', async () => {
       // Set up error-producing execution
       const makeError = () => {
         simulateCLIEvents([
-          { type: 'error', data: { message: 'CLI not found' } },
+          errorEvent('CLI not found'),
         ]);
       };
 
@@ -184,8 +217,8 @@ describe('PersistentSession', () => {
 
     it('restart() destroys current and creates fresh session', async () => {
       simulateCLIEvents([
-        { type: 'init', data: { sessionId: 'sess-old' } },
-        { type: 'result', data: { sessionId: 'sess-old', isError: false } },
+        initEvent('sess-old'),
+        resultEvent('sess-old'),
       ]);
 
       const session = createPersistentSession('/project');
@@ -225,7 +258,7 @@ describe('PersistentSession', () => {
       // Simulate 3 errors to disconnect
       const makeError = () => {
         simulateCLIEvents([
-          { type: 'error', data: { message: 'fail' } },
+          errorEvent('fail'),
         ]);
       };
       makeError();

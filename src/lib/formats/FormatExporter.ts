@@ -7,6 +7,13 @@
 import { ScreenplayFormatter, ScreenplayDocument, ScreenplayElement } from './ScreenplayFormatter';
 import { ProseFormatter, ProseDocument, ProseElement } from './ProseFormatter';
 import { ComicFormatter, ComicDocument, ComicPage, ComicPanel } from './ComicFormatter';
+import { FountainExporter } from '../export/FountainExporter';
+import type { FountainTitlePage } from '../export/FountainExporter';
+import type { LegacyExportResult, ScriptBlock } from '../export/types';
+import { escapeHtml, escapeXml, escapeRtf } from '../export/utils';
+
+/** @deprecated Use ExportData from '../export/result' for new code */
+export type ExportResult = LegacyExportResult;
 
 export type ExportFormat =
   | 'fountain'       // Screenplay - Plain text Fountain
@@ -28,13 +35,6 @@ export interface ExportOptions {
   fontSize?: number;
   fontFamily?: string;
   lineSpacing?: number;
-}
-
-export interface ExportResult {
-  content: string;
-  mimeType: string;
-  filename: string;
-  blob?: Blob;
 }
 
 const DEFAULT_OPTIONS: ExportOptions = {
@@ -101,17 +101,16 @@ export class FormatExporter {
 
     switch (opts.format) {
       case 'fountain':
-        return this.screenplayToFountain(document, opts);
+        return this.screenplayToFountain(document);
       case 'fdx':
         return this.screenplayToFdx(document, opts);
       case 'html':
-        return this.screenplayToHtml(document, opts);
       case 'pdf':
-        return this.screenplayToPdfHtml(document, opts);
+        return this.screenplayToHtml(document, opts);
       case 'markdown':
         return this.screenplayToMarkdown(document, opts);
       default:
-        return this.screenplayToFountain(document, opts);
+        return this.screenplayToFountain(document);
     }
   }
 
@@ -128,11 +127,10 @@ export class FormatExporter {
       case 'markdown':
         return this.proseToMarkdown(document, opts);
       case 'html':
+      case 'pdf':
         return this.proseToHtml(document, opts);
       case 'rtf':
         return this.proseToRtf(document, opts);
-      case 'pdf':
-        return this.proseToPdfHtml(document, opts);
       default:
         return this.proseToMarkdown(document, opts);
     }
@@ -151,9 +149,8 @@ export class FormatExporter {
       case 'markdown':
         return this.comicToMarkdown(document, opts);
       case 'html':
-        return this.comicToHtml(document, opts);
       case 'pdf':
-        return this.comicToPdfHtml(document, opts);
+        return this.comicToHtml(document, opts);
       default:
         return this.comicToMarkdown(document, opts);
     }
@@ -163,54 +160,35 @@ export class FormatExporter {
 
   private static screenplayToFountain(
     document: ScreenplayDocument,
-    _options: ExportOptions
   ): ExportResult {
-    const lines: string[] = [];
+    const elements: ScriptBlock[] = document.elements
+      .filter(el => el.type !== 'blank')
+      .map(el => {
+        const fe: ScriptBlock = { type: el.type as ScriptBlock['type'], content: el.content };
+        if (el.type === 'character' && el.extension) {
+          fe.content = `${el.content} (${el.extension})`;
+        }
+        if (el.dual) {
+          fe.metadata = { ...fe.metadata, dual: true };
+        }
+        return fe;
+      });
 
-    // Title page
-    if (document.title) {
-      lines.push(`Title: ${document.title}`);
-      if (document.credit) lines.push(`Credit: ${document.credit}`);
-      if (document.author) lines.push(`Author: ${document.author}`);
-      if (document.draftDate) lines.push(`Draft date: ${document.draftDate}`);
-      lines.push('');
-    }
+    const titlePage: FountainTitlePage | undefined =
+      document.title
+        ? {
+            title: document.title,
+            author: document.author || '',
+            credit: document.credit,
+            source: document.source,
+            draftDate: document.draftDate,
+            contact: document.contact,
+          }
+        : undefined;
 
-    // Elements
-    for (const el of document.elements) {
-      switch (el.type) {
-        case 'scene_heading':
-          lines.push('', el.content.toUpperCase());
-          break;
-        case 'action':
-          lines.push('', el.content);
-          break;
-        case 'character':
-          lines.push('', el.extension ? `${el.content} (${el.extension})` : el.content);
-          break;
-        case 'dialogue':
-          lines.push(el.content);
-          break;
-        case 'parenthetical':
-          lines.push(el.content);
-          break;
-        case 'transition':
-          lines.push('', `> ${el.content}`);
-          break;
-        case 'centered':
-          lines.push(`> ${el.content} <`);
-          break;
-        case 'page_break':
-          lines.push('', '===', '');
-          break;
-      }
-    }
-
-    return {
-      content: lines.join('\n'),
-      mimeType: 'text/plain',
-      filename: `${document.title || 'screenplay'}.fountain`,
-    };
+    const exporter = new FountainExporter();
+    const result = exporter.export(elements, titlePage);
+    return { ...result, mimeType: 'text/plain' };
   }
 
   private static screenplayToFdx(
@@ -226,7 +204,7 @@ export class FormatExporter {
     // Title page
     if (document.title) {
       xmlParts.push('<TitlePage>');
-      xmlParts.push(`<Content><Paragraph><Text>${this.escapeXml(document.title)}</Text></Paragraph></Content>`);
+      xmlParts.push(`<Content><Paragraph><Text>${escapeXml(document.title)}</Text></Paragraph></Content>`);
       xmlParts.push('</TitlePage>');
     }
 
@@ -235,7 +213,7 @@ export class FormatExporter {
       const type = this.mapToFdxType(el.type);
       if (type) {
         xmlParts.push(`<Paragraph Type="${type}">`);
-        xmlParts.push(`<Text>${this.escapeXml(el.content)}</Text>`);
+        xmlParts.push(`<Text>${escapeXml(el.content)}</Text>`);
         xmlParts.push('</Paragraph>');
       }
     }
@@ -247,6 +225,7 @@ export class FormatExporter {
       content: xmlParts.join('\n'),
       mimeType: 'application/xml',
       filename: `${document.title || 'screenplay'}.fdx`,
+      metadata: {},
     };
   }
 
@@ -264,15 +243,8 @@ export class FormatExporter {
       content: html,
       mimeType: 'text/html',
       filename: `${document.title || 'screenplay'}.html`,
+      metadata: {},
     };
-  }
-
-  private static screenplayToPdfHtml(
-    document: ScreenplayDocument,
-    options: ExportOptions
-  ): ExportResult {
-    // Return HTML optimized for PDF printing
-    return this.screenplayToHtml(document, options);
   }
 
   private static screenplayToMarkdown(
@@ -288,7 +260,7 @@ export class FormatExporter {
 
     for (const el of document.elements) {
       switch (el.type) {
-        case 'scene_heading':
+        case 'scene-heading':
           lines.push('', `## ${el.content.toUpperCase()}`, '');
           break;
         case 'action':
@@ -313,6 +285,7 @@ export class FormatExporter {
       content: lines.join('\n'),
       mimeType: 'text/markdown',
       filename: `${document.title || 'screenplay'}.md`,
+      metadata: {},
     };
   }
 
@@ -321,27 +294,27 @@ export class FormatExporter {
 
     for (const el of elements) {
       switch (el.type) {
-        case 'scene_heading':
-          parts.push(`<p class="scene-heading">${this.escapeHtml(el.content)}</p>`);
+        case 'scene-heading':
+          parts.push(`<p class="scene-heading">${escapeHtml(el.content)}</p>`);
           break;
         case 'action':
-          parts.push(`<p class="action">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="action">${escapeHtml(el.content)}</p>`);
           break;
         case 'character':
           const ext = el.extension ? ` (${el.extension})` : '';
-          parts.push(`<p class="character">${this.escapeHtml(el.content)}${ext}</p>`);
+          parts.push(`<p class="character">${escapeHtml(el.content)}${ext}</p>`);
           break;
         case 'dialogue':
-          parts.push(`<p class="dialogue">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="dialogue">${escapeHtml(el.content)}</p>`);
           break;
         case 'parenthetical':
-          parts.push(`<p class="parenthetical">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="parenthetical">${escapeHtml(el.content)}</p>`);
           break;
         case 'transition':
-          parts.push(`<p class="transition">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="transition">${escapeHtml(el.content)}</p>`);
           break;
         case 'centered':
-          parts.push(`<p class="centered">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="centered">${escapeHtml(el.content)}</p>`);
           break;
       }
     }
@@ -393,6 +366,7 @@ export class FormatExporter {
       content: lines.join('\n'),
       mimeType: 'text/markdown',
       filename: `${document.title || 'prose'}.md`,
+      metadata: {},
     };
   }
 
@@ -410,14 +384,8 @@ export class FormatExporter {
       content: html,
       mimeType: 'text/html',
       filename: `${document.title || 'prose'}.html`,
+      metadata: {},
     };
-  }
-
-  private static proseToPdfHtml(
-    document: ProseDocument,
-    options: ExportOptions
-  ): ExportResult {
-    return this.proseToHtml(document, options);
   }
 
   private static proseToRtf(
@@ -431,25 +399,25 @@ export class FormatExporter {
     ];
 
     if (document.title) {
-      rtfParts.push(`\\qc\\b\\fs36 ${this.escapeRtf(document.title)}\\b0\\fs24\\par\\par`);
+      rtfParts.push(`\\qc\\b\\fs36 ${escapeRtf(document.title)}\\b0\\fs24\\par\\par`);
     }
 
     for (const el of document.elements) {
       switch (el.type) {
         case 'chapter_heading':
-          rtfParts.push(`\\page\\qc\\b\\fs28 ${this.escapeRtf(el.content)}\\b0\\fs24\\ql\\par\\par`);
+          rtfParts.push(`\\page\\qc\\b\\fs28 ${escapeRtf(el.content)}\\b0\\fs24\\ql\\par\\par`);
           break;
         case 'section_break':
           rtfParts.push('\\qc * * *\\ql\\par\\par');
           break;
         case 'paragraph':
-          rtfParts.push(`\\fi720 ${this.escapeRtf(el.content)}\\par\\par`);
+          rtfParts.push(`\\fi720 ${escapeRtf(el.content)}\\par\\par`);
           break;
         case 'dialogue':
-          rtfParts.push(`${this.escapeRtf(el.content)}\\par\\par`);
+          rtfParts.push(`${escapeRtf(el.content)}\\par\\par`);
           break;
         case 'thought':
-          rtfParts.push(`\\i ${this.escapeRtf(el.content)}\\i0\\par\\par`);
+          rtfParts.push(`\\i ${escapeRtf(el.content)}\\i0\\par\\par`);
           break;
       }
     }
@@ -460,6 +428,7 @@ export class FormatExporter {
       content: rtfParts.join('\n'),
       mimeType: 'application/rtf',
       filename: `${document.title || 'prose'}.rtf`,
+      metadata: {},
     };
   }
 
@@ -469,25 +438,25 @@ export class FormatExporter {
     for (const el of elements) {
       switch (el.type) {
         case 'chapter_heading':
-          parts.push(`<h2 class="chapter-heading">${this.escapeHtml(el.content)}</h2>`);
+          parts.push(`<h2 class="chapter-heading">${escapeHtml(el.content)}</h2>`);
           break;
         case 'section_break':
           parts.push('<p class="section-break">* * *</p>');
           break;
         case 'paragraph':
-          parts.push(`<p class="paragraph">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="paragraph">${escapeHtml(el.content)}</p>`);
           break;
         case 'dialogue':
-          parts.push(`<p class="dialogue">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="dialogue">${escapeHtml(el.content)}</p>`);
           break;
         case 'thought':
-          parts.push(`<p class="thought">${this.escapeHtml(el.content)}</p>`);
+          parts.push(`<p class="thought">${escapeHtml(el.content)}</p>`);
           break;
         case 'quote':
-          parts.push(`<blockquote class="quote">${this.escapeHtml(el.content)}</blockquote>`);
+          parts.push(`<blockquote class="quote">${escapeHtml(el.content)}</blockquote>`);
           break;
         case 'letter':
-          parts.push(`<div class="letter">${this.escapeHtml(el.content).replace(/\n/g, '<br>')}</div>`);
+          parts.push(`<div class="letter">${escapeHtml(el.content).replace(/\n/g, '<br>')}</div>`);
           break;
       }
     }
@@ -544,6 +513,7 @@ export class FormatExporter {
       content: lines.join('\n'),
       mimeType: 'text/markdown',
       filename: `${document.title || 'comic'}.md`,
+      metadata: {},
     };
   }
 
@@ -561,14 +531,8 @@ export class FormatExporter {
       content: html,
       mimeType: 'text/html',
       filename: `${document.title || 'comic'}.html`,
+      metadata: {},
     };
-  }
-
-  private static comicToPdfHtml(
-    document: ComicDocument,
-    options: ExportOptions
-  ): ExportResult {
-    return this.comicToHtml(document, options);
   }
 
   private static comicPagesToHtml(pages: ComicPage[]): string {
@@ -585,19 +549,19 @@ export class FormatExporter {
         for (const el of panel.elements) {
           switch (el.type) {
             case 'description':
-              parts.push(`<p class="description">${this.escapeHtml(el.content)}</p>`);
+              parts.push(`<p class="description">${escapeHtml(el.content)}</p>`);
               break;
             case 'dialogue':
-              parts.push(`<p class="dialogue"><span class="character">${el.character}:</span> ${this.escapeHtml(el.content)}</p>`);
+              parts.push(`<p class="dialogue"><span class="character">${el.character}:</span> ${escapeHtml(el.content)}</p>`);
               break;
             case 'caption':
-              parts.push(`<p class="caption">CAP: ${this.escapeHtml(el.content)}</p>`);
+              parts.push(`<p class="caption">CAP: ${escapeHtml(el.content)}</p>`);
               break;
             case 'sfx':
-              parts.push(`<p class="sfx">SFX: ${this.escapeHtml(el.content)}</p>`);
+              parts.push(`<p class="sfx">SFX: ${escapeHtml(el.content)}</p>`);
               break;
             case 'note':
-              parts.push(`<p class="note">[${this.escapeHtml(el.content)}]</p>`);
+              parts.push(`<p class="note">[${escapeHtml(el.content)}]</p>`);
               break;
           }
         }
@@ -615,7 +579,7 @@ export class FormatExporter {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.escapeHtml(title)}</title>
+  <title>${escapeHtml(title)}</title>
   <style>${css}</style>
 </head>
 <body>
@@ -624,29 +588,10 @@ ${body}
 </html>`;
   }
 
-  private static escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  private static escapeXml(text: string): string {
-    return this.escapeHtml(text);
-  }
-
-  private static escapeRtf(text: string): string {
-    return text
-      .replace(/\\/g, '\\\\')
-      .replace(/\{/g, '\\{')
-      .replace(/\}/g, '\\}');
-  }
 
   private static mapToFdxType(type: string): string | null {
     const mapping: Record<string, string> = {
-      'scene_heading': 'Scene Heading',
+      'scene-heading': 'Scene Heading',
       'action': 'Action',
       'character': 'Character',
       'dialogue': 'Dialogue',
@@ -660,7 +605,7 @@ ${body}
    * Create downloadable blob from export result
    */
   static createBlob(result: ExportResult): Blob {
-    return new Blob([result.content], { type: result.mimeType });
+    return new Blob([result.content!], { type: result.mimeType });
   }
 
   /**

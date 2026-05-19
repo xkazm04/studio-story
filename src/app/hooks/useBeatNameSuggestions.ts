@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiFetch } from '../utils/api';
+import { BEAT_URLS } from '@/lib/beats/api';
 
 export interface BeatSuggestion {
   name: string;
@@ -59,7 +60,7 @@ export const useBeatNameSuggestions = (
           suggestions: BeatSuggestion[];
           success: boolean;
         }>({
-          url: '/api/beat-suggestions',
+          url: BEAT_URLS.suggestions,
           method: 'POST',
           body: context,
           signal,

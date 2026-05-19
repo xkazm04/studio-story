@@ -5,7 +5,7 @@ import ColoredBorder from './ColoredBorder';
 
 interface SectionWrapperProps {
   children: ReactNode;
-  borderColor?: "blue" | "green" | "purple" | "yellow" | "pink" | "orange" | "gray";
+  borderColor?: "blue" | "green" | "purple" | "yellow" | "pink" | "orange" | "gray" | "red" | "cyan";
   className?: string;
   padding?: 'sm' | 'md' | 'lg';
 }

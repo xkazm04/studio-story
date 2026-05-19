@@ -12,22 +12,16 @@ import {
   PanelSkeletonList,
 } from '../shared/PanelPrimitives';
 import type { BasePrimitiveProps, DetailSection, DetailField } from './types';
+import { getFieldValue, renderFieldValue } from './utils';
 import { SPACING } from '@/workspace/theme/tokens';
 
-interface DetailViewProps extends BasePrimitiveProps {
-  data: Record<string, unknown> | null;
+interface DetailViewProps<T extends object = Record<string, unknown>> extends BasePrimitiveProps {
+  data: T | null;
   sections: DetailSection[];
   onSave?: (updates: Record<string, unknown>) => Promise<void>;
 }
 
-function formatValue(value: unknown): string {
-  if (value == null) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return '';
-}
-
-export default function DetailView({
+export default function DetailView<T extends object>({
   title,
   icon,
   headerAccent,
@@ -44,7 +38,7 @@ export default function DetailView({
   sections,
   onSave,
   density,
-}: DetailViewProps) {
+}: DetailViewProps<T>) {
   const [edits, setEdits] = useState<Record<string, unknown>>({});
   const [saveState, setSaveState] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle');
 
@@ -85,7 +79,7 @@ export default function DetailView({
 
   const resolvedValue = (key: string): unknown => {
     if (key in edits) return edits[key];
-    return data?.[key];
+    return data ? getFieldValue(data, key) : undefined;
   };
 
   return (
@@ -167,7 +161,7 @@ function FieldRow({
   value: unknown;
   onChange: (key: string, value: unknown) => void;
 }) {
-  const displayValue = formatValue(value);
+  const displayValue = renderFieldValue(value);
 
   if (field.editable && field.type === 'textarea') {
     return (

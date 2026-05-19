@@ -7,7 +7,8 @@
  */
 
 import type { Scene } from '@/app/types/Scene';
-import type { Beat } from '@/app/types/Beat';
+import { BEAT_TYPES, type Beat } from '@/app/types/Beat';
+import { sortScenes } from './utils';
 import { BEAT_TYPE_TENSION } from './PacingAnalyzer';
 
 // ============================================================================
@@ -149,17 +150,6 @@ const DEFAULT_CONFIG: EngagementConfig = {
 // ============================================================================
 
 class EngagementSimulatorClass {
-  private static instance: EngagementSimulatorClass;
-
-  private constructor() {}
-
-  static getInstance(): EngagementSimulatorClass {
-    if (!EngagementSimulatorClass.instance) {
-      EngagementSimulatorClass.instance = new EngagementSimulatorClass();
-    }
-    return EngagementSimulatorClass.instance;
-  }
-
   // ============================================================================
   // Main Simulation
   // ============================================================================
@@ -170,13 +160,13 @@ class EngagementSimulatorClass {
   simulateEngagement(
     scenes: Scene[],
     beats: Beat[],
-    config: Partial<EngagementConfig> = {}
+    config: Partial<EngagementConfig> = {},
+    options?: { preSorted?: boolean }
   ): ReaderExperienceReport {
     const fullConfig = { ...DEFAULT_CONFIG, ...config };
     const profile = READER_PROFILES[fullConfig.readerProfile];
 
-    // Sort scenes by order
-    const sortedScenes = this.sortScenes(scenes, beats);
+    const sortedScenes = options?.preSorted ? scenes : sortScenes(scenes, beats);
     // Map beats by act_id since Beat doesn't have direct scene_id
     const beatsMap = new Map<string, Beat>(
       beats.filter(b => b.act_id).map(b => [b.act_id!, b])
@@ -326,11 +316,11 @@ class EngagementSimulatorClass {
     }
 
     // Adjust for profile preferences
-    if (beat?.type === 'action') {
+    if (beat?.type === BEAT_TYPES.action) {
       impact *= profile.actionWeight;
     } else if (beat?.type === 'emotional') {
       impact *= profile.emotionWeight;
-    } else if (beat?.type === 'revelation') {
+    } else if (beat?.type === BEAT_TYPES.reveal) {
       impact *= profile.curiosityWeight;
     }
 
@@ -379,12 +369,12 @@ class EngagementSimulatorClass {
     }
 
     // Revelations satisfy curiosity (decrease it)
-    if (beat?.type === 'revelation') {
+    if (beat?.type === BEAT_TYPES.reveal) {
       curiosity -= 15;
     }
 
     // Setup increases curiosity
-    if (beat?.type === 'setup') {
+    if (beat?.type === BEAT_TYPES.setup) {
       curiosity += 8;
     }
 
@@ -860,22 +850,6 @@ class EngagementSimulatorClass {
   // Helpers
   // ============================================================================
 
-  private sortScenes(scenes: Scene[], beats: Beat[]): Scene[] {
-    const actOrderMap = new Map<string, number>();
-    beats.forEach(beat => {
-      if (beat.act_id && beat.order !== undefined) {
-        actOrderMap.set(beat.act_id, Math.min(actOrderMap.get(beat.act_id) ?? Infinity, beat.order));
-      }
-    });
-
-    return [...scenes].sort((a, b) => {
-      const orderA = (a.act_id ? actOrderMap.get(a.act_id) : undefined) ?? 0;
-      const orderB = (b.act_id ? actOrderMap.get(b.act_id) : undefined) ?? 0;
-      if (orderA !== orderB) return orderA - orderB;
-      return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
-    });
-  }
-
   // ============================================================================
   // Accessors
   // ============================================================================
@@ -893,7 +867,7 @@ class EngagementSimulatorClass {
 // Export
 // ============================================================================
 
-export const engagementSimulator = EngagementSimulatorClass.getInstance();
+export const engagementSimulator = new EngagementSimulatorClass();
 
 export { EngagementSimulatorClass, READER_PROFILES };
 

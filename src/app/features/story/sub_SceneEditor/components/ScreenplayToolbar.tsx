@@ -34,8 +34,8 @@ interface ScreenplayToolbarProps {
 
 function btnClass(isActive: boolean): string {
   return clsx(
-    'p-2 rounded hover:bg-slate-700 transition-colors',
-    isActive ? 'bg-slate-700 text-cyan-400' : 'text-slate-400',
+    'p-2 rounded hover:bg-slate-800/80 transition-all duration-150 active:scale-[0.98]',
+    isActive ? 'bg-cyan-500/10 text-cyan-300 ring-1 ring-cyan-500/30' : 'text-slate-400',
   );
 }
 
@@ -49,7 +49,7 @@ export function ScreenplayToolbar({
   if (!editor) return null;
 
   return (
-    <div className="flex items-center gap-1 p-2 border-b border-slate-800 bg-slate-900/50 sticky top-0 z-10">
+    <div className="flex items-center gap-1 p-3 border-b border-slate-700/60 bg-slate-900/50 sticky top-0 z-10">
       {/* ── Prose Section ─────────────────────────────── */}
 
       <button

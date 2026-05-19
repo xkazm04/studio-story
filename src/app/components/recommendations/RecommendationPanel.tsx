@@ -84,16 +84,16 @@ const TypeIcons: Record<RecommendationType, React.ComponentType<{ className?: st
 };
 
 const TypeColors: Record<RecommendationType, string> = {
-  character: 'text-cyan-400 bg-cyan-500/20',
-  scene: 'text-emerald-400 bg-emerald-500/20',
-  asset: 'text-purple-400 bg-purple-500/20',
-  relationship: 'text-pink-400 bg-pink-500/20',
-  beat: 'text-amber-400 bg-amber-500/20',
-  faction: 'text-blue-400 bg-blue-500/20',
-  location: 'text-orange-400 bg-orange-500/20',
-  connection: 'text-indigo-400 bg-indigo-500/20',
-  style: 'text-rose-400 bg-rose-500/20',
-  narrative: 'text-teal-400 bg-teal-500/20',
+  character: 'ms-ent-character ms-ent-character-bg',
+  scene: 'ms-ent-scene ms-ent-scene-bg',
+  asset: 'ms-ent-asset ms-ent-asset-bg',
+  relationship: 'ms-ent-relationship ms-ent-relationship-bg',
+  beat: 'ms-ent-beat ms-ent-beat-bg',
+  faction: 'ms-ent-faction ms-ent-faction-bg',
+  location: 'ms-ent-location ms-ent-location-bg',
+  connection: 'ms-ent-connection ms-ent-connection-bg',
+  style: 'ms-ent-style ms-ent-style-bg',
+  narrative: 'ms-ent-narrative ms-ent-narrative-bg',
 };
 
 const PriorityColors: Record<RecommendationPriority, string> = {

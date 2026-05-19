@@ -66,7 +66,7 @@ export default function VoicePerformancePanel({ onClose, density }: VoicePerform
           <select
             value={selectedVoiceId ?? ''}
             onChange={(e) => setSelectedVoiceId(e.target.value || undefined)}
-            className="w-full rounded border border-slate-700/50 bg-slate-900/80 px-2 py-1 text-sm text-slate-300 outline-none transition-colors focus:border-emerald-500/40"
+            className="w-full rounded border border-slate-700/50 bg-slate-900/80 px-2 py-1 text-sm text-slate-300 outline-none transition-colors focus:border-voice-primary/40"
           >
             <option value="">None selected</option>
             {voices.map((v) => (

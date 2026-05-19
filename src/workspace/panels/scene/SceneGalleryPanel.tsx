@@ -52,7 +52,7 @@ export default function SceneGalleryPanel({ onClose, density }: SceneGalleryPane
         ) : undefined
       }
     >
-      <div className="flex h-full items-stretch gap-2 overflow-x-auto p-2">
+      <div className="flex h-full items-stretch gap-2 overflow-x-auto p-3">
         {isLoading ? (
           <PanelSkeletonList rows={3} className="min-w-full" />
         ) : scenes.length === 0 ? (
@@ -69,11 +69,11 @@ export default function SceneGalleryPanel({ onClose, density }: SceneGalleryPane
                 key={scene.id}
                 onClick={() => setSelectedScene(scene)}
                 className={cn(
-                  'flex w-36 shrink-0 flex-col gap-1 rounded-lg border p-2 text-left transition-colors',
+                  'flex w-36 shrink-0 flex-col gap-1 rounded-lg border p-2 text-left transition-all duration-150 active:scale-[0.98]',
                   isActive
-                    ? 'bg-amber-500/10 border-amber-500/40'
-                    : 'bg-slate-900/50 border-slate-800/40 hover:border-slate-700/50',
-                  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500/40'
+                    ? 'bg-cyan-500/10 border-cyan-500/30'
+                    : 'bg-slate-900/50 border-slate-700/40 hover:bg-slate-800/80',
+                  'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40'
                 )}
               >
                 {/* Image thumbnail */}
@@ -92,7 +92,7 @@ export default function SceneGalleryPanel({ onClose, density }: SceneGalleryPane
                 )}
                 <p className={cn(
                   'text-sm font-medium truncate',
-                  isActive ? 'text-amber-300' : 'text-slate-300',
+                  isActive ? 'text-cyan-300' : 'text-slate-300',
                 )}>
                   {scene.name}
                 </p>

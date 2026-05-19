@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Project } from '@/app/types/Project';
-import { logger } from '@/app/utils/logger';
-import { HTTP_STATUS, createErrorResponse } from '@/app/utils/apiErrorHandling';
+import { HTTP_STATUS, createErrorResponse, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * Fetches a project by ID from the database
@@ -47,79 +46,52 @@ async function deleteProject(id: string) {
  * GET /api/projects/[id]
  * Get a single project by ID
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
+export const GET = withApiHandler('GET /api/projects/[id]', async (request: NextRequest, context) => {
+  const { id } = await context.params;
 
-    const { data, error } = await fetchProject(id);
+  const { data, error } = await fetchProject(id);
 
-    if (error) {
-      logger.apiError('GET /api/projects/[id]', error, { projectId: id });
-      return createErrorResponse('Project not found', HTTP_STATUS.NOT_FOUND);
-    }
-
-    return NextResponse.json(data as Project);
-  } catch (error) {
-    logger.apiError('GET /api/projects/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return createErrorResponse('Project not found', HTTP_STATUS.NOT_FOUND);
   }
-}
+
+  return NextResponse.json(data as Project);
+});
 
 /**
  * PUT /api/projects/[id]
  * Update a project
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const body = await request.json();
-    const { name, description } = body;
+export const PUT = withApiHandler('PUT /api/projects/[id]', async (request: NextRequest, context) => {
+  const { id } = await context.params;
+  const body = await request.json();
+  const { name, description } = body;
 
-    const updateData: Partial<Project> = {};
-    if (name !== undefined) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
+  const updateData: Partial<Project> = {};
+  if (name !== undefined) updateData.name = name;
+  if (description !== undefined) updateData.description = description;
 
-    const { data, error } = await updateProject(id, updateData);
+  const { data, error } = await updateProject(id, updateData);
 
-    if (error) {
-      logger.apiError('PUT /api/projects/[id]', error, { projectId: id });
-      return createErrorResponse('Failed to update project', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json(data as Project);
-  } catch (error) {
-    logger.apiError('PUT /api/projects/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return createErrorResponse('Failed to update project', HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-}
+
+  return NextResponse.json(data as Project);
+});
 
 /**
  * DELETE /api/projects/[id]
  * Delete a project
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
+export const DELETE = withApiHandler('DELETE /api/projects/[id]', async (request: NextRequest, context) => {
+  const { id } = await context.params;
 
-    const { error } = await deleteProject(id);
+  const { error } = await deleteProject(id);
 
-    if (error) {
-      logger.apiError('DELETE /api/projects/[id]', error, { projectId: id });
-      return createErrorResponse('Failed to delete project', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    logger.apiError('DELETE /api/projects/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return createErrorResponse('Failed to delete project', HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-}
+
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

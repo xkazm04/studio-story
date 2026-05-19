@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { FactionRelationship } from '@/app/types/Faction';
-import { logger } from '@/app/utils/logger';
-import { createErrorResponse, HTTP_STATUS } from '@/app/utils/apiErrorHandling';
+import { handleDatabaseError, HTTP_STATUS, withApiHandler } from '@/app/utils/apiErrorHandling';
 
 /**
  * Updates a faction relationship in the database
@@ -34,49 +33,37 @@ async function deleteFactionRelationship(id: string) {
  * PUT /api/faction-relationships/[id]
  * Update a faction relationship
  */
-export async function PUT(
+export const PUT = withApiHandler('PUT /api/faction-relationships/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
-    const body = await request.json();
+) => {
+  const { id } = await context.params;
+  const body = await request.json();
 
-    const { data, error } = await updateFactionRelationship(id, body);
+  const { data, error } = await updateFactionRelationship(id, body);
 
-    if (error) {
-      logger.error('Error updating faction relationship', error, { id });
-      return createErrorResponse('Failed to update faction relationship', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json(data as FactionRelationship);
-  } catch (error) {
-    logger.error('Unexpected error in PUT /api/faction-relationships/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('update faction relationship', error, 'PUT /api/faction-relationships/[id]');
   }
-}
+
+  return NextResponse.json(data as FactionRelationship);
+});
 
 /**
  * DELETE /api/faction-relationships/[id]
  * Delete a faction relationship
  */
-export async function DELETE(
+export const DELETE = withApiHandler('DELETE /api/faction-relationships/[id]', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await context.params;
+) => {
+  const { id } = await context.params;
 
-    const { error } = await deleteFactionRelationship(id);
+  const { error } = await deleteFactionRelationship(id);
 
-    if (error) {
-      logger.error('Error deleting faction relationship', error, { id });
-      return createErrorResponse('Failed to delete faction relationship', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    }
-
-    return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
-  } catch (error) {
-    logger.error('Unexpected error in DELETE /api/faction-relationships/[id]', error);
-    return createErrorResponse('Internal server error', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  if (error) {
+    return handleDatabaseError('delete faction relationship', error, 'DELETE /api/faction-relationships/[id]');
   }
-}
+
+  return NextResponse.json({ success: true }, { status: HTTP_STATUS.OK });
+});

@@ -29,12 +29,14 @@ import {
   FactionSecret,
   DiplomaticAction,
 } from '@/lib/politics/PoliticsEngine';
+import { CulturalCompatibility } from '@/lib/culture/CultureGenerator';
 
 interface FactionDetailsProps {
   faction: Faction;
   onBack: () => void;
   onUpdate: () => void;
   allFactions?: Faction[];
+  culturalCompatibilities?: Map<string, CulturalCompatibility>;
 }
 
 type TabType = FactionTabType;
@@ -44,6 +46,7 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
   onBack,
   onUpdate,
   allFactions = [],
+  culturalCompatibilities,
 }) => {
   const queryClient = useQueryClient();
   const { selectedProject } = useProjectStore();
@@ -443,6 +446,7 @@ const FactionDetails: React.FC<FactionDetailsProps> = ({
         onAddSecret={handleAddSecret}
         onRevealSecret={handleRevealSecret}
         onExecuteAction={handleExecuteDiplomaticAction}
+        culturalCompatibilities={culturalCompatibilities}
       />
 
       {/* Media Upload Modal */}

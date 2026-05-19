@@ -27,10 +27,13 @@
         "./src/*"
       ],
       "@dzin/core": [
-        "./packages/dzin/core/src/index.ts"
+        "../dzin/packages/core/src"
       ],
-      "@dzin/core/*": [
-        "./packages/dzin/core/src/*"
+      "@dzin/voice": [
+        "../dzin/packages/voice/src"
+      ],
+      "@dzin/chat-ui": [
+        "../dzin/packages/chat-ui/src"
       ]
     }
   },
@@ -39,9 +42,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "packages/dzin/core/src/**/*.ts",
-    "packages/dzin/core/src/**/*.tsx"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -9,6 +9,9 @@
  * - Chapter-based audio export management
  */
 
+import { escapeXml } from '../export/utils';
+import { extractData } from '@/app/utils/api';
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -243,7 +246,7 @@ export class SSMLGenerator {
    * Generate SSML from plain text
    */
   generate(text: string, speaker?: string, emotion?: string): string {
-    let ssml = this.escapeXml(text);
+    let ssml = escapeXml(text);
 
     // Add prosody wrapper
     ssml = this.wrapWithProsody(ssml);
@@ -269,7 +272,7 @@ export class SSMLGenerator {
    * Generate SSML for a dialogue line with character emotion
    */
   generateDialogue(text: string, emotion?: string, intensity: number = 0.5): string {
-    let ssml = this.escapeXml(text);
+    let ssml = escapeXml(text);
 
     // Apply emotion-based prosody
     if (emotion) {
@@ -278,15 +281,6 @@ export class SSMLGenerator {
 
     // Wrap in speak tag
     return `<speak>${ssml}</speak>`;
-  }
-
-  private escapeXml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
   }
 
   private wrapWithProsody(text: string): string {
@@ -914,7 +908,8 @@ export class NarrationGenerator {
       throw new Error(`TTS API error: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data: any = extractData(await response.json());
 
     return {
       url: data.audioUrl,

@@ -9,7 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
-import { HTTP_STATUS, createErrorResponse, handleDatabaseError } from '@/app/utils/apiErrorHandling';
+import { withApiHandler, HTTP_STATUS, createErrorResponse, handleDatabaseError } from '@/app/utils/apiErrorHandling';
 import { sceneParser } from '@/lib/image';
 import { assembleIllustrationPrompt, buildControlnets } from '@/app/lib/ai/prompt-assembly';
 import { getLeonardoProvider } from '@/app/lib/ai/providers/leonardo';
@@ -23,11 +23,10 @@ import type { Project } from '@/app/types/Project';
 // Start scene illustration generation
 // ============================================================================
 
-export async function POST(
+export const POST = withApiHandler('POST /api/scenes/[id]/illustrate', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
+) => {
     const { id: sceneId } = await context.params;
 
     // 1. Fetch the scene
@@ -137,26 +136,17 @@ export async function POST(
       characterRefsUsed: characterRefIds.length,
       hasStyleRef: !!styleRefId,
     });
-  } catch (error) {
-    console.error('POST /api/scenes/[id]/illustrate', error);
-    return createErrorResponse(
-      'Failed to start illustration generation',
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-  }
-}
+});
 
 // ============================================================================
 // GET /api/scenes/[id]/illustrate?generationId=xxx
 // Poll generation status
 // ============================================================================
 
-export async function GET(
+export const GET = withApiHandler('GET /api/scenes/[id]/illustrate', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
+) => {
     const { id: sceneId } = await context.params;
     const { searchParams } = new URL(request.url);
     const generationId = searchParams.get('generationId');
@@ -178,26 +168,17 @@ export async function GET(
       images: result.images || [],
       error: result.error,
     });
-  } catch (error) {
-    console.error('GET /api/scenes/[id]/illustrate', error);
-    return createErrorResponse(
-      'Failed to check illustration status',
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-  }
-}
+});
 
 // ============================================================================
 // PUT /api/scenes/[id]/illustrate
 // Persist selected image to Supabase Storage and update scene record
 // ============================================================================
 
-export async function PUT(
+export const PUT = withApiHandler('PUT /api/scenes/[id]/illustrate', async (
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
-) {
-  try {
+) => {
     const { id: sceneId } = await context.params;
     const body = await request.json();
     const { imageUrl, generationId } = body;
@@ -269,12 +250,4 @@ export async function PUT(
       sceneId,
       storagePath,
     });
-  } catch (error) {
-    console.error('PUT /api/scenes/[id]/illustrate', error);
-    return createErrorResponse(
-      'Failed to persist illustration',
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-  }
-}
+});

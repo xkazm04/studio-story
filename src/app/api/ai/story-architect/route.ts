@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 let cachedClient: InstanceType<typeof GoogleGenAI> | null = null;
 
@@ -251,8 +252,7 @@ function parseJsonResponse(text: string): Record<string, unknown> {
 
 // ── Route Handler ─────────────────────────────────────────────────────────────
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/ai/story-architect', async (request: NextRequest) => {
     const client = getClient();
     if (!client) {
       return NextResponse.json(
@@ -284,11 +284,4 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, ...result });
-  } catch (error) {
-    console.error('Story architect error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Failed to process request' },
-      { status: 500 }
-    );
-  }
-}
+});

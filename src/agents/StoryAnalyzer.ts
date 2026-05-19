@@ -11,6 +11,7 @@
  */
 
 import type { MuseInsight, MuseInsightCategory } from './types';
+import { TOOL_NAMES } from './types';
 
 // ============================================================================
 // Input Types (minimal shapes — not importing app-level types to stay decoupled)
@@ -125,7 +126,7 @@ const characterWithoutScenes: AnalysisRule = ({ characters, scenes }) => {
         `${char.name} has no scene presence`,
         `${char.name} doesn't appear in any scene. Consider introducing them or removing them from the cast.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'split-2',
@@ -160,7 +161,7 @@ const isolatedCharacter: AnalysisRule = ({ characters, relationships }) => {
         `${char.name} has no relationships`,
         `${char.name} is isolated from the rest of the cast. Adding relationships creates dramatic potential.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'split-2',
@@ -202,7 +203,7 @@ const actWithoutBeats: AnalysisRule = ({ acts, beats }) => {
         `${act.name} has no story beats`,
         `Act "${act.name}" has no beats defined. Story structure needs beats to drive the narrative forward.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'primary-sidebar',
@@ -233,7 +234,7 @@ const incompleteBeatRatio: AnalysisRule = ({ beats }) => {
       `Only ${Math.round(ratio * 100)}% of beats completed`,
       `${completed} of ${beats.length} story beats are marked complete. Consider reviewing your progress.`,
       {
-        type: 'compose_workspace',
+        type: TOOL_NAMES.COMPOSE_WORKSPACE,
         payload: {
           action: 'replace',
           layout: 'single',
@@ -273,7 +274,7 @@ const sceneLengthVariation: AnalysisRule = ({ scenes }) => {
         'Several scenes lack content',
         `Scenes ${i - flatStretch + 1} through ${i + 1} are very short or empty. This may indicate a flat narrative stretch.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'split-2',
@@ -337,7 +338,7 @@ const antagonistMissing: AnalysisRule = ({ characters, scenes, acts }) => {
         `${antag.name} absent from ${missingNames}`,
         `Your antagonist "${antag.name}" has no presence in ${missingNames}. Consider adding confrontation or tension beats.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'split-2',
@@ -366,7 +367,7 @@ const sceneWithoutAct: AnalysisRule = ({ scenes, acts }) => {
       `${orphanScenes.length} scene(s) not assigned to an act`,
       `${orphanScenes.map(s => `"${s.name}"`).slice(0, 3).join(', ')}${orphanScenes.length > 3 ? '...' : ''} — assign them to maintain story structure.`,
       {
-        type: 'compose_workspace',
+        type: TOOL_NAMES.COMPOSE_WORKSPACE,
         payload: {
           action: 'replace',
           layout: 'single',
@@ -419,7 +420,7 @@ const unresolvedTension: AnalysisRule = ({ characters, scenes, relationships }) 
         `${char1.name} and ${char2.name} have unresolved tension`,
         `These ${relType} characters never share a scene. Consider creating a confrontation to leverage their dynamic.`,
         {
-          type: 'compose_workspace',
+          type: TOOL_NAMES.COMPOSE_WORKSPACE,
           payload: {
             action: 'replace',
             layout: 'triptych',

@@ -14,7 +14,6 @@ import {
   FileText,
   MessageSquare,
   ChevronDown,
-  ChevronRight,
   Activity,
   Target,
   Zap,
@@ -22,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TYPOGRAPHY, SEMANTIC_COLORS, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
+import { ToggleSection } from '@/app/components/UI/ToggleSection';
 import { Button } from '@/app/components/UI/Button';
 import {
   templateManager,
@@ -174,242 +174,160 @@ export const EffectivenessPanel: React.FC<EffectivenessPanelProps> = ({
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {/* Overview Section */}
-        <div className="border-b border-slate-800">
-          <button
-            onClick={() => toggleSection('overview')}
-            className="w-full flex items-center justify-between p-3 hover:bg-slate-800/30 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              {expandedSection === 'overview' ? (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              )}
-              <Activity className="w-4 h-4 text-cyan-400" />
-              <span className={TYPOGRAPHY.h2}>Overview</span>
+        <ToggleSection
+          isOpen={expandedSection === 'overview'}
+          onToggle={() => toggleSection('overview')}
+          icon={<Activity className="w-4 h-4 text-cyan-400" />}
+          title="Overview"
+        >
+          <div className="px-3 pb-3 grid grid-cols-2 gap-3">
+            {/* Usage Count */}
+            <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-400 mb-1">
+                <Zap className="w-3 h-3" />
+                <span className="text-sm">Total Uses</span>
+              </div>
+              <div className="text-lg font-semibold text-slate-200">
+                {report.metrics.usageCount.toLocaleString()}
+              </div>
             </div>
-          </button>
 
-          <AnimatePresence>
-            {expandedSection === 'overview' && (
-              <motion.div
-                {...FM_VARIANTS.collapse}
-                transition={FM_TRANSITION.slow}
-                className="overflow-hidden"
-              >
-                <div className="px-3 pb-3 grid grid-cols-2 gap-3">
-                  {/* Usage Count */}
-                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
-                      <Zap className="w-3 h-3" />
-                      <span className="text-sm">Total Uses</span>
-                    </div>
-                    <div className="text-lg font-semibold text-slate-200">
-                      {report.metrics.usageCount.toLocaleString()}
-                    </div>
-                  </div>
+            {/* Average Rating */}
+            <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-400 mb-1">
+                <Star className="w-3 h-3" />
+                <span className="text-sm">Avg Rating</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-semibold text-slate-200">
+                  {report.metrics.averageRating.toFixed(1)}
+                </span>
+                <span className="text-sm text-slate-400">/ 5</span>
+              </div>
+            </div>
 
-                  {/* Average Rating */}
-                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
-                      <Star className="w-3 h-3" />
-                      <span className="text-sm">Avg Rating</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg font-semibold text-slate-200">
-                        {report.metrics.averageRating.toFixed(1)}
-                      </span>
-                      <span className="text-sm text-slate-400">/ 5</span>
-                    </div>
-                  </div>
+            {/* Success Rate */}
+            <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-400 mb-1">
+                <Target className="w-3 h-3" />
+                <span className="text-sm">Success Rate</span>
+              </div>
+              <div className={cn('text-lg font-semibold', SEMANTIC_COLORS.success.text)}>
+                {(report.metrics.successRate * 100).toFixed(0)}%
+              </div>
+            </div>
 
-                  {/* Success Rate */}
-                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
-                      <Target className="w-3 h-3" />
-                      <span className="text-sm">Success Rate</span>
-                    </div>
-                    <div className={cn('text-lg font-semibold', SEMANTIC_COLORS.success.text)}>
-                      {(report.metrics.successRate * 100).toFixed(0)}%
-                    </div>
-                  </div>
-
-                  {/* Avg Output Length */}
-                  <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-400 mb-1">
-                      <FileText className="w-3 h-3" />
-                      <span className="text-sm">Avg Output</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg font-semibold text-slate-200">
-                        {Math.round(report.metrics.averageOutputLength).toLocaleString()}
-                      </span>
-                      <span className="text-sm text-slate-400">chars</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+            {/* Avg Output Length */}
+            <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-800">
+              <div className="flex items-center gap-1.5 text-slate-400 mb-1">
+                <FileText className="w-3 h-3" />
+                <span className="text-sm">Avg Output</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-semibold text-slate-200">
+                  {Math.round(report.metrics.averageOutputLength).toLocaleString()}
+                </span>
+                <span className="text-sm text-slate-400">chars</span>
+              </div>
+            </div>
+          </div>
+        </ToggleSection>
 
         {/* Rating Distribution Section */}
-        <div className="border-b border-slate-800">
-          <button
-            onClick={() => toggleSection('ratings')}
-            className="w-full flex items-center justify-between p-3 hover:bg-slate-800/30 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              {expandedSection === 'ratings' ? (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              )}
-              <Star className="w-4 h-4 text-amber-400" />
-              <span className={TYPOGRAPHY.h2}>Rating Distribution</span>
-            </div>
-            <span className="text-sm text-slate-400">{report.metrics.ratingCount} ratings</span>
-          </button>
-
-          <AnimatePresence>
-            {expandedSection === 'ratings' && (
-              <motion.div
-                {...FM_VARIANTS.collapse}
-                transition={FM_TRANSITION.slow}
-                className="overflow-hidden"
-              >
-                <div className="px-3 pb-3 space-y-2">
-                  {[5, 4, 3, 2, 1].map((rating) => (
-                    <div key={rating} className="flex items-center gap-2">
-                      <span className="text-sm text-slate-400 w-4">{rating}</span>
-                      <Star className="w-3 h-3 text-amber-400" />
-                      {renderDistributionBar(
-                        report.ratingDistribution[rating] || 0,
-                        maxRatingCount,
-                        rating >= 4 ? 'bg-green-500' : rating >= 3 ? 'bg-amber-500' : 'bg-red-500'
-                      )}
-                      <span className="text-sm text-slate-400 w-8 text-right">
-                        {report.ratingDistribution[rating] || 0}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <ToggleSection
+          isOpen={expandedSection === 'ratings'}
+          onToggle={() => toggleSection('ratings')}
+          icon={<Star className="w-4 h-4 text-amber-400" />}
+          title="Rating Distribution"
+          badge={<span className="text-sm text-slate-400">{report.metrics.ratingCount} ratings</span>}
+        >
+          <div className="px-3 pb-3 space-y-2">
+            {[5, 4, 3, 2, 1].map((rating) => (
+              <div key={rating} className="flex items-center gap-2">
+                <span className="text-sm text-slate-400 w-4">{rating}</span>
+                <Star className="w-3 h-3 text-amber-400" />
+                {renderDistributionBar(
+                  report.ratingDistribution[rating] || 0,
+                  maxRatingCount,
+                  rating >= 4 ? 'bg-green-500' : rating >= 3 ? 'bg-amber-500' : 'bg-red-500'
+                )}
+                <span className="text-sm text-slate-400 w-8 text-right">
+                  {report.ratingDistribution[rating] || 0}
+                </span>
+              </div>
+            ))}
+          </div>
+        </ToggleSection>
 
         {/* Quality Distribution Section */}
-        <div className="border-b border-slate-800">
-          <button
-            onClick={() => toggleSection('quality')}
-            className="w-full flex items-center justify-between p-3 hover:bg-slate-800/30 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              {expandedSection === 'quality' ? (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              )}
-              <ThumbsUp className="w-4 h-4 text-green-400" />
-              <span className={TYPOGRAPHY.h2}>Output Quality</span>
-            </div>
-          </button>
-
-          <AnimatePresence>
-            {expandedSection === 'quality' && (
-              <motion.div
-                {...FM_VARIANTS.collapse}
-                transition={FM_TRANSITION.slow}
-                className="overflow-hidden"
-              >
-                <div className="px-3 pb-3 space-y-2">
-                  {QUALITY_OPTIONS.slice().reverse().map(({ value, label }) => (
-                    <div key={value} className="flex items-center gap-2">
-                      <span className="text-sm text-slate-400 w-16">{label}</span>
-                      {renderDistributionBar(
-                        report.qualityDistribution[value!] || 0,
-                        maxQualityCount,
-                        value === 'excellent' ? 'bg-purple-500' :
-                        value === 'good' ? 'bg-green-500' :
-                        value === 'fair' ? 'bg-amber-500' : 'bg-red-500'
-                      )}
-                      <span className="text-sm text-slate-400 w-8 text-right">
-                        {report.qualityDistribution[value!] || 0}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <ToggleSection
+          isOpen={expandedSection === 'quality'}
+          onToggle={() => toggleSection('quality')}
+          icon={<ThumbsUp className="w-4 h-4 text-green-400" />}
+          title="Output Quality"
+        >
+          <div className="px-3 pb-3 space-y-2">
+            {QUALITY_OPTIONS.slice().reverse().map(({ value, label }) => (
+              <div key={value} className="flex items-center gap-2">
+                <span className="text-sm text-slate-400 w-16">{label}</span>
+                {renderDistributionBar(
+                  report.qualityDistribution[value!] || 0,
+                  maxQualityCount,
+                  value === 'excellent' ? 'bg-purple-500' :
+                  value === 'good' ? 'bg-green-500' :
+                  value === 'fair' ? 'bg-amber-500' : 'bg-red-500'
+                )}
+                <span className="text-sm text-slate-400 w-8 text-right">
+                  {report.qualityDistribution[value!] || 0}
+                </span>
+              </div>
+            ))}
+          </div>
+        </ToggleSection>
 
         {/* A/B Test Results Section */}
         {report.metrics.abTestResults && report.metrics.abTestResults.length > 0 && (
-          <div className="border-b border-slate-800">
-            <button
-              onClick={() => toggleSection('abtests')}
-              className="w-full flex items-center justify-between p-3 hover:bg-slate-800/30 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                {expandedSection === 'abtests' ? (
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
-                )}
-                <GitCompare className="w-4 h-4 text-blue-400" />
-                <span className={TYPOGRAPHY.h2}>A/B Test Results</span>
-              </div>
-              <span className="text-sm text-slate-400">
-                {report.metrics.abTestResults.length} tests
-              </span>
-            </button>
-
-            <AnimatePresence>
-              {expandedSection === 'abtests' && (
-                <motion.div
-                  {...FM_VARIANTS.collapse}
-                  transition={FM_TRANSITION.slow}
-                  className="overflow-hidden"
+          <ToggleSection
+            isOpen={expandedSection === 'abtests'}
+            onToggle={() => toggleSection('abtests')}
+            icon={<GitCompare className="w-4 h-4 text-blue-400" />}
+            title="A/B Test Results"
+            badge={<span className="text-sm text-slate-400">{report.metrics.abTestResults.length} tests</span>}
+          >
+            <div className="px-3 pb-3 space-y-2">
+              {report.metrics.abTestResults.map((test, idx) => (
+                <div
+                  key={test.testId}
+                  className="bg-slate-900/50 rounded-lg p-3 border border-slate-800"
                 >
-                  <div className="px-3 pb-3 space-y-2">
-                    {report.metrics.abTestResults.map((test, idx) => (
-                      <div
-                        key={test.testId}
-                        className="bg-slate-900/50 rounded-lg p-3 border border-slate-800"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-slate-400">Test #{idx + 1}</span>
-                          <span className="text-sm text-slate-400">
-                            {new Date(test.completedAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>
-                            <span className="text-slate-400">Winner: </span>
-                            <span className={SEMANTIC_COLORS.success.text}>{test.winnerRating.toFixed(2)}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Loser: </span>
-                            <span className={SEMANTIC_COLORS.danger.text}>{test.loserRating.toFixed(2)}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Sample: </span>
-                            <span className="text-slate-300">{test.sampleSize}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Confidence: </span>
-                            <span className={SEMANTIC_COLORS.accent.text}>{(test.confidence * 100).toFixed(0)}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-slate-400">Test #{idx + 1}</span>
+                    <span className="text-sm text-slate-400">
+                      {new Date(test.completedAt).toLocaleDateString()}
+                    </span>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-slate-400">Winner: </span>
+                      <span className={SEMANTIC_COLORS.success.text}>{test.winnerRating.toFixed(2)}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400">Loser: </span>
+                      <span className={SEMANTIC_COLORS.danger.text}>{test.loserRating.toFixed(2)}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400">Sample: </span>
+                      <span className="text-slate-300">{test.sampleSize}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400">Confidence: </span>
+                      <span className={SEMANTIC_COLORS.accent.text}>{(test.confidence * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ToggleSection>
         )}
 
         {/* Rate This Template Section */}

@@ -7,6 +7,7 @@ import {
   ZoomIn, AlertCircle, Save, CheckCheck, XCircle, Columns2,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { ConfirmationModal } from '@/app/components/UI/ConfirmationModal';
 import {
   useCreatorImageStore,
@@ -294,7 +295,8 @@ export default function ImageGenerationView({
           const res = await fetch(
             `/api/ai/generate-images?generationId=${generationId}`
           );
-          const data = await res.json();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const data: any = extractData(await res.json());
 
           if (data.status === 'COMPLETE' && data.images?.[0]) {
             useCreatorImageStore.getState().updateImageStatus(promptId, {
@@ -360,7 +362,8 @@ export default function ImageGenerationView({
           enhance: true,
         }),
       });
-      const varData = await varRes.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const varData: any = extractData(await varRes.json());
       if (!varData.success)
         throw new Error(varData.error || 'Failed to generate variations');
 
@@ -389,7 +392,8 @@ export default function ImageGenerationView({
           height: tab === 'avatar' ? 768 : 1024,
         }),
       });
-      const genData = await genRes.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const genData: any = extractData(await genRes.json());
       if (!genData.success)
         throw new Error(genData.error || 'Failed to start generation');
 

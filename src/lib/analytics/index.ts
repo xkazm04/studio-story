@@ -5,12 +5,20 @@
  * Includes structure, pacing, character arc, thematic, and engagement analysis.
  */
 
+// Shared base interface for all analyzer issue types
+export interface AnalysisIssue {
+  message: string;
+  severity: 'critical' | 'warning' | 'info';
+  suggestion: string;
+}
+
 // Core analyzers
 export { structureAnalyzer, StructureAnalyzerClass, STRUCTURE_TEMPLATES } from './StructureAnalyzer';
 export { pacingAnalyzer, PacingAnalyzerClass, PACING_TEMPLATES, BEAT_TYPE_TENSION } from './PacingAnalyzer';
 export { characterArcAnalyzer, CharacterArcAnalyzerClass, ARC_PATTERNS } from './CharacterArcAnalyzer';
 export { thematicAnalyzer, ThematicAnalyzerClass, THEME_LIBRARY } from './ThematicAnalyzer';
 export { engagementSimulator, EngagementSimulatorClass, READER_PROFILES } from './EngagementSimulator';
+export { characterThemeCarrierAnalyzer, CharacterThemeCarrierAnalyzerClass } from './CharacterThemeCarrierAnalyzer';
 
 // Flow simulator
 export {
@@ -67,12 +75,21 @@ export type {
 // Thematic types
 export type {
   ThemeCategory,
-  Theme,
+  DetectedTheme,
   ThemePresence,
   ThematicThread,
   ThematicIssue,
   ThematicAnalysisResult,
 } from './ThematicAnalyzer';
+
+// Character-theme carrier types
+export type {
+  CharacterThemeCorrelation,
+  ThemeCarrier,
+  CharacterThematicProfile,
+  CarrierIssue,
+  CarrierMapResult,
+} from './CharacterThemeCarrierAnalyzer';
 
 // Engagement types
 export type {

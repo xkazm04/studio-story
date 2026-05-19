@@ -2,11 +2,13 @@
  * ContentSection Component
  * Editable fields for scene title and content
  * Design: Clean Manuscript style with monospace accents
+ *
+ * Uses useSceneEditingKernel for save logic, dirty tracking, and auto-save.
  */
 
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSceneEditor } from '@/contexts/SceneEditorContext';
 import { cn } from '@/lib/utils';
@@ -17,11 +19,10 @@ import {
   AlignLeft,
   Type,
   Sparkles,
-  ImageIcon,
-  Volume2,
 } from 'lucide-react';
 import { AudioNarrationPanel } from './AudioNarrationPanel';
 import { SceneSketchPanel } from './SceneSketchPanel';
+import { useSceneEditingKernel } from '@/app/hooks/useSceneEditingKernel';
 
 interface ContentSectionProps {
   sceneId: string;
@@ -36,11 +37,14 @@ interface ContentSectionProps {
   imageUrl?: string;
   imagePrompt?: string;
   artStylePrompt?: string;
+  sceneMetadata?: import('@/app/types/Scene').SceneMetadata;
   onImageSelect?: (url: string, prompt?: string) => void;
   onRemoveImage?: () => void;
   // Whether to show image panel (used in split view)
   showImagePanel?: boolean;
 }
+
+type ContentFields = { name: string; content: string; description: string };
 
 export function ContentSection({
   sceneId,
@@ -53,99 +57,37 @@ export function ContentSection({
   imageUrl,
   imagePrompt,
   artStylePrompt,
+  sceneMetadata,
   onImageSelect,
   onRemoveImage,
   showImagePanel = true,
 }: ContentSectionProps) {
   const { updateScene } = useSceneEditor();
 
-  const [name, setName] = useState(initialName);
-  const [content, setContent] = useState(initialContent);
-  const [description, setDescription] = useState(initialDescription);
-  const [isSaving, setIsSaving] = useState(false);
-  const [savedRecently, setSavedRecently] = useState(false);
+  const initialFields = useMemo<ContentFields>(() => ({
+    name: initialName,
+    content: initialContent,
+    description: initialDescription,
+  }), [initialName, initialContent, initialDescription]);
+
+  const saveFn = useCallback(async (id: string, changed: Partial<ContentFields>) => {
+    await updateScene(id, changed);
+  }, [updateScene]);
+
+  const kernel = useSceneEditingKernel<ContentFields>({
+    sceneId,
+    initialFields,
+    saveFn,
+    autoSaveDelay: 1500,
+    savedFeedbackMs: 2000,
+  });
+
+  const { fields, setField, saveState } = kernel;
+  const { name, content, description } = fields;
+  const isSaving = saveState === 'saving';
+  const savedRecently = saveState === 'saved';
+
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Ref to hold latest pending save so cleanup can flush it synchronously
-  const pendingSaveRef = useRef<(() => void) | null>(null);
-
-  // Flush any pending save immediately (used on scene change / unmount)
-  const flushPendingSave = useCallback(() => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = null;
-    }
-    if (pendingSaveRef.current) {
-      pendingSaveRef.current();
-      pendingSaveRef.current = null;
-    }
-  }, []);
-
-  // Reset when scene changes — flush pending save for the PREVIOUS scene first
-  useEffect(() => {
-    // On sceneId change, flush is handled by the previous render's cleanup below
-    setName(initialName);
-    setContent(initialContent);
-    setDescription(initialDescription);
-  }, [sceneId, initialName, initialContent, initialDescription]);
-
-  // Auto-save with debounce
-  const saveChanges = useCallback(async () => {
-    if (isSaving) return;
-
-    setIsSaving(true);
-    try {
-      await updateScene(sceneId, { name, content, description });
-      setSavedRecently(true);
-      setTimeout(() => setSavedRecently(false), 2000);
-    } catch (error) {
-      console.error('Failed to save scene:', error);
-    } finally {
-      setIsSaving(false);
-    }
-  }, [sceneId, name, content, description, updateScene, isSaving]);
-
-  // Debounced auto-save
-  useEffect(() => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-      saveTimeoutRef.current = null;
-    }
-
-    const hasChanges =
-      name !== initialName ||
-      content !== initialContent ||
-      description !== initialDescription;
-
-    if (hasChanges) {
-      pendingSaveRef.current = saveChanges;
-      saveTimeoutRef.current = setTimeout(() => {
-        pendingSaveRef.current = null;
-        saveChanges();
-      }, 1500);
-    } else {
-      pendingSaveRef.current = null;
-    }
-
-    return () => {
-      // On cleanup (scene change or unmount), flush the pending save immediately
-      flushPendingSave();
-    };
-  }, [name, content, description, initialName, initialContent, initialDescription, saveChanges, flushPendingSave]);
-
-  // Guard against browser/tab close with unsaved changes
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (pendingSaveRef.current) {
-        pendingSaveRef.current();
-        pendingSaveRef.current = null;
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
 
   // Word count
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -201,13 +143,13 @@ export function ContentSection({
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setField('name', e.target.value)}
             onFocus={() => setFocusedField('name')}
             onBlur={() => setFocusedField(null)}
             placeholder="Enter scene name..."
             className={cn(
               'w-full px-4 py-3 rounded-lg',
-              'bg-slate-800/60 border border-slate-700/50',
+              'bg-slate-800/60 border border-slate-700/40',
               'text-slate-100 placeholder:text-slate-500',
               'focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50',
               'transition-all duration-200',
@@ -237,13 +179,13 @@ export function ContentSection({
           <input
             type="text"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setField('description', e.target.value)}
             onFocus={() => setFocusedField('description')}
             onBlur={() => setFocusedField(null)}
             placeholder="Brief description of this scene..."
             className={cn(
               'w-full px-4 py-3 rounded-lg',
-              'bg-slate-800/60 border border-slate-700/50',
+              'bg-slate-800/60 border border-slate-700/40',
               'text-slate-100 placeholder:text-slate-500',
               'focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50',
               'transition-all duration-200',
@@ -267,14 +209,14 @@ export function ContentSection({
         <div className="relative">
           <textarea
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => setField('content', e.target.value)}
             onFocus={() => setFocusedField('content')}
             onBlur={() => setFocusedField(null)}
             placeholder="Write the scene content here..."
             rows={12}
             className={cn(
               'w-full px-4 py-3 rounded-lg resize-y',
-              'bg-slate-800/60 border border-slate-700/50',
+              'bg-slate-800/60 border border-slate-700/40',
               'text-slate-100 placeholder:text-slate-500',
               'focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50',
               'transition-all duration-200',
@@ -292,6 +234,7 @@ export function ContentSection({
           projectId={projectId}
           content={content}
           audioUrl={audioUrl ?? null}
+          sceneMetadata={sceneMetadata}
           onAudioUrlChange={onAudioUrlChange}
         />
       )}
@@ -303,6 +246,7 @@ export function ContentSection({
           imageUrl={imageUrl ?? null}
           imagePrompt={imagePrompt ?? null}
           artStylePrompt={artStylePrompt}
+          sceneMetadata={sceneMetadata}
           onImageSelect={onImageSelect}
           onRemoveImage={onRemoveImage}
           isSaving={isSaving}
@@ -310,7 +254,7 @@ export function ContentSection({
       )}
 
       {/* Bottom stats bar */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-800/50">
+      <div className="flex items-center justify-between pt-3 border-t border-slate-700/40">
         <div className="flex items-center gap-4 font-mono text-sm uppercase tracking-wide">
           <div className="flex items-center gap-1.5">
             <div

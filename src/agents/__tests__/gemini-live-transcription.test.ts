@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { GeminiLiveClient } from '../GeminiLiveClient';
+import { GeminiLiveClient } from '@dzin/voice';
 
 // ---------------------------------------------------------------------------
 // Mock WebSocket

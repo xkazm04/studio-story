@@ -23,6 +23,7 @@ import { storyboardEngine } from '@/lib/image';
 import type { StoryboardFrame, MoodPreset } from '@/lib/image';
 import type { GeneratedPrompt, ShotType } from '@/lib/image';
 import { cn } from '@/app/lib/utils';
+import type { BeatType } from '@/app/types/Beat';
 
 // ============================================================================
 // Sub-components
@@ -40,7 +41,7 @@ const SHOT_TYPE_ICONS: Record<ShotType, string> = {
   action: '⚡',
 };
 
-const BEAT_TYPE_COLORS: Record<string, string> = {
+const BEAT_TYPE_COLORS: Record<string, string> & Record<BeatType, string> = {
   setup: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   conflict: 'bg-red-500/20 text-red-300 border-red-500/30',
   climax: 'bg-purple-500/20 text-purple-300 border-purple-500/30',

@@ -5,6 +5,7 @@
 
 import { Appearance } from '@/app/types/Character';
 import { Database } from '@/lib/supabase/database.types';
+import { extractData } from '@/app/utils/api';
 
 type CharAppearanceRow = Database['public']['Tables']['char_appearance']['Row'];
 type CharAppearanceInsert = Database['public']['Tables']['char_appearance']['Insert'];
@@ -100,7 +101,7 @@ export async function saveCharacterAppearance(
     throw new Error('Failed to save character appearance');
   }
 
-  return response.json();
+  return extractData<CharAppearanceRow>(await response.json());
 }
 
 /**
@@ -117,7 +118,7 @@ export async function fetchCharacterAppearance(
     throw new Error('Failed to fetch character appearance');
   }
 
-  const data = await response.json();
+  const data = extractData<CharAppearanceRow | null>(await response.json());
   return dbFormatToAppearance(data);
 }
 

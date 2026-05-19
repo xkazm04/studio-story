@@ -5,11 +5,16 @@
  * with customizable layouts, annotations, and formatting options.
  */
 
+import type { ExportResult, ExportData } from '../export/result';
+import { exportSuccess, exportFailure } from '../export/result';
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export type ExportFormat = 'pdf' | 'png' | 'jpg' | 'svg';
+export type BoardExportFormat = 'pdf' | 'png' | 'jpg' | 'svg';
+/** @deprecated Use BoardExportFormat */
+export type ExportFormat = BoardExportFormat;
 export type PageOrientation = 'portrait' | 'landscape';
 export type PageSize = 'letter' | 'a4' | 'tabloid' | 'custom';
 export type GridLayout = '2x2' | '2x3' | '3x2' | '3x3' | '4x3' | '4x4' | '1x1' | 'list' | 'sequence';
@@ -74,15 +79,7 @@ export interface StoryboardExportData {
   annotations?: Record<string, Annotation[]>; // panelId -> annotations
 }
 
-export interface ExportResult {
-  success: boolean;
-  format: ExportFormat;
-  filename: string;
-  dataUrl?: string;
-  blob?: Blob;
-  pages?: number;
-  error?: string;
-}
+export type { ExportResult, ExportData };
 
 // ============================================================================
 // Constants
@@ -376,7 +373,7 @@ class BoardExporter {
   async exportToImage(
     data: StoryboardExportData,
     options: Partial<ExportOptions> = {}
-  ): Promise<ExportResult> {
+  ): Promise<ExportResult<ExportData>> {
     const opts: ExportOptions = { ...DEFAULT_OPTIONS, ...options };
 
     try {
@@ -388,7 +385,7 @@ class BoardExporter {
 
       const ctx = canvas.getContext('2d');
       if (!ctx) {
-        throw new Error('Failed to get canvas context');
+        return exportFailure('CANVAS_UNAVAILABLE', 'Failed to get canvas context');
       }
 
       ctx.scale(dpiScale, dpiScale);
@@ -435,27 +432,27 @@ class BoardExporter {
       const quality = opts.format === 'jpg' ? (opts.quality || 90) / 100 : undefined;
       const dataUrl = canvas.toDataURL(format, quality);
 
-      return {
-        success: true,
-        format: opts.format,
+      return exportSuccess({
         filename: `${data.title.replace(/\s+/g, '_')}_storyboard.${opts.format}`,
-        dataUrl,
-        pages: 1,
-      };
+        metadata: {
+          format: opts.format,
+          dataUrl,
+          pages: 1,
+        },
+      });
     } catch (error) {
-      return {
-        success: false,
-        format: opts.format,
-        filename: '',
-        error: error instanceof Error ? error.message : 'Export failed',
-      };
+      return exportFailure(
+        'GENERATION_FAILED',
+        error instanceof Error ? error.message : 'Export failed',
+        error,
+      );
     }
   }
 
   async exportToPDF(
     data: StoryboardExportData,
     options: Partial<ExportOptions> = {}
-  ): Promise<ExportResult> {
+  ): Promise<ExportResult<ExportData>> {
     const opts: ExportOptions = { ...DEFAULT_OPTIONS, ...options, format: 'pdf' };
 
     try {
@@ -546,27 +543,27 @@ class BoardExporter {
 
       // For now, return the first page as data URL
       // In production, you'd combine these into an actual PDF
-      return {
-        success: true,
-        format: 'pdf',
+      return exportSuccess({
         filename: `${data.title.replace(/\s+/g, '_')}_storyboard.pdf`,
-        dataUrl: pages[0],
-        pages: totalPages,
-      };
+        metadata: {
+          format: 'pdf',
+          dataUrl: pages[0],
+          pages: totalPages,
+        },
+      });
     } catch (error) {
-      return {
-        success: false,
-        format: 'pdf',
-        filename: '',
-        error: error instanceof Error ? error.message : 'PDF export failed',
-      };
+      return exportFailure(
+        'GENERATION_FAILED',
+        error instanceof Error ? error.message : 'PDF export failed',
+        error,
+      );
     }
   }
 
   async export(
     data: StoryboardExportData,
     options: Partial<ExportOptions> = {}
-  ): Promise<ExportResult> {
+  ): Promise<ExportResult<ExportData>> {
     const format = options.format || 'pdf';
 
     if (format === 'pdf') {
@@ -580,7 +577,7 @@ class BoardExporter {
   // Utility Methods
   // -------------------------------------------------------------------------
 
-  getAvailableFormats(): ExportFormat[] {
+  getAvailableFormats(): BoardExportFormat[] {
     return ['pdf', 'png', 'jpg'];
   }
 
@@ -603,12 +600,12 @@ class BoardExporter {
   }
 
   // Download helper
-  downloadResult(result: ExportResult): void {
-    if (!result.success || !result.dataUrl) return;
+  downloadResult(result: ExportResult<ExportData>): void {
+    if (!result.success || !result.data.metadata.dataUrl) return;
 
     const link = document.createElement('a');
-    link.download = result.filename;
-    link.href = result.dataUrl;
+    link.download = result.data.filename;
+    link.href = result.data.metadata.dataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

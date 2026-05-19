@@ -6,12 +6,10 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { McpConfig } from '../config.js';
 import { dbSelectOne, dbSelect, dbInsert, dbUpdate } from '../db.js';
+import { textContent, errorContent } from './helpers.js';
 
 /** Default user_id for MCP-created projects (service role bypasses RLS) */
 const MCP_DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000000';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
 
 export function registerProjectTools(server: McpServer, config: McpConfig) {
   server.tool(

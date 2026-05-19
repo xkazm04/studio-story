@@ -2,8 +2,18 @@
  * Signal Analyzer — Classifies raw CLI execution events into typed Signals.
  *
  * Hooks into cli-service.ts processLine() to examine every event in real-time.
- * Detects: tool errors, schema mismatches, N+1 patterns, retry storms,
- * performance issues, and prompt hallucinations.
+ *
+ * SCOPE: Only handles CLI-stream-level observations that cannot be detected
+ * at the MCP tool layer:
+ *   - performance:          Execution took >60s
+ *   - tool_missing:         Prompt references a tool that doesn't exist
+ *   - prompt_hallucination: (future) CLI tries column/field that doesn't exist
+ *
+ * Tool-level classification (tool_error, schema_mismatch, n_plus_one,
+ * retry_storm) is now handled by the MCP server's unified observation
+ * pipeline (signal-observer.ts), which has direct access to tool inputs,
+ * outputs, and timing. This eliminates duplicate interception and enables
+ * cross-layer correlation via observationId.
  */
 
 import type { CLIExecutionEvent } from '../cli-service';
@@ -49,18 +59,7 @@ function makeSignalId(): string {
 
 // ============ Error Pattern Matchers ============
 
-const PGRST_CODE_RE = /PGRST(\d{3})/;
-const COLUMN_MISSING_RE = /column\s+["']?(\w+)["']?\s+(?:of relation\s+["']?(\w+)["']?\s+)?does not exist/i;
-const RELATION_MISSING_RE = /relation\s+["']?(\w+)["']?\s+does not exist/i;
 const TOOL_NOT_FOUND_RE = /tool\s+["']?(\w+)["']?\s+(?:not found|does not exist|is not available)/i;
-
-/**
- * Extract PGRST error code from error text.
- */
-function extractPGRSTCode(text: string): string | undefined {
-  const match = text.match(PGRST_CODE_RE);
-  return match ? `PGRST${match[1]}` : undefined;
-}
 
 // ============ Main Analyzer ============
 
@@ -68,67 +67,22 @@ function extractPGRSTCode(text: string): string | undefined {
  * Analyze a CLI execution event and return a Signal if it indicates a problem.
  * Returns null for normal, non-signal events.
  *
+ * NOTE: Tool-level signals (tool_error, schema_mismatch, n_plus_one, retry_storm)
+ * are now emitted by the MCP server's observation pipeline. This analyzer only
+ * handles stream-level signals that require CLI context.
+ *
  * @param event - The CLI event to analyze
- * @param recentEvents - Sliding window of recent events (for N+1 / retry detection)
+ * @param _recentEvents - Sliding window of recent events (retained for API compatibility)
  * @param executionId - Current execution ID
  */
 export function analyzeEvent(
   event: CLIExecutionEvent,
-  recentEvents: CLIExecutionEvent[],
+  _recentEvents: CLIExecutionEvent[],
   executionId: string,
 ): Signal | null {
-  // ---- Tool Result Errors ----
-  if (event.type === 'tool_result') {
-    const content = String(event.data.content || '');
-    const isError = content.toLowerCase().includes('error') ||
-                    content.toLowerCase().includes('failed') ||
-                    content.includes('PGRST');
-
-    if (!isError) return null;
-
-    const pgrstCode = extractPGRSTCode(content);
-    const toolName = findToolNameForResult(event, recentEvents);
-
-    // Schema mismatch (column/relation missing)
-    if (pgrstCode || COLUMN_MISSING_RE.test(content) || RELATION_MISSING_RE.test(content)) {
-      return buildSignal('schema_mismatch', toolName, content, executionId, pgrstCode);
-    }
-
-    // Generic tool error
-    return buildSignal('tool_error', toolName, content, executionId, pgrstCode);
-  }
-
-  // ---- Tool Use patterns (N+1, retry storms) ----
-  if (event.type === 'tool_use') {
-    const toolName = String(event.data.name || '');
-
-    // N+1 detection: same tool called 3+ times in recent window
-    const recentSameTool = recentEvents.filter(
-      e => e.type === 'tool_use' && String(e.data.name) === toolName
-    );
-    if (recentSameTool.length >= 3) {
-      return buildSignal('n_plus_one', toolName,
-        `Tool ${toolName} called ${recentSameTool.length + 1} times in sequence`,
-        executionId);
-    }
-
-    // Retry storm: same tool + same input called 3+ times
-    const inputStr = JSON.stringify(event.data.input || {});
-    const recentRetries = recentEvents.filter(
-      e => e.type === 'tool_use' &&
-           String(e.data.name) === toolName &&
-           JSON.stringify(e.data.input || {}) === inputStr
-    );
-    if (recentRetries.length >= 2) {
-      return buildSignal('retry_storm', toolName,
-        `Tool ${toolName} retried ${recentRetries.length + 1} times with same input`,
-        executionId);
-    }
-  }
-
   // ---- Performance (on result events) ----
   if (event.type === 'result') {
-    const durationMs = event.data.durationMs as number | undefined;
+    const durationMs = event.data.durationMs;
     if (durationMs && durationMs > 60000) {
       return buildSignal('performance', '',
         `Execution took ${Math.round(durationMs / 1000)}s`,
@@ -138,7 +92,7 @@ export function analyzeEvent(
 
   // ---- Text content analysis (prompt hallucinations) ----
   if (event.type === 'text') {
-    const content = String(event.data.content || '');
+    const content = event.data.content;
 
     // Detect tool-not-found references in assistant text
     const toolMissing = content.match(TOOL_NOT_FOUND_RE);
@@ -174,31 +128,4 @@ function buildSignal(
     timestamp: Date.now(),
     resolved: false,
   };
-}
-
-/**
- * Find the tool name for a tool_result by looking back through recent events
- * for the matching tool_use event.
- */
-function findToolNameForResult(
-  resultEvent: CLIExecutionEvent,
-  recentEvents: CLIExecutionEvent[],
-): string {
-  const toolUseId = resultEvent.data.toolUseId as string | undefined;
-  if (!toolUseId) {
-    // Fallback: last tool_use in window
-    for (let i = recentEvents.length - 1; i >= 0; i--) {
-      if (recentEvents[i].type === 'tool_use') {
-        return String(recentEvents[i].data.name || '');
-      }
-    }
-    return '';
-  }
-
-  for (let i = recentEvents.length - 1; i >= 0; i--) {
-    if (recentEvents[i].type === 'tool_use' && recentEvents[i].data.id === toolUseId) {
-      return String(recentEvents[i].data.name || '');
-    }
-  }
-  return '';
 }

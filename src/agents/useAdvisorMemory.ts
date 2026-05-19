@@ -22,7 +22,7 @@ function panelDomain(type: string): string {
   if (type.startsWith('character-') || type === 'cast-sidebar') return 'character';
   if (type.startsWith('story-') || type.startsWith('beats-') || type === 'script-editor' || type === 'theme-manager' || type === 'writing-desk') return 'story';
   if (type.startsWith('image-') || type === 'art-style' || type === 'storyboard') return 'image';
-  if (type.startsWith('voice-') || type === 'narration' || type === 'script-dialog' || type === 'audio-toolbar') return 'voice';
+  if (type.startsWith('voice-') || type === 'audio-production' || type === 'audio-toolbar') return 'voice';
   return 'other';
 }
 

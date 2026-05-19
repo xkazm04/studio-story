@@ -25,6 +25,7 @@ import {
 import { Button } from '@/app/components/UI/Button';
 import { deleteGenerations } from '@/lib/services/sketchCleanup';
 import { INTERACTIVE } from '@/workspace/theme/tokens';
+import { extractData } from '@/app/utils/api';
 
 interface GeneratedCover {
     url: string;
@@ -67,10 +68,10 @@ const CenterStory = () => {
                     fetch('/api/ai/generate-story-details'),
                     fetch('/api/ai/leonardo/status'),
                 ]);
-                const textData = await textRes.json();
-                const imageData = await imageRes.json();
-                setTextGenAvailable(textData.available);
-                setImageGenAvailable(imageData.available);
+                const textData = extractData<Record<string, unknown>>(await textRes.json());
+                const imageData = extractData<Record<string, unknown>>(await imageRes.json());
+                setTextGenAvailable(textData.available as boolean);
+                setImageGenAvailable(imageData.available as boolean);
             } catch {
                 setTextGenAvailable(false);
                 setImageGenAvailable(false);
@@ -141,9 +142,9 @@ const CenterStory = () => {
 
             if (!response.ok) throw new Error('Failed to generate');
 
-            const data = await response.json();
-            if (data.name) setName(data.name);
-            if (data.description) setDescription(data.description);
+            const data = extractData<Record<string, unknown>>(await response.json());
+            if (data.name) setName(data.name as string);
+            if (data.description) setDescription(data.description as string);
         } catch (error) {
             console.error('Failed to generate story details:', error);
         } finally {
@@ -178,7 +179,7 @@ const CenterStory = () => {
 
             if (!composeResponse.ok) throw new Error('Failed to compose cover prompt');
 
-            const { prompt: coverPrompt } = await composeResponse.json();
+            const { prompt: coverPrompt } = extractData<{ prompt: string }>(await composeResponse.json());
 
             // Step 2: Generate 4 image variants
             const newGenerationIds: string[] = [];
@@ -198,12 +199,12 @@ const CenterStory = () => {
 
                 if (!response.ok) return null;
 
-                const data = await response.json();
-                const image = data.images?.[0];
+                const data = extractData<Record<string, unknown>>(await response.json());
+                const image = (data.images as Array<{ url: string; id?: string }>)?.[0];
 
                 if (image) {
-                    if (data.generationId) newGenerationIds.push(data.generationId);
-                    return { url: image.url, id: image.id, generationId: data.generationId };
+                    if (data.generationId) newGenerationIds.push(data.generationId as string);
+                    return { url: image.url, id: image.id, generationId: data.generationId as string };
                 }
                 return null;
             });

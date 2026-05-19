@@ -41,6 +41,25 @@ export {
   type ExportProgress,
 } from './ExportPipeline';
 
+// Emotion Taxonomy (canonical source of truth for all emotion definitions)
+export {
+  type EmotionType,
+  type EmotionEntry,
+  type ValenceGroup,
+  EMOTION_ENTRIES,
+  ALL_EMOTION_TYPES,
+  VALENCE_GROUPS,
+  EMOTION_VOICE_MODIFIERS,
+  EMOTION_SSML_MAP,
+  COMPLEMENTARY_EMOTIONS,
+  getEmotionEntry,
+  getEmotionLabel,
+  getEmotionHexColor,
+  getEmotionTailwindColor,
+  getEmotionIcon,
+  suggestEmotions,
+} from './EmotionTaxonomy';
+
 // Emotion Controller
 export {
   emotionController,
@@ -49,7 +68,6 @@ export {
   DEFAULT_PACING,
   DEFAULT_PERFORMANCE,
   BUILTIN_PRESETS,
-  type EmotionType,
   type EmotionConfig,
   type PacingConfig,
   type EmphasisMarker,
@@ -63,13 +81,13 @@ export {
 export {
   voiceMatcher,
   VoiceMatcher,
-  DEFAULT_DIRECTION,
+  DEFAULT_PERFORMANCE_TUNING,
   type CharacterVoiceTraits,
   type VoiceProfile,
   type VoiceMatch,
   type AuditionConfig,
   type AuditionLine,
-  type VoiceDirection,
+  type PerformanceTuning,
   type CastingComparison,
   type VoiceLibraryFilter,
 } from './VoiceMatcher';

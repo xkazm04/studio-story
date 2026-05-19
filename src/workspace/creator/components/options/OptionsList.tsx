@@ -1,101 +1,47 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { slideInRight } from '@/lib/animations';
-import { Grid3X3, Sparkles } from 'lucide-react';
-import { cn } from '@/app/lib/utils';
+import { FacetOptionsList } from '@/lib/faceted-spec';
 import { useCreatorUIStore } from '../../store/creatorUIStore';
 import { useCreatorCharacterStore } from '../../store/creatorCharacterStore';
-import { getOptionsForCategory, getCategoryById } from '../../constants';
-import { OptionCard } from './OptionCard';
+import { characterSpecConfig } from '../../characterSpecConfig';
+import { CreatorIcon } from '../../icons';
+import type { FacetSelection } from '@/lib/faceted-spec';
 
 interface OptionsListProps {
   searchQuery: string;
 }
 
+/**
+ * Character-specific OptionsList — thin wrapper around FacetOptionsList
+ * that reads from the character creator stores and plugs in CreatorIcon.
+ */
 export function OptionsList({ searchQuery }: OptionsListProps) {
   const activeCategory = useCreatorUIStore((s) => s.activeCategory);
   const selections = useCreatorCharacterStore((s) => s.selections);
   const setSelection = useCreatorCharacterStore((s) => s.setSelection);
-
-  if (!activeCategory) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-slate-400 p-8">
-        <Grid3X3 size={32} className="mb-3 opacity-50" />
-        <p className="text-sm text-center">Select a category from the left panel</p>
-      </div>
-    );
-  }
-
   const clearCustomPrompt = useCreatorCharacterStore((s) => s.clearCustomPrompt);
 
-  const category = getCategoryById(activeCategory);
-  const options = getOptionsForCategory(activeCategory);
-  const currentSelection = selections[activeCategory]?.optionId ?? null;
-  const sel = selections[activeCategory];
-  const hasCustom = sel?.isCustom && !!sel.customPrompt;
-
-  const filtered = searchQuery.trim()
-    ? options.filter(
-        (o) =>
-          o.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (o.description && o.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : options;
-
-  if (!category) return null;
+  // Convert CategorySelection → FacetSelection for the generic component
+  const facetSelections: Record<string, FacetSelection> = {};
+  for (const [key, sel] of Object.entries(selections)) {
+    facetSelections[key] = {
+      dimensionId: key,
+      optionId: sel.optionId,
+      customPrompt: sel.customPrompt,
+      isCustom: sel.isCustom,
+    };
+  }
 
   return (
-    <motion.div
-      key={activeCategory}
-      variants={slideInRight}
-      initial="initial"
-      animate="animate"
-      className="p-3"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm uppercase tracking-wider text-slate-400">
-          {category.label} Options
-        </span>
-        <span className="text-sm text-slate-400">{filtered.length}{hasCustom ? ' + 1 custom' : ''} available</span>
-      </div>
-
-      <div className="grid grid-cols-1 gap-2">
-        {/* Custom card — appears when CLI or user set a custom prompt */}
-        {hasCustom && (
-          <button
-            type="button"
-            onClick={() => clearCustomPrompt(activeCategory)}
-            className={cn(
-              'flex items-center gap-2.5 px-3 py-2.5 rounded-lg border-2 border-dashed transition-all text-left',
-              'border-amber-500/40 bg-amber-500/5 hover:bg-amber-500/10'
-            )}
-          >
-            <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-amber-300 mb-0.5">Custom Value</p>
-              <p className="text-xs text-slate-400 truncate">{sel.customPrompt}</p>
-            </div>
-            <span className="text-xs text-slate-400 shrink-0">click to clear</span>
-          </button>
-        )}
-
-        {filtered.map((option) => (
-          <OptionCard
-            key={option.id}
-            option={option}
-            isSelected={!hasCustom && currentSelection === option.id}
-            onSelect={() => setSelection(activeCategory, option.id)}
-          />
-        ))}
-      </div>
-
-      {filtered.length === 0 && !hasCustom && searchQuery && (
-        <p className="text-sm text-slate-400 text-center py-8">No matching options</p>
-      )}
-    </motion.div>
+    <FacetOptionsList
+      searchQuery={searchQuery}
+      config={characterSpecConfig}
+      activeDimensionId={activeCategory}
+      selections={facetSelections}
+      onSelect={(dimId, optionId) => setSelection(dimId as Parameters<typeof setSelection>[0], optionId)}
+      onClearCustom={(dimId) => clearCustomPrompt(dimId as Parameters<typeof clearCustomPrompt>[0])}
+      renderIcon={(preview, size) => <CreatorIcon name={preview} size={size} />}
+    />
   );
 }

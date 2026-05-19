@@ -38,6 +38,7 @@ export {
 export {
   boardExporter,
   BoardExporter,
+  type BoardExportFormat,
   type ExportFormat,
   type PageOrientation,
   type PageSize,
@@ -45,6 +46,7 @@ export {
   type ExportOptions,
   type StoryboardExportData,
   type ExportResult,
+  type ExportData,
 } from './BoardExporter';
 
 export {
@@ -71,11 +73,12 @@ export {
   DEFAULT_EXPORT_SETTINGS,
   RESOLUTION_MAP,
   QUALITY_BITRATE_MAP,
-  type ExportFormat as AnimaticExportFormat,
+  type AnimaticExportFormat,
   type ExportQuality,
   type ExportResolution,
   type ExportSettings,
   type PanelData,
   type ExportProgress,
   type ExportResult as AnimaticExportResult,
+  type ExportData as AnimaticExportData,
 } from './AnimaticExporter';

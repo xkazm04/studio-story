@@ -108,7 +108,7 @@ function ResizeHandle({
 // Keyboard shortcuts hint
 function KeyboardHint() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/50 text-sm text-slate-400 font-mono">
+    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/40 text-sm text-slate-400 font-mono">
       <Keyboard className="w-3 h-3" />
       <span>
         <kbd className="px-1.5 py-0.5 bg-slate-700/80 rounded-md text-cyan-400 font-mono text-sm border border-slate-600/50">Ctrl+\\</kbd>
@@ -284,7 +284,7 @@ export default function SceneEditor() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="shrink-0 border-b border-slate-800/70 bg-slate-900/80 backdrop-blur-sm px-4 py-3"
+        className="shrink-0 border-b border-slate-700/60 bg-slate-900/80 backdrop-blur-sm p-4"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -307,7 +307,7 @@ export default function SceneEditor() {
                 'relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
                 showRecommendations
                   ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/40'
               )}
               title="Toggle Suggestions"
             >
@@ -327,7 +327,7 @@ export default function SceneEditor() {
                 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
                 showContextPanel
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/50'
+                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 border border-slate-700/40'
               )}
               title="Toggle Context Panel"
             >
@@ -342,8 +342,8 @@ export default function SceneEditor() {
                 className={cn(
                   'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-mono font-medium transition-all uppercase tracking-wide',
                   layoutMode === 'stacked'
-                    ? 'bg-slate-700 text-cyan-400 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                    ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-transparent'
                 )}
                 title="Stacked layout"
               >
@@ -355,8 +355,8 @@ export default function SceneEditor() {
                 className={cn(
                   'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-mono font-medium transition-all uppercase tracking-wide',
                   layoutMode === 'split'
-                    ? 'bg-slate-700 text-cyan-400 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                    ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 border border-transparent'
                 )}
                 title="Split view"
               >
@@ -400,11 +400,11 @@ export default function SceneEditor() {
                   className="h-full overflow-y-auto"
                   style={{ width: `${splitRatio}%` }}
                 >
-                  <div className="p-6">
+                  <div className="p-4">
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="bg-slate-900/80 rounded-xl border border-slate-800/60 p-6 shadow-2xl shadow-black/20 backdrop-blur-sm"
+                      className="bg-slate-900/80 rounded-xl border border-slate-700/60 p-4 shadow-2xl shadow-black/20 backdrop-blur-sm"
                     >
                       <ContentSection
                         sceneId={currentScene.id}
@@ -428,11 +428,11 @@ export default function SceneEditor() {
                   className="h-full overflow-y-auto"
                   style={{ width: `${100 - splitRatio}%` }}
                 >
-                  <div className="p-6">
+                  <div className="p-4">
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="bg-slate-900/80 rounded-xl border border-slate-800/60 p-6 shadow-2xl shadow-black/20 backdrop-blur-sm"
+                      className="bg-slate-900/80 rounded-xl border border-slate-700/60 p-4 shadow-2xl shadow-black/20 backdrop-blur-sm"
                     >
                       <div className="flex items-center gap-2 mb-4">
                         <ImageIcon className="w-4 h-4 text-purple-400" />
@@ -441,7 +441,7 @@ export default function SceneEditor() {
 
                       {/* Current Image Preview */}
                       {currentScene.image_url && (
-                        <div className="relative rounded-lg overflow-hidden mb-4 border border-slate-700">
+                        <div className="relative rounded-lg overflow-hidden mb-4 border border-slate-700/60">
                           <img
                             src={currentScene.image_url}
                             alt={currentScene.name || 'Scene image'}
@@ -454,6 +454,7 @@ export default function SceneEditor() {
                         storyContent={currentScene.content || ''}
                         imageUrl={currentScene.image_url ?? null}
                         imagePrompt={currentScene.image_prompt ?? null}
+                        sceneMetadata={currentScene.metadata}
                         onImageSelect={handleImageSelect}
                         onRemoveImage={handleRemoveImage}
                         isSaving={false}
@@ -472,12 +473,12 @@ export default function SceneEditor() {
                 transition={{ duration: 0.2 }}
                 className="h-full overflow-y-auto relative"
               >
-                <div className="max-w-4xl mx-auto p-6">
+                <div className="max-w-4xl mx-auto p-4">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-slate-900/80 rounded-xl border border-slate-800/60 p-6 shadow-2xl shadow-black/20 backdrop-blur-sm"
+                    className="bg-slate-900/80 rounded-xl border border-slate-700/60 p-4 shadow-2xl shadow-black/20 backdrop-blur-sm"
                   >
                     <ContentSection
                       sceneId={currentScene.id}
@@ -489,6 +490,7 @@ export default function SceneEditor() {
                       onAudioUrlChange={handleAudioUrlChange}
                       imageUrl={currentScene.image_url}
                       imagePrompt={currentScene.image_prompt}
+                      sceneMetadata={currentScene.metadata}
                       onImageSelect={handleImageSelect}
                       onRemoveImage={handleRemoveImage}
                     />
@@ -537,7 +539,7 @@ export default function SceneEditor() {
               animate={{ width: 320, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="h-full border-l border-slate-800 overflow-hidden"
+              className="h-full border-l border-slate-700/60 overflow-hidden"
             >
               <RecommendationPanel
                 recommendations={recommendations}
@@ -561,7 +563,7 @@ export default function SceneEditor() {
         <AnimatePresence>
           {showContextPanel && currentScene && (
             <Suspense fallback={
-              <div className="w-72 h-full flex items-center justify-center bg-slate-900/80 border-l border-slate-800">
+              <div className="w-72 h-full flex items-center justify-center bg-slate-900/80 border-l border-slate-700/60">
                 <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
               </div>
             }>

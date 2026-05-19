@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Users, Star, Play, Check, Sparkles, Loader2 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { MOCK_CHARACTERS } from '../../data/mockAudioData';
 import type { MockVoice, MockCharacter, VoiceMatchResult } from '../../types';
 
@@ -154,7 +155,8 @@ export default function VoiceCaster({ selectedVoice, previewText, voices, onCast
         body: JSON.stringify({ text, voice_id: voiceId }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && data.audioUrl) {
         const audio = new Audio(data.audioUrl);
         audio.onended = () => setPlayingVoiceId(null);

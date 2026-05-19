@@ -11,6 +11,8 @@ export type { SmartNameInputProps } from './SmartNameInput';
 export { Textarea } from './Textarea';
 export type { TextareaSize } from './Textarea';
 
+export { AutoResizeTextarea } from './AutoResizeTextarea';
+
 export { Select } from './Select';
 export type { SelectSize } from './Select';
 
@@ -32,6 +34,10 @@ export type { CardVariant, CardPadding } from './Card';
 
 // Layout Components
 export { CollapsibleSection } from './CollapsibleSection';
+export { ToggleSection } from './ToggleSection';
+export type { ToggleSectionProps } from './ToggleSection';
+export { SearchInput } from './SearchInput';
+export type { SearchInputProps } from './SearchInput';
 export { SectionWrapper } from './SectionWrapper';
 export { RichTextEditor } from './RichTextEditor';
 

@@ -6,6 +6,7 @@ import {
   Grid3X3, Terminal, Sparkles, Trash2, Volume2, VolumeX,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { useCLIFeature } from '@/app/hooks/useCLIFeature';
 import { CompactTerminal } from '@/cli';
 import { getBeatSynthesizer } from '../../lib/beatSynthesizer';
@@ -210,7 +211,8 @@ export default function BeatComposer({ onClose, onGenerated }: BeatComposerProps
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && data.pattern) {
         setPattern(data.pattern);
       } else {

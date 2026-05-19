@@ -53,6 +53,8 @@ interface OrgChartBuilderProps {
   hierarchy: FactionHierarchy;
   characters: Character[];
   onHierarchyChange: (hierarchy: FactionHierarchy) => void;
+  /** Called when a character is bound to or unbound from a hierarchy node */
+  onCharacterBound?: (characterId: string, nodeId: string | null) => void;
   readOnly?: boolean;
 }
 
@@ -453,6 +455,7 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
   hierarchy,
   characters,
   onHierarchyChange,
+  onCharacterBound,
   readOnly = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -608,6 +611,9 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
   }, [hierarchy, onHierarchyChange]);
 
   const handleVacateNode = useCallback((nodeId: string) => {
+    const vacatedNode = hierarchy.nodes.find((n) => n.id === nodeId);
+    const unboundCharacterId = vacatedNode?.character_id;
+
     const updatedNodes = hierarchy.nodes.map((n) => {
       if (n.id === nodeId) {
         return {
@@ -626,9 +632,14 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
       nodes: updatedNodes,
       updated_at: new Date().toISOString(),
     });
-  }, [hierarchy, onHierarchyChange]);
+
+    if (unboundCharacterId && onCharacterBound) {
+      onCharacterBound(unboundCharacterId, null);
+    }
+  }, [hierarchy, onHierarchyChange, onCharacterBound]);
 
   const handleSaveNode = useCallback((updatedNode: HierarchyNode) => {
+    const previousNode = hierarchy.nodes.find((n) => n.id === updatedNode.id);
     const updatedNodes = hierarchy.nodes.map((n) =>
       n.id === updatedNode.id ? updatedNode : n
     );
@@ -639,8 +650,23 @@ const OrgChartBuilder: React.FC<OrgChartBuilderProps> = ({
       updated_at: new Date().toISOString(),
     });
 
+    // Notify character binding changes
+    if (onCharacterBound) {
+      const prevCharId = previousNode?.character_id;
+      const newCharId = updatedNode.character_id;
+
+      // Unbind previous character
+      if (prevCharId && prevCharId !== newCharId) {
+        onCharacterBound(prevCharId, null);
+      }
+      // Bind new character
+      if (newCharId && newCharId !== prevCharId) {
+        onCharacterBound(newCharId, updatedNode.id);
+      }
+    }
+
     setEditingNode(null);
-  }, [hierarchy, onHierarchyChange]);
+  }, [hierarchy, onHierarchyChange, onCharacterBound]);
 
   // Drag handling for nodes
   const handleNodeDragStart = useCallback((nodeId: string, e: React.MouseEvent) => {

@@ -1,29 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  try {
+export const GET = withApiHandler('GET /api/claude-terminal/mcp-health', async (_request: NextRequest) => {
     const mcpPath = path.join(process.cwd(), '.mcp.json');
     let mcpConfigStr;
     try {
       mcpConfigStr = await fs.readFile(mcpPath, 'utf-8');
     } catch (err) {
-      return NextResponse.json({ 
-        status: 'error', 
-        message: '.mcp.json not found' 
+      return NextResponse.json({
+        status: 'error',
+        message: '.mcp.json not found'
       }, { status: 404 });
     }
 
     const mcpConfig = JSON.parse(mcpConfigStr);
     const storyServer = mcpConfig.mcpServers?.story;
-    
+
     if (!storyServer || !storyServer.env) {
-      return NextResponse.json({ 
-        status: 'error', 
-        message: 'Story server or env not configured in .mcp.json' 
+      return NextResponse.json({
+        status: 'error',
+        message: 'Story server or env not configured in .mcp.json'
       }, { status: 400 });
     }
 
@@ -62,13 +62,4 @@ export async function GET() {
         projectId
       });
     }
-
-  } catch (error) {
-    return NextResponse.json({ 
-      status: 'unreachable', 
-      message: String(error),
-      baseUrl: null,
-      projectId: null
-    }, { status: 500 });
-  }
-}
+});

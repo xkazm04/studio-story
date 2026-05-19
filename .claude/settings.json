@@ -1,4 +1,9 @@
 {
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true
+  },
   "projectName": "studio-story",
   "createdAt": "2026-02-27T18:05:57.432Z",
   "updatedAt": "2026-02-27T18:05:57.432Z",

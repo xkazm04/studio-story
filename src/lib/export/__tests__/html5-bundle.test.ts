@@ -137,9 +137,11 @@ describe('HTML5BundleGenerator', () => {
     const generator = new HTML5BundleGenerator();
     const result = await generator.generate(data);
 
-    expect(result.format).toBe('html5');
-    expect(result.filename).toContain('.html');
-    expect(result.metadata.sceneCount).toBe(2);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.format).toBe('html5');
+    expect(result.data.filename).toContain('.html');
+    expect(result.data.metadata.sceneCount).toBe(2);
   });
 
   it('output HTML contains inlined images as data URLs', async () => {
@@ -160,7 +162,8 @@ describe('HTML5BundleGenerator', () => {
 
     const generator = new HTML5BundleGenerator();
     const result = await generator.generate(data);
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
     expect(html).toContain('data:image/');
   });
 
@@ -182,7 +185,8 @@ describe('HTML5BundleGenerator', () => {
 
     const generator = new HTML5BundleGenerator();
     const result = await generator.generate(data);
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
     expect(html).toContain('data:audio/');
   });
 
@@ -206,7 +210,8 @@ describe('HTML5BundleGenerator', () => {
 
     const generator = new HTML5BundleGenerator();
     const result = await generator.generate(data);
-    const html = await result.blob.text();
+    if (!result.success) throw result.error;
+    const html = await result.data.blob!.text();
     expect(html).toContain('The Beginning');
     expect(html).toContain('The Climax');
   });

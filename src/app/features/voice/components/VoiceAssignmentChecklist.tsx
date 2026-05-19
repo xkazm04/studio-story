@@ -25,17 +25,17 @@ export function VoiceAssignmentChecklist({
 
   if (!hasUnassigned) {
     return (
-      <div className="rounded-lg border border-emerald-500/50 bg-slate-800/80 p-3">
+      <div className="rounded-lg border border-voice-primary/50 bg-slate-800/80 p-3">
         <div className="flex items-center gap-2 mb-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span className="text-sm font-medium text-emerald-300">Voice Assignments Complete</span>
+          <CheckCircle2 className="w-4 h-4 text-voice-primary" />
+          <span className="text-sm font-medium text-voice-primary/80">Voice Assignments Complete</span>
         </div>
         <p className="text-xs text-slate-400 mb-3">
           All characters have voices assigned. Ready to generate narration.
         </p>
         <button
           className="w-full flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium
-            bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:from-emerald-500 hover:to-green-500
+            bg-voice-primary/80 text-white hover:bg-voice-primary
             transition-all"
         >
           <Mic2 className="w-3.5 h-3.5" />

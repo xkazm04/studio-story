@@ -2,6 +2,7 @@
  * Workspace Keyboard Shortcuts
  *
  * Ctrl+`       → Toggle command bar expand/collapse
+ * Ctrl+K       → Open panel quick-swap palette
  * Ctrl+Shift+L → Cycle workspace layout
  * Ctrl+1..4    → Focus panel by slot position (brief cyan ring flash)
  * Escape       → Focus command bar input
@@ -10,6 +11,7 @@
 import { useEffect } from 'react';
 import { useCommandBarStore } from '../store/commandBarStore';
 import { useWorkspaceStore } from '../store/workspaceStore';
+import { usePanelPaletteStore } from '../store/panelPaletteStore';
 import { getNextLayout } from '../engine/layoutEngine';
 
 const FOCUSABLE_SELECTOR = 'input:not([disabled]), button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -65,6 +67,18 @@ export function useWorkspaceKeyboard() {
       if (isCtrl && e.key === '`') {
         e.preventDefault();
         toggle();
+        return;
+      }
+
+      // Ctrl+K — open panel quick-swap palette
+      if (isCtrl && !e.shiftKey && !e.altKey && e.key === 'k') {
+        e.preventDefault();
+        const paletteStore = usePanelPaletteStore.getState();
+        if (paletteStore.open) {
+          paletteStore.closePalette();
+        } else {
+          paletteStore.openPalette();
+        }
         return;
       }
 

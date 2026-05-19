@@ -4,6 +4,8 @@
  */
 
 import { Appearance } from '@/app/types/Character';
+import { extractData } from '@/app/utils/api';
+import { buildRandomizerPrompt } from '@/lib/prompts';
 
 interface RandomizerOptions {
   genre?: string;
@@ -12,49 +14,6 @@ interface RandomizerOptions {
     description?: string;
     genre?: string;
   };
-}
-
-/**
- * Generate a prompt for Ollama to create random character attributes
- */
-function buildRandomizerPrompt(options: RandomizerOptions): string {
-  const { genre = 'fantasy', projectContext } = options;
-
-  const genreContext = projectContext?.genre || genre;
-  const projectTitle = projectContext?.title ? ` for the project "${projectContext.title}"` : '';
-  const projectDesc = projectContext?.description ? ` Project description: ${projectContext.description}` : '';
-
-  return `You are a character designer for video games. Generate a random ${genreContext} character${projectTitle}.${projectDesc}
-
-Create a complete character appearance with diverse, interesting attributes. Return ONLY a valid JSON object with this exact structure:
-{
-  "gender": "Male" or "Female",
-  "age": "string",
-  "skinColor": "string",
-  "bodyType": "string",
-  "height": "string",
-  "face": {
-    "shape": "string",
-    "eyeColor": "string",
-    "hairColor": "string",
-    "hairStyle": "string",
-    "facialHair": "string",
-    "features": "string"
-  },
-  "clothing": {
-    "style": "string",
-    "color": "string",
-    "accessories": "string"
-  },
-  "customFeatures": "string"
-}
-
-Guidelines:
-- Make it creative and fitting for ${genreContext} genre
-- Use diverse, interesting combinations
-- Keep values concise (1-3 words typically)
-- For customFeatures, provide 1-2 distinctive traits
-- Return ONLY the JSON, no explanations or markdown`;
 }
 
 /**
@@ -77,7 +36,7 @@ async function callOllamaRandomizer(prompt: string): Promise<string> {
     throw new Error(`Ollama API error: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const data = extractData<{ content?: string }>(await response.json());
   return data.content || '';
 }
 

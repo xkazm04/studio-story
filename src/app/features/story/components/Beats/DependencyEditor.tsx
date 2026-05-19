@@ -34,16 +34,7 @@ import {
   type ValidationError,
   DependencyManager,
 } from '@/lib/beats/DependencyManager';
-
-// Beat data structure (minimal for dependency purposes)
-interface BeatSummary {
-  id: string;
-  title: string;
-  order: number;
-  type?: string;
-  sceneId?: string;
-  sceneName?: string;
-}
+import { type BeatSummary } from '@/app/types/Beat';
 
 interface DependencyEditorProps {
   beats: BeatSummary[];

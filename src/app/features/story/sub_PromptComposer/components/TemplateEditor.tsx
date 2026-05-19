@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { useCopyToClipboard } from '@/app/hooks/useCopyToClipboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
@@ -9,8 +10,6 @@ import {
   History,
   Variable,
   X,
-  ChevronDown,
-  ChevronRight,
   Play,
   Copy,
   Check,
@@ -21,6 +20,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
+import { ToggleSection } from '@/app/components/UI/ToggleSection';
 import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import {
   templateManager,
@@ -78,7 +78,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [previewValues, setPreviewValues] = useState<Record<string, string | number | boolean>>({});
-  const [copied, setCopied] = useState(false);
+  const { copy: copyToClipboard, copied } = useCopyToClipboard();
 
   // Validation
   const validation = useMemo(() => {
@@ -196,10 +196,8 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
 
   // Copy content to clipboard
   const handleCopy = useCallback(async () => {
-    await navigator.clipboard.writeText(showPreview ? previewContent : content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [content, previewContent, showPreview]);
+    await copyToClipboard(showPreview ? previewContent : content);
+  }, [content, previewContent, showPreview, copyToClipboard]);
 
   // Rollback to version
   const handleRollback = useCallback((version: number) => {
@@ -367,22 +365,12 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         </div>
 
         {/* Variables Section */}
-        <div className="border border-slate-800 rounded-lg overflow-hidden">
-          <button
-            onClick={() => setShowVariables(!showVariables)}
-            className="w-full flex items-center justify-between p-3 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              {showVariables ? (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              )}
-              <Variable className="w-4 h-4 text-purple-400" />
-              <span className={cn(TYPOGRAPHY.h3, 'text-slate-300')}>
-                Variables ({variables.length})
-              </span>
-            </div>
+        <ToggleSection
+          isOpen={showVariables}
+          onToggle={() => setShowVariables(!showVariables)}
+          icon={<Variable className="w-4 h-4 text-purple-400" />}
+          title={<span className={cn(TYPOGRAPHY.h3, 'text-slate-300')}>Variables ({variables.length})</span>}
+          badge={
             <Button
               size="sm"
               variant="ghost"
@@ -395,110 +383,102 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               <Plus className="w-3 h-3 mr-1" />
               Add
             </Button>
-          </button>
-
-          <AnimatePresence>
-            {showVariables && (
-              <motion.div
-                {...FM_VARIANTS.collapse}
-                transition={FM_TRANSITION.slow}
-                className="overflow-hidden"
-              >
-                <div className="p-3 space-y-3 max-h-48 overflow-y-auto">
-                  {variables.length === 0 ? (
-                    <p className="text-sm text-slate-400 text-center py-2">
-                      No variables defined. Add variables to make your template dynamic.
-                    </p>
-                  ) : (
-                    variables.map((variable, index) => (
-                      <div
-                        key={index}
-                        className="p-2 bg-slate-800/50 rounded-lg border border-slate-700/50"
+          }
+          className="border border-slate-800 rounded-lg overflow-hidden"
+          headerClassName="w-full flex items-center justify-between p-3 bg-slate-900/50 hover:bg-slate-800/50 transition-colors"
+        >
+          <div className="p-3 space-y-3 max-h-48 overflow-y-auto">
+            {variables.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-2">
+                No variables defined. Add variables to make your template dynamic.
+              </p>
+            ) : (
+              variables.map((variable, index) => (
+                <div
+                  key={index}
+                  className="p-2 bg-slate-800/50 rounded-lg border border-slate-700/50"
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1 grid grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        value={variable.name}
+                        onChange={(e) =>
+                          updateVariable(index, { name: e.target.value.replace(/\s/g, '_') })
+                        }
+                        placeholder="name"
+                        className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
+                      />
+                      <select
+                        value={variable.type}
+                        onChange={(e) =>
+                          updateVariable(index, { type: e.target.value as TemplateVariable['type'] })
+                        }
+                        className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
                       >
-                        <div className="flex items-start gap-2">
-                          <div className="flex-1 grid grid-cols-3 gap-2">
-                            <input
-                              type="text"
-                              value={variable.name}
-                              onChange={(e) =>
-                                updateVariable(index, { name: e.target.value.replace(/\s/g, '_') })
-                              }
-                              placeholder="name"
-                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
-                            />
-                            <select
-                              value={variable.type}
-                              onChange={(e) =>
-                                updateVariable(index, { type: e.target.value as TemplateVariable['type'] })
-                              }
-                              className="px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-cyan-500/50"
-                            >
-                              {VARIABLE_TYPES.map((t) => (
-                                <option key={t.value} value={t.value}>
-                                  {t.label}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="flex items-center gap-2">
-                              <label className="flex items-center gap-1 text-sm text-slate-400">
-                                <input
-                                  type="checkbox"
-                                  checked={variable.required}
-                                  onChange={(e) => updateVariable(index, { required: e.target.checked })}
-                                  className="w-3 h-3 rounded border-slate-600"
-                                />
-                                Required
-                              </label>
-                            </div>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => insertVariable(variable.name)}
-                              className="h-6 w-6 p-0 text-cyan-400"
-                              title="Insert into content"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeVariable(index)}
-                              className="h-6 w-6 p-0 text-red-400"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        </div>
-                        <input
-                          type="text"
-                          value={variable.description}
-                          onChange={(e) => updateVariable(index, { description: e.target.value })}
-                          placeholder="Description (optional)"
-                          className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
-                        />
-                        {variable.type === 'select' && (
+                        {VARIABLE_TYPES.map((t) => (
+                          <option key={t.value} value={t.value}>
+                            {t.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-1 text-sm text-slate-400">
                           <input
-                            type="text"
-                            value={variable.options?.join(', ') || ''}
-                            onChange={(e) =>
-                              updateVariable(index, {
-                                options: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
-                              })
-                            }
-                            placeholder="Options (comma-separated)"
-                            className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
+                            type="checkbox"
+                            checked={variable.required}
+                            onChange={(e) => updateVariable(index, { required: e.target.checked })}
+                            className="w-3 h-3 rounded border-slate-600"
                           />
-                        )}
+                          Required
+                        </label>
                       </div>
-                    ))
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => insertVariable(variable.name)}
+                        className="h-6 w-6 p-0 text-cyan-400"
+                        title="Insert into content"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeVariable(index)}
+                        className="h-6 w-6 p-0 text-red-400"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    value={variable.description}
+                    onChange={(e) => updateVariable(index, { description: e.target.value })}
+                    placeholder="Description (optional)"
+                    className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
+                  />
+                  {variable.type === 'select' && (
+                    <input
+                      type="text"
+                      value={variable.options?.join(', ') || ''}
+                      onChange={(e) =>
+                        updateVariable(index, {
+                          options: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
+                        })
+                      }
+                      placeholder="Options (comma-separated)"
+                      className="mt-1.5 w-full px-2 py-1 bg-slate-900/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50"
+                    />
                   )}
                 </div>
-              </motion.div>
+              ))
             )}
-          </AnimatePresence>
-        </div>
+          </div>
+        </ToggleSection>
 
         {/* Template Content */}
         <div>

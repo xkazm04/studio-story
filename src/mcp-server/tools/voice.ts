@@ -10,9 +10,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { StoryHttpClient } from '../http-client.js';
 import type { McpConfig } from '../config.js';
 import { getDb } from '../db.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
 
 export function registerVoiceTools(server: McpServer, config: McpConfig, client: StoryHttpClient) {
   /**

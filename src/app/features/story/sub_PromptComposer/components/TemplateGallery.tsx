@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
+import { useCopyToClipboard } from '@/app/hooks/useCopyToClipboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search,
   Star,
   GitFork,
   Clock,
@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/UI/Button';
+import { SearchInput } from '@/app/components/UI/SearchInput';
 import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import {
   templateManager,
@@ -70,7 +71,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
   const [sortBy, setSortBy] = useState<TemplateSearchOptions['sortBy']>('rating');
   const [showFilters, setShowFilters] = useState(false);
   const [expandedTemplateId, setExpandedTemplateId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { copy: copyToClipboard, copied } = useCopyToClipboard();
 
   // Search templates
   const templates = useMemo(() => {
@@ -90,10 +91,8 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
 
   // Handle copy template content
   const handleCopyContent = useCallback(async (template: PromptTemplate) => {
-    await navigator.clipboard.writeText(template.content);
-    setCopiedId(template.id);
-    setTimeout(() => setCopiedId(null), 2000);
-  }, []);
+    await copyToClipboard(template.content);
+  }, [copyToClipboard]);
 
   // Handle fork
   const handleFork = useCallback((template: PromptTemplate) => {
@@ -268,7 +267,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                     onClick={() => handleCopyContent(template)}
                     className="h-7 text-sm px-2"
                   >
-                    {copiedId === template.id ? (
+                    {copied ? (
                       <span className="text-green-400">Copied!</span>
                     ) : (
                       <Copy className="w-3 h-3" />
@@ -303,16 +302,12 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
         </div>
 
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search templates..."
-            className="w-full pl-8 pr-3 py-1.5 bg-slate-900/50 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
-          />
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search templates..."
+          className="rounded-lg border-slate-800 placeholder-slate-500 focus:border-cyan-500/50 focus:ring-0"
+        />
 
         {/* Filters Toggle */}
         <button

@@ -19,3 +19,6 @@ export {
   type BrainstormSession,
   type GenerationOptions,
 } from './IdeaGenerator';
+
+// Also export the canonical name for consumers migrating to the shared module
+export type { BrainstormStoryContext } from '@/app/features/story/types/ai-writing';

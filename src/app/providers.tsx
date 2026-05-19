@@ -9,6 +9,10 @@ import { useIntentDispatch } from '@/workspace/hooks/useIntentDispatch';
 import { useSuggestionState } from '@/workspace/hooks/useSuggestionState';
 import type { ActiveSuggestion } from '@/agents/ambient-observer';
 
+if (process.env.NODE_ENV === 'development') {
+  import('@/workspace/engine/devValidation').then(m => m.runPanelRegistrationCheck());
+}
+
 // ---------------------------------------------------------------------------
 // SuggestionContext
 // ---------------------------------------------------------------------------

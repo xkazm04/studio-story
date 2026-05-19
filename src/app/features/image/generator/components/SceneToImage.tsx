@@ -18,13 +18,16 @@ import {
   Image as ImageIcon,
   Loader2,
 } from 'lucide-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { extractData } from '@/app/utils/api';
 import { useProjectStore } from '@/app/store/projectStore';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { actApi } from '@/app/hooks/integration/useActs';
 import { characterApi } from '@/app/hooks/integration/useCharacters';
 import { sceneParser, promptGenerator } from '@/lib/image';
 import GenerationGallery from './GenerationGallery';
+import { useGenerationMachine } from '../useGenerationMachine';
+import { isPhase } from '@/app/hooks/useGenerativeSelection';
 import type { ParsedSceneContext, GeneratedPrompt, ShotType } from '@/lib/image';
 import type { PromptComponents } from '@/app/types/Image';
 import type { Appearance } from '@/app/types/Character';
@@ -36,12 +39,6 @@ interface SceneToImageProps {
   sceneId?: string;
 }
 
-type IllustrationPhase = 'idle' | 'generating' | 'gallery' | 'error';
-
-interface GeneratedImage {
-  id: string;
-  url: string;
-}
 
 const SHOT_TYPE_LABELS: Record<ShotType, { label: string; icon: string }> = {
   establishing: { label: 'Establishing Shot', icon: '🏔️' },
@@ -58,12 +55,11 @@ const SHOT_TYPE_LABELS: Record<ShotType, { label: string; icon: string }> = {
 const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose, sceneId: propSceneId }) => {
   const { selectedProject } = useProjectStore();
   const projectId = selectedProject?.id;
-  const queryClient = useQueryClient();
 
   // Data fetching -- use direct scene fetch when sceneId is provided
   const { data: directScene } = useQuery({
     queryKey: ['scene', propSceneId],
-    queryFn: () => fetch(`/api/scenes/${propSceneId}`).then(r => r.json()),
+    queryFn: () => fetch(`/api/scenes/${propSceneId}`).then(r => r.json()).then(json => extractData<any>(json)),
     enabled: !!propSceneId,
   });
 
@@ -87,46 +83,16 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
     new Set(['prompts'])
   );
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-
-  // Illustration flow state
-  const [illustrationPhase, setIllustrationPhase] = useState<IllustrationPhase>('idle');
-  const [generationId, setGenerationId] = useState<string | null>(null);
   const [autoDraftedPrompt, setAutoDraftedPrompt] = useState<string>('');
-  const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
-  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [illustrationError, setIllustrationError] = useState<string | null>(null);
 
   // Sync propSceneId on mount / change
   useEffect(() => {
     if (propSceneId) setSelectedSceneId(propSceneId);
   }, [propSceneId]);
 
-  // Poll generation status when generating
-  const { data: generationStatus } = useQuery({
-    queryKey: ['illustration-status', selectedSceneId, generationId],
-    queryFn: () =>
-      fetch(`/api/scenes/${selectedSceneId}/illustrate?generationId=${generationId}`).then(r =>
-        r.json()
-      ),
-    enabled: illustrationPhase === 'generating' && !!generationId && !!selectedSceneId,
-    refetchInterval: (query) => {
-      const data = query.state.data as { status?: string } | undefined;
-      return data?.status === 'pending' ? 2000 : false;
-    },
-  });
-
-  // React to polling result
-  useEffect(() => {
-    if (!generationStatus) return;
-    if (generationStatus.status === 'complete' && generationStatus.images?.length > 0) {
-      setGeneratedImages(generationStatus.images);
-      setIllustrationPhase('gallery');
-    } else if (generationStatus.status === 'failed') {
-      setIllustrationError(generationStatus.error || 'Generation failed');
-      setIllustrationPhase('error');
-    }
-  }, [generationStatus]);
+  // Generation state machine — replaces illustrationPhase, generationId,
+  // generatedImages, selectedImageId, isConfirming, illustrationError, and polling logic
+  const gen = useGenerationMachine({ sceneId: selectedSceneId });
 
   // Character appearances map
   const characterAppearances = useMemo(() => {
@@ -193,87 +159,17 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
     }
   }, [selectedSceneId, effectiveScenes, acts, characters, characterAppearances]);
 
-  // Start illustration generation
+  // Start illustration generation via state machine
   const startIllustration = useCallback(async () => {
     if (!selectedSceneId) return;
+    await gen.start(autoDraftedPrompt.trim() || '');
+  }, [selectedSceneId, autoDraftedPrompt, gen]);
 
-    setIllustrationPhase('generating');
-    setIllustrationError(null);
-    setGeneratedImages([]);
-    setSelectedImageId(null);
-
-    try {
-      const body: Record<string, unknown> = {};
-      if (autoDraftedPrompt.trim()) {
-        body.promptOverride = autoDraftedPrompt;
-      }
-
-      const response = await fetch(`/api/scenes/${selectedSceneId}/illustrate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to start illustration');
-      }
-
-      setGenerationId(data.generationId);
-      // Set the auto-drafted prompt for the user to review
-      if (data.prompt && !autoDraftedPrompt.trim()) {
-        setAutoDraftedPrompt(data.prompt);
-      }
-    } catch (error) {
-      console.error('Illustration error:', error);
-      setIllustrationError(error instanceof Error ? error.message : 'Unknown error');
-      setIllustrationPhase('error');
-    }
-  }, [selectedSceneId, autoDraftedPrompt]);
-
-  // Confirm selected illustration
+  // Confirm selected illustration via state machine
   const confirmIllustration = useCallback(async () => {
-    if (!selectedSceneId || !selectedImageId) return;
-
-    const selectedImage = generatedImages.find(img => img.id === selectedImageId);
-    if (!selectedImage) return;
-
-    setIsConfirming(true);
-
-    try {
-      const response = await fetch(`/api/scenes/${selectedSceneId}/illustrate`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageUrl: selectedImage.url,
-          generationId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to save illustration');
-      }
-
-      // Invalidate scene cache so the new image_url is reflected
-      queryClient.invalidateQueries({ queryKey: ['scene', selectedSceneId] });
-      queryClient.invalidateQueries({ queryKey: ['scenes'] });
-
-      // Reset illustration state
-      setIllustrationPhase('idle');
-      setGeneratedImages([]);
-      setSelectedImageId(null);
-      setGenerationId(null);
-      setAutoDraftedPrompt('');
-    } catch (error) {
-      console.error('Confirm illustration error:', error);
-      setIllustrationError(error instanceof Error ? error.message : 'Failed to save');
-    } finally {
-      setIsConfirming(false);
-    }
-  }, [selectedSceneId, selectedImageId, generatedImages, generationId, queryClient]);
+    await gen.confirm();
+    setAutoDraftedPrompt('');
+  }, [gen]);
 
   // Toggle section expansion
   const toggleSection = (section: string) => {
@@ -382,9 +278,11 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
     );
   };
 
-  // Render illustration flow
+  // Render illustration flow — reads directly from gen.state
   const renderIllustrationFlow = () => {
     if (!selectedSceneId) return null;
+
+    const { state: gs } = gen;
 
     return (
       <div className="space-y-3 border border-slate-800/70 rounded-lg bg-slate-950/80 p-3">
@@ -408,7 +306,7 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
         </div>
 
         {/* Generate button */}
-        {illustrationPhase === 'idle' && (
+        {isPhase.idle(gs) && (
           <motion.button
             onClick={startIllustration}
             disabled={!selectedSceneId}
@@ -429,8 +327,8 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
           </motion.button>
         )}
 
-        {/* Generating state */}
-        {illustrationPhase === 'generating' && (
+        {/* Generating / polling state */}
+        {(isPhase.generating(gs) || isPhase.polling(gs)) && (
           <div className="flex items-center justify-center py-6 text-slate-300">
             <Loader2 className="w-5 h-5 animate-spin mr-2 text-cyan-400" />
             <span className="text-sm">Generating 4 illustrations...</span>
@@ -438,34 +336,26 @@ const SceneToImage: React.FC<SceneToImageProps> = ({ onPromptGenerated, onClose,
         )}
 
         {/* Gallery */}
-        {illustrationPhase === 'gallery' && generatedImages.length > 0 && (
+        {isPhase.gallery(gs) && gs.items.length > 0 && (
           <GenerationGallery
-            images={generatedImages}
-            selectedId={selectedImageId}
-            onSelect={setSelectedImageId}
+            images={gs.items}
+            selectedId={gs.selectedId}
+            onSelect={gen.select}
             onConfirm={confirmIllustration}
-            isConfirming={isConfirming}
-            onRegenerate={() => {
-              setIllustrationPhase('idle');
-              setGeneratedImages([]);
-              setSelectedImageId(null);
-              setGenerationId(null);
-            }}
+            isConfirming={isPhase.confirming(gen.state)}
+            onRegenerate={gen.reset}
           />
         )}
 
         {/* Error state */}
-        {illustrationPhase === 'error' && (
+        {isPhase.error(gs) && (
           <div className="space-y-2">
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-sm">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{illustrationError || 'Generation failed'}</span>
+              <span>{gs.error}</span>
             </div>
             <button
-              onClick={() => {
-                setIllustrationPhase('idle');
-                setIllustrationError(null);
-              }}
+              onClick={gen.retry}
               className="w-full py-2 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />

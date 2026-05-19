@@ -13,6 +13,7 @@ import { Button } from '@/app/components/UI/Button';
 import { useBatchUpload } from '@/lib/upload';
 import { useAssetAnalysis, type AnalysisOptions } from '@/lib/assets';
 import { useDuplicateCheck } from '@/lib/similarity';
+import { extractData } from '@/app/utils/api';
 import type { AnalysisConfig, AnalysisResult } from '../../types';
 
 interface UploaderPanelProps {
@@ -154,7 +155,7 @@ export default function UploaderPanel({ className = '' }: UploaderPanelProps) {
             throw new Error(`Analysis failed: ${response.statusText}`);
           }
 
-          return await response.json();
+          return extractData<any>(await response.json());
         } catch (err) {
           console.error('API analysis error:', err);
           return null;

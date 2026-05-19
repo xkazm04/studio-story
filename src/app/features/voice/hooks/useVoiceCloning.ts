@@ -7,6 +7,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { extractData } from '@/app/utils/api';
 
 export type VoiceCloningStatus = 'idle' | 'uploading' | 'extracting' | 'cloning' | 'done' | 'error';
 
@@ -36,7 +37,7 @@ export function useVoiceCloning(): UseVoiceCloningReturn {
         body: formData,
       });
 
-      const uploadData = await uploadRes.json();
+      const uploadData = extractData<{ url?: string; error?: string }>(await uploadRes.json());
       if (!uploadData.url) {
         throw new Error(uploadData.error || 'Failed to upload audio file');
       }
@@ -52,7 +53,7 @@ export function useVoiceCloning(): UseVoiceCloningReturn {
         }),
       });
 
-      const cloneData = await cloneRes.json();
+      const cloneData = extractData<{ voice_id?: string; error?: string }>(await cloneRes.json());
       if (!cloneData.voice_id) {
         throw new Error(cloneData.error || 'Failed to clone voice');
       }
@@ -87,12 +88,12 @@ export function useVoiceCloning(): UseVoiceCloningReturn {
         }),
       });
 
-      const extractData = await extractRes.json();
-      if (!extractData.samples || extractData.samples.length === 0) {
-        throw new Error(extractData.error || 'Failed to extract audio from YouTube');
+      const extractResult = extractData<{ samples?: Array<{ url: string }>; error?: string }>(await extractRes.json());
+      if (!extractResult.samples || extractResult.samples.length === 0) {
+        throw new Error(extractResult.error || 'Failed to extract audio from YouTube');
       }
 
-      const sampleUrl = extractData.samples[0].url;
+      const sampleUrl = extractResult.samples[0].url;
 
       // Clone voice via ElevenLabs
       setStatus('cloning');
@@ -105,7 +106,7 @@ export function useVoiceCloning(): UseVoiceCloningReturn {
         }),
       });
 
-      const cloneData = await cloneRes.json();
+      const cloneData = extractData<{ voice_id?: string; error?: string }>(await cloneRes.json());
       if (!cloneData.voice_id) {
         throw new Error(cloneData.error || 'Failed to clone voice');
       }

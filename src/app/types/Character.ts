@@ -8,6 +8,7 @@ export interface Character {
   faction_id?: string | null;
   faction_role?: string;
   faction_rank?: number;
+  faction_hierarchy_node_id?: string | null;
   transparent_avatar_url?: string;
   body_url?: string;
   transparent_body_url?: string;

@@ -6,6 +6,7 @@
  */
 
 import { supabaseServer } from '@/lib/supabase/server';
+import type { ContextPin } from '@/app/types/ContextPin';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +20,8 @@ export interface StoryContext {
   currentSceneTextBefore: string;
   selectedText: string;
   currentSceneTextAfter: string;
+  /** Persistent context pins (story rules) — always included at highest priority */
+  contextPins: ContextPin[];
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -77,7 +80,15 @@ export async function assembleStoryContext(
     .in('act_id', actIds.length > 0 ? actIds : ['__none__'])
     .order('sort_order', { ascending: true });
 
-  // 5. Fetch all scenes ordered by act sort_order, then scene sort_order
+  // 5. Fetch enabled context pins for the project
+  const { data: contextPins } = await supabaseServer
+    .from('context_pins')
+    .select('*')
+    .eq('project_id', projectId)
+    .eq('enabled', true)
+    .order('sort_order', { ascending: true });
+
+  // 6. Fetch all scenes ordered by act sort_order, then scene sort_order
   const { data: scenes } = await supabaseServer
     .from('scenes')
     .select('id, title, content, act_id, sort_order')
@@ -93,7 +104,7 @@ export async function assembleStoryContext(
     return (a.sort_order ?? 0) - (b.sort_order ?? 0);
   });
 
-  // 6. Find current scene and split at selection boundaries
+  // 7. Find current scene and split at selection boundaries
   const currentScene = sortedScenes.find((s) => s.id === sceneId);
   const sceneContent = currentScene?.content ?? '';
 
@@ -101,12 +112,12 @@ export async function assembleStoryContext(
   const selectedText = sceneContent.slice(selectionFrom, selectionTo);
   const currentSceneTextAfter = sceneContent.slice(selectionTo);
 
-  // 7. Gather prior scene text (all scenes before current)
+  // 8. Gather prior scene text (all scenes before current)
   const currentSceneIndex = sortedScenes.findIndex((s) => s.id === sceneId);
   const priorScenes = currentSceneIndex > 0 ? sortedScenes.slice(0, currentSceneIndex) : [];
   let priorSceneText = priorScenes.map((s) => s.content ?? '').join('\n\n---\n\n');
 
-  // 8. Build context
+  // 9. Build context
   const ctx: StoryContext = {
     premise: project?.premise ?? '',
     genre: project?.genre ?? '',
@@ -124,9 +135,10 @@ export async function assembleStoryContext(
     currentSceneTextBefore,
     selectedText,
     currentSceneTextAfter,
+    contextPins: (contextPins ?? []) as ContextPin[],
   };
 
-  // 9. Apply token budget
+  // 10. Apply token budget
   return applyTokenBudget(ctx);
 }
 
@@ -136,7 +148,11 @@ export async function assembleStoryContext(
  * Always keeps: premise, genre, setting, characters, beats, current scene text, selected text.
  */
 function applyTokenBudget(ctx: StoryContext): StoryContext {
-  // Calculate tokens for non-truncatable parts
+  // Calculate tokens for non-truncatable parts (pins are always included)
+  const pinTokens = ctx.contextPins.length > 0
+    ? estimateTokens(ctx.contextPins.map((p) => `${p.label}: ${p.content}`).join(' '))
+    : 0;
+
   const fixedTokens =
     estimateTokens(ctx.premise) +
     estimateTokens(ctx.genre) +
@@ -146,6 +162,7 @@ function applyTokenBudget(ctx: StoryContext): StoryContext {
     estimateTokens(ctx.currentSceneTextBefore) +
     estimateTokens(ctx.selectedText) +
     estimateTokens(ctx.currentSceneTextAfter) +
+    pinTokens +
     500; // Formatting overhead
 
   const availableForPrior = MAX_TOKEN_BUDGET - fixedTokens;
@@ -205,6 +222,32 @@ export function formatStoryContextForPrompt(ctx: StoryContext): string {
 
   if (budgeted.setting) {
     sections.push(`## Setting\n${budgeted.setting}\n`);
+  }
+
+  // Context pins are injected at highest priority — before characters
+  if (budgeted.contextPins.length > 0) {
+    const pinsByType = new Map<string, typeof budgeted.contextPins>();
+    for (const pin of budgeted.contextPins) {
+      const existing = pinsByType.get(pin.pin_type) ?? [];
+      existing.push(pin);
+      pinsByType.set(pin.pin_type, existing);
+    }
+
+    const typeLabels: Record<string, string> = {
+      world_rule: 'World Rules',
+      character_constraint: 'Character Constraints',
+      tone_directive: 'Tone Directives',
+      plot_boundary: 'Plot Boundaries',
+    };
+
+    const pinLines: string[] = [];
+    for (const [type, pins] of pinsByType) {
+      pinLines.push(`### ${typeLabels[type] ?? type}`);
+      for (const pin of pins) {
+        pinLines.push(`- **${pin.label}**: ${pin.content}`);
+      }
+    }
+    sections.push(`## Story Rules (MUST follow)\n${pinLines.join('\n')}\n`);
   }
 
   if (budgeted.characters.length > 0) {

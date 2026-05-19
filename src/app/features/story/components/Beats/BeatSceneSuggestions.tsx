@@ -7,6 +7,7 @@ import { Sparkles, Check, X, Edit2, ExternalLink, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { INTERACTIVE, BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
 import { useToast } from '@/app/components/UI/ToastContainer';
+import { extractData } from '@/app/utils/api';
 
 interface BeatSceneSuggestionsProps {
   beatId: string;
@@ -53,8 +54,8 @@ export default function BeatSceneSuggestions({
         throw new Error('Failed to generate suggestions');
       }
 
-      const data = await response.json();
-      setSuggestions(data.suggestions || []);
+      const data = extractData<Record<string, unknown>>(await response.json());
+      setSuggestions((data.suggestions as BeatSceneSuggestion[]) || []);
       setIsVisible(true);
     } catch (error) {
       console.error('Error generating suggestions:', error);

@@ -72,7 +72,7 @@ export default function TakesModal({
       <div className="w-[520px] max-h-[85vh] bg-slate-900 border border-slate-700/60 rounded-xl shadow-2xl shadow-black/40 flex flex-col">
         {/* Header */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800/50 shrink-0">
-          <Sparkles className="w-4 h-4 text-orange-400" />
+          <Sparkles className="w-4 h-4 text-voice-accent" />
           <span className="text-sm font-semibold text-slate-200">Generate Takes</span>
           <div className="flex-1" />
           <button
@@ -87,7 +87,7 @@ export default function TakesModal({
         <div className="px-4 py-2.5 border-b border-slate-800/30 bg-slate-950/30 shrink-0">
           <span className="text-sm text-slate-400 block mb-1">Line</span>
           <p className="text-sm text-slate-300 leading-relaxed">
-            <span className="font-semibold text-orange-400">{line.character}:</span>{' '}
+            <span className="font-semibold text-voice-accent">{line.character}:</span>{' '}
             &ldquo;{line.text.length > 120 ? `${line.text.slice(0, 120)}...` : line.text}&rdquo;
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function TakesModal({
                   className={cn(
                     'flex flex-col items-center gap-1 py-1.5 rounded-md transition-all duration-200',
                     isActive
-                      ? 'bg-orange-500/15 ring-1 ring-orange-500/40'
+                      ? 'bg-voice-accent/15 ring-1 ring-voice-accent/40'
                       : isSuggested
                         ? 'bg-slate-800/40 ring-1 ring-slate-700/40 hover:bg-slate-800/60'
                         : 'hover:bg-slate-800/40 opacity-60'
@@ -122,7 +122,7 @@ export default function TakesModal({
                   )} />
                   <span className={cn(
                     'text-sm font-medium',
-                    isActive ? 'text-orange-400' : 'text-slate-400'
+                    isActive ? 'text-voice-accent' : 'text-slate-400'
                   )}>
                     {emo.label}
                   </span>
@@ -140,7 +140,7 @@ export default function TakesModal({
               value={delivery}
               onChange={(e) => setDelivery(e.target.value)}
               className="h-6 px-2 bg-slate-800/60 border border-slate-700/40 rounded text-sm text-slate-300
-                focus:outline-none focus:border-orange-500/40"
+                focus:outline-none focus:border-voice-accent/40"
             >
               {DELIVERY_PRESETS.map((p) => (
                 <option key={p.id} value={p.id}>{p.label}</option>
@@ -158,9 +158,9 @@ export default function TakesModal({
               onChange={(e) => setIntensity(Number(e.target.value))}
               className="flex-1 h-1 bg-slate-800 rounded-full appearance-none cursor-pointer
                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5
-                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-400"
+                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-voice-accent"
             />
-            <span className="text-sm text-orange-400 font-mono w-8 text-right">{intensity}%</span>
+            <span className="text-sm text-voice-accent font-mono w-8 text-right">{intensity}%</span>
           </div>
         </div>
 
@@ -182,7 +182,7 @@ export default function TakesModal({
                 'w-full flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all',
                 selectedEmotions.size === 0
                   ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:from-orange-500 hover:to-amber-500'
+                  : 'bg-voice-accent/80 text-white hover:bg-voice-accent'
               )}
             >
               <Play className="w-3.5 h-3.5" />
@@ -215,7 +215,7 @@ export default function TakesModal({
                 'w-full flex items-center justify-center gap-1.5 py-2.5 rounded-md text-sm font-medium transition-all',
                 selectedTakeIdx < 0
                   ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
-                  : 'bg-emerald-600/80 text-white hover:bg-emerald-500'
+                  : 'bg-voice-primary/80 text-white hover:bg-voice-primary'
               )}
             >
               {selectedTakeIdx >= 0

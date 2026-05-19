@@ -29,6 +29,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { getScoreColor } from '@/lib/scoreColors';
 import type {
   StyleConsistencyReport,
   StyleDeviation,
@@ -102,18 +103,22 @@ const DEVIATION_TYPE_CONFIG = {
 // Helper Functions
 // ============================================================================
 
-function getScoreColor(score: number): string {
-  if (score >= 90) return 'text-green-400';
-  if (score >= 70) return 'text-cyan-400';
-  if (score >= 50) return 'text-yellow-400';
-  return 'text-red-400';
-}
+const CONSISTENCY_TEXT_COLORS = [
+  { min: 90, value: 'text-green-400' },
+  { min: 70, value: 'text-cyan-400' },
+  { min: 50, value: 'text-yellow-400' },
+  { min: 0, value: 'text-red-400' },
+] as const;
+
+const CONSISTENCY_BG_COLORS = [
+  { min: 90, value: 'bg-green-500/20' },
+  { min: 70, value: 'bg-cyan-500/20' },
+  { min: 50, value: 'bg-yellow-500/20' },
+  { min: 0, value: 'bg-red-500/20' },
+] as const;
 
 function getScoreBgColor(score: number): string {
-  if (score >= 90) return 'bg-green-500/20';
-  if (score >= 70) return 'bg-cyan-500/20';
-  if (score >= 50) return 'bg-yellow-500/20';
-  return 'bg-red-500/20';
+  return getScoreColor(score, CONSISTENCY_BG_COLORS);
 }
 
 function getScoreGrade(score: number): string {
@@ -171,13 +176,13 @@ const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, label, size = 'md' }) =>
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            className={getScoreColor(score)}
+            className={getScoreColor(score, CONSISTENCY_TEXT_COLORS)}
             style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
           />
         </svg>
         {/* Score text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={cn('font-mono font-bold', getScoreColor(score), {
+          <span className={cn('font-mono font-bold', getScoreColor(score, CONSISTENCY_TEXT_COLORS), {
             'text-lg': size === 'sm',
             'text-2xl': size === 'md',
             'text-3xl': size === 'lg',
@@ -234,19 +239,19 @@ const CharacterScoreRow: React.FC<CharacterScoreRowProps> = ({ score, onClick })
       {/* Scores */}
       <div className="flex items-center gap-2">
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-sm', getScoreColor(score.colorScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.colorScore, CONSISTENCY_TEXT_COLORS))}>
             {score.colorScore}
           </span>
           <span className="font-mono text-[8px] text-slate-400">color</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-sm', getScoreColor(score.lightingScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.lightingScore, CONSISTENCY_TEXT_COLORS))}>
             {score.lightingScore}
           </span>
           <span className="font-mono text-[8px] text-slate-400">light</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className={cn('font-mono text-sm', getScoreColor(score.artStyleScore))}>
+          <span className={cn('font-mono text-sm', getScoreColor(score.artStyleScore, CONSISTENCY_TEXT_COLORS))}>
             {score.artStyleScore}
           </span>
           <span className="font-mono text-[8px] text-slate-400">style</span>
@@ -258,7 +263,7 @@ const CharacterScoreRow: React.FC<CharacterScoreRowProps> = ({ score, onClick })
         'px-2 py-1 rounded',
         getScoreBgColor(score.overallScore)
       )}>
-        <span className={cn('font-mono text-sm font-bold', getScoreColor(score.overallScore))}>
+        <span className={cn('font-mono text-sm font-bold', getScoreColor(score.overallScore, CONSISTENCY_TEXT_COLORS))}>
           {score.overallScore}%
         </span>
       </div>
@@ -335,7 +340,7 @@ const ConsistencyChecker: React.FC<ConsistencyCheckerProps> = ({
             )}>
               <span className={cn(
                 'font-mono text-sm font-bold',
-                getScoreColor(report.overallConsistencyScore)
+                getScoreColor(report.overallConsistencyScore, CONSISTENCY_TEXT_COLORS)
               )}>
                 {report.overallConsistencyScore}%
               </span>

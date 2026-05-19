@@ -30,6 +30,7 @@ import type { LucideIcon } from 'lucide-react';
 import type { Character } from '@/app/types/Character';
 import type { Beat } from '@/app/types/Beat';
 import type { PanelDensity } from '@/workspace/types';
+import { useSceneEditingKernel } from '@/app/hooks/useSceneEditingKernel';
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -209,7 +210,7 @@ function SpeakerSelect({ speaker, characters, onChange, selectRef }: SpeakerSele
         value={speaker}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'bg-slate-900/60 border border-slate-800/50 rounded px-1.5 py-0.5',
+          'bg-slate-900/60 border border-slate-700/40 rounded px-1.5 py-0.5',
           'text-sm font-semibold uppercase tracking-wider text-violet-300',
           'outline-none focus:border-violet-500/40 cursor-pointer',
           !speaker && 'text-slate-400',
@@ -242,7 +243,7 @@ function BeatSelect({ beatRef, beats, onChange, selectRef }: BeatSelectProps) {
         value={beatRef}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'bg-slate-900/60 border border-slate-800/50 rounded px-1.5 py-0.5',
+          'bg-slate-900/60 border border-slate-700/40 rounded px-1.5 py-0.5',
           'text-sm font-semibold uppercase tracking-wider text-indigo-300',
           'outline-none focus:border-indigo-500/40 cursor-pointer',
           !beatRef && 'text-slate-400',
@@ -293,7 +294,7 @@ function ContextMenu({ x, y, onClose, onAdd }: ContextMenuProps) {
       style={{ top: y, left: x }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="px-3 py-1.5 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800/50">
+      <div className="px-3 py-1.5 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-700/40">
         Add Block
       </div>
       {MENU_ITEMS.map((item) => (
@@ -435,8 +436,8 @@ function BlockRow({
 
 function EmptyPrompt({ onAddDefault }: { onAddDefault: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center p-6">
-      <div className="w-12 h-12 rounded-xl bg-slate-900/60 border border-slate-800/40 flex items-center justify-center mb-4">
+    <div className="flex flex-col items-center justify-center h-full text-center p-4">
+      <div className="w-12 h-12 rounded-xl bg-slate-900/60 border border-slate-700/40 flex items-center justify-center mb-4">
         <FileText className="w-5 h-5 text-slate-400" />
       </div>
       <p className="text-sm text-slate-400 mb-1">Right-click to add your first block</p>
@@ -444,7 +445,7 @@ function EmptyPrompt({ onAddDefault }: { onAddDefault: () => void }) {
       <button
         type="button"
         onClick={onAddDefault}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-amber-600/15 text-amber-400 border border-amber-500/25 hover:bg-amber-600/25 transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/15 transition-all duration-150 active:scale-[0.98]"
       >
         <Plus className="w-3 h-3" />
         Add Scene Header
@@ -489,14 +490,33 @@ export default function SceneEditorPanel({
   const pendingInsert = useScriptContextStore((s) => s.pendingInsert);
   const consumeInsert = useScriptContextStore((s) => s.consumeInsert);
 
+  // ─── Editing kernel (owns dirty/save lifecycle) ──────────
+  const kernelInitial = useMemo(() => ({
+    description: scene?.description || '',
+  }), [scene?.description]);
+
+  const kernelSaveFn = useCallback(async (id: string, changed: Partial<{ description: string }>) => {
+    await sceneApi.updateScene(id, changed);
+    queryClient.invalidateQueries({ queryKey: ['scenes'] });
+  }, [queryClient]);
+
+  const kernel = useSceneEditingKernel<{ description: string }>({
+    sceneId: resolvedSceneId,
+    initialFields: kernelInitial,
+    saveFn: kernelSaveFn,
+    autoSaveDelay: 0, // manual save
+    savedFeedbackMs: 1800,
+  });
+
+  const { isDirty, saveState } = kernel;
+  const saving = saveState === 'saving';
+  const handleSave = kernel.save;
+
   // ─── Editor mode ─────────────────────────────────────────
   const [editorMode, setEditorMode] = useState<EditorMode>('tiptap');
   const [distractionFree, setDistractionFree] = useState(false);
 
   const [blocks, setBlocks] = useState<EditorBlock[]>([]);
-  const [isDirty, setIsDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [saveState, setSaveState] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'error'>('idle');
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
@@ -529,9 +549,9 @@ export default function SceneEditorPanel({
     content: '',
     immediatelyRender: false,
     onUpdate: ({ editor: ed }) => {
-      setIsDirty(true);
-      setSaveState('dirty');
-      tiptapContentRef.current = ed.getHTML();
+      const html = ed.getHTML();
+      tiptapContentRef.current = html;
+      kernel.setField('description', html);
     },
     editorProps: {
       attributes: {
@@ -595,24 +615,21 @@ export default function SceneEditorPanel({
   useEffect(() => {
     if (scene?.description !== undefined) {
       setBlocks(parseBlocks(scene.description || ''));
-      setIsDirty(false);
-      setSaveState('idle');
     }
   }, [scene?.description, resolvedSceneId]);
 
   // Reset on scene change
   useEffect(() => {
     setBlocks([]);
-    setIsDirty(false);
-    setSaveState('idle');
     setContextMenu(null);
   }, [resolvedSceneId]);
 
+  // Sync blocks → kernel (blocks mode only)
   useEffect(() => {
-    if (saveState !== 'saved' && saveState !== 'error') return;
-    const timer = setTimeout(() => setSaveState('idle'), 1800);
-    return () => clearTimeout(timer);
-  }, [saveState]);
+    if (editorMode === 'blocks' && blocks.length > 0) {
+      kernel.setField('description', serializeBlocks(blocks));
+    }
+  }, [blocks, editorMode, kernel]);
 
   // Publish references to scriptContextStore
   useEffect(() => {
@@ -635,7 +652,6 @@ export default function SceneEditorPanel({
       beatRef: insert.beatRef,
     };
     setBlocks((prev) => [...prev, newBlock]);
-    setIsDirty(true);
 
     // Focus the new block's select or textarea
     requestAnimationFrame(() => {
@@ -648,37 +664,13 @@ export default function SceneEditorPanel({
     });
   }, [pendingInsert, consumeInsert]);
 
-  // ─── Save ───────────────────────────────────────────────
-  const handleSave = useCallback(async () => {
-    if (!resolvedSceneId || !isDirty) return;
-    setSaving(true);
-    setSaveState('saving');
-    try {
-      const content = editorMode === 'tiptap'
-        ? tiptapContentRef.current
-        : serializeBlocks(blocks);
-      await sceneApi.updateScene(resolvedSceneId, { description: content });
-      queryClient.invalidateQueries({ queryKey: ['scenes'] });
-      setIsDirty(false);
-      setSaveState('saved');
-    } catch {
-      setSaveState('error');
-    } finally {
-      setSaving(false);
-    }
-  }, [resolvedSceneId, isDirty, blocks, queryClient, editorMode]);
-
   // ─── Block operations ───────────────────────────────────
   const handleUpdateBlock = useCallback((id: string, updates: Partial<EditorBlock>) => {
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...updates } : b)));
-    setIsDirty(true);
-    setSaveState('dirty');
   }, []);
 
   const handleDeleteBlock = useCallback((id: string) => {
     setBlocks((prev) => prev.filter((b) => b.id !== id));
-    setIsDirty(true);
-    setSaveState('dirty');
   }, []);
 
   const handleAddBlock = useCallback(
@@ -690,8 +682,6 @@ export default function SceneEditorPanel({
         next.splice(afterIdx + 1, 0, newBlock);
         return next;
       });
-      setIsDirty(true);
-      setSaveState('dirty');
       setContextMenu(null);
 
       // For dialogue/beat, focus the select; otherwise focus textarea
@@ -712,8 +702,6 @@ export default function SceneEditorPanel({
   const handleAddDefault = useCallback(() => {
     const newBlock: EditorBlock = { id: genId(), type: 'scene', content: '' };
     setBlocks([newBlock]);
-    setIsDirty(true);
-    setSaveState('dirty');
     requestAnimationFrame(() => {
       textareaRefs.current.get(newBlock.id)?.focus();
     });
@@ -760,7 +748,6 @@ export default function SceneEditorPanel({
             next.splice(blockIndex + 1, 0, newBlock);
             return next;
           });
-          setIsDirty(true);
           requestAnimationFrame(() => {
             textareaRefs.current.get(newBlock.id)?.focus();
           });
@@ -775,7 +762,6 @@ export default function SceneEditorPanel({
           e.preventDefault();
           const prevBlock = blocks[blockIndex - 1];
           setBlocks((prev) => prev.filter((b) => b.id !== blockId));
-          setIsDirty(true);
           if (prevBlock) {
             requestAnimationFrame(() => {
               const prevTa = textareaRefs.current.get(prevBlock.id);
@@ -810,7 +796,7 @@ export default function SceneEditorPanel({
     <button
       type="button"
       onClick={() => setEditorMode((prev) => (prev === 'tiptap' ? 'blocks' : 'tiptap'))}
-      className="rounded p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors"
+      className="rounded p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors duration-150 active:scale-[0.98]"
       title={editorMode === 'tiptap' ? 'Switch to block editor' : 'Switch to rich-text editor'}
     >
       {editorMode === 'tiptap' ? <Columns2 size={14} /> : <PenTool size={14} />}
@@ -855,7 +841,7 @@ export default function SceneEditorPanel({
         </div>
       ) : (
         <div className="flex h-full min-h-0 flex-col">
-          <div className="shrink-0 border-b border-slate-800/40 bg-slate-900/35 px-3 py-1.5 text-sm text-slate-400">
+          <div className="shrink-0 border-b border-slate-700/40 bg-slate-900/35 px-3 py-1.5 text-sm text-slate-400">
             <span>{blocks.length} blocks</span>
             <span className="hidden @md:inline mx-1.5 text-slate-500">&bull;</span>
             <span className="hidden @md:inline">{dialogueCount} dialogue</span>
@@ -927,7 +913,7 @@ export default function SceneEditorPanel({
             type="button"
             onClick={handleSave}
             disabled={saving || !isDirty}
-            className="rounded px-2 py-0.5 text-sm font-medium bg-amber-600/20 text-amber-300 transition-colors hover:bg-amber-600/30 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded px-2 py-0.5 text-sm font-medium bg-cyan-500/10 text-cyan-300 transition-all duration-150 hover:bg-cyan-500/15 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Save
           </button>

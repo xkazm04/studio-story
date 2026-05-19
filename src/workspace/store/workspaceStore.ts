@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { resolveLayout, resolvePreferredLayout } from '../engine/layoutEngine';
+import { resolveLayout, resolvePreferredLayout, autoCompactPanels } from '../engine/layoutEngine';
 import type {
   WorkspacePanelInstance,
   WorkspaceLayout,
@@ -14,6 +14,7 @@ import type {
   WorkspacePanelType,
   PanelRole,
   PanelDensity,
+  WorkspaceSnapshot,
 } from '../types';
 
 interface WorkspaceStoreState {
@@ -35,6 +36,14 @@ interface WorkspaceStoreState {
   focusedPanelId: string | null;
   /** Timestamp when the currently focused panel gained focus */
   focusedAt: number;
+  /** Whether auto-density compaction is enabled */
+  autoCompact: boolean;
+  /** IDs of panels that were auto-compacted (density downgraded) */
+  autoCompactedPanels: Set<string>;
+  /** User-saved named workspace snapshots */
+  namedSnapshots: WorkspaceSnapshot[];
+  /** Currently active snapshot ID (null if workspace was modified after load) */
+  activeSnapshotId: string | null;
 
   // Actions
   showPanels: (directives: PanelDirective[]) => void;
@@ -51,6 +60,20 @@ interface WorkspaceStoreState {
   restoreSnapshot: (terminalId: string) => void;
   setLinkedTerminal: (terminalId: string | null) => void;
   setFocusedPanel: (panelId: string | null) => void;
+  /** Replace a panel in-place by ID, preserving its slot, role, and layout */
+  swapPanelById: (panelId: string, newType: WorkspacePanelType) => void;
+  /** Toggle auto-density compaction on/off */
+  setAutoCompact: (enabled: boolean) => void;
+  /** Re-run auto-compaction against current viewport dimensions */
+  runAutoCompaction: (viewportWidth: number, viewportHeight: number) => void;
+  /** Save current workspace as a named snapshot */
+  saveNamedSnapshot: (name: string) => string;
+  /** Load a named snapshot by ID */
+  loadNamedSnapshot: (id: string) => void;
+  /** Delete a named snapshot by ID */
+  deleteNamedSnapshot: (id: string) => void;
+  /** Rename a named snapshot */
+  renameNamedSnapshot: (id: string, name: string) => void;
 
   // Derived
   getVisiblePanels: () => WorkspacePanelInstance[];
@@ -109,6 +132,10 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
       workflowContextStack: [],
       focusedPanelId: null,
       focusedAt: 0,
+      autoCompact: true,
+      autoCompactedPanels: new Set<string>(),
+      namedSnapshots: [],
+      activeSnapshotId: null,
 
       showPanels: (directives) => {
         set((state) => {
@@ -139,6 +166,7 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
               newPanels.length > 0
                 ? resolvePreferredLayout(allPanels, state.layout, 35)
                 : state.layout,
+            activeSnapshotId: null,
           };
         });
       },
@@ -150,6 +178,7 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
           return {
             panels: remaining,
             layout: resolvePreferredLayout(remaining, state.layout, 20),
+            activeSnapshotId: null,
           };
         });
       },
@@ -230,6 +259,7 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
             { panels: existing, layout: previousLayout, createdAt: Date.now() },
             ...state.workflowContextStack,
           ].slice(0, 10),
+          activeSnapshotId: null,
         }));
       },
 
@@ -246,7 +276,7 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
       },
 
       clearPanels: () => {
-        set({ panels: [], layout: 'single' });
+        set({ panels: [], layout: 'single', activeSnapshotId: null });
       },
 
       setLayout: (layout) => {
@@ -298,6 +328,91 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
         set({ focusedPanelId: panelId, focusedAt: panelId ? Date.now() : 0 });
       },
 
+      swapPanelById: (panelId, newType) => {
+        set((state) => {
+          const idx = state.panels.findIndex((p) => p.id === panelId);
+          if (idx === -1) return state;
+          const old = state.panels[idx];
+          const newPanel: WorkspacePanelInstance = {
+            id: `panel-${newType}`,
+            type: newType,
+            role: old.role,
+            props: {},
+            slotIndex: old.slotIndex,
+            density: old.density,
+          };
+          const panels = [...state.panels];
+          panels[idx] = newPanel;
+          return { panels };
+        });
+      },
+
+      setAutoCompact: (enabled) => {
+        set({ autoCompact: enabled });
+        if (!enabled) {
+          set({ autoCompactedPanels: new Set<string>() });
+        }
+      },
+
+      runAutoCompaction: (viewportWidth, viewportHeight) => {
+        const { panels, layout, autoCompact } = get();
+        if (!autoCompact || panels.length === 0) {
+          if (get().autoCompactedPanels.size > 0) {
+            set({ autoCompactedPanels: new Set<string>() });
+          }
+          return;
+        }
+        const result = autoCompactPanels(panels, layout, viewportWidth, viewportHeight);
+        if (result.compactedIds.size > 0 || get().autoCompactedPanels.size > 0) {
+          set({ panels: result.panels, autoCompactedPanels: result.compactedIds });
+        }
+      },
+
+      saveNamedSnapshot: (name) => {
+        const { panels, layout } = get();
+        const now = Date.now();
+        const id = `snapshot-${now}`;
+        const snapshot: WorkspaceSnapshot = {
+          id,
+          name,
+          panels: panels.map((p) => ({ ...p })),
+          layout,
+          createdAt: now,
+          updatedAt: now,
+        };
+        set((state) => ({
+          namedSnapshots: [...state.namedSnapshots, snapshot],
+          activeSnapshotId: id,
+        }));
+        return id;
+      },
+
+      loadNamedSnapshot: (id) => {
+        const { namedSnapshots } = get();
+        const snapshot = namedSnapshots.find((s) => s.id === id);
+        if (!snapshot) return;
+        set({
+          panels: snapshot.panels.map((p) => ({ ...p })),
+          layout: snapshot.layout,
+          activeSnapshotId: id,
+        });
+      },
+
+      deleteNamedSnapshot: (id) => {
+        set((state) => ({
+          namedSnapshots: state.namedSnapshots.filter((s) => s.id !== id),
+          activeSnapshotId: state.activeSnapshotId === id ? null : state.activeSnapshotId,
+        }));
+      },
+
+      renameNamedSnapshot: (id, name) => {
+        set((state) => ({
+          namedSnapshots: state.namedSnapshots.map((s) =>
+            s.id === id ? { ...s, name, updatedAt: Date.now() } : s
+          ),
+        }));
+      },
+
       getVisiblePanels: () => get().panels,
 
       getPanelByType: (type) => get().panels.find((p) => p.type === type),
@@ -310,6 +425,8 @@ export const useWorkspaceStore = create<WorkspaceStoreState>()(
         panels: state.panels,
         layout: state.layout,
         terminalPanelSnapshots: state.terminalPanelSnapshots,
+        namedSnapshots: state.namedSnapshots,
+        activeSnapshotId: state.activeSnapshotId,
       }),
     }
   )

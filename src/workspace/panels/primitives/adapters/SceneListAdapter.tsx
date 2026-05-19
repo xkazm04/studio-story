@@ -1,28 +1,60 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { List, Plus, Clapperboard, Loader2 } from 'lucide-react';
+import React, { useMemo, useCallback } from 'react';
+import { List, Plus, Clapperboard, Loader2, Pencil, Copy, ArrowUpDown, Trash2, Image } from 'lucide-react';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { sceneApi } from '@/app/hooks/integration/useScenes';
 import { SCENE_SCHEMA } from '@/workspace/schemas/entitySchemas';
+import type { BaseAdapterProps } from '../types';
+import type { ContextMenuItem } from '../ContextMenu';
+import type { Scene } from '@/app/types/Scene';
 import DataList from '../DataList';
 import { useScriptContextStore } from '../../../store/scriptContextStore';
+import { useResolvedProjectId } from './useResolvedProjectId';
 
-interface SceneListAdapterProps {
-  onClose?: () => void;
-  onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
-}
+type SceneListAdapterProps = BaseAdapterProps;
 
-export default function SceneListAdapter({ onClose, onTriggerSkill }: SceneListAdapterProps) {
-  const { selectedProject, selectedAct, selectedSceneId, setSelectedSceneId } = useProjectStore();
+export default function SceneListAdapter({ onClose, density, onTriggerSkill }: SceneListAdapterProps) {
+  const { projectId, hasProject } = useResolvedProjectId();
+  const { selectedAct, selectedSceneId, setSelectedSceneId } = useProjectStore();
   const referencedBeats = useScriptContextStore((s) => s.referencedBeats);
-  const projectId = selectedProject?.id;
   const actId = selectedAct?.id;
   const { data: scenes = [], isLoading, isFetching, isError, error, refetch } = sceneApi.useScenesByProjectAndAct(
-    projectId || '', actId || '', !!projectId && !!actId,
+    projectId, actId || '', hasProject && !!actId,
   );
 
   const highlightSet = useMemo(() => new Set(referencedBeats), [referencedBeats]);
+  const hasContext = hasProject && !!actId;
+
+  const getContextMenuItems = useCallback((_item: Scene): ContextMenuItem[] => [
+    { id: 'open-editor', label: 'Open in Editor', icon: Pencil },
+    { id: 'illustrate', label: 'Illustrate Scene', icon: Image },
+    { id: 'move-to-act', label: 'Move to Act...', icon: ArrowUpDown, separator: true },
+    { id: 'duplicate', label: 'Duplicate', icon: Copy },
+    { id: 'delete', label: 'Delete', icon: Trash2, variant: 'danger', separator: true },
+  ], []);
+
+  const handleContextMenuAction = useCallback((actionId: string, item: Scene) => {
+    const sceneId = item.id;
+    switch (actionId) {
+      case 'open-editor':
+        setSelectedSceneId(sceneId);
+        onTriggerSkill?.('scene-edit', { sceneId });
+        break;
+      case 'illustrate':
+        onTriggerSkill?.('scene-illustrate', { sceneId });
+        break;
+      case 'move-to-act':
+        onTriggerSkill?.('scene-move', { sceneId });
+        break;
+      case 'duplicate':
+        onTriggerSkill?.('scene-duplicate', { sceneId });
+        break;
+      case 'delete':
+        onTriggerSkill?.('scene-delete', { sceneId });
+        break;
+    }
+  }, [setSelectedSceneId, onTriggerSkill]);
 
   return (
     <DataList
@@ -30,17 +62,18 @@ export default function SceneListAdapter({ onClose, onTriggerSkill }: SceneListA
       icon={List}
       headerAccent="amber"
       onClose={onClose}
+      density={density}
       isLoading={isLoading}
       isError={isError}
       errorMessage={error?.message}
       onRetry={() => refetch()}
-      items={scenes as unknown as Record<string, unknown>[]}
+      items={scenes}
       fields={SCENE_SCHEMA.fields}
       selectedId={selectedSceneId ?? undefined}
       highlightIds={highlightSet}
       highlightField="name"
       highlightAccent="amber"
-      onSelect={(item) => setSelectedSceneId(item.id as string)}
+      onSelect={(item) => setSelectedSceneId(item.id)}
       numberedItems
       actions={
         <div className="flex items-center gap-1">
@@ -63,11 +96,13 @@ export default function SceneListAdapter({ onClose, onTriggerSkill }: SceneListA
         </div>
       }
       emptyIcon={Clapperboard}
-      emptyTitle={!projectId || !actId ? 'Pick a project and act' : 'No scenes yet'}
-      emptyDescription={!projectId || !actId
+      emptyTitle={!hasContext ? 'Pick a project and act' : 'No scenes yet'}
+      emptyDescription={!hasContext
         ? 'Select context first to browse and edit scene flow.'
         : 'Create your first scene to start structuring this act.'
       }
+      contextMenuItems={getContextMenuItems}
+      onContextMenuAction={handleContextMenuAction}
     />
   );
 }

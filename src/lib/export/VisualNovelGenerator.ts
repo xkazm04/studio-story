@@ -8,7 +8,8 @@
 
 import type { StoryExportData, StoryExportScene } from './types';
 import { slugify } from './types';
-import type { ExportResult } from './index';
+import type { ExportResult, ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
 import { generateVNCss } from './templates/vn-styles';
 import {
   generateVNEngine,
@@ -27,43 +28,51 @@ export class VisualNovelGenerator {
   /**
    * Generate a self-contained HTML visual novel from story export data.
    */
-  async generate(data: StoryExportData): Promise<ExportResult> {
-    // Build a scene-id to index map for resolving choice targets
-    const idToIndex = new Map<string, number>();
-    data.scenes.forEach((s, i) => idToIndex.set(s.id, i));
+  async generate(data: StoryExportData): Promise<ExportResult<ExportData>> {
+    try {
+      // Build a scene-id to index map for resolving choice targets
+      const idToIndex = new Map<string, number>();
+      data.scenes.forEach((s, i) => idToIndex.set(s.id, i));
 
-    // Capture art style palette for gradient fallback
-    const palette = data.artStyle?.palette;
+      // Capture art style palette for gradient fallback
+      const palette = data.artStyle?.palette;
 
-    // Transform scenes into VN scene data
-    const vnScenes: VNSceneData[] = await Promise.all(
-      data.scenes.map((scene) => this.transformScene(scene, idToIndex, palette))
-    );
+      // Transform scenes into VN scene data
+      const vnScenes: VNSceneData[] = await Promise.all(
+        data.scenes.map((scene) => this.transformScene(scene, idToIndex, palette))
+      );
 
-    // Assemble template parts
-    const css = generateVNCss(data.artStyle);
-    const bodyHTML = this.buildBodyHTML();
-    const engineJS = generateVNEngine(vnScenes);
-    const html = generateVNHTML(data.title, css, bodyHTML, engineJS);
+      // Assemble template parts
+      const css = generateVNCss(data.artStyle);
+      const bodyHTML = this.buildBodyHTML();
+      const engineJS = generateVNEngine(vnScenes);
+      const html = generateVNHTML(data.title, css, bodyHTML, engineJS);
 
-    // Build result
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const filename = `${slugify(data.title) || 'visual-novel'}.html`;
+      // Build result
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const filename = `${slugify(data.title) || 'visual-novel'}.html`;
 
-    const wordCount = data.scenes.reduce(
-      (sum, s) => sum + s.content.split(/\s+/).filter(Boolean).length,
-      0
-    );
+      const wordCount = data.scenes.reduce(
+        (sum, s) => sum + s.content.split(/\s+/).filter(Boolean).length,
+        0
+      );
 
-    return {
-      blob,
-      filename,
-      format: 'visual-novel',
-      metadata: {
-        sceneCount: data.scenes.length,
-        wordCount,
-      },
-    };
+      return exportSuccess({
+        blob,
+        filename,
+        format: 'visual-novel',
+        metadata: {
+          sceneCount: data.scenes.length,
+          wordCount,
+        },
+      });
+    } catch (err) {
+      return exportFailure(
+        'GENERATION_FAILED',
+        err instanceof Error ? err.message : 'Visual novel generation failed',
+        err,
+      );
+    }
   }
 
   // --------------------------------------------------------------------------

@@ -1,14 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import type { McpConfig } from '../config.js';
-import type { StoryHttpClient } from '../http-client.js';
+import { textContent } from './helpers.js';
 
 const PANEL_TYPES = [
   'scene-editor', 'scene-metadata', 'dialogue-view', 'scene-list', 'scene-gallery',
   'character-cards', 'character-detail', 'character-creator', 'relationship-map',
   'story-map', 'beats-manager', 'story-evaluator', 'story-graph', 'script-editor', 'theme-manager', 'beats-sidebar',
   'image-canvas', 'image-generator', 'art-style', 'storyboard',
-  'voice-manager', 'voice-casting', 'script-dialog', 'narration', 'voice-performance',
+  'voice-manager', 'voice-casting', 'audio-production', 'voice-performance',
   'writing-desk', 'cast-sidebar', 'audio-toolbar', 'advisor',
   'narrative-suggestions', 'reader-view',
 ] as const;
@@ -54,8 +53,7 @@ const PANEL_MANIFESTS = `WORKSPACE PANELS (use compose_workspace to arrange thes
 ## VOICE
 - **voice-manager** [primary/standard/medium]: Voice profile management. Use when: User wants to define character voices.
 - **voice-casting** [secondary/standard/medium]: Match characters to voice profiles. Use when: User is assigning voices.
-- **script-dialog** [primary/wide/high]: Script with voice direction annotations. Use when: User is preparing script for voice recording.
-- **narration** [primary/wide/high]: Narration editor and player. Use when: User is writing narration.
+- **audio-production** [primary/wide/high]: Unified audio production for script dialogue and narration. Use dataSlice.view="script" for script mode, "performance" (default) for narration with voice controls. Use when: User is preparing script for voice recording or writing narration.
 - **voice-performance** [sidebar/compact/low]: Voice delivery parameter controls. Use when: User is fine-tuning voice delivery.
 
 ## COMPOSITE
@@ -207,11 +205,7 @@ When illustrating scenes with specific characters:
 - character-detail: role sidebar, shows character whose reference is being used
 - Example: "illustrate the scene with Elena's reference", "generate with character consistency"`;
 
-function textContent(text: string) {
-  return { content: [{ type: 'text' as const, text }] };
-}
-
-export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _client: StoryHttpClient) {
+export function registerWorkspaceTools(server: McpServer) {
   // ─── get_panel_manifests ─────────────────────────
   server.tool(
     'get_panel_manifests',
@@ -227,7 +221,7 @@ export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _c
     'compose_workspace',
     'Compose workspace panels for the user task. Keep layouts focused, choose role-appropriate panels from manifests, and set layout only when explicit structure is needed. For story authoring: use primary-sidebar for scene editing, split-2 for story structure, show action for smart merge when adding context. See STORY AUTHORING COMPOSITION PATTERNS in get_panel_manifests output.',
     {
-      action: z.enum(['show', 'hide', 'replace', 'clear']).describe('show: add panels, hide: remove panels, replace: clear and set new panels, clear: remove all'),
+      action: z.enum(['show', 'hide', 'replace', 'clear', 'save_snapshot', 'load_snapshot']).describe('show: add panels, hide: remove panels, replace: clear and set new panels, clear: remove all, save_snapshot: save current workspace as named snapshot, load_snapshot: load a saved snapshot by name'),
       layout: z.enum(LAYOUT_TYPES).optional().describe('Optional explicit layout. Omit unless a specific arrangement is required.'),
       panels: z.array(z.object({
         type: z.enum(PANEL_TYPES).describe('Panel type from manifests'),
@@ -243,14 +237,16 @@ export function registerWorkspaceTools(server: McpServer, _config: McpConfig, _c
         }).optional().describe('Data slice to control what the panel displays'),
       })).max(5).optional().describe('Panels to show/hide (recommended 1-3, hard limit 5)'),
       reasoning: z.string().optional().describe('Brief explanation of why these panels were chosen'),
+      snapshotName: z.string().optional().describe('Name for save_snapshot action, or name to load for load_snapshot action'),
     },
-    async ({ action, layout, panels, reasoning }) => {
+    async ({ action, layout, panels, reasoning, snapshotName }) => {
       return textContent(JSON.stringify({
         applied: true,
         action,
         layout: layout ?? 'auto',
         panelCount: panels?.length ?? 0,
         reasoning: reasoning ?? 'No reasoning provided',
+        ...(snapshotName ? { snapshotName } : {}),
       }));
     }
   );

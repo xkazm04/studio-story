@@ -35,8 +35,8 @@ function makeId(): string {
 
 const STATUS_STYLES: Record<ScriptLine['status'], { color: string; icon: typeof Check }> = {
   pending: { color: 'text-slate-400', icon: Check },
-  generating: { color: 'text-orange-400', icon: Loader2 },
-  done: { color: 'text-emerald-400', icon: Check },
+  generating: { color: 'text-voice-accent', icon: Loader2 },
+  done: { color: 'text-voice-primary', icon: Check },
   error: { color: 'text-red-400', icon: AlertCircle },
 };
 
@@ -152,6 +152,7 @@ export default function ScriptEditor({
         return (
           <div
             key={line.id}
+            data-line-id={line.id}
             className="flex gap-1.5 items-start p-2 rounded-lg border border-slate-800/40 bg-slate-900/30"
           >
             <div className="flex flex-col items-center gap-1 pt-1 shrink-0 w-6">
@@ -167,7 +168,7 @@ export default function ScriptEditor({
                   value={line.character}
                   onChange={(e) => handleCharacterChange(line.id, e.target.value)}
                   className="w-28 shrink-0 px-1.5 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-300
-                    focus:outline-none focus:border-orange-500/40"
+                    focus:outline-none focus:border-voice-accent/40"
                 >
                   {characters.map((c) => (
                     <option key={c.id} value={c.name}>{c.name}</option>
@@ -179,13 +180,13 @@ export default function ScriptEditor({
                   onChange={(e) => updateLine(line.id, { text: e.target.value })}
                   placeholder="Enter dialogue line..."
                   className="flex-1 px-2 py-1 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200
-                    placeholder:text-slate-500 focus:outline-none focus:border-orange-500/40"
+                    placeholder:text-slate-500 focus:outline-none focus:border-voice-accent/40"
                 />
               </div>
 
               <div className="flex items-center gap-1.5 flex-wrap">
                 {line.selectedTakeIdx != null && line.selectedTakeIdx >= 0 && line.takes?.[line.selectedTakeIdx] && (
-                  <span className="text-sm px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium mr-1">
+                  <span className="text-sm px-1.5 py-0.5 rounded-full bg-voice-primary/10 text-voice-primary border border-voice-primary/20 font-medium mr-1">
                     Take: {EMOTIONS.find((e) => e.type === line.takes![line.selectedTakeIdx!]!.emotion)?.label ?? line.takes[line.selectedTakeIdx].emotion}
                   </span>
                 )}
@@ -208,7 +209,7 @@ export default function ScriptEditor({
                   value={line.delivery}
                   onChange={(e) => updateLine(line.id, { delivery: e.target.value })}
                   className="px-1.5 py-0.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-400
-                    focus:outline-none focus:border-orange-500/40"
+                    focus:outline-none focus:border-voice-accent/40"
                 >
                   {DELIVERY_PRESETS.map((p) => (
                     <option key={p.id} value={p.id}>{p.label}</option>
@@ -240,7 +241,7 @@ export default function ScriptEditor({
               {line.status === 'done' && line.audioUrl && (
                 <button
                   onClick={() => handlePlayLine(line)}
-                  className="p-0.5 text-emerald-400 hover:text-emerald-300 transition-colors"
+                  className="p-0.5 text-voice-primary hover:text-voice-primary/80 transition-colors"
                   title="Play preview"
                 >
                   <Play className="w-3 h-3" />
@@ -250,7 +251,7 @@ export default function ScriptEditor({
               {(line.status === 'done' || line.status === 'error') && onRegenerateLine && (
                 <button
                   onClick={() => onRegenerateLine(line.id)}
-                  className="p-0.5 text-orange-400 hover:text-orange-300 transition-colors"
+                  className="p-0.5 text-voice-accent hover:text-voice-accent/80 transition-colors"
                   title="Regenerate"
                 >
                   <Loader2 className="w-3 h-3" />
@@ -302,7 +303,7 @@ export default function ScriptEditor({
           className={cn(
             'flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
             showBulkImport
-              ? 'bg-orange-500/10 text-orange-400'
+              ? 'bg-voice-accent/10 text-voice-accent'
               : 'bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
           )}
         >
@@ -314,14 +315,14 @@ export default function ScriptEditor({
       {showBulkImport && (
         <div className="p-2.5 rounded-lg border border-slate-700/40 bg-slate-900/40 space-y-2">
           <span className="text-sm text-slate-400 block">
-            Paste lines in format: <code className="text-orange-400">CHARACTER: &quot;Line text&quot;</code>
+            Paste lines in format: <code className="text-voice-accent">CHARACTER: &quot;Line text&quot;</code>
           </span>
           <textarea
             value={bulkText}
             onChange={(e) => setBulkText(e.target.value)}
             rows={4}
             className="w-full px-2 py-1.5 bg-slate-950/60 border border-slate-700/40 rounded text-sm text-slate-200
-              placeholder:text-slate-500 focus:outline-none focus:border-orange-500/40 font-mono resize-none"
+              placeholder:text-slate-500 focus:outline-none focus:border-voice-accent/40 font-mono resize-none"
             placeholder={'Character Name: "Line of dialogue here."'}
           />
           <button
@@ -331,7 +332,7 @@ export default function ScriptEditor({
               'px-3 py-1.5 rounded text-sm font-medium transition-all',
               !bulkText.trim()
                 ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
-                : 'bg-orange-600 text-white hover:bg-orange-500'
+                : 'bg-voice-accent/80 text-white hover:bg-voice-accent'
             )}
           >
             Import Lines

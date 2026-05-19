@@ -59,24 +59,28 @@ describe('StoryPDFGenerator', () => {
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(makeFixture());
 
-    expect(result.format).toBe('story-pdf');
-    expect(result.blob.size).toBeGreaterThan(0);
-    expect(result.filename).toMatch(/\.pdf$/);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.format).toBe('story-pdf');
+    expect(result.data.blob!.size).toBeGreaterThan(0);
+    expect(result.data.filename).toMatch(/\.pdf$/);
   });
 
   it('PDF blob starts with %PDF magic bytes', async () => {
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(makeFixture());
+    if (!result.success) throw result.error;
 
-    const text = await result.blob.text();
+    const text = await result.data.blob!.text();
     expect(text.startsWith('%PDF-')).toBe(true);
   });
 
   it('scenes with imageUrl produce PDF containing image XObjects', async () => {
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(makeFixture());
+    if (!result.success) throw result.error;
 
-    const text = await result.blob.text();
+    const text = await result.data.blob!.text();
     expect(text).toContain('/Subtype /Image');
   });
 
@@ -89,8 +93,9 @@ describe('StoryPDFGenerator', () => {
 
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(data);
+    if (!result.success) throw result.error;
 
-    const text = await result.blob.text();
+    const text = await result.data.blob!.text();
     expect(text.startsWith('%PDF-')).toBe(true);
     expect(text).not.toContain('/Subtype /Image');
   });
@@ -98,8 +103,9 @@ describe('StoryPDFGenerator', () => {
   it('title page includes story title and author strings', async () => {
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(makeFixture());
+    if (!result.success) throw result.error;
 
-    const text = await result.blob.text();
+    const text = await result.data.blob!.text();
     expect(text).toContain('The Lost Kingdom');
     expect(text).toContain('Jane Author');
   });
@@ -107,8 +113,9 @@ describe('StoryPDFGenerator', () => {
   it('multiple scenes produce multi-page PDF with scene count in metadata', async () => {
     const gen = new StoryPDFGenerator();
     const result = await gen.generate(makeFixture());
+    if (!result.success) throw result.error;
 
-    expect(result.metadata.sceneCount).toBe(3);
-    expect(result.metadata.pageCount).toBeGreaterThanOrEqual(2);
+    expect(result.data.metadata.sceneCount).toBe(3);
+    expect(result.data.metadata.pageCount).toBeGreaterThanOrEqual(2);
   });
 });

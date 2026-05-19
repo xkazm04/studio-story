@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NextRequest } from 'next/server';
 
 // Use vi.hoisted to define mock functions that can be referenced in vi.mock factories
 const { mockCreate, mockAssembleStoryContext, mockFormatContext } = vi.hoisted(() => ({
@@ -39,8 +40,8 @@ vi.mock('@/lib/ai/storyContext', () => ({
 
 import { POST, _resetClient } from '../route';
 
-function makeRequest(body: Record<string, unknown>): Request {
-  return new Request('http://localhost:3000/api/ai/writing', {
+function makeRequest(body: Record<string, unknown>): NextRequest {
+  return new NextRequest('http://localhost:3000/api/ai/writing', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

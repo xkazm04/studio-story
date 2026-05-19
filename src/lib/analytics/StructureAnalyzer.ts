@@ -9,6 +9,7 @@
 import type { Act } from '@/app/types/Act';
 import type { Beat } from '@/app/types/Beat';
 import type { Scene } from '@/app/types/Scene';
+import type { AnalysisIssue } from './index';
 
 // ============================================================================
 // Types
@@ -54,12 +55,9 @@ export interface ActAnalysis {
   missingExpectedBeats: string[];
 }
 
-export interface StructureIssue {
+export interface StructureIssue extends AnalysisIssue {
   type: 'imbalance' | 'missing-beat' | 'pacing' | 'structure';
-  severity: 'critical' | 'warning' | 'info';
   actId?: string;
-  message: string;
-  suggestion: string;
   affectedRange?: { start: number; end: number };
 }
 

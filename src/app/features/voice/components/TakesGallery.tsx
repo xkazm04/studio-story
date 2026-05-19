@@ -78,14 +78,14 @@ export default function TakesGallery({
     <div className="space-y-1.5">
       {isGenerating && progress && (
         <div className="flex items-center gap-2 mb-2">
-          <Loader2 className="w-3.5 h-3.5 text-orange-400 animate-spin shrink-0" />
+          <Loader2 className="w-3.5 h-3.5 text-voice-accent animate-spin shrink-0" />
           <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300"
+              className="h-full bg-voice-accent transition-all duration-300"
               style={{ width: progress.total > 0 ? `${(progress.done / progress.total) * 100}%` : '0%' }}
             />
           </div>
-          <span className="text-sm text-orange-400 font-mono shrink-0">
+          <span className="text-sm text-voice-accent font-mono shrink-0">
             {progress.done}/{progress.total}
           </span>
         </div>
@@ -103,7 +103,7 @@ export default function TakesGallery({
             className={cn(
               'flex items-center gap-2 p-2 rounded-lg border transition-all duration-200',
               isSelected
-                ? 'border-emerald-500/40 bg-emerald-500/5'
+                ? 'border-voice-primary/40 bg-voice-primary/5'
                 : 'border-slate-800/50 bg-slate-900/30 hover:border-slate-700/80'
             )}
           >
@@ -142,7 +142,7 @@ export default function TakesGallery({
                 onClick={() => handlePlay(idx)}
                 className={cn(
                   'p-1 rounded transition-colors',
-                  isPlaying ? 'text-orange-400' : 'text-slate-400 hover:text-slate-300'
+                  isPlaying ? 'text-voice-accent' : 'text-slate-400 hover:text-slate-300'
                 )}
               >
                 {isPlaying ? (
@@ -172,8 +172,8 @@ export default function TakesGallery({
                 className={cn(
                   'text-sm px-1.5 py-0.5 rounded font-medium transition-colors',
                   isSelected
-                    ? 'bg-emerald-500/20 text-emerald-400'
-                    : 'bg-orange-600/80 hover:bg-orange-500 text-white'
+                    ? 'bg-voice-primary/20 text-voice-primary'
+                    : 'bg-voice-accent/80 hover:bg-voice-accent text-white'
                 )}
               >
                 {isSelected ? <Check className="w-3 h-3" /> : 'Select'}

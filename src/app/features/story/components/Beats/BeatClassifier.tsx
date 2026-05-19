@@ -22,6 +22,7 @@ import {
   Info,
 } from 'lucide-react';
 import { INTERACTIVE, BEAT_ANIMATIONS } from '@/workspace/theme/tokens';
+import { extractData } from '@/app/utils/api';
 import {
   type BeatCategory,
   type BeatSubtype,
@@ -422,11 +423,11 @@ export default function BeatClassifier({
         }),
       });
 
-      const data = await res.json();
+      const data = extractData<Record<string, unknown>>(await res.json());
 
       if (!data.success) {
         // Fall back to keyword suggestions on API error
-        setLlmError(data.error || 'Classification failed');
+        setLlmError((data.error as string) || 'Classification failed');
         const topCategory = suggestions.categories[0];
         onClassificationChange({
           beatId,

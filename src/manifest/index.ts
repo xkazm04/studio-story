@@ -11,28 +11,49 @@ export type { PanelManifest, PanelInputSchema, PanelProp, PanelOutput } from './
 import { PANEL_MANIFESTS } from './panelManifests';
 import type { PanelManifest } from './types';
 
+/** Pre-built Map for O(1) manifest lookup by panel type */
+const MANIFEST_MAP = new Map<string, PanelManifest>(
+  PANEL_MANIFESTS.map(m => [m.type, m])
+);
+
+/** Pre-built Map for O(1) domain-grouped manifest lookup */
+const DOMAIN_MAP = new Map<string, PanelManifest[]>();
+for (const manifest of PANEL_MANIFESTS) {
+  for (const domain of manifest.domains) {
+    let list = DOMAIN_MAP.get(domain);
+    if (!list) {
+      list = [];
+      DOMAIN_MAP.set(domain, list);
+    }
+    list.push(manifest);
+  }
+}
+
 /** Get manifest for a specific panel type */
 export function getManifest(type: string): PanelManifest | undefined {
-  return PANEL_MANIFESTS.find(m => m.type === type);
+  return MANIFEST_MAP.get(type);
 }
 
 /** Get manifests for panels that operate on the given domains */
 export function getManifestsByDomain(domains: string[]): PanelManifest[] {
-  return PANEL_MANIFESTS.filter(m =>
-    m.domains.some(d => domains.includes(d))
-  );
+  const seen = new Set<string>();
+  const result: PanelManifest[] = [];
+  for (const domain of domains) {
+    const manifests = DOMAIN_MAP.get(domain);
+    if (!manifests) continue;
+    for (const m of manifests) {
+      if (!seen.has(m.type)) {
+        seen.add(m.type);
+        result.push(m);
+      }
+    }
+  }
+  return result;
 }
 
 /** Get manifests grouped by domain */
 export function getManifestsByDomainGrouped(): Record<string, PanelManifest[]> {
-  const grouped: Record<string, PanelManifest[]> = {};
-  for (const manifest of PANEL_MANIFESTS) {
-    for (const domain of manifest.domains) {
-      if (!grouped[domain]) grouped[domain] = [];
-      grouped[domain].push(manifest);
-    }
-  }
-  return grouped;
+  return Object.fromEntries(DOMAIN_MAP);
 }
 
 /**

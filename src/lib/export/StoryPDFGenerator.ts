@@ -12,7 +12,9 @@
  */
 
 import type { StoryExportData, StoryExportScene } from './types';
-import type { ExportResult } from './index';
+import type { ExportResult, ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
+import { escapePdfText } from './utils';
 import { slugify } from './types';
 
 // ============================================================================
@@ -62,7 +64,8 @@ export class StoryPDFGenerator {
   /**
    * Generate a story PDF with embedded illustrations.
    */
-  async generate(data: StoryExportData): Promise<ExportResult> {
+  async generate(data: StoryExportData): Promise<ExportResult<ExportData>> {
+    try {
     // Reset state
     this.objects = [];
     this.nextObjId = 1;
@@ -162,15 +165,22 @@ export class StoryPDFGenerator {
     const pdfContent = this.serializePDF(data.title);
     const blob = new Blob([pdfContent], { type: 'application/pdf' });
 
-    return {
+    return exportSuccess({
       blob,
       filename: `${slugify(data.title)}.pdf`,
-      format: 'story-pdf' as ExportResult['format'],
+      format: 'story-pdf',
       metadata: {
         pageCount: pages.length,
         sceneCount: data.scenes.length,
       },
-    };
+    });
+    } catch (err) {
+      return exportFailure(
+        'GENERATION_FAILED',
+        err instanceof Error ? err.message : 'Story PDF generation failed',
+        err,
+      );
+    }
   }
 
   // ==========================================================================
@@ -406,11 +416,7 @@ export class StoryPDFGenerator {
   // ==========================================================================
 
   private escapeText(text: string): string {
-    return text
-      .replace(/\\/g, '\\\\')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/[^\x20-\x7E]/g, '');
+    return escapePdfText(text);
   }
 
   private wrapText(text: string, maxChars: number): string[] {

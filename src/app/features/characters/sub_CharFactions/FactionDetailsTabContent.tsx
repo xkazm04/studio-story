@@ -24,6 +24,7 @@ import {
   FactionSecret,
   DiplomaticAction,
 } from '@/lib/politics/PoliticsEngine';
+import { CulturalCompatibility } from '@/lib/culture/CultureGenerator';
 
 type FactionMember = FactionSummary['members'][number];
 
@@ -54,6 +55,7 @@ interface FactionDetailsTabContentProps {
   onAddSecret?: (secret: FactionSecret) => void;
   onRevealSecret?: (secretId: string) => void;
   onExecuteAction?: (action: DiplomaticAction) => void;
+  culturalCompatibilities?: Map<string, CulturalCompatibility>;
 }
 
 const tabMotionProps = {
@@ -89,6 +91,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
   onAddSecret,
   onRevealSecret,
   onExecuteAction,
+  culturalCompatibilities,
 }) => {
   return (
     <AnimatePresence mode="wait">
@@ -210,6 +213,7 @@ const FactionDetailsTabContent: React.FC<FactionDetailsTabContentProps> = ({
             onAddSecret={onAddSecret}
             onRevealSecret={onRevealSecret}
             onExecuteAction={onExecuteAction}
+            culturalCompatibilities={culturalCompatibilities}
           />
         </motion.div>
       )}

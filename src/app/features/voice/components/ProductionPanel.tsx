@@ -317,7 +317,7 @@ export default function ProductionPanel({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="ms-h2 flex items-center gap-2">
-            <FileAudio className="w-6 h-6 text-emerald-400" />
+            <FileAudio className="w-6 h-6 text-voice-primary" />
             Voice Production
           </h2>
           <p className="ms-caption mt-1">
@@ -419,21 +419,21 @@ export default function ProductionPanel({
 
       {/* Progress indicator */}
       {state.phase !== 'idle' && state.phase !== 'completed' && (
-        <div className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/30">
+        <div className="p-4 rounded-lg bg-voice-primary/15 border border-voice-primary/30">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-              <span className="text-sm text-emerald-300">
+              <Loader2 className="w-4 h-4 text-voice-primary animate-spin" />
+              <span className="text-sm text-voice-primary/80">
                 {state.phase === 'generating' && `Generating dialogue... Scene ${state.currentScene}/${state.totalScenes}`}
                 {state.phase === 'assembling' && `Assembling chapter ${state.currentAct}/${state.totalActs}`}
                 {state.phase === 'exporting' && 'Exporting audio...'}
               </span>
             </div>
-            <span className="text-sm text-emerald-400">{state.progress}%</span>
+            <span className="text-sm text-voice-primary">{state.progress}%</span>
           </div>
           <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-emerald-500"
+              className="h-full bg-voice-primary"
               initial={{ width: 0 }}
               animate={{ width: `${state.progress}%` }}
               transition={{ duration: 0.3 }}
@@ -531,7 +531,7 @@ export default function ProductionPanel({
                           {formatDuration(chapter.totalDuration)}
                         </span>
                         {chapter.status === 'completed' && (
-                          <CheckCircle className="w-4 h-4 text-emerald-400" />
+                          <CheckCircle className="w-4 h-4 text-voice-primary" />
                         )}
                       </>
                     )}
@@ -576,10 +576,10 @@ export default function ProductionPanel({
                                   </>
                                 )}
                                 {status === 'completed' && (
-                                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                                  <CheckCircle className="w-3.5 h-3.5 text-voice-primary" />
                                 )}
                                 {status === 'generating' && (
-                                  <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin" />
+                                  <Loader2 className="w-3.5 h-3.5 text-voice-primary animate-spin" />
                                 )}
                                 {status === 'failed' && (
                                   <AlertCircle className="w-3.5 h-3.5 text-red-400" />
@@ -613,7 +613,7 @@ export default function ProductionPanel({
                 className="flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800/50"
               >
                 <div className="flex items-center gap-3">
-                  <Volume2 className="w-4 h-4 text-emerald-400" />
+                  <Volume2 className="w-4 h-4 text-voice-primary" />
                   <span className="text-sm text-slate-200">
                     Chapter {i + 1}: {chapter.actName}
                   </span>
@@ -625,7 +625,7 @@ export default function ProductionPanel({
                   <span className="text-sm text-slate-400">
                     {formatDuration(chapter.totalDuration)}
                   </span>
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle className="w-4 h-4 text-voice-primary" />
                 </div>
               </div>
             ))}

@@ -6,6 +6,7 @@ import {
   Settings2, Loader2, AlertCircle, Volume2, Grid3X3,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import type { MusicGenre, AudioAssetType, GeneratedAudioResult } from '../../types';
 
 interface TrackGeneratorProps {
@@ -110,7 +111,8 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
 
       if (!data.success) {
         throw new Error(data.error || 'Generation failed');
@@ -154,7 +156,8 @@ export default function TrackGenerator({ onOpenStems, onToggleAI, showAIDropdown
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (!data.success) throw new Error(data.error || 'Composition generation failed');
 
       const totalDurationMs = sections.reduce((sum, s) => sum + s.duration_ms, 0);

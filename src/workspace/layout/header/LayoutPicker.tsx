@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { LayoutGrid } from 'lucide-react';
 import { useIntent, LAYOUT_ORDER, type LayoutTemplateId, type Intent } from '@dzin/core';
 import { useWorkspaceStore } from '@/workspace/store/workspaceStore';
+import { useDropdown } from '@/workspace/hooks/useDropdown';
 
 // ---------------------------------------------------------------------------
 // Layout template thumbnail SVGs
@@ -102,13 +103,17 @@ SELECTABLE_LAYOUTS.forEach((id, i) => {
 // ---------------------------------------------------------------------------
 
 export function LayoutPicker() {
-  const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const currentLayout = useWorkspaceStore((s) => s.layout);
   const setLayout = useWorkspaceStore((s) => s.setLayout);
   const { dispatch } = useIntent();
+
+  const { isOpen: open, toggle, close: closeDropdown } = useDropdown({
+    triggerRef: buttonRef,
+    contentRef: dropdownRef,
+  });
 
   // Dispatch a compose set-layout intent and also update workspace store
   const selectTemplate = useCallback(
@@ -122,27 +127,10 @@ export function LayoutPicker() {
       };
       dispatch(intent);
       setLayout(template);
-      setOpen(false);
+      closeDropdown();
     },
-    [dispatch, setLayout, open],
+    [dispatch, setLayout, open, closeDropdown],
   );
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
 
   // Keyboard shortcuts: Ctrl+1 through Ctrl+7
   useEffect(() => {
@@ -163,7 +151,7 @@ export function LayoutPicker() {
       <button
         ref={buttonRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         title="Layout templates (Ctrl+1-7)"
         className="flex items-center gap-1 rounded px-1.5 py-0.5 text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-500/40"
       >

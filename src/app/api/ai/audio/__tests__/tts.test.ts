@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { NextRequest } from 'next/server';
 
 // Mock environment
 vi.stubEnv('ELEVENLABS_API_KEY', 'test-api-key');
@@ -31,7 +32,7 @@ vi.mock('@/lib/supabase/server', () => ({
 const originalFetch = globalThis.fetch;
 
 describe('POST /api/ai/audio/tts', () => {
-  let POST: (request: Request) => Promise<Response>;
+  let POST: (request: NextRequest) => Promise<Response>;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -52,7 +53,7 @@ describe('POST /api/ai/audio/tts', () => {
   });
 
   it('returns 200 with audioUrl and duration for valid text+voice_id', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/tts', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -72,7 +73,7 @@ describe('POST /api/ai/audio/tts', () => {
   });
 
   it('returns 400 when text is missing', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/tts', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -86,7 +87,7 @@ describe('POST /api/ai/audio/tts', () => {
   });
 
   it('returns 400 when voice_id is missing', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/tts', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -110,7 +111,7 @@ describe('POST /api/ai/audio/tts', () => {
     vi.resetModules();
     const mod = await import('../tts/route');
 
-    const request = new Request('http://localhost:3000/api/ai/audio/tts', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

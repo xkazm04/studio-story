@@ -9,6 +9,18 @@ export interface FieldSchema {
   displayIn?: ('card' | 'list-item' | 'detail' | 'tree-node')[];
   truncate?: boolean;
   className?: string;
+  /** When true, the DataList header renders a clickable sort toggle for this field */
+  sortable?: boolean;
+  /** When true, this field appears as a faceted filter in the filter bar */
+  filterable?: boolean;
+}
+
+export interface BaseAdapterProps {
+  onClose?: () => void;
+  density?: PanelDensity;
+  onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
+  /** Called when a context menu action is selected. Receives actionId and the entity. */
+  onContextMenuAction?: (actionId: string, entity: unknown) => void;
 }
 
 export interface BasePrimitiveProps {
@@ -54,4 +66,13 @@ export interface DialogueLine {
   speaker: string;
   text: string;
   emotion?: string;
+}
+
+// ─── Multi-Select & Bulk Actions ─────────────────────────
+
+export interface BulkAction {
+  id: string;
+  label: string;
+  icon?: LucideIcon;
+  variant?: 'default' | 'danger';
 }

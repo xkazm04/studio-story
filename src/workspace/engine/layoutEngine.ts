@@ -18,6 +18,7 @@ import type {
   SpatialOption,
 } from '../types';
 import { PANEL_REGISTRY } from './panelRegistry';
+import { createScoringEngine, type ScoringCriterion, type ScoringEngine } from '@/lib/scoring';
 
 // ─── Types ───────────────────────────────────────────────
 
@@ -280,60 +281,226 @@ function hungarianSolve(costMatrix: number[][]): number[] {
   return result;
 }
 
-// ─── Scoring ─────────────────────────────────────────────
+// ─── Scoring Configuration ────────────────────────────────
+//
+// All tunable scoring constants are grouped here. Each value has a JSDoc
+// explaining its purpose and how changing it affects layout selection.
+//
+// **How scoring works (in brief)**:
+//   1. Each layout gets a "fitness" score for a given set of panels.
+//   2. The layout with the highest fitness wins.
+//   3. Fitness = count prior + slot utilization bonus + count match bonus + sum of per-panel scores.
+//   4. Per-panel scores reward size/role matches and penalize mismatches.
+//
 
-function scoreAssignment(perm: WorkspacePanelInstance[], slots: SlotSpec[]): number {
-  let score = 0;
-  for (let i = 0; i < perm.length; i++) {
-    const s = slots[i];
-    const entry = PANEL_REGISTRY[perm[i].type];
-    score += s.acceptsSizes.includes(entry.sizeClass) ? 15 : -25;
-    score += perm[i].role === s.preferredRole ? 5 : 0;
-    score += (entry.sizeClass === 'compact' && s.isNarrow) ? 3 : 0;
-    score += Math.max(0, 6 - perm[i].slotIndex * 0.5);
-    // Complexity-slot compatibility
-    const complexity = entry.complexity ?? 'medium';
-    if (complexity === 'high' && s.isNarrow) score -= 12;
-    if (complexity === 'low' && s.isNarrow) score += 4;
-    if (complexity === 'high' && !s.isNarrow && s.acceptsSizes.includes('wide')) score += 3;
-  }
-  return score;
+/**
+ * Central configuration for all layout-engine scoring constants.
+ *
+ * To tune layout behavior (e.g., prefer triptych for 3-panel compositions),
+ * adjust the relevant values here rather than hunting through scoring functions.
+ */
+export const SCORING_CONFIG = {
+  // ── Per-panel scoring (scorePanelInSlot) ──────────────
+
+  /** Bonus when a panel's sizeClass is accepted by the slot. Higher = stronger preference for matching. */
+  SIZE_MATCH_BONUS: 15,
+  /** Penalty when a panel's sizeClass is NOT accepted by the slot. More negative = harder rejection. */
+  SIZE_MISMATCH_PENALTY: -25,
+  /** Bonus when a panel's role matches the slot's preferred role. */
+  ROLE_MATCH_BONUS: 5,
+  /** Bonus when a compact panel is placed in a narrow slot (natural fit). */
+  COMPACT_IN_NARROW_BONUS: 3,
+
+  /** Max stability bonus for panels retaining their current slot position. Decays with slot index. */
+  SLOT_STABILITY_MAX: 6,
+  /** Rate at which stability bonus decays per slot index. score = max(0, MAX - index * DECAY). */
+  SLOT_STABILITY_DECAY: 0.5,
+
+  /** Penalty for placing a high-complexity panel in a narrow slot (too cramped). */
+  HIGH_COMPLEXITY_NARROW_PENALTY: -12,
+  /** Bonus for placing a low-complexity panel in a narrow slot (simple content fits well). */
+  LOW_COMPLEXITY_NARROW_BONUS: 4,
+  /** Bonus for placing a high-complexity panel in a wide slot (room to breathe). */
+  HIGH_COMPLEXITY_WIDE_BONUS: 3,
+
+  // ── Candidate ranking (pickCandidatesForTemplate) ─────
+
+  /** Elevated role-match bonus used when ranking which panels to include in a layout. */
+  RANK_ROLE_MATCH_BONUS: 6,
+  /** Elevated compact-narrow bonus used when ranking candidates. */
+  RANK_COMPACT_NARROW_BONUS: 4,
+  /** Max stability boost when ranking candidates. Prevents recently-added panels from evicting established ones. */
+  CANDIDATE_STABILITY_MAX: 8,
+  /** Rate at which candidate stability decays per slot index. score = max(0, MAX - index * DECAY). */
+  CANDIDATE_STABILITY_DECAY: 0.75,
+
+  // ── Slot utilization ──────────────────────────────────
+
+  /** Penalty per empty (unused) slot in the chosen layout. Discourages oversized layouts. */
+  UNUSED_SLOT_PENALTY: -6,
+
+  // ── Layout fitness (computeLayoutFitness) ─────────────
+
+  /** Large bonus when panel count exactly matches slot count (perfect fit). */
+  EXACT_COUNT_MATCH_BONUS: 40,
+  /** Per-panel penalty when there are MORE panels than slots (overflow — panels get dropped). */
+  OVERFLOW_PANEL_PENALTY: -25,
+  /** Per-slot penalty when there are FEWER panels than slots (underflow — empty slots). */
+  UNDERFLOW_SLOT_PENALTY: -15,
+  /** Score returned for non-single layouts when there are zero panels. */
+  EMPTY_LAYOUT_PENALTY: -100,
+
+  // ── Layout-count prior table ──────────────────────────
+  //
+  // Encodes a "natural affinity" between each layout and a panel count.
+  // Positive = this layout is a good default for N panels.
+  // Negative = this layout is a poor match for N panels.
+  //
+  // Rows: layout type.  Columns: clamped panel count (1–4).
+  //
+  // Example: single has +36 for 1 panel (ideal) but -32 for 4 panels (terrible).
+  //          grid-4 has +22 for 4 panels (ideal) but -24 for 1 panel (wasteful).
+  //
+  COUNT_PRIOR: {
+    stack:             { 1: -20, 2: -10, 3:  -5, 4:  -5 },  // Stack is a fallback, never strongly preferred
+    single:            { 1:  36, 2: -12, 3: -24, 4: -32 },  // Ideal for 1, penalizes having >1 panel
+    'split-2':         { 1: -10, 2:  28, 3:  -6, 4: -16 },  // Designed for 2-panel compositions
+    'split-3':         { 1: -18, 2:   4, 3:  24, 4:  -8 },  // Sweet spot at 3 panels
+    'grid-4':          { 1: -24, 2:  -8, 3:  10, 4:  22 },  // Best at 4, acceptable at 3
+    'primary-sidebar': { 1:  -8, 2:  16, 3:   2, 4: -12 },  // Sidebar layout, best at 2
+    triptych:          { 1: -18, 2:  10, 3:  18, 4: -10 },  // 3-column, peaks at 3
+    studio:            { 1: -30, 2: -20, 3:   8, 4:  20 },  // Complex 5-slot layout, needs 3–4+ panels
+  },
+} as const;
+
+interface ScoringWeights {
+  sizeMatch?: number;
+  sizeMiss?: number;
+  roleMatch?: number;
+  compactNarrow?: number;
+  includeSlotIndex?: boolean;
 }
 
-const LAYOUT_COUNT_PRIOR: Record<WorkspaceLayout, Record<number, number>> = {
-  stack: { 1: -20, 2: -10, 3: -5, 4: -5 },
-  single: { 1: 36, 2: -12, 3: -24, 4: -32 },
-  'split-2': { 1: -10, 2: 28, 3: -6, 4: -16 },
-  'split-3': { 1: -18, 2: 4, 3: 24, 4: -8 },
-  'grid-4': { 1: -24, 2: -8, 3: 10, 4: 22 },
-  'primary-sidebar': { 1: -8, 2: 16, 3: 2, 4: -12 },
-  triptych: { 1: -18, 2: 10, 3: 18, 4: -10 },
-  studio: { 1: -30, 2: -20, 3: 8, 4: 20 },
+const DEFAULT_WEIGHTS: Required<ScoringWeights> = {
+  sizeMatch: SCORING_CONFIG.SIZE_MATCH_BONUS,
+  sizeMiss: SCORING_CONFIG.SIZE_MISMATCH_PENALTY,
+  roleMatch: SCORING_CONFIG.ROLE_MATCH_BONUS,
+  compactNarrow: SCORING_CONFIG.COMPACT_IN_NARROW_BONUS,
+  includeSlotIndex: true,
 };
+
+// ─── Layout Scoring via Generic ScoringEngine ────────────
+//
+// Panel-to-slot scoring is expressed as ScoringCriterion[] and evaluated by
+// createScoringEngine. This makes the criteria declarative and provides
+// per-criterion breakdown for debugging layout decisions.
+
+/** Build panel-to-slot scoring criteria from a weight configuration. */
+function createPanelSlotCriteria(
+  w: Required<ScoringWeights>,
+): ScoringCriterion<WorkspacePanelInstance, SlotSpec>[] {
+  const criteria: ScoringCriterion<WorkspacePanelInstance, SlotSpec>[] = [
+    {
+      name: 'sizeMatch',
+      weight: w.sizeMatch,
+      match: (panel, slot) => {
+        const entry = PANEL_REGISTRY[panel.type];
+        return slot.acceptsSizes.includes(entry.sizeClass) ? 1 : 0;
+      },
+    },
+    {
+      name: 'sizeMismatch',
+      weight: w.sizeMiss,
+      match: (panel, slot) => {
+        const entry = PANEL_REGISTRY[panel.type];
+        return !slot.acceptsSizes.includes(entry.sizeClass) ? 1 : 0;
+      },
+    },
+    {
+      name: 'roleMatch',
+      weight: w.roleMatch,
+      match: (panel, slot) => panel.role === slot.preferredRole ? 1 : 0,
+    },
+    {
+      name: 'compactNarrow',
+      weight: w.compactNarrow,
+      match: (panel, slot) => {
+        const entry = PANEL_REGISTRY[panel.type];
+        return (entry.sizeClass === 'compact' && slot.isNarrow) ? 1 : 0;
+      },
+    },
+    {
+      name: 'highComplexityNarrow',
+      weight: SCORING_CONFIG.HIGH_COMPLEXITY_NARROW_PENALTY,
+      match: (panel, slot) => {
+        const c = PANEL_REGISTRY[panel.type].complexity ?? 'medium';
+        return (c === 'high' && slot.isNarrow) ? 1 : 0;
+      },
+    },
+    {
+      name: 'lowComplexityNarrow',
+      weight: SCORING_CONFIG.LOW_COMPLEXITY_NARROW_BONUS,
+      match: (panel, slot) => {
+        const c = PANEL_REGISTRY[panel.type].complexity ?? 'medium';
+        return (c === 'low' && slot.isNarrow) ? 1 : 0;
+      },
+    },
+    {
+      name: 'highComplexityWide',
+      weight: SCORING_CONFIG.HIGH_COMPLEXITY_WIDE_BONUS,
+      match: (panel, slot) => {
+        const c = PANEL_REGISTRY[panel.type].complexity ?? 'medium';
+        return (c === 'high' && !slot.isNarrow && slot.acceptsSizes.includes('wide')) ? 1 : 0;
+      },
+    },
+  ];
+
+  if (w.includeSlotIndex) {
+    criteria.push({
+      name: 'slotStability',
+      weight: 1,
+      match: (panel) =>
+        Math.max(0, SCORING_CONFIG.SLOT_STABILITY_MAX - panel.slotIndex * SCORING_CONFIG.SLOT_STABILITY_DECAY),
+    });
+  }
+
+  return criteria;
+}
+
+const RANK_WEIGHTS: ScoringWeights = {
+  roleMatch: SCORING_CONFIG.RANK_ROLE_MATCH_BONUS,
+  compactNarrow: SCORING_CONFIG.RANK_COMPACT_NARROW_BONUS,
+  includeSlotIndex: false,
+};
+
+/** Default panel-to-slot scorer (used in assignment and fitness). */
+const defaultPanelScorer: ScoringEngine<WorkspacePanelInstance, SlotSpec> =
+  createScoringEngine(createPanelSlotCriteria(DEFAULT_WEIGHTS));
+
+/** Ranking scorer (elevated role/compact weights, no slot stability). */
+const rankPanelScorer: ScoringEngine<WorkspacePanelInstance, SlotSpec> =
+  createScoringEngine(createPanelSlotCriteria({ ...DEFAULT_WEIGHTS, ...RANK_WEIGHTS }));
+
+/** Exported for testing and debugging layout decisions. */
+export { createPanelSlotCriteria };
+
+function scoreAssignment(perm: WorkspacePanelInstance[], slots: SlotSpec[]): number {
+  return perm.reduce((sum, panel, i) => sum + scorePanelInSlot(panel, slots[i]), 0);
+}
 
 function getCountPrior(layout: WorkspaceLayout, panelCount: number): number {
   const clampedCount = Math.min(4, Math.max(1, panelCount));
-  return LAYOUT_COUNT_PRIOR[layout][clampedCount] ?? 0;
+  return SCORING_CONFIG.COUNT_PRIOR[layout][clampedCount as 1 | 2 | 3 | 4] ?? 0;
 }
 
 function getSlotUtilizationBonus(layout: WorkspaceLayout, panelCount: number): number {
   const slotCount = LAYOUT_TEMPLATES[layout].slots.length;
   const unused = Math.max(0, slotCount - panelCount);
-  return -unused * 6;
+  return unused * SCORING_CONFIG.UNUSED_SLOT_PENALTY;
 }
 
 function rankPanelForSlot(panel: WorkspacePanelInstance, slot: SlotSpec): number {
-  const entry = PANEL_REGISTRY[panel.type];
-  let score = 0;
-  score += slot.acceptsSizes.includes(entry.sizeClass) ? 15 : -25;
-  score += panel.role === slot.preferredRole ? 6 : 0;
-  score += (entry.sizeClass === 'compact' && slot.isNarrow) ? 4 : 0;
-  // Complexity-slot compatibility
-  const complexity = entry.complexity ?? 'medium';
-  if (complexity === 'high' && slot.isNarrow) score -= 12;
-  if (complexity === 'low' && slot.isNarrow) score += 4;
-  if (complexity === 'high' && !slot.isNarrow && slot.acceptsSizes.includes('wide')) score += 3;
-  return score;
+  return rankPanelScorer.scoreOne(panel, slot).score;
 }
 
 function pickCandidatesForTemplate(
@@ -347,7 +514,7 @@ function pickCandidatesForTemplate(
     const slotScores = template.slots.map((slot) => rankPanelForSlot(panel, slot));
     const bestSlotScore = Math.max(...slotScores);
     const rolePriorityBoost = ROLE_PRIORITY.length - ROLE_PRIORITY.indexOf(panel.role);
-    const stabilityBoost = Math.max(0, 8 - panel.slotIndex * 0.75);
+    const stabilityBoost = Math.max(0, SCORING_CONFIG.CANDIDATE_STABILITY_MAX - panel.slotIndex * SCORING_CONFIG.CANDIDATE_STABILITY_DECAY);
     return {
       panel,
       score: bestSlotScore + rolePriorityBoost + stabilityBoost,
@@ -362,20 +529,17 @@ function pickCandidatesForTemplate(
 
 /**
  * Score a single panel placed in a specific slot (used to build cost matrix).
- * Includes all factors from the original scoreAssignment per-element logic.
+ *
+ * Delegates to the generic ScoringEngine. Uses the default scorer for normal
+ * assignment and creates an on-demand scorer for custom weight overrides.
  */
-function scorePanelInSlot(panel: WorkspacePanelInstance, s: SlotSpec): number {
-  const entry = PANEL_REGISTRY[panel.type];
-  let score = 0;
-  score += s.acceptsSizes.includes(entry.sizeClass) ? 15 : -25;
-  score += panel.role === s.preferredRole ? 5 : 0;
-  score += (entry.sizeClass === 'compact' && s.isNarrow) ? 3 : 0;
-  score += Math.max(0, 6 - panel.slotIndex * 0.5);
-  const complexity = entry.complexity ?? 'medium';
-  if (complexity === 'high' && s.isNarrow) score -= 12;
-  if (complexity === 'low' && s.isNarrow) score += 4;
-  if (complexity === 'high' && !s.isNarrow && s.acceptsSizes.includes('wide')) score += 3;
-  return score;
+function scorePanelInSlot(panel: WorkspacePanelInstance, s: SlotSpec, weights?: ScoringWeights): number {
+  if (!weights) {
+    return defaultPanelScorer.scoreOne(panel, s).score;
+  }
+  // Custom weights — create scorer on demand (rare path, only used by rank overrides)
+  const merged = { ...DEFAULT_WEIGHTS, ...weights };
+  return createScoringEngine(createPanelSlotCriteria(merged)).scoreOne(panel, s).score;
 }
 
 export function assignPanelsToSlots(
@@ -432,7 +596,7 @@ export function computeLayoutFitness(
 ): number {
   const template = LAYOUT_TEMPLATES[layout];
   const slotCount = template.slots.length;
-  if (panels.length === 0) return layout === 'single' ? 0 : -100;
+  if (panels.length === 0) return layout === 'single' ? 0 : SCORING_CONFIG.EMPTY_LAYOUT_PENALTY;
 
   let score = 0;
 
@@ -440,9 +604,9 @@ export function computeLayoutFitness(
   score += getSlotUtilizationBonus(layout, panels.length);
 
   const diff = panels.length - slotCount;
-  if (diff === 0) score += 40;
-  else if (diff > 0) score -= diff * 25;
-  else score -= Math.abs(diff) * 15;
+  if (diff === 0) score += SCORING_CONFIG.EXACT_COUNT_MATCH_BONUS;
+  else if (diff > 0) score += diff * SCORING_CONFIG.OVERFLOW_PANEL_PENALTY;
+  else score += Math.abs(diff) * SCORING_CONFIG.UNDERFLOW_SLOT_PENALTY;
 
   const assigned = assignPanelsToSlots(panels, layout);
   score += scoreAssignment(assigned, template.slots);
@@ -579,6 +743,63 @@ export function computeSpatialBudget(
     })),
     options,
   };
+}
+
+// ─── Auto-Density Compaction ──────────────────────────────
+
+/** Density hierarchy from most to least compact */
+const DENSITY_ORDER: PanelDensity[] = ['micro', 'compact', 'full'];
+
+/**
+ * Auto-compact panels whose current density exceeds what the slot can fit.
+ *
+ * For each panel assigned to a slot, compute the slot's pixel dimensions and
+ * determine which density levels fit via `slotDensities()`. If the panel's
+ * current density is not supported, downgrade to the best available density.
+ *
+ * Returns a map of panelId → compacted density for panels that were changed,
+ * plus the full set of updated panels.
+ */
+export function autoCompactPanels(
+  panels: WorkspacePanelInstance[],
+  layout: WorkspaceLayout,
+  viewportWidth: number,
+  viewportHeight: number,
+): { compactedIds: Set<string>; panels: WorkspacePanelInstance[] } {
+  const template = LAYOUT_TEMPLATES[layout];
+  const headerHeight = 40;
+  const commandBarHeight = 36;
+  const availableHeight = viewportHeight - headerHeight - commandBarHeight;
+  const availableWidth = viewportWidth;
+
+  const compactedIds = new Set<string>();
+  const updatedPanels = panels.map((panel, i) => {
+    const slotSpec = template.slots[i];
+    if (!slotSpec) return panel;
+
+    const { widthPx, heightPx } = estimateSlotDimensions(
+      template, slotSpec, availableWidth, availableHeight,
+    );
+    const allowed = slotDensities(widthPx, heightPx);
+    const currentDensity = panel.density ?? 'full';
+
+    // If the current density is already supported, no change needed
+    if (allowed.includes(currentDensity)) return panel;
+
+    // Find the best (highest-fidelity) allowed density
+    const bestAllowed = [...DENSITY_ORDER].reverse().find(d => allowed.includes(d));
+    if (!bestAllowed) return panel; // slot too small for anything — leave as-is
+
+    // Only downgrade, never upgrade
+    const currentIdx = DENSITY_ORDER.indexOf(currentDensity);
+    const bestIdx = DENSITY_ORDER.indexOf(bestAllowed);
+    if (bestIdx >= currentIdx) return panel; // bestAllowed is same or higher — no downgrade needed
+
+    compactedIds.add(panel.id);
+    return { ...panel, density: bestAllowed };
+  });
+
+  return { compactedIds, panels: updatedPanels };
 }
 
 /** Rough pixel estimate for a grid slot based on template proportions */

@@ -11,7 +11,7 @@ import { useRef, useCallback } from 'react';
 import { useIntent } from '@dzin/core';
 import type { Intent, IntentSource } from '@dzin/core';
 import { useAgentStore } from '@/agents/store/agentStore';
-import type { GeminiLiveClient } from './GeminiLiveClient';
+import type { GeminiLiveClient } from '@dzin/voice';
 
 // ---------------------------------------------------------------------------
 // Constants

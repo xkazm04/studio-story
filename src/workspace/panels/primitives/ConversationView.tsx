@@ -8,6 +8,8 @@ import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelErrorState } from '../shared/PanelPrimitives';
 import type { BasePrimitiveProps, DialogueLine } from './types';
 import { SPACING, MOTION } from '@/workspace/theme/tokens';
+import ContextMenuComponent, { useContextMenu } from './ContextMenu';
+import type { ContextMenuItem } from './ContextMenu';
 
 function ConversationSkeleton({ rows = 4 }: { rows?: number }) {
   return (
@@ -41,6 +43,10 @@ function ConversationSkeleton({ rows = 4 }: { rows?: number }) {
 
 interface ConversationViewProps extends BasePrimitiveProps {
   lines: DialogueLine[];
+  /** Returns context menu items for a right-clicked dialogue line */
+  contextMenuItems?: (line: DialogueLine) => ContextMenuItem[];
+  /** Called when a context menu action is selected */
+  onContextMenuAction?: (actionId: string, line: DialogueLine) => void;
 }
 
 export default function ConversationView({
@@ -58,7 +64,11 @@ export default function ConversationView({
   emptyDescription,
   lines,
   density,
+  contextMenuItems,
+  onContextMenuAction,
 }: ConversationViewProps) {
+  const ctxMenu = useContextMenu<DialogueLine>();
+
   return (
     <PanelFrame
       title={title}
@@ -87,6 +97,7 @@ export default function ConversationView({
               animate={MOTION.show}
               transition={{ duration: 0.2, delay: MOTION.stagger(index) }}
               className="flex gap-2"
+              onContextMenu={contextMenuItems ? (e) => ctxMenu.open(e, line) : undefined}
             >
               {/* Speaker column */}
               <div className="shrink-0 w-16 text-right">
@@ -116,6 +127,15 @@ export default function ConversationView({
             </motion.div>
           ))}
         </div>
+      )}
+
+      {ctxMenu.position && ctxMenu.entity && contextMenuItems && (
+        <ContextMenuComponent
+          position={ctxMenu.position}
+          items={contextMenuItems(ctxMenu.entity)}
+          onAction={(actionId) => onContextMenuAction?.(actionId, ctxMenu.entity!)}
+          onClose={ctxMenu.close}
+        />
       )}
     </PanelFrame>
   );

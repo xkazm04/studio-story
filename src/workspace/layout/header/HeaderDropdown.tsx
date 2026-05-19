@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Plus } from 'lucide-react';
+import { useDropdown } from '@/workspace/hooks/useDropdown';
 
 export interface DropdownItem {
   id: string;
@@ -48,12 +49,23 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   createForm,
   onClose,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleDismiss = () => {
+    setIsCreating(false);
+    setNewName('');
+    onClose?.();
+  };
+
+  const { isOpen, toggle: handleToggle, close } = useDropdown({
+    triggerRef: buttonRef,
+    contentRef: dropdownRef,
+    onClose: handleDismiss,
+  });
 
   // Calculate position when opening (fixed header: no scrollY offset needed)
   useEffect(() => {
@@ -66,39 +78,6 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
       });
     }
   }, [isOpen, minWidth]);
-
-  // Close on outside click
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        close();
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const close = () => {
-    setIsOpen(false);
-    setIsCreating(false);
-    setNewName('');
-    onClose?.();
-  };
-
-  const handleToggle = () => {
-    if (isOpen) {
-      close();
-    } else {
-      setIsCreating(false);
-      setNewName('');
-      setIsOpen(true);
-    }
-  };
 
   const handleSelect = (id: string) => {
     onSelect(id);

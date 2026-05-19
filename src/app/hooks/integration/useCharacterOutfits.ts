@@ -11,6 +11,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createMockableQuery } from './queryHelpers';
+import { createScoringEngine, type ScoringCriterion } from '@/lib/scoring';
+import { generateOutfitPrompt as registryGenerateOutfitPrompt } from '@/lib/prompts';
 
 // ============================================================================
 // Types
@@ -418,80 +420,108 @@ function expandContextTags(context: SceneContext): string[] {
   return Array.from(tags);
 }
 
-function calculateOutfitScore(outfit: Outfit, context: SceneContext): { score: number; reasons: string[] } {
-  let score = 0;
-  const reasons: string[] = [];
-  const expandedTags = expandContextTags(context);
+// ─── Outfit Scoring Criteria (via generic ScoringEngine) ─────────────────────
+//
+// Each criterion has a named weight and a match function. The engine computes
+// score = Σ(weight × match strength) and collects human-readable reasons.
+// Weights are the tunable knobs — adjust them here without changing match logic.
 
-  // Location match
-  if (context.location && outfit.suitable_locations.length > 0) {
-    if (outfit.suitable_locations.includes(context.location.toLowerCase())) {
-      score += 30;
-      reasons.push(`Suitable for ${context.location}`);
-    }
-  }
+const ACTIVITY_TYPE_MAP: Record<string, OutfitType[]> = {
+  combat: ['combat'],
+  celebration: ['formal', 'ceremonial'],
+  rest: ['sleep', 'casual'],
+  travel: ['travel', 'casual'],
+  work: ['work'],
+  stealth: ['disguise', 'casual'],
+};
 
-  // Weather match
-  if (context.weather && outfit.suitable_weather.length > 0) {
-    if (outfit.suitable_weather.includes(context.weather.toLowerCase()) ||
-        outfit.suitable_weather.includes('any')) {
-      score += 25;
-      reasons.push(`Appropriate for ${context.weather} weather`);
-    }
-  }
+/** Exported for testing and introspection. */
+export const OUTFIT_SCORING_CRITERIA: ScoringCriterion<Outfit, SceneContext>[] = [
+  {
+    name: 'location',
+    weight: 30,
+    match: (outfit, ctx) => {
+      if (!ctx.location || outfit.suitable_locations.length === 0) return 0;
+      return outfit.suitable_locations.includes(ctx.location.toLowerCase())
+        ? { strength: 1, reason: `Suitable for ${ctx.location}` }
+        : 0;
+    },
+  },
+  {
+    name: 'weather',
+    weight: 25,
+    match: (outfit, ctx) => {
+      if (!ctx.weather || outfit.suitable_weather.length === 0) return 0;
+      const w = ctx.weather.toLowerCase();
+      return (outfit.suitable_weather.includes(w) || outfit.suitable_weather.includes('any'))
+        ? { strength: 1, reason: `Appropriate for ${ctx.weather} weather` }
+        : 0;
+    },
+  },
+  {
+    name: 'timeOfDay',
+    weight: 20,
+    match: (outfit, ctx) => {
+      if (!ctx.timeOfDay || outfit.suitable_time_of_day.length === 0) return 0;
+      const t = ctx.timeOfDay.toLowerCase();
+      return (outfit.suitable_time_of_day.includes(t) || outfit.suitable_time_of_day.includes('any'))
+        ? { strength: 1, reason: `Suitable for ${ctx.timeOfDay}` }
+        : 0;
+    },
+  },
+  {
+    name: 'tagOverlap',
+    weight: 10,
+    match: (outfit, ctx) => {
+      const expandedTags = expandContextTags(ctx);
+      const overlap = outfit.context_tags.filter(t => expandedTags.includes(t.toLowerCase()));
+      if (overlap.length === 0) return 0;
+      return { strength: overlap.length, reason: `Matches context: ${overlap.join(', ')}` };
+    },
+  },
+  {
+    name: 'defaultFallback',
+    weight: 15,
+    match: (outfit, ctx) => {
+      if (!outfit.is_default) return 0;
+      // Only apply when other criteria would produce a weak match (< 30 points).
+      // Re-evaluate context strength to keep criteria independent.
+      const hasStrongLocation = ctx.location != null
+        && outfit.suitable_locations.includes(ctx.location.toLowerCase());
+      const hasWeather = ctx.weather != null
+        && (outfit.suitable_weather.includes(ctx.weather.toLowerCase()) || outfit.suitable_weather.includes('any'));
+      const hasTime = ctx.timeOfDay != null
+        && (outfit.suitable_time_of_day.includes(ctx.timeOfDay.toLowerCase()) || outfit.suitable_time_of_day.includes('any'));
+      const expandedTags = expandContextTags(ctx);
+      const tagPoints = outfit.context_tags.filter(t => expandedTags.includes(t.toLowerCase())).length * 10;
+      const otherScore = (hasStrongLocation ? 30 : 0) + (hasWeather ? 25 : 0) + (hasTime ? 20 : 0) + tagPoints;
+      return otherScore < 30 ? { strength: 1, reason: 'Default outfit (fallback)' } : 0;
+    },
+  },
+  {
+    name: 'activityType',
+    weight: 25,
+    match: (outfit, ctx) => {
+      if (!ctx.activityType) return 0;
+      const preferredTypes = ACTIVITY_TYPE_MAP[ctx.activityType.toLowerCase()] || [];
+      return preferredTypes.includes(outfit.outfit_type)
+        ? { strength: 1, reason: `${outfit.outfit_type} suitable for ${ctx.activityType}` }
+        : 0;
+    },
+  },
+];
 
-  // Time of day match
-  if (context.timeOfDay && outfit.suitable_time_of_day.length > 0) {
-    if (outfit.suitable_time_of_day.includes(context.timeOfDay.toLowerCase()) ||
-        outfit.suitable_time_of_day.includes('any')) {
-      score += 20;
-      reasons.push(`Suitable for ${context.timeOfDay}`);
-    }
-  }
-
-  // Context tag overlap
-  const tagOverlap = outfit.context_tags.filter(t => expandedTags.includes(t.toLowerCase()));
-  if (tagOverlap.length > 0) {
-    score += tagOverlap.length * 10;
-    reasons.push(`Matches context: ${tagOverlap.join(', ')}`);
-  }
-
-  // Bonus for default outfit when no strong context match
-  if (outfit.is_default && score < 30) {
-    score += 15;
-    reasons.push('Default outfit (fallback)');
-  }
-
-  // Outfit type bonus
-  if (context.activityType) {
-    const typeMap: Record<string, OutfitType[]> = {
-      combat: ['combat'],
-      celebration: ['formal', 'ceremonial'],
-      rest: ['sleep', 'casual'],
-      travel: ['travel', 'casual'],
-      work: ['work'],
-      stealth: ['disguise', 'casual'],
-    };
-    const preferredTypes = typeMap[context.activityType.toLowerCase()] || [];
-    if (preferredTypes.includes(outfit.outfit_type)) {
-      score += 25;
-      reasons.push(`${outfit.outfit_type} suitable for ${context.activityType}`);
-    }
-  }
-
-  return { score, reasons };
-}
+const outfitScorer = createScoringEngine(OUTFIT_SCORING_CRITERIA);
 
 export function getOutfitRecommendations(
   outfits: Outfit[],
-  context: SceneContext
+  context: SceneContext,
 ): OutfitRecommendation[] {
-  return outfits
-    .map(outfit => {
-      const { score, reasons } = calculateOutfitScore(outfit, context);
-      return { outfit, score, matchReasons: reasons };
-    })
-    .sort((a, b) => b.score - a.score);
+  return outfitScorer.rank(outfits, context).map(r => ({
+    outfit: r.candidate,
+    score: r.score,
+    matchReasons: r.reasons,
+  }));
 }
 
 // ============================================================================
@@ -499,62 +529,7 @@ export function getOutfitRecommendations(
 // ============================================================================
 
 export function generateOutfitPrompt(outfit: Outfit, accessories: Accessory[] = []): string {
-  const parts: string[] = [];
-
-  // Build clothing description
-  if (outfit.clothing.top?.item) {
-    let topDesc = outfit.clothing.top.item;
-    if (outfit.clothing.top.color) topDesc = `${outfit.clothing.top.color} ${topDesc}`;
-    if (outfit.clothing.top.material) topDesc = `${outfit.clothing.top.material} ${topDesc}`;
-    parts.push(`wearing ${topDesc.toLowerCase()}`);
-  }
-
-  if (outfit.clothing.bottom?.item) {
-    let bottomDesc = outfit.clothing.bottom.item;
-    if (outfit.clothing.bottom.color) bottomDesc = `${outfit.clothing.bottom.color} ${bottomDesc}`;
-    parts.push(bottomDesc.toLowerCase());
-  }
-
-  if (outfit.clothing.footwear?.item) {
-    let footDesc = outfit.clothing.footwear.item;
-    if (outfit.clothing.footwear.color) footDesc = `${outfit.clothing.footwear.color} ${footDesc}`;
-    parts.push(footDesc.toLowerCase());
-  }
-
-  if (outfit.clothing.outerwear?.item) {
-    let outerDesc = outfit.clothing.outerwear.item;
-    if (outfit.clothing.outerwear.color) outerDesc = `${outfit.clothing.outerwear.color} ${outerDesc}`;
-    parts.push(`with ${outerDesc.toLowerCase()}`);
-  }
-
-  if (outfit.clothing.headwear?.item) {
-    let headDesc = outfit.clothing.headwear.item;
-    if (outfit.clothing.headwear.color) headDesc = `${outfit.clothing.headwear.color} ${headDesc}`;
-    parts.push(headDesc.toLowerCase());
-  }
-
-  // Add visible accessories
-  const visibleAccessories = accessories.filter(a => a.current_state === 'worn');
-  if (visibleAccessories.length > 0) {
-    const accParts = visibleAccessories.map(a => {
-      let desc = a.name;
-      if (a.material) desc = `${a.material} ${desc}`;
-      return desc.toLowerCase();
-    });
-    parts.push(`with ${accParts.join(', ')}`);
-  }
-
-  // Add style notes
-  if (outfit.clothing.style_notes) {
-    parts.push(outfit.clothing.style_notes.toLowerCase());
-  }
-
-  // Add condition
-  if (outfit.clothing.overall_condition && outfit.clothing.overall_condition !== 'pristine') {
-    parts.push(`(${outfit.clothing.overall_condition} condition)`);
-  }
-
-  return parts.join(', ');
+  return registryGenerateOutfitPrompt(outfit, accessories);
 }
 
 // ============================================================================

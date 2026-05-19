@@ -14,16 +14,21 @@ import {
   EASING_FUNCTIONS,
 } from './TimingController';
 
+import type { ExportResult, ExportData } from '../export/result';
+import { exportSuccess, exportFailure } from '../export/result';
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export type ExportFormat = 'webm' | 'mp4' | 'gif';
+export type AnimaticExportFormat = 'webm' | 'mp4' | 'gif';
+/** @deprecated Use AnimaticExportFormat */
+export type ExportFormat = AnimaticExportFormat;
 export type ExportQuality = 'low' | 'medium' | 'high' | 'ultra';
 export type ExportResolution = '720p' | '1080p' | '2k' | '4k';
 
 export interface ExportSettings {
-  format: ExportFormat;
+  format: AnimaticExportFormat;
   quality: ExportQuality;
   resolution: ExportResolution;
   frameRate: number;
@@ -53,15 +58,7 @@ export interface ExportProgress {
   message: string;
 }
 
-export interface ExportResult {
-  success: boolean;
-  blob?: Blob;
-  url?: string;
-  duration: number;
-  frameCount: number;
-  fileSize?: number;
-  error?: string;
-}
+export type { ExportResult, ExportData };
 
 // ============================================================================
 // Constants
@@ -134,14 +131,9 @@ export class AnimaticExporter {
     panels: PanelData[],
     controller: TimingController = timingController,
     onProgress?: (progress: ExportProgress) => void
-  ): Promise<ExportResult> {
+  ): Promise<ExportResult<ExportData>> {
     if (this.isExporting) {
-      return {
-        success: false,
-        duration: 0,
-        frameCount: 0,
-        error: 'Export already in progress',
-      };
+      return exportFailure('GENERATION_FAILED', 'Export already in progress');
     }
 
     this.isExporting = true;
@@ -160,7 +152,7 @@ export class AnimaticExporter {
       this.ctx = this.canvas.getContext('2d');
 
       if (!this.ctx) {
-        throw new Error('Failed to create canvas context');
+        return exportFailure('CANVAS_UNAVAILABLE', 'Failed to create canvas context');
       }
 
       // Preload images
@@ -213,7 +205,7 @@ export class AnimaticExporter {
 
       for (let frame = 0; frame < totalFrames; frame++) {
         if (this.abortController?.signal.aborted) {
-          throw new Error('Export cancelled');
+          return exportFailure('CANCELLED', 'Export cancelled');
         }
 
         const currentTime = frame * frameTime;
@@ -253,15 +245,6 @@ export class AnimaticExporter {
 
       const blob = await this.finalizeRecording();
 
-      const result: ExportResult = {
-        success: true,
-        blob,
-        url: URL.createObjectURL(blob),
-        duration: totalDuration,
-        frameCount: totalFrames,
-        fileSize: blob.size,
-      };
-
       this.reportProgress({
         phase: 'complete',
         currentFrame: totalFrames,
@@ -272,7 +255,16 @@ export class AnimaticExporter {
         message: 'Export complete!',
       });
 
-      return result;
+      return exportSuccess({
+        filename: `animatic.${this.settings.format}`,
+        blob,
+        metadata: {
+          url: URL.createObjectURL(blob),
+          duration: totalDuration,
+          frameCount: totalFrames,
+          fileSize: blob.size,
+        },
+      });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
@@ -286,12 +278,7 @@ export class AnimaticExporter {
         message: `Export failed: ${errorMessage}`,
       });
 
-      return {
-        success: false,
-        duration: 0,
-        frameCount: 0,
-        error: errorMessage,
-      };
+      return exportFailure('GENERATION_FAILED', errorMessage, error);
     } finally {
       this.cleanup();
     }

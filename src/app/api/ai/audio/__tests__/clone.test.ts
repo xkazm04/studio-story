@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { NextRequest } from 'next/server';
 
 // Mock environment
 vi.stubEnv('ELEVENLABS_API_KEY', 'test-api-key');
@@ -17,7 +18,7 @@ vi.stubEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'test-anon-key');
 const originalFetch = globalThis.fetch;
 
 describe('POST /api/ai/audio/clone-voice', () => {
-  let POST: (request: Request) => Promise<Response>;
+  let POST: (request: NextRequest) => Promise<Response>;
 
   beforeEach(async () => {
     vi.resetModules();
@@ -49,7 +50,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
   });
 
   it('returns 200 with voice_id for valid name+audioUrl', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/clone-voice', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/clone-voice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -67,7 +68,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
   });
 
   it('returns 400 when name is missing', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/clone-voice', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/clone-voice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -81,7 +82,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
   });
 
   it('returns 400 when audioUrl is missing', async () => {
-    const request = new Request('http://localhost:3000/api/ai/audio/clone-voice', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/clone-voice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -114,7 +115,7 @@ describe('POST /api/ai/audio/clone-voice', () => {
     vi.resetModules();
     const mod = await import('../clone-voice/route');
 
-    const request = new Request('http://localhost:3000/api/ai/audio/clone-voice', {
+    const request = new NextRequest('http://localhost:3000/api/ai/audio/clone-voice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -52,47 +52,63 @@ type EventCategory = 'created' | 'updated' | 'deleted' | 'changed' | 'other';
 
 const entityTypeConfig: Record<
   EntityType,
-  { icon: React.ReactNode; color: string; bgColor: string }
+  { icon: React.ReactNode; color: string; bgColor: string; borderColor: string; selectedBorderColor: string }
 > = {
   character: {
     icon: <Users className="w-3.5 h-3.5" />,
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-500/10',
+    color: 'ms-ent-character',
+    bgColor: 'ms-ent-character-bg',
+    borderColor: 'ms-ent-character-border',
+    selectedBorderColor: 'ms-ent-character-border-strong',
   },
   scene: {
     icon: <Film className="w-3.5 h-3.5" />,
-    color: 'text-blue-400',
-    bgColor: 'bg-blue-500/10',
+    color: 'ms-ent-scene',
+    bgColor: 'ms-ent-scene-bg',
+    borderColor: 'ms-ent-scene-border',
+    selectedBorderColor: 'ms-ent-scene-border-strong',
   },
   act: {
     icon: <Folder className="w-3.5 h-3.5" />,
-    color: 'text-amber-400',
-    bgColor: 'bg-amber-500/10',
+    color: 'ms-ent-act',
+    bgColor: 'ms-ent-act-bg',
+    borderColor: 'ms-ent-act-border',
+    selectedBorderColor: 'ms-ent-act-border-strong',
   },
   beat: {
     icon: <Target className="w-3.5 h-3.5" />,
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-500/10',
+    color: 'ms-ent-beat',
+    bgColor: 'ms-ent-beat-bg',
+    borderColor: 'ms-ent-beat-border',
+    selectedBorderColor: 'ms-ent-beat-border-strong',
   },
   faction: {
     icon: <Layers className="w-3.5 h-3.5" />,
-    color: 'text-rose-400',
-    bgColor: 'bg-rose-500/10',
+    color: 'ms-ent-faction',
+    bgColor: 'ms-ent-faction-bg',
+    borderColor: 'ms-ent-faction-border',
+    selectedBorderColor: 'ms-ent-faction-border-strong',
   },
   asset: {
     icon: <ImageIcon className="w-3.5 h-3.5" />,
-    color: 'text-cyan-400',
-    bgColor: 'bg-cyan-500/10',
+    color: 'ms-ent-asset',
+    bgColor: 'ms-ent-asset-bg',
+    borderColor: 'ms-ent-asset-border',
+    selectedBorderColor: 'ms-ent-asset-border-strong',
   },
   relationship: {
     icon: <GitBranch className="w-3.5 h-3.5" />,
-    color: 'text-pink-400',
-    bgColor: 'bg-pink-500/10',
+    color: 'ms-ent-relationship',
+    bgColor: 'ms-ent-relationship-bg',
+    borderColor: 'ms-ent-relationship-border',
+    selectedBorderColor: 'ms-ent-relationship-border-strong',
   },
   project: {
     icon: <FileText className="w-3.5 h-3.5" />,
-    color: 'text-slate-400',
-    bgColor: 'bg-slate-500/10',
+    color: 'ms-ent-project',
+    bgColor: 'ms-ent-project-bg',
+    borderColor: 'ms-ent-project-border',
+    selectedBorderColor: 'ms-ent-project-border-strong',
   },
 };
 
@@ -243,7 +259,7 @@ function EventItem({
           className={clsx(
             'relative z-10 p-1.5 rounded-lg border shrink-0',
             entityConfig.bgColor,
-            `border-${event.payload.entityType === 'character' ? 'purple' : 'slate'}-500/30`
+            entityConfig.borderColor
           )}
         >
           <span className={entityConfig.color}>{entityConfig.icon}</span>
@@ -558,7 +574,7 @@ export function EventTimeline({
                       className={clsx(
                         'flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs transition-colors border',
                         isSelected
-                          ? `${config.bgColor} ${config.color} border-${type === 'character' ? 'purple' : 'slate'}-500/50`
+                          ? `${config.bgColor} ${config.color} ${config.selectedBorderColor}`
                           : 'bg-slate-800/30 text-slate-400 border-slate-700/50 hover:border-slate-600/50'
                       )}
                     >

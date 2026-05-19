@@ -25,7 +25,7 @@ export default function DialogueViewPanel({
 }: DialogueViewPanelProps) {
   return (
     <PanelFrame title="Dialogue" icon={MessageCircle} onClose={onClose} headerAccent="amber" density={density}>
-      <div className="p-3 space-y-3 overflow-auto h-full">
+      <div className="p-4 space-y-3 overflow-auto h-full">
         {lines.length === 0 ? (
           <div className="flex items-center justify-center h-full text-slate-400 text-sm">
             No dialogue lines yet. Generate dialogue via the terminal.
@@ -39,7 +39,7 @@ export default function DialogueViewPanel({
                   <p className="text-sm text-slate-400 italic">({line.emotion})</p>
                 )}
               </div>
-              <div className="flex-1 bg-slate-900/40 rounded-lg px-3 py-2 border border-slate-800/40">
+              <div className="flex-1 bg-slate-900/40 rounded-lg p-3 border border-slate-700/40">
                 <p className="text-sm text-slate-200 leading-relaxed">{line.text}</p>
               </div>
             </div>

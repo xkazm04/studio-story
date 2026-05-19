@@ -9,6 +9,12 @@
  * - Table of contents generation
  */
 
+import type { ScriptBlockInput, ExportMetadata, LegacyExportResult } from './types';
+import type { ExportResult } from './result';
+import type { ExportData } from './result';
+import { exportSuccess, exportFailure } from './result';
+import { escapeXml as escapeXML, sanitizeFilename, generateUUID } from './utils';
+
 // JSZip is dynamically imported to avoid build issues if not installed
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JSZipType = any;
@@ -67,12 +73,8 @@ export interface EPUBExportOptions {
   generatePageList: boolean;
 }
 
-export interface EPUBGeneratorResult {
-  blob: Blob;
-  filename: string;
-  chapterCount: number;
-  wordCount: number;
-}
+/** @deprecated Use ExportResult<ExportData> from './result' directly */
+export type EPUBGeneratorResult = ExportResult<ExportData>;
 
 // ============================================================================
 // Constants
@@ -542,11 +544,11 @@ export class EPUBBuilder {
    */
   async build(): Promise<EPUBGeneratorResult> {
     if (!this.metadata) {
-      throw new Error('Metadata is required. Call setMetadata() first.');
+      return exportFailure('INVALID_INPUT', 'Metadata is required. Call setMetadata() first.');
     }
 
     if (this.chapters.length === 0) {
-      throw new Error('At least one chapter is required. Call addChapter() first.');
+      return exportFailure('INVALID_INPUT', 'At least one chapter is required. Call addChapter() first.');
     }
 
     // Sort chapters by order
@@ -564,82 +566,92 @@ export class EPUBBuilder {
     try {
       // @ts-expect-error - JSZip may not be installed
       JSZipModule = (await import(/* webpackIgnore: true */ 'jszip')).default;
-    } catch {
-      throw new Error('JSZip library is required for EPUB export. Install it with: npm install jszip');
+    } catch (err) {
+      return exportFailure('DEPENDENCY_MISSING', 'JSZip library is required for EPUB export. Install it with: npm install jszip', err);
     }
 
-    // Create ZIP structure
-    const zip = new JSZipModule();
+    try {
+      // Create ZIP structure
+      const zip = new JSZipModule();
 
-    // Add mimetype (must be first, uncompressed)
-    zip.file('mimetype', MIMETYPE, { compression: 'STORE' });
+      // Add mimetype (must be first, uncompressed)
+      zip.file('mimetype', MIMETYPE, { compression: 'STORE' });
 
-    // Add META-INF
-    zip.file('META-INF/container.xml', CONTAINER_XML);
+      // Add META-INF
+      zip.file('META-INF/container.xml', CONTAINER_XML);
 
-    // Add OEBPS content
-    const oebps = zip.folder('OEBPS')!;
+      // Add OEBPS content
+      const oebps = zip.folder('OEBPS')!;
 
-    // Add OPF file
-    oebps.file('content.opf', generateOPF(this.metadata, sortedChapters, this.images, this.options));
+      // Add OPF file
+      oebps.file('content.opf', generateOPF(this.metadata, sortedChapters, this.images, this.options));
 
-    // Add NCX file
-    oebps.file('toc.ncx', generateNCX(this.metadata, sortedChapters));
+      // Add NCX file
+      oebps.file('toc.ncx', generateNCX(this.metadata, sortedChapters));
 
-    // Add stylesheet
-    const styles = oebps.folder('styles')!;
-    styles.file('main.css', generateStylesheet(this.options));
+      // Add stylesheet
+      const styles = oebps.folder('styles')!;
+      styles.file('main.css', generateStylesheet(this.options));
 
-    // Add text content
-    const text = oebps.folder('text')!;
+      // Add text content
+      const text = oebps.folder('text')!;
 
-    // Add TOC
-    if (this.options.includeTableOfContents) {
-      text.file('toc.xhtml', generateTOC(this.metadata, sortedChapters, this.options));
-    }
-
-    // Add cover page
-    const coverImage = this.images.find(img => img.isCover);
-    if (coverImage && this.options.includeCover) {
-      text.file('cover.xhtml', generateCoverPage(this.metadata, coverImage));
-    }
-
-    // Add chapters
-    for (const chapter of sortedChapters) {
-      const content = generateChapterXHTML(chapter, this.metadata, this.options);
-      text.file(chapter.fileName!, content);
-    }
-
-    // Add images
-    if (this.images.length > 0) {
-      const imagesFolder = oebps.folder('images')!;
-      for (const image of this.images) {
-        imagesFolder.file(image.fileName, image.data);
+      // Add TOC
+      if (this.options.includeTableOfContents) {
+        text.file('toc.xhtml', generateTOC(this.metadata, sortedChapters, this.options));
       }
+
+      // Add cover page
+      const coverImage = this.images.find(img => img.isCover);
+      if (coverImage && this.options.includeCover) {
+        text.file('cover.xhtml', generateCoverPage(this.metadata, coverImage));
+      }
+
+      // Add chapters
+      for (const chapter of sortedChapters) {
+        const content = generateChapterXHTML(chapter, this.metadata, this.options);
+        text.file(chapter.fileName!, content);
+      }
+
+      // Add images
+      if (this.images.length > 0) {
+        const imagesFolder = oebps.folder('images')!;
+        for (const image of this.images) {
+          imagesFolder.file(image.fileName, image.data);
+        }
+      }
+
+      // Generate blob
+      const blob = await zip.generateAsync({
+        type: 'blob',
+        mimeType: MIMETYPE,
+        compression: 'DEFLATE',
+        compressionOptions: { level: 9 },
+      });
+
+      // Calculate word count
+      const wordCount = sortedChapters.reduce((count, chapter) => {
+        const text = chapter.content.replace(/<[^>]*>/g, '');
+        return count + text.split(/\s+/).length;
+      }, 0);
+
+      const filename = sanitizeFilename(this.metadata.title) + '.epub';
+
+      return exportSuccess({
+        blob,
+        filename,
+        metadata: {
+          chapterCount: sortedChapters.length,
+          wordCount,
+        },
+      });
+    } catch (err) {
+      return exportFailure(
+        'GENERATION_FAILED',
+        err instanceof Error ? err.message : 'EPUB generation failed',
+        err,
+      );
     }
-
-    // Generate blob
-    const blob = await zip.generateAsync({
-      type: 'blob',
-      mimeType: MIMETYPE,
-      compression: 'DEFLATE',
-      compressionOptions: { level: 9 },
-    });
-
-    // Calculate word count
-    const wordCount = sortedChapters.reduce((count, chapter) => {
-      const text = chapter.content.replace(/<[^>]*>/g, '');
-      return count + text.split(/\s+/).length;
-    }, 0);
-
-    const filename = sanitizeFilename(this.metadata.title) + '.epub';
-
-    return {
-      blob,
-      filename,
-      chapterCount: sortedChapters.length,
-      wordCount,
-    };
   }
 
   /**
@@ -665,29 +677,7 @@ export class EPUBBuilder {
 // Utility Functions
 // ============================================================================
 
-function escapeXML(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
 
-function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
-function sanitizeFilename(name: string): string {
-  return name
-    .replace(/[^a-zA-Z0-9\s-_]/g, '')
-    .replace(/\s+/g, '_')
-    .toLowerCase();
-}
 
 /**
  * Convert script blocks to EPUB chapters
@@ -696,11 +686,7 @@ export function convertToEPUBChapters(
   scenes: Array<{
     id: string;
     name: string;
-    blocks: Array<{
-      type: string;
-      content: string;
-      speaker?: string;
-    }>;
+    blocks: ScriptBlockInput[];
   }>
 ): EPUBChapter[] {
   return scenes.map((scene, index) => {

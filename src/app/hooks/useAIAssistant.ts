@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useCopyToClipboard } from '@/app/hooks/useCopyToClipboard';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { extractData } from '@/app/utils/api';
 import type {
   AIAssistantRequest,
   AIAssistantResponse,
@@ -31,7 +33,7 @@ export const useAIAssistant = (options: UseAIAssistantOptions = {}) => {
     queryFn: async () => {
       const response = await fetch('/api/narrative-assistant');
       if (!response.ok) throw new Error('Health check failed');
-      return response.json();
+      return extractData(await response.json());
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
@@ -53,7 +55,7 @@ export const useAIAssistant = (options: UseAIAssistantOptions = {}) => {
         throw new Error(error.message || 'Failed to generate suggestions');
       }
 
-      return response.json() as Promise<AIAssistantResponse>;
+      return extractData<AIAssistantResponse>(await response.json());
     },
     onSuccess: (data) => {
       setActiveSuggestions(data.suggestions);
@@ -122,15 +124,10 @@ export const useAIAssistant = (options: UseAIAssistantOptions = {}) => {
   }, []);
 
   // Copy suggestion to clipboard
+  const { copy: copyText } = useCopyToClipboard();
   const copySuggestion = useCallback(async (suggestion: AISuggestion) => {
-    try {
-      await navigator.clipboard.writeText(suggestion.content);
-      return true;
-    } catch (error) {
-      console.error('Failed to copy suggestion:', error);
-      return false;
-    }
-  }, []);
+    return copyText(suggestion.content);
+  }, [copyText]);
 
   return {
     // State
@@ -162,7 +159,7 @@ export const useAIAssistant = (options: UseAIAssistantOptions = {}) => {
 export const checkAIAssistantHealth = async () => {
   const response = await fetch('/api/narrative-assistant');
   if (!response.ok) throw new Error('AI Assistant is not available');
-  return response.json();
+  return extractData(await response.json());
 };
 
 export const generateNarrativeSuggestions = async (request: AIAssistantRequest) => {
@@ -179,5 +176,5 @@ export const generateNarrativeSuggestions = async (request: AIAssistantRequest) 
     throw new Error(error.message || 'Failed to generate suggestions');
   }
 
-  return response.json() as Promise<AIAssistantResponse>;
+  return extractData<AIAssistantResponse>(await response.json());
 };

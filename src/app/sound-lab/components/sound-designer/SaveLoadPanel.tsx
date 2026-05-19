@@ -5,6 +5,7 @@ import {
   Save, FolderOpen, Trash2, Loader2, Check, X, Clock,
 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import type { AudioAssetType, TransportState, TimelineClip } from '../../types';
 
 interface LaneGroup {
@@ -61,7 +62,8 @@ export default function SaveLoadPanel({
   const fetchList = useCallback(async () => {
     try {
       const res = await fetch(`/api/soundscapes?projectId=${projectId}`);
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success) {
         setSavedList(data.soundscapes ?? []);
       }
@@ -112,7 +114,8 @@ export default function SaveLoadPanel({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ audioUrl: url, filename, projectId }),
         });
-        const data = await res.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data: any = extractData(await res.json());
         if (data.success && data.storageUrl) {
           urlMap.set(url, data.storageUrl);
         }
@@ -150,7 +153,8 @@ export default function SaveLoadPanel({
         }),
       });
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success) {
         setSaveStatus('saved');
         setName('');
@@ -172,7 +176,8 @@ export default function SaveLoadPanel({
 
     try {
       const res = await fetch(`/api/soundscapes/${id}`);
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && data.soundscape) {
         const loaded = data.soundscape;
         onLoad(loaded.timeline_data as LaneGroup[], loaded.transport_data as TransportState);

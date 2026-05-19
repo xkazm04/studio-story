@@ -58,7 +58,7 @@ const VoiceFeature = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                 activeTab === tab.id
-                  ? 'bg-emerald-900 text-white shadow-lg shadow-emerald-500/30'
+                  ? 'bg-voice-primary/20 text-white shadow-lg shadow-voice-primary/30'
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
               }`}
             >

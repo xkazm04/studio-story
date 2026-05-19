@@ -4,10 +4,16 @@
  * V2-compatible version. Processes ScriptLines one at a time,
  * applies emotion/delivery modifiers, and computes auto-placement.
  * Supports multi-take generation (takesCount option) and progress tracking.
+ *
+ * Persistence: Creates a narration_session in Supabase at generation start
+ * and saves each generated take to audio_takes, so work survives page refresh.
  */
 
 import { useState, useRef, useCallback } from 'react';
 import { applyModifiers } from '../lib/voiceModifiers';
+import { extractData } from '@/app/utils/api';
+import { narrationSessionApi, audioTakeApi } from '@/app/hooks/integration/useNarrationSessions';
+import { useAudioProductionStore } from '@/app/store/slices/audioProductionSlice';
 import type { VoiceSettings, ScriptLine, ScriptLineTake } from '../types';
 
 interface AudioAssetLike {
@@ -29,6 +35,10 @@ export interface GenerateOptions {
   takesCount?: number;
   /** Project ID for the TTS request */
   projectId?: string;
+  /** Scene ID to associate with the narration session */
+  sceneId?: string;
+  /** Existing session ID to resume instead of creating new */
+  sessionId?: string;
 }
 
 interface UseNarrationBatchReturn {
@@ -40,6 +50,8 @@ interface UseNarrationBatchReturn {
   regenerateLine: (lineId: string, baseSettings: VoiceSettings) => Promise<void>;
   cancel: () => void;
   result: NarrationResultInternal | null;
+  /** Active narration session ID (null if none created yet) */
+  sessionId: string | null;
 }
 
 const GAP_SAME_CHARACTER = 0.5;
@@ -50,7 +62,9 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0, currentCharacter: '' });
   const [result, setResult] = useState<NarrationResultInternal | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const store = useAudioProductionStore;
 
   const generateLine = async (
     line: ScriptLine,
@@ -74,7 +88,7 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
       signal,
     });
 
-    const data = await res.json();
+    const data = extractData<{ success?: boolean; error?: string; audioUrl: string; duration?: number }>(await res.json());
     if (!data.success) {
       throw new Error(data.error || 'TTS generation failed');
     }
@@ -131,6 +145,32 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
 
     setLines((prev) => prev.map((l) => ({ ...l, status: 'pending' as const, error: undefined })));
 
+    // ── Persistence: create or resume a session ──
+    let sid = options?.sessionId ?? null;
+    if (!sid && options?.projectId) {
+      try {
+        const session = await narrationSessionApi.createSession({
+          project_id: options.projectId,
+          scene_id: options.sceneId ?? null,
+          name: options.sceneId ? `Scene narration` : 'Ad-hoc narration',
+          status: 'generating',
+          voice_settings: baseSettings as unknown as Record<string, unknown>,
+          script_lines: lines.map((l) => ({
+            id: l.id, character: l.character, voiceId: l.voiceId,
+            text: l.text, emotion: l.emotion, delivery: l.delivery, status: 'pending' as const,
+          })),
+          lines_total: total,
+          lines_done: 0,
+        });
+        sid = session.id;
+        setSessionId(sid);
+        store.getState().setActiveSession(sid, options.projectId, options.sceneId);
+        store.getState().setGenerationProgress(true, 0);
+      } catch {
+        // Persistence is best-effort — don't block generation
+      }
+    }
+
     let done = 0;
 
     for (let i = 0; i < lines.length; i++) {
@@ -162,6 +202,27 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
             });
           }
 
+          // ── Persist takes to Supabase ──
+          if (sid && takes.length > 0) {
+            try {
+              await audioTakeApi.createTakes(takes.map((tk, t) => ({
+                session_id: sid!,
+                line_id: line.id,
+                character: line.character,
+                voice_id: line.voiceId,
+                text: line.text,
+                emotion: tk.emotion,
+                delivery: tk.delivery,
+                intensity: tk.intensity,
+                audio_url: tk.audioUrl,
+                duration: tk.duration,
+                waveform_data: tk.waveformData,
+                selected: t === 0,
+                cost_chars: line.text.length,
+              })));
+            } catch { /* best-effort */ }
+          }
+
           const firstTake = takes[0];
           setLines((prev) => prev.map((l, idx) =>
             idx === i ? {
@@ -177,6 +238,26 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
           // Single take (default)
           const { audioUrl, duration } = await generateLine(line, baseSettings, controller.signal, options?.projectId);
 
+          // ── Persist single take ──
+          if (sid) {
+            try {
+              await audioTakeApi.createTakes({
+                session_id: sid,
+                line_id: line.id,
+                character: line.character,
+                voice_id: line.voiceId,
+                text: line.text,
+                emotion: line.emotion,
+                delivery: line.delivery,
+                intensity: 70,
+                audio_url: audioUrl,
+                duration,
+                selected: true,
+                cost_chars: line.text.length,
+              });
+            } catch { /* best-effort */ }
+          }
+
           setLines((prev) => prev.map((l, idx) =>
             idx === i ? { ...l, status: 'done' as const, audioUrl, duration } : l
           ));
@@ -184,6 +265,12 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
 
         done++;
         setProgress({ done, total, currentCharacter: line.character });
+
+        // ── Update session progress ──
+        if (sid) {
+          store.getState().setGenerationProgress(true, i);
+          narrationSessionApi.updateSession(sid, { lines_done: done }).catch(() => {});
+        }
       } catch (err) {
         if (controller.signal.aborted) break;
 
@@ -202,9 +289,27 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     setLines((prev) => {
       const placement = computePlacement(prev);
       setResult(placement);
+
+      // ── Finalize session ──
+      if (sid) {
+        const doneCount = prev.filter((l) => l.status === 'done').length;
+        const finalStatus = doneCount === prev.length ? 'complete' : 'partial';
+        narrationSessionApi.updateSession(sid, {
+          status: finalStatus,
+          lines_done: doneCount,
+          total_duration: placement.totalDuration,
+          script_lines: prev.map((l) => ({
+            id: l.id, character: l.character, voiceId: l.voiceId,
+            text: l.text, emotion: l.emotion, delivery: l.delivery,
+            status: l.status, audioUrl: l.audioUrl, duration: l.duration,
+          })),
+        }).catch(() => {});
+        store.getState().setGenerationProgress(false, -1);
+      }
+
       return prev;
     });
-  }, [lines, computePlacement]);
+  }, [lines, computePlacement, store]);
 
   const regenerateLine = useCallback(async (lineId: string, baseSettings: VoiceSettings) => {
     const line = lines.find((l) => l.id === lineId);
@@ -251,6 +356,7 @@ export function useNarrationBatch(): UseNarrationBatchReturn {
     regenerateLine,
     cancel,
     result,
+    sessionId,
   };
 }
 

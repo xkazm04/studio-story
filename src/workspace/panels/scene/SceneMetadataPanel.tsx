@@ -86,7 +86,7 @@ export default function SceneMetadataPanel({
             type="button"
             onClick={handleSave}
             disabled={saving || !isDirty}
-            className="rounded px-2 py-0.5 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-500/12 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded px-2 py-0.5 text-sm font-medium text-cyan-300 transition-all duration-150 hover:bg-slate-800/80 hover:text-cyan-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             title="Save changes"
           >
             <span className="inline-flex items-center gap-1">
@@ -97,7 +97,7 @@ export default function SceneMetadataPanel({
         </div>
       }
     >
-      <div className="space-y-2 @xs:space-y-3 p-2 @xs:p-3">
+      <div className="space-y-2 @xs:space-y-3 p-3 @xs:p-4">
         {/* Name */}
         <div>
           <PanelSectionTitle title="Name" subtitle="Display name used in the scene list and editor." className="mb-1.5" />
@@ -108,13 +108,13 @@ export default function SceneMetadataPanel({
               setName(e.target.value);
               setSaveState('dirty');
             }}
-            className="w-full rounded border border-slate-800/50 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-200 outline-none transition-colors focus:border-amber-500/40"
+            className="w-full rounded border border-slate-700/40 bg-slate-900/60 px-2 py-1.5 text-sm text-slate-200 outline-none transition-colors duration-150 focus:border-cyan-500/40"
           />
         </div>
 
         {/* Scene info */}
         {scene && (
-          <div className="space-y-1.5 border-t border-slate-800/50 pt-2">
+          <div className="space-y-1.5 border-t border-slate-700/40 pt-2">
             <PanelSectionTitle title="Info" subtitle="Read-only metadata from the current scene." className="mb-2" />
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-400">Order</span>

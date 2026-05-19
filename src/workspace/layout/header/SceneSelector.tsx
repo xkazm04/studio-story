@@ -56,13 +56,13 @@ const SceneSelector: React.FC = () => {
       triggerContent={
         selectedScene ? (
           <>
-            <span className="text-slate-400 font-mono text-xs">
+            <span className="text-slate-500 font-mono text-xs">
               #{selectedScene.order !== undefined ? selectedScene.order + 1 : ''}
             </span>
-            <span className="font-medium">{selectedScene.name}</span>
+            <span className="font-medium text-slate-400">{selectedScene.name}</span>
           </>
         ) : (
-          <span className="font-medium text-slate-400">Select Scene</span>
+          <span className="font-medium text-slate-500">Select Scene</span>
         )
       }
       items={items}

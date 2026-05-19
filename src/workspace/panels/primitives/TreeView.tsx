@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
@@ -9,6 +9,9 @@ import type { HeaderAccent } from '../shared/PanelFrame';
 import { PanelEmptyState, PanelErrorState } from '../shared/PanelPrimitives';
 import type { BasePrimitiveProps, TreeNode } from './types';
 import { SPACING, MOTION, BEAT_ANIMATIONS, getAccent } from '@/workspace/theme/tokens';
+import { useKeyboardNavigation } from './useKeyboardNavigation';
+import ContextMenuComponent, { useContextMenu } from './ContextMenu';
+import type { ContextMenuItem } from './ContextMenu';
 
 /** Row height used for max-height estimation (px) */
 const ROW_HEIGHT = 28;
@@ -87,6 +90,10 @@ interface TreeViewProps extends BasePrimitiveProps {
   activeNodeId?: string;
   onNodeSelect?: (node: TreeNode) => void;
   defaultExpanded?: boolean;
+  /** Returns context menu items for a right-clicked tree node */
+  contextMenuItems?: (node: TreeNode) => ContextMenuItem[];
+  /** Called when a context menu action is selected */
+  onContextMenuAction?: (actionId: string, node: TreeNode) => void;
 }
 
 export default function TreeView({
@@ -107,7 +114,11 @@ export default function TreeView({
   emptyTitle,
   emptyDescription,
   density,
+  contextMenuItems,
+  onContextMenuAction,
 }: TreeViewProps) {
+  const ctxMenu = useContextMenu<TreeNode>();
+
   return (
     <PanelFrame
       title={title}
@@ -135,6 +146,16 @@ export default function TreeView({
           defaultExpanded={defaultExpanded ?? true}
           label={title}
           accent={headerAccent}
+          onContextMenu={contextMenuItems ? ctxMenu.open : undefined}
+        />
+      )}
+
+      {ctxMenu.position && ctxMenu.entity && contextMenuItems && (
+        <ContextMenuComponent
+          position={ctxMenu.position}
+          items={contextMenuItems(ctxMenu.entity)}
+          onAction={(actionId) => onContextMenuAction?.(actionId, ctxMenu.entity!)}
+          onClose={ctxMenu.close}
         />
       )}
     </PanelFrame>
@@ -148,6 +169,7 @@ function TreeContainer({
   defaultExpanded,
   label,
   accent,
+  onContextMenu,
 }: {
   nodes: TreeNode[];
   activeNodeId?: string;
@@ -155,65 +177,14 @@ function TreeContainer({
   defaultExpanded: boolean;
   label: string;
   accent?: HeaderAccent;
+  onContextMenu?: (e: React.MouseEvent, node: TreeNode) => void;
 }) {
   const treeRef = useRef<HTMLDivElement>(null);
 
-  const handleTreeKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      const container = treeRef.current;
-      if (!container) return;
-      const items = Array.from(
-        container.querySelectorAll<HTMLElement>('[role="treeitem"]')
-      );
-      const currentIndex = items.indexOf(document.activeElement as HTMLElement);
-      if (currentIndex === -1) return;
-
-      const current = items[currentIndex];
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const next = Math.min(currentIndex + 1, items.length - 1);
-        items[next].focus();
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const prev = Math.max(currentIndex - 1, 0);
-        items[prev].focus();
-      } else if (e.key === 'ArrowRight') {
-        // If branch is collapsed, expand it; otherwise move to first child
-        const expanded = current.getAttribute('aria-expanded');
-        if (expanded === 'false') {
-          e.preventDefault();
-          current.click();
-        } else if (expanded === 'true') {
-          e.preventDefault();
-          const next = Math.min(currentIndex + 1, items.length - 1);
-          items[next].focus();
-        }
-      } else if (e.key === 'ArrowLeft') {
-        // If branch is expanded, collapse it; otherwise move to parent
-        const expanded = current.getAttribute('aria-expanded');
-        if (expanded === 'true') {
-          e.preventDefault();
-          current.click();
-        } else {
-          // Move to parent treeitem
-          e.preventDefault();
-          const prev = Math.max(currentIndex - 1, 0);
-          items[prev].focus();
-        }
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        items[0]?.focus();
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        items[items.length - 1]?.focus();
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        current.click();
-      }
-    },
-    []
-  );
+  const handleTreeKeyDown = useKeyboardNavigation(treeRef, {
+    selector: '[role="treeitem"]',
+    mode: 'tree',
+  });
 
   return (
     <div
@@ -232,6 +203,7 @@ function TreeContainer({
           onNodeSelect={onNodeSelect}
           defaultExpanded={defaultExpanded}
           accent={accent}
+          onContextMenu={onContextMenu}
         />
       ))}
     </div>
@@ -245,9 +217,10 @@ interface TreeBranchProps {
   onNodeSelect?: (node: TreeNode) => void;
   defaultExpanded: boolean;
   accent?: HeaderAccent;
+  onContextMenu?: (e: React.MouseEvent, node: TreeNode) => void;
 }
 
-function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, accent }: TreeBranchProps) {
+function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, accent, onContextMenu }: TreeBranchProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const hasChildren = node.children && node.children.length > 0;
   const NodeIcon = node.icon;
@@ -261,6 +234,7 @@ function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, 
         isActive={activeNodeId === node.id}
         onSelect={() => onNodeSelect?.(node)}
         accent={accent}
+        onContextMenu={onContextMenu}
       />
     );
   }
@@ -278,6 +252,7 @@ function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, 
         aria-expanded={expanded}
         tabIndex={-1}
         onClick={() => setExpanded((prev) => !prev)}
+        onContextMenu={onContextMenu ? (e) => onContextMenu(e, node) : undefined}
         className={cn(
           'flex w-full items-center gap-1.5 min-h-[28px] px-1.5 text-sm font-medium cursor-pointer rounded',
           'text-slate-300 hover:text-slate-200 hover:bg-slate-800/30',
@@ -324,6 +299,7 @@ function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, 
                     onNodeSelect={onNodeSelect}
                     defaultExpanded={defaultExpanded}
                     accent={accent}
+                    onContextMenu={onContextMenu}
                   />
                 ) : (
                   <LeafNode
@@ -332,6 +308,7 @@ function TreeBranch({ node, depth, activeNodeId, onNodeSelect, defaultExpanded, 
                     isActive={activeNodeId === child.id}
                     onSelect={() => onNodeSelect?.(child)}
                     accent={accent}
+                    onContextMenu={onContextMenu}
                   />
                 )
               )}
@@ -348,9 +325,10 @@ interface LeafNodeProps {
   isActive: boolean;
   onSelect: () => void;
   accent?: HeaderAccent;
+  onContextMenu?: (e: React.MouseEvent, node: TreeNode) => void;
 }
 
-function LeafNode({ node, isActive, onSelect, accent }: LeafNodeProps) {
+function LeafNode({ node, isActive, onSelect, accent, onContextMenu }: LeafNodeProps) {
   const NodeIcon = node.icon;
   const accentStyles = getAccent(accent);
 
@@ -361,6 +339,7 @@ function LeafNode({ node, isActive, onSelect, accent }: LeafNodeProps) {
       aria-selected={isActive}
       tabIndex={isActive ? 0 : -1}
       onClick={onSelect}
+      onContextMenu={onContextMenu ? (e) => onContextMenu(e, node) : undefined}
       className={cn(
         'flex w-full items-center gap-1.5 px-1.5 min-h-[28px] rounded text-sm text-left transition-all',
         MOTION.hoverDuration,

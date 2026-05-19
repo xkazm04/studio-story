@@ -4,6 +4,7 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { extractData } from '@/app/utils/api';
 import {
   CharacterConsistencyReport,
   ConsistencyCheckRequest,
@@ -28,7 +29,7 @@ export function useAnalyzeConsistency() {
         throw new Error('Failed to analyze character consistency');
       }
 
-      return response.json() as Promise<CharacterConsistencyReport>;
+      return extractData<CharacterConsistencyReport>(await response.json());
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(
@@ -68,7 +69,7 @@ export function useResolveConsistencyIssue() {
         throw new Error('Failed to resolve consistency issue');
       }
 
-      return response.json();
+      return extractData(await response.json());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['character-consistency'] });

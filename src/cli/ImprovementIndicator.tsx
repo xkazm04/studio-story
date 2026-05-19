@@ -12,6 +12,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Zap, ChevronUp, ChevronDown, AlertTriangle, Info, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 
 interface Pattern {
   fingerprint: string;
@@ -60,7 +61,8 @@ export default function ImprovementIndicator({
     try {
       const res = await fetch('/api/claude-terminal/improve');
       if (!res.ok) return;
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success && Array.isArray(data.patterns)) {
         setPatterns(data.patterns);
       }
@@ -83,7 +85,8 @@ export default function ImprovementIndicator({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patternFingerprints: fingerprints }),
       });
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await res.json());
       if (data.success) {
         onStartImprovement(data.executionId, data.streamUrl);
         // Remove fixed patterns from local state

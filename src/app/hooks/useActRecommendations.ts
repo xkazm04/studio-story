@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { extractData } from '@/app/utils/api';
 import { RecommendationResponse, RecommendationContext } from '../types/Recommendation';
 
 /**
@@ -31,7 +32,7 @@ export const useActRecommendations = (_projectId: string) => {
         }),
       });
 
-      const data = await res.json();
+      const data = extractData<{ success?: boolean; recommendations?: any[]; overall_assessment?: string }>(await res.json());
 
       if (data.success && data.recommendations) {
         const response: RecommendationResponse = {

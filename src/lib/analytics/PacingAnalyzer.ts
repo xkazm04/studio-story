@@ -8,6 +8,7 @@
 
 import type { Beat } from '@/app/types/Beat';
 import type { Scene } from '@/app/types/Scene';
+import type { AnalysisIssue } from './index';
 
 // ============================================================================
 // Types
@@ -56,12 +57,9 @@ export interface PacingTemplate {
   };
 }
 
-export interface PacingIssue {
+export interface PacingIssue extends AnalysisIssue {
   type: 'flat' | 'early-climax' | 'late-climax' | 'no-peaks' | 'no-valleys' | 'monotonous' | 'jarring';
-  severity: 'critical' | 'warning' | 'info';
   position?: number;
-  message: string;
-  suggestion: string;
 }
 
 export interface PacingAnalysisResult {

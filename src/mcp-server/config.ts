@@ -41,3 +41,37 @@ export function parseConfig(): McpConfig {
 
   return config;
 }
+
+/**
+ * Validate that STORY_BASE_URL is reachable by pinging /api/health.
+ * Logs a clear, actionable error if the dev server is unreachable.
+ * Non-blocking — logs a warning instead of crashing the process.
+ */
+export async function validateBaseUrl(config: McpConfig): Promise<boolean> {
+  const url = `${config.baseUrl}/api/health`;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      console.error(
+        `[story-mcp] ⚠ Base URL check failed: ${url} returned HTTP ${res.status}.\n` +
+        `  Ensure the Next.js dev server is running ("npm run dev") and STORY_BASE_URL in .mcp.json matches its port.`
+      );
+      return false;
+    }
+
+    console.error(`[story-mcp] ✓ Base URL validated: ${config.baseUrl}`);
+    return true;
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    console.error(
+      `[story-mcp] ⚠ Cannot reach ${url} — ${reason}\n` +
+      `  Ensure the Next.js dev server is running ("npm run dev") and STORY_BASE_URL in .mcp.json matches its port.\n` +
+      `  Current STORY_BASE_URL: ${config.baseUrl}`
+    );
+    return false;
+  }
+}

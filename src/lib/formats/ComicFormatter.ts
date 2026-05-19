@@ -4,16 +4,8 @@
  * Supports industry-standard comic script conventions
  */
 
-export type ComicElementType =
-  | 'page_header'
-  | 'panel_header'
-  | 'description'
-  | 'dialogue'
-  | 'caption'
-  | 'sfx'
-  | 'note'
-  | 'splash'
-  | 'spread';
+export type { ComicBlockType as ComicElementType } from '../types/scriptElement';
+import type { ComicBlockType as ComicElementType } from '../types/scriptElement';
 
 export interface ComicElement {
   type: ComicElementType;

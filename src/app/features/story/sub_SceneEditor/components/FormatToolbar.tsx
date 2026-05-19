@@ -81,7 +81,7 @@ const FORMAT_MODES = [
 
 // Screenplay elements
 const SCREENPLAY_ELEMENTS = [
-  { id: 'scene_heading', label: 'Scene Heading', icon: Clapperboard, shortcut: 'Ctrl+1' },
+  { id: 'scene-heading', label: 'Scene Heading', icon: Clapperboard, shortcut: 'Ctrl+1' },
   { id: 'action', label: 'Action', icon: Type, shortcut: 'Ctrl+2' },
   { id: 'character', label: 'Character', icon: User, shortcut: 'Ctrl+3' },
   { id: 'dialogue', label: 'Dialogue', icon: MessageSquare, shortcut: 'Ctrl+4' },
@@ -132,14 +132,14 @@ export default function FormatToolbar({
   }, [onInsertElement]);
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 border-b border-slate-800/70">
+    <div className="flex items-center gap-2 p-3 bg-slate-900/80 border-b border-slate-700/60">
       {/* Mode Selector */}
       <div className="relative">
         <button
           onClick={() => setShowModeDropdown(!showModeDropdown)}
           className={cn(
             'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-mono font-medium transition-all',
-            'bg-slate-800/80 border border-slate-700/50 hover:border-cyan-500/30',
+            'bg-slate-800/80 border border-slate-700/40 hover:border-cyan-500/30',
             'text-slate-300 hover:text-cyan-400'
           )}
         >
@@ -157,7 +157,7 @@ export default function FormatToolbar({
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="absolute top-full left-0 mt-1 w-64 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50"
+              className="absolute top-full left-0 mt-1 w-64 bg-slate-800 border border-slate-700/60 rounded-lg shadow-xl z-50"
             >
               {FORMAT_MODES.map((m) => (
                 <button
@@ -168,7 +168,7 @@ export default function FormatToolbar({
                   }}
                   className={cn(
                     'w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors',
-                    'hover:bg-slate-700/50',
+                    'hover:bg-slate-800/80 transition-colors duration-150',
                     m.id === mode && 'bg-cyan-500/10'
                   )}
                 >
@@ -206,7 +206,7 @@ export default function FormatToolbar({
             onClick={() => handleElementClick(element.id)}
             className={cn(
               'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
-              'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors duration-150 active:scale-[0.98]'
             )}
             title={`${element.label} (${element.shortcut})`}
           >
@@ -227,8 +227,8 @@ export default function FormatToolbar({
         className={cn(
           'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
           showShortcuts
-            ? 'bg-cyan-500/20 text-cyan-400'
-            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+            ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80'
         )}
         title="Keyboard shortcuts"
       >
@@ -241,8 +241,8 @@ export default function FormatToolbar({
         className={cn(
           'flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-all',
           showSettings
-            ? 'bg-cyan-500/20 text-cyan-400'
-            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+            ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/80'
         )}
         title="Format settings"
       >
@@ -256,7 +256,7 @@ export default function FormatToolbar({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            className="absolute top-full right-24 mt-1 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 p-4"
+            className="absolute top-full right-24 mt-1 w-72 bg-slate-800 border border-slate-700/60 rounded-lg shadow-xl z-50 p-4"
           >
             <div className="text-sm font-mono uppercase tracking-wide text-cyan-400 mb-3">
               {currentMode.label} Shortcuts
@@ -282,7 +282,7 @@ export default function FormatToolbar({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            className="absolute top-full right-4 mt-1 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 p-4"
+            className="absolute top-full right-4 mt-1 w-72 bg-slate-800 border border-slate-700/60 rounded-lg shadow-xl z-50 p-4"
           >
             <div className="text-sm font-mono uppercase tracking-wide text-cyan-400 mb-3">
               {currentMode.label} Settings

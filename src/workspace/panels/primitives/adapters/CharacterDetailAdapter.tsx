@@ -3,19 +3,19 @@
 import React, { useMemo } from 'react';
 import { User } from 'lucide-react';
 import { useCharacterStore } from '@/app/store/slices/characterSlice';
+import type { BaseAdapterProps } from '../types';
 import LazyContainer from '../LazyContainer';
 import { useSelectionContext } from './selectionBus';
 
 const CharacterDetails = React.lazy(() => import('@/app/features/characters/components/CharacterDetails'));
 
-interface CharacterDetailAdapterProps {
+interface CharacterDetailAdapterProps extends BaseAdapterProps {
   characterId?: string;
-  onClose?: () => void;
-  onTriggerSkill?: (skillId: string, params?: Record<string, unknown>) => void;
 }
 
 export default function CharacterDetailAdapter({
   characterId: propCharId,
+  density,
   onClose,
   onTriggerSkill,
 }: CharacterDetailAdapterProps) {
@@ -30,6 +30,7 @@ export default function CharacterDetailAdapter({
       icon={User}
       headerAccent="cyan"
       onClose={onClose}
+      density={density}
       onTriggerSkill={onTriggerSkill}
       component={CharacterDetails}
       componentProps={id ? { characterId: id } : {}}

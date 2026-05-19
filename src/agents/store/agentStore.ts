@@ -6,14 +6,15 @@
  */
 
 import { create } from 'zustand';
-import type { AgentMessage, AgentSuggestion, ConnectionState, MuseInsight } from '../types';
-import type { CLIToolEvent } from '../AdvisorClient';
-import type { PanelDirective, WorkspaceLayout } from '@/workspace/types';
+import type { AgentMessage, AgentSuggestion, CLIToolEvent, ConnectionState, MuseInsight, AdvisorError, EffectRecord, EffectTriggerSource, EffectWorkspaceSnapshot, MessageRating } from '../types';
+import { summarizeToolInput, EFFECT_STACK_MAX } from '../types';
+import type { WorkspaceLayout } from '@/workspace/types';
 
 /** Callback that the useAdvisor hook registers to handle batched events */
 type ToolEventSender = (events: CLIToolEvent[]) => void;
 
 const BATCH_DEBOUNCE_MS = 800;
+export const STREAMING_MESSAGE_ID = '__streaming__';
 
 interface AgentStoreState {
   // Connection
@@ -29,17 +30,16 @@ interface AgentStoreState {
   isThrottled: boolean;
 
   // Error state
-  lastError: string | null;
+  lastError: AdvisorError | null;
 
   // Conversation
   messages: AgentMessage[];
 
   // Suggestions
   suggestions: AgentSuggestion[];
-  previousWorkspaceState: {
-    panels: PanelDirective[];
-    layout: WorkspaceLayout;
-  } | null;
+
+  // Effect attribution stack (replaces single-slot previousWorkspaceState)
+  effectStack: EffectRecord[];
 
   // Proactive Muse insights
   museInsights: MuseInsight[];
@@ -61,8 +61,12 @@ interface AgentStoreState {
   setThrottled: (isThrottled: boolean) => void;
 
   // Actions — Error state
-  setLastError: (error: string | null) => void;
-  setPreviousWorkspaceState: (snapshot: { panels: PanelDirective[]; layout: WorkspaceLayout } | null) => void;
+  setLastError: (error: AdvisorError | null) => void;
+
+  // Actions — Effect attribution stack
+  pushEffect: (trigger: EffectTriggerSource, action: EffectRecord['action'], reasoning: string | undefined, before: EffectWorkspaceSnapshot, after: EffectWorkspaceSnapshot) => void;
+  undoLastEffect: () => EffectRecord | null;
+  getEffectForPanel: (panelType: string) => EffectRecord | undefined;
 
   // Actions — CLI event forwarding
   setEventSender: (sender: ToolEventSender | null) => void;
@@ -74,6 +78,8 @@ interface AgentStoreState {
   updateStreamingMessage: (text: string) => void;
   /** Replace the streaming message with a finalized one */
   finalizeStreamingMessage: (text: string) => void;
+  /** Set a user rating on a specific message */
+  rateMessage: (id: string, rating: MessageRating) => void;
   clearMessages: () => void;
 
   // Actions — Suggestions
@@ -90,22 +96,6 @@ interface AgentStoreState {
   reset: () => void;
 }
 
-function summarizeToolInput(toolName: string, input: Record<string, unknown>): string {
-  const parts: string[] = [];
-  if (input.characterId) parts.push(`character=${input.characterId}`);
-  if (input.sceneId) parts.push(`scene=${input.sceneId}`);
-  if (input.actId) parts.push(`act=${input.actId}`);
-  if (input.name) parts.push(`name="${input.name}"`);
-  if (input.type) parts.push(`type=${input.type}`);
-  if (input.prompt && typeof input.prompt === 'string') {
-    parts.push(`prompt="${(input.prompt as string).slice(0, 80)}..."`);
-  }
-  if (input.sourceImageUrl) parts.push('has_source_image');
-  if (input.imageUrl) parts.push('has_image');
-  if (input.updates) parts.push(`updates=${typeof input.updates === 'string' ? input.updates.slice(0, 100) : 'object'}`);
-  return parts.length > 0 ? parts.join(', ') : 'no params';
-}
-
 const INITIAL_STATE = {
   connectionState: 'disconnected' as ConnectionState,
   isObserving: false,
@@ -113,10 +103,10 @@ const INITIAL_STATE = {
   processingStatus: null as string | null,
   rateLimitedUntil: null as number | null,
   isThrottled: false,
-  lastError: null as string | null,
+  lastError: null as AdvisorError | null,
   messages: [] as AgentMessage[],
   suggestions: [] as AgentSuggestion[],
-  previousWorkspaceState: null as { panels: PanelDirective[]; layout: WorkspaceLayout } | null,
+  effectStack: [] as EffectRecord[],
   museInsights: [] as MuseInsight[],
   _pendingEvents: [] as CLIToolEvent[],
   _eventSender: null as ToolEventSender | null,
@@ -140,7 +130,38 @@ export const useAgentStore = create<AgentStoreState>()((set, get) => ({
 
   // Error state
   setLastError: (lastError) => set({ lastError }),
-  setPreviousWorkspaceState: (snapshot) => set({ previousWorkspaceState: snapshot }),
+
+  // Effect attribution stack
+  pushEffect: (trigger, action, reasoning, before, after) => {
+    const record: EffectRecord = {
+      id: `effect-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      timestamp: Date.now(),
+      trigger,
+      action,
+      reasoning,
+      before,
+      after,
+    };
+    set((state) => ({
+      effectStack: [record, ...state.effectStack].slice(0, EFFECT_STACK_MAX),
+    }));
+  },
+
+  undoLastEffect: () => {
+    const state = get();
+    if (state.effectStack.length === 0) return null;
+    const [top, ...rest] = state.effectStack;
+    set({ effectStack: rest });
+    return top;
+  },
+
+  getEffectForPanel: (panelType) => {
+    const state = get();
+    return state.effectStack.find((effect) =>
+      effect.after.panels.some((p) => p.type === panelType) &&
+      !effect.before.panels.some((p) => p.type === panelType)
+    );
+  },
 
   // Event sender registration (called by useAdvisor)
   setEventSender: (sender) => set({ _eventSender: sender }),
@@ -179,7 +200,7 @@ export const useAgentStore = create<AgentStoreState>()((set, get) => ({
     })),
   updateStreamingMessage: (text) =>
     set((state) => {
-      const streamingIdx = state.messages.findIndex(m => m.id === '__streaming__');
+      const streamingIdx = state.messages.findIndex(m => m.id === STREAMING_MESSAGE_ID);
       if (streamingIdx >= 0) {
         const updated = [...state.messages];
         updated[streamingIdx] = { ...updated[streamingIdx], content: text };
@@ -187,7 +208,7 @@ export const useAgentStore = create<AgentStoreState>()((set, get) => ({
       }
       return {
         messages: [...state.messages, {
-          id: '__streaming__',
+          id: STREAMING_MESSAGE_ID,
           role: 'agent' as const,
           content: text,
           timestamp: Date.now(),
@@ -198,7 +219,7 @@ export const useAgentStore = create<AgentStoreState>()((set, get) => ({
   finalizeStreamingMessage: (text) =>
     set((state) => {
       // Replace the streaming placeholder with a finalized message
-      const withoutStreaming = state.messages.filter(m => m.id !== '__streaming__');
+      const withoutStreaming = state.messages.filter(m => m.id !== STREAMING_MESSAGE_ID);
       return {
         messages: [...withoutStreaming, {
           id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -208,6 +229,12 @@ export const useAgentStore = create<AgentStoreState>()((set, get) => ({
         }],
       };
     }),
+  rateMessage: (id, rating) =>
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === id ? { ...m, rating } : m,
+      ),
+    })),
   clearMessages: () => set({ messages: [] }),
 
   // Suggestions

@@ -11,14 +11,24 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { AdvisorClient } from './AdvisorClient';
-import type { AdvisorToolCall, CLIToolEvent } from './AdvisorClient';
+import type { AdvisorToolCall } from './AdvisorClient';
+import type { CLIToolEvent } from './types';
 import { useAgentStore } from './store/agentStore';
 import { useAdvisorMemoryStore } from './store/advisorMemoryStore';
 import { useAdvisorMemory } from './useAdvisorMemory';
 import { useWorkspaceStore } from '@/workspace/store/workspaceStore';
 import { useProjectStore } from '@/app/store/slices/projectSlice';
 import { useCommandBarStore } from '@/workspace/store/commandBarStore';
-import type { AgentMessage, AgentSuggestion } from './types';
+import { dispatchWorkspaceAction } from './dispatchWorkspaceAction';
+import type { AgentMessage, AgentSuggestion, EffectTriggerSource, MessageRating } from './types';
+import { TOOL_NAMES, advisorErrorLabel } from './types';
+import {
+  validateToolArgs,
+  composeWorkspaceArgsSchema,
+  suggestActionArgsSchema,
+  sessionSpawnedArgsSchema,
+  type ComposeWorkspaceArgs,
+} from './advisorSchemas';
 
 let idCounter = 0;
 function nextId(prefix: string): string {
@@ -46,6 +56,7 @@ function getWorkspaceSnapshot() {
 
 export function useAdvisor() {
   const clientRef = useRef<AdvisorClient | null>(null);
+  const unsubscribersRef = useRef<Array<() => void>>([]);
 
   // Activate memory tracking (observes workspace changes, density, transitions)
   useAdvisorMemory();
@@ -69,13 +80,15 @@ export function useAdvisor() {
   const updateStreamingMessage = useAgentStore((s) => s.updateStreamingMessage);
   const finalizeStreamingMessage = useAgentStore((s) => s.finalizeStreamingMessage);
   const addSuggestion = useAgentStore((s) => s.addSuggestion);
-  const setPreviousWorkspaceState = useAgentStore((s) => s.setPreviousWorkspaceState);
+  const pushEffect = useAgentStore((s) => s.pushEffect);
+  const rateMessageInStore = useAgentStore((s) => s.rateMessage);
   const dismissSuggestion = useAgentStore((s) => s.dismissSuggestion);
 
   // Memory store for personalization
   const getMemorySummary = useAdvisorMemoryStore((s) => s.getMemorySummary);
   const incrementInteractions = useAdvisorMemoryStore((s) => s.incrementInteractions);
   const recordSuggestionOutcome = useAdvisorMemoryStore((s) => s.recordSuggestionOutcome);
+  const recordResponseRating = useAdvisorMemoryStore((s) => s.recordResponseRating);
 
   // Ensure single client instance
   const getClient = useCallback(() => {
@@ -90,98 +103,60 @@ export function useAdvisor() {
   const handleToolCalls = useCallback((calls: AdvisorToolCall[]) => {
     for (const call of calls) {
       switch (call.name) {
-        case 'compose_workspace': {
-          const { action, layout, panels: panelsJson, reasoning } = call.args as {
-            action: string;
-            layout?: string;
-            panels?: string | Array<{
-              type: string;
-              role?: string;
-              props?: Record<string, unknown>;
-              density?: string;
-              dataSlice?: { entityId?: string; filter?: string; view?: string; highlight?: string[]; sort?: string };
-            }>;
-            reasoning?: string;
-          };
+        case TOOL_NAMES.COMPOSE_WORKSPACE: {
+          const parsed = validateToolArgs(composeWorkspaceArgsSchema, call.args, 'compose_workspace');
+          if (!parsed) break; // skip malformed tool call
 
-          let panels: Array<{
-            type: string;
-            role?: string;
-            props?: Record<string, unknown>;
-            density?: string;
-            dataSlice?: { entityId?: string; filter?: string; view?: string; highlight?: string[]; sort?: string };
-          }> = [];
-          if (panelsJson) {
-            try {
-              panels = typeof panelsJson === 'string' ? JSON.parse(panelsJson) : panelsJson;
-            } catch {
-              panels = [];
-            }
-          }
+          const { reasoning, ...workspacePayload } = parsed;
 
-          const store = useWorkspaceStore.getState();
-          setPreviousWorkspaceState({
-            panels: store.panels.map((p) => ({ type: p.type, role: p.role, props: p.props })),
-            layout: store.layout,
-          });
-          const directives = panels.map((p) => ({
-            type: p.type as Parameters<typeof store.showPanels>[0][0]['type'],
-            role: p.role as 'primary' | 'secondary' | 'tertiary' | 'sidebar' | undefined,
-            props: p.props,
-            density: p.density as 'micro' | 'compact' | 'full' | undefined,
-            dataSlice: p.dataSlice,
-          }));
+          const trigger: EffectTriggerSource = { kind: 'tool_call', toolName: call.name, args: call.args };
+          const { panels, layout, action, before, after } = dispatchWorkspaceAction(workspacePayload);
 
-          switch (action) {
-            case 'replace':
-              store.replaceAllPanels(directives, layout as Parameters<typeof store.replaceAllPanels>[1]);
-              break;
-            case 'show':
-              store.showPanels(directives);
-              break;
-            case 'hide':
-              store.hidePanels(panels.map((p) => p.type) as Parameters<typeof store.hidePanels>[0]);
-              break;
-            case 'clear':
-              store.clearPanels();
-              break;
-          }
+          pushEffect(trigger, action, reasoning, before, after);
 
           if (reasoning) {
             addMessage({
               id: nextId('msg'),
               role: 'system',
-              content: `${reasoning}\nWorkspace updated: ${panels.map((p) => p.type).join(' + ')} (${layout ?? store.layout})`,
+              content: `${reasoning}\nWorkspace updated: ${panels.map((p) => p.type).join(' + ')} (${layout ?? before.layout})`,
               timestamp: Date.now(),
             });
           }
           break;
         }
 
-        case 'suggest_action': {
-          const { content, compose_on_accept } = call.args as {
-            content: string;
-            compose_on_accept?: string;
-          };
+        case TOOL_NAMES.SUGGEST_ACTION: {
+          const parsed = validateToolArgs(suggestActionArgsSchema, call.args, 'suggest_action');
+          if (!parsed) break; // skip malformed tool call
 
-          let composePayload: Record<string, unknown> | undefined;
+          const { content, compose_on_accept } = parsed;
+
+          let composePayload: ComposeWorkspaceArgs | undefined;
           if (compose_on_accept) {
             try {
-              composePayload = typeof compose_on_accept === 'string'
+              const raw = typeof compose_on_accept === 'string'
                 ? JSON.parse(compose_on_accept)
                 : compose_on_accept;
+              composePayload = validateToolArgs(composeWorkspaceArgsSchema, raw, 'compose_on_accept') ?? undefined;
             } catch {
-              // ignore
+              // ignore malformed JSON in compose_on_accept
             }
+          }
+
+          // Build preview from validated payload — no unsafe casts needed
+          let previewContent = content;
+          if (composePayload) {
+            const panelNames = Array.isArray(composePayload.panels)
+              ? composePayload.panels.map((p) => p.type).join(' | ')
+              : '';
+            previewContent = `${content}\nPreview: [${composePayload.layout ?? 'auto'}] ${panelNames}`;
           }
 
           const suggestion: AgentSuggestion = {
             id: nextId('sug'),
-            content: composePayload
-              ? `${content}\nPreview: [${String((composePayload as { layout?: string }).layout ?? 'auto')}] ${((composePayload as { panels?: Array<{ type: string }> }).panels ?? []).map((p) => p.type).join(' | ')}`
-              : content,
+            content: previewContent,
             action: composePayload
-              ? { type: 'compose_workspace', payload: composePayload }
+              ? { type: TOOL_NAMES.COMPOSE_WORKSPACE, payload: composePayload }
               : undefined,
             timestamp: Date.now(),
             dismissed: false,
@@ -191,18 +166,12 @@ export function useAdvisor() {
           break;
         }
 
-        case '_session_spawned': {
-          // Server spawned a CLI session — expand command bar and notify
-          const { prompt } = call.args as {
-            executionId?: string;
-            sessionId?: string;
-            domain?: string;
-            streamUrl?: string;
-            prompt?: string;
-          };
+        case TOOL_NAMES.SESSION_SPAWNED: {
+          const parsed = validateToolArgs(sessionSpawnedArgsSchema, call.args, '_session_spawned');
+          if (!parsed) break; // skip malformed tool call
 
-          const label = prompt
-            ? `Agent: ${prompt.slice(0, 40)}${prompt.length > 40 ? '...' : ''}`
+          const label = parsed.prompt
+            ? `Agent: ${parsed.prompt.slice(0, 40)}${parsed.prompt.length > 40 ? '...' : ''}`
             : 'Agent Task';
 
           // Expand command bar to show activity
@@ -219,7 +188,7 @@ export function useAdvisor() {
         }
       }
     }
-  }, [addMessage, addSuggestion, setPreviousWorkspaceState]);
+  }, [addMessage, addSuggestion, pushEffect]);
 
   // ─── Connect ────────────────────────────────────
 
@@ -227,28 +196,32 @@ export function useAdvisor() {
     const client = getClient();
     if (client.isConnected) return;
 
-    // Wire handlers (idempotent — re-wiring is fine since we create one client)
-    client.onStateChange((state) => setConnectionState(state));
-    client.onProcessingChange((processing, status) => setProcessing(processing, status));
+    // Remove any previously registered handlers before re-wiring
+    unsubscribersRef.current.forEach(unsub => unsub());
+    unsubscribersRef.current = [];
+
+    const unsubs = unsubscribersRef.current;
+    unsubs.push(client.onStateChange((state) => setConnectionState(state)));
+    unsubs.push(client.onProcessingChange((processing, status) => setProcessing(processing, status)));
     // Streaming text — update an in-progress message in real-time
-    client.onStreamingText((_chunk, accumulated) => {
+    unsubs.push(client.onStreamingText((_chunk, accumulated) => {
       updateStreamingMessage(accumulated);
-    });
+    }));
     // Final complete message — finalize the streaming message
-    client.onMessage((text) => {
+    unsubs.push(client.onMessage((text) => {
       finalizeStreamingMessage(text);
-    });
-    client.onError((errorMessage) => {
-      setLastError(errorMessage);
+    }));
+    unsubs.push(client.onError((advisorError) => {
+      setLastError(advisorError);
       addMessage({
         id: nextId('err'),
         role: 'agent',
-        content: errorMessage,
+        content: advisorErrorLabel(advisorError),
         timestamp: Date.now(),
         isError: true,
       });
-    });
-    client.onRateLimit((readyAt) => {
+    }));
+    unsubs.push(client.onRateLimit((readyAt) => {
       setRateLimitedUntil(readyAt);
       if (readyAt) {
         setThrottled(true);
@@ -262,8 +235,8 @@ export function useAdvisor() {
       } else {
         setThrottled(false);
       }
-    });
-    client.onRetry((attempt, maxRetries) => {
+    }));
+    unsubs.push(client.onRetry((attempt, maxRetries) => {
       addMessage({
         id: nextId('retry'),
         role: 'system',
@@ -271,8 +244,8 @@ export function useAdvisor() {
         timestamp: Date.now(),
         retryInfo: `${attempt}/${maxRetries}`,
       });
-    });
-    client.onToolCall(handleToolCalls);
+    }));
+    unsubs.push(client.onToolCall(handleToolCalls));
 
     const ok = await client.connect();
     if (ok) {
@@ -359,41 +332,12 @@ export function useAdvisor() {
     // Record acceptance in memory
     recordSuggestionOutcome(suggestion.content, true);
 
-    const { payload } = suggestion.action;
-    const store = useWorkspaceStore.getState();
-    const action = (payload as { action?: string }).action ?? 'replace';
-    const panels = (payload as { panels?: Array<{
-      type: string;
-      role?: string;
-      density?: string;
-      dataSlice?: { entityId?: string; filter?: string; view?: string; highlight?: string[]; sort?: string };
-    }> }).panels ?? [];
-    const layout = (payload as { layout?: string }).layout;
-
-    const directives = panels.map((p) => ({
-      type: p.type as Parameters<typeof store.showPanels>[0][0]['type'],
-      role: p.role as 'primary' | 'secondary' | 'tertiary' | 'sidebar' | undefined,
-      density: p.density as 'micro' | 'compact' | 'full' | undefined,
-      dataSlice: p.dataSlice,
-    }));
-
-    switch (action) {
-      case 'replace':
-        store.replaceAllPanels(directives, layout as Parameters<typeof store.replaceAllPanels>[1]);
-        break;
-      case 'show':
-        store.showPanels(directives);
-        break;
-      case 'hide':
-        store.hidePanels(panels.map((p) => p.type) as Parameters<typeof store.hidePanels>[0]);
-        break;
-      case 'clear':
-        store.clearPanels();
-        break;
-    }
+    const trigger: EffectTriggerSource = { kind: 'suggestion_accept', suggestionId: id, content: suggestion.content };
+    const { action, before, after } = dispatchWorkspaceAction(suggestion.action.payload as Record<string, unknown>);
+    pushEffect(trigger, action, undefined, before, after);
 
     dismissSuggestion(id);
-  }, [suggestions, dismissSuggestion, recordSuggestionOutcome]);
+  }, [suggestions, dismissSuggestion, recordSuggestionOutcome, pushEffect]);
 
   const dismissSuggestionWithTracking = useCallback((id: string) => {
     const suggestion = suggestions.find((s) => s.id === id);
@@ -401,10 +345,57 @@ export function useAdvisor() {
     dismissSuggestion(id);
   }, [suggestions, dismissSuggestion, recordSuggestionOutcome]);
 
+  // ─── Rate Message ──────────────────────────────
+
+  const rateMessage = useCallback((id: string, rating: MessageRating) => {
+    const msg = messages.find((m) => m.id === id);
+    if (!msg || msg.role !== 'agent') return;
+
+    rateMessageInStore(id, rating);
+    recordResponseRating(msg.content, rating === 'positive');
+  }, [messages, rateMessageInStore, recordResponseRating]);
+
+  // ─── Regenerate (after negative rating) ────────
+
+  const regenerateResponse = useCallback((messageId: string) => {
+    const client = clientRef.current;
+    if (!client?.isConnected) return;
+
+    // Find the user message that preceded the rated agent message
+    const msgIndex = messages.findIndex((m) => m.id === messageId);
+    if (msgIndex < 0) return;
+
+    // Walk backward to find the closest preceding user message
+    let userText: string | null = null;
+    for (let i = msgIndex - 1; i >= 0; i--) {
+      if (messages[i].role === 'user') {
+        userText = messages[i].content;
+        break;
+      }
+    }
+
+    if (!userText) return;
+
+    setLastError(null);
+
+    addMessage({
+      id: nextId('msg'),
+      role: 'user',
+      content: userText,
+      timestamp: Date.now(),
+    });
+
+    incrementInteractions();
+    const adjustedPrompt = `[The user was not satisfied with your previous response. Provide a different, improved answer.]\n\n${userText}`;
+    client.sendContext(getWorkspaceSnapshot(), undefined, adjustedPrompt, getMemorySummary());
+  }, [messages, addMessage, setLastError, incrementInteractions, getMemorySummary]);
+
   // ─── Cleanup on unmount ─────────────────────────
 
   useEffect(() => {
     return () => {
+      unsubscribersRef.current.forEach(unsub => unsub());
+      unsubscribersRef.current = [];
       clientRef.current?.disconnect();
     };
   }, []);
@@ -430,5 +421,7 @@ export function useAdvisor() {
     sendToolEvents,
     acceptSuggestion,
     dismissSuggestion: dismissSuggestionWithTracking,
+    rateMessage,
+    regenerateResponse,
   };
 }

@@ -7,12 +7,24 @@ import PanelFrame from '../shared/PanelFrame';
 import { PanelEmptyState, PanelErrorState, PanelSkeletonList } from '../shared/PanelPrimitives';
 import type { BasePrimitiveProps } from './types';
 import { MOTION } from '@/workspace/theme/tokens';
+import ContextMenuComponent, { useContextMenu } from './ContextMenu';
+import type { ContextMenuItem } from './ContextMenu';
+
+/** Context object passed to contextMenuItems for the displayed image */
+export interface MediaViewerEntity {
+  imageUrl: string;
+  imageAlt?: string;
+}
 
 interface MediaViewerProps extends BasePrimitiveProps {
   imageUrl?: string;
   imageAlt?: string;
   onGenerateAction?: () => void;
   generateLabel?: string;
+  /** Returns context menu items for the displayed image */
+  contextMenuItems?: (entity: MediaViewerEntity) => ContextMenuItem[];
+  /** Called when a context menu action is selected */
+  onContextMenuAction?: (actionId: string, entity: MediaViewerEntity) => void;
 }
 
 export default function MediaViewer({
@@ -33,7 +45,10 @@ export default function MediaViewer({
   emptyTitle,
   emptyDescription,
   density,
+  contextMenuItems,
+  onContextMenuAction,
 }: MediaViewerProps) {
+  const ctxMenu = useContextMenu<MediaViewerEntity>();
   const [loaded, setLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
@@ -110,6 +125,7 @@ export default function MediaViewer({
                   setLoaded(false);
                   setHasError(true);
                 }}
+                onContextMenu={contextMenuItems && imageUrl ? (e) => ctxMenu.open(e, { imageUrl, imageAlt }) : undefined}
                 className={cn(
                   'max-w-full max-h-full object-contain rounded-lg ring-1 ring-white/5 shadow-lg shadow-black/20',
                   `transition-opacity ${MOTION.fadeInDuration}`,
@@ -139,6 +155,15 @@ export default function MediaViewer({
           />
         )}
       </div>
+
+      {ctxMenu.position && ctxMenu.entity && contextMenuItems && (
+        <ContextMenuComponent
+          position={ctxMenu.position}
+          items={contextMenuItems(ctxMenu.entity)}
+          onAction={(actionId) => onContextMenuAction?.(actionId, ctxMenu.entity!)}
+          onClose={ctxMenu.close}
+        />
+      )}
     </PanelFrame>
   );
 }

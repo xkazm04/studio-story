@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { parseScreenplayToScriptLines, detectUnassignedVoices } from '../lib/screenplayParser';
+import { extractData } from '@/app/utils/api';
 import type { ScriptLine } from '../types';
 import type { JSONContent } from '../lib/screenplayParser';
 
@@ -68,6 +69,7 @@ export function useScreenplayParser(
 
     fetch(`/api/scenes/${sceneId}`)
       .then((res) => res.json())
+      .then((raw) => extractData<Record<string, unknown>>(raw))
       .then((data) => {
         if (cancelled) return;
         // Scene content is stored as TipTap JSON in the script field

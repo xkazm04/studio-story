@@ -2,17 +2,16 @@
 
 import React from 'react';
 import { Mic } from 'lucide-react';
-import { useProjectStore } from '@/app/store/slices/projectSlice';
+import type { BaseAdapterProps } from '../types';
 import LazyContainer from '../LazyContainer';
+import { useResolvedProjectId } from './useResolvedProjectId';
 
 const VoiceList = React.lazy(() => import('@/app/features/voice/components/VoiceList'));
 
-interface VoiceManagerAdapterProps {
-  onClose?: () => void;
-}
+type VoiceManagerAdapterProps = BaseAdapterProps;
 
-export default function VoiceManagerAdapter({ onClose }: VoiceManagerAdapterProps) {
-  const { selectedProject } = useProjectStore();
+export default function VoiceManagerAdapter({ onClose, density }: VoiceManagerAdapterProps) {
+  const { projectId, hasProject } = useResolvedProjectId();
 
   return (
     <LazyContainer
@@ -20,9 +19,10 @@ export default function VoiceManagerAdapter({ onClose }: VoiceManagerAdapterProp
       icon={Mic}
       headerAccent="emerald"
       onClose={onClose}
+      density={density}
       component={VoiceList}
-      componentProps={selectedProject?.id ? { projectId: selectedProject.id } : {}}
-      isEmpty={!selectedProject?.id}
+      componentProps={hasProject ? { projectId } : {}}
+      isEmpty={!hasProject}
       emptyIcon={Mic}
       emptyTitle="No project selected"
       emptyDescription="Select a project to manage voice profiles and casting assets."

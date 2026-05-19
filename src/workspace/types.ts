@@ -14,6 +14,7 @@ export type SkillDomain =
   | 'image'
   | 'simulator'
   | 'sound'
+  | 'voice'
   | 'utility';
 
 // ============ Panel Types ============
@@ -39,39 +40,9 @@ export type WorkspaceLayout =
   | 'triptych'
   | 'studio';
 
-export type WorkspacePanelType =
-  | 'scene-editor'
-  | 'character-cards'
-  | 'story-map'
-  | 'scene-metadata'
-  | 'dialogue-view'
-  | 'image-canvas'
-  | 'character-detail'
-  | 'beats-manager'
-  | 'story-evaluator'
-  | 'story-graph'
-  | 'script-editor'
-  | 'theme-manager'
-  | 'art-style'
-  | 'voice-manager'
-  | 'voice-casting'
-  | 'image-generator'
-  | 'scene-list'
-  | 'writing-desk'
-  | 'character-creator'
-  | 'script-dialog'
-  | 'narration'
-  | 'voice-performance'
-  | 'empty-welcome'
-  | 'beats-sidebar'
-  | 'cast-sidebar'
-  | 'relationship-map'
-  | 'scene-gallery'
-  | 'audio-toolbar'
-  | 'advisor'
-  | 'storyboard'
-  | 'narrative-suggestions'
-  | 'reader-view';
+/** Derived from PANEL_REGISTRY keys — add new panels to panelRegistry.ts, not here */
+import type { WorkspacePanelType } from './engine/panelRegistry';
+export type { WorkspacePanelType };
 
 // ============ Terminal Tab (legacy, kept for type compat) ============
 
@@ -157,6 +128,18 @@ export interface SpatialOption {
   }>;
 }
 
+// ============ Workspace Snapshot ============
+
+/** A user-saved workspace configuration with named panels, layout, density, and data slices */
+export interface WorkspaceSnapshot {
+  id: string;
+  name: string;
+  panels: WorkspacePanelInstance[];
+  layout: WorkspaceLayout;
+  createdAt: number;
+  updatedAt: number;
+}
+
 // ============ Domain Colors ============
 
 export const DOMAIN_COLORS: Record<SkillDomain | 'general', string> = {
@@ -167,6 +150,7 @@ export const DOMAIN_COLORS: Record<SkillDomain | 'general', string> = {
   faction: 'rose',
   simulator: 'blue',
   sound: 'violet',
+  voice: 'orange',
   utility: 'slate',
   general: 'slate',
 };

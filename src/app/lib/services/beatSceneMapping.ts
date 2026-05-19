@@ -6,6 +6,7 @@
 
 import { Beat, BeatSceneSuggestion } from '@/app/types/Beat';
 import { Scene } from '@/app/types/Scene';
+import { extractData } from '@/app/utils/api';
 
 export interface BeatSceneMappingRequest {
   beat: Beat;
@@ -132,7 +133,7 @@ async function callAIService(
     throw new Error(`API request failed: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const data = extractData<{ suggestions: BeatSceneSuggestion[]; model: string }>(await response.json());
   return data;
 }
 

@@ -5,12 +5,8 @@
  */
 
 import { NextRequest } from 'next/server';
-import {
-  getExecution,
-  startExecution,
-  subscribeExecutionEvents,
-  type CLIExecutionEvent,
-} from '@/lib/claude-terminal/cli-service';
+import { startExecution, type CLIExecutionEvent } from '@/lib/claude-terminal/cli-service';
+import { getExecutionStore } from '@/lib/claude-terminal/execution-store';
 import { type CLIEvent, encodeEvent } from '@/cli/protocol';
 
 /**
@@ -66,20 +62,17 @@ export async function GET(request: NextRequest) {
       });
 
       // Convert CLI execution events to typed protocol events
-      const d = (e: CLIExecutionEvent) => e.data as Record<string, never>;
-
       const convertEvent = (cliEvent: CLIExecutionEvent): CLIEvent | null => {
-        const data = d(cliEvent);
         switch (cliEvent.type) {
           case 'init':
             return {
               type: 'connected',
               data: {
                 executionId: activeExecutionId,
-                sessionId: data.sessionId,
-                model: data.model,
-                tools: data.tools,
-                version: data.version,
+                sessionId: cliEvent.data.sessionId,
+                model: cliEvent.data.model,
+                tools: cliEvent.data.tools,
+                version: cliEvent.data.version,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -89,8 +82,8 @@ export async function GET(request: NextRequest) {
               type: 'message',
               data: {
                 type: 'assistant',
-                content: data.content,
-                model: data.model,
+                content: cliEvent.data.content,
+                model: cliEvent.data.model,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -99,9 +92,9 @@ export async function GET(request: NextRequest) {
             return {
               type: 'tool_use',
               data: {
-                toolUseId: data.id,
-                toolName: data.name,
-                toolInput: data.input,
+                toolUseId: cliEvent.data.id,
+                toolName: cliEvent.data.name,
+                toolInput: cliEvent.data.input,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -110,8 +103,8 @@ export async function GET(request: NextRequest) {
             return {
               type: 'tool_result',
               data: {
-                toolUseId: data.toolUseId,
-                content: data.content,
+                toolUseId: cliEvent.data.toolUseId,
+                content: cliEvent.data.content,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -120,11 +113,13 @@ export async function GET(request: NextRequest) {
             return {
               type: 'result',
               data: {
-                sessionId: data.sessionId,
-                usage: data.usage,
-                durationMs: data.durationMs,
-                totalCostUsd: data.costUsd,
-                isError: data.isError,
+                sessionId: cliEvent.data.sessionId,
+                usage: cliEvent.data.usage
+                  ? { inputTokens: cliEvent.data.usage.input_tokens, outputTokens: cliEvent.data.usage.output_tokens }
+                  : undefined,
+                durationMs: cliEvent.data.durationMs,
+                totalCostUsd: cliEvent.data.costUsd,
+                isError: cliEvent.data.isError,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -133,8 +128,8 @@ export async function GET(request: NextRequest) {
             return {
               type: 'error',
               data: {
-                error: data.error || data.message || 'Unknown error',
-                exitCode: data.exitCode,
+                error: cliEvent.data.error || cliEvent.data.message || 'Unknown error',
+                exitCode: cliEvent.data.exitCode,
               },
               timestamp: cliEvent.timestamp,
             };
@@ -144,7 +139,8 @@ export async function GET(request: NextRequest) {
         }
       };
 
-      const execution = getExecution(activeExecutionId!);
+      const store = getExecutionStore();
+      const execution = store.get(activeExecutionId!);
       if (!execution) {
         sendEvent({ type: 'error', data: { error: 'Execution not found' }, timestamp: Date.now() });
         controller.close();
@@ -164,7 +160,7 @@ export async function GET(request: NextRequest) {
       }
       lastEventIndex = execution.events.length;
 
-      const unsubscribe = subscribeExecutionEvents(activeExecutionId!, (event) => {
+      const unsubscribe = store.subscribe(activeExecutionId!, (event) => {
         if (isStreamClosed) return;
         const converted = convertEvent(event);
         if (!converted) return;

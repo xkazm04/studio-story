@@ -247,7 +247,10 @@ export const fmStagger = (index: number) => ({ delay: Math.min(index, 10) * 0.05
 // Beat type badge colors (used by BeatsSidebarAdapter and friends)
 // ---------------------------------------------------------------------------
 
-export const BEAT_TYPE_COLORS: Record<string, string> = {
+export const BEAT_TYPE_COLORS: Record<string, string> & Record<
+  import('@/app/types/Beat').BeatType,
+  string
+> = {
   setup: 'bg-blue-500/20 text-blue-400',
   conflict: 'bg-red-500/20 text-red-400',
   resolution: 'bg-green-500/20 text-green-400',

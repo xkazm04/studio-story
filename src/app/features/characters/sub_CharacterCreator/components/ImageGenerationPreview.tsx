@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Sparkles, Loader2, X, User, Check, AlertTriangle } from 'lucide-react';
 import { SectionWrapper } from '@/app/components/UI';
+import { extractData } from '@/app/utils/api';
 
 interface ImageGenerationPreviewProps {
   prompt: string;
@@ -41,7 +42,7 @@ export function ImageGenerationPreview({ prompt, characterId }: ImageGenerationP
       polls++;
       try {
         const res = await fetch(`/api/ai/generate-images?generationId=${generationId}`);
-        const data = await res.json();
+        const data = extractData<any>(await res.json());
         if (data.status === 'complete' && data.images?.length > 0) {
           setSlots((prev) =>
             prev.map((s, i) =>
@@ -92,7 +93,7 @@ export function ImageGenerationPreview({ prompt, characterId }: ImageGenerationP
         body: JSON.stringify({ prompts, width: 768, height: 768 }),
       });
 
-      const data = await res.json();
+      const data = extractData<any>(await res.json());
 
       if (!data.success) {
         setError(data.error || 'Failed to start generation');

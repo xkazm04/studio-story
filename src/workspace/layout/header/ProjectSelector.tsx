@@ -30,13 +30,13 @@ const ProjectSelector: React.FC = () => {
     <HeaderDropdown
       triggerContent={
         <>
-          <BookOpen size={13} className="text-slate-400 flex-shrink-0" />
+          <BookOpen size={13} className="text-cyan-400 flex-shrink-0" />
           <span className="text-sm font-semibold text-slate-200 max-w-[160px] truncate">
             {selectedProject?.name || 'Select Project'}
           </span>
         </>
       }
-      triggerClassName="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-800/60 transition-colors"
+      triggerClassName="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800/40 hover:bg-slate-800/60 transition-colors"
       items={items}
       selectedId={selectedProject?.id}
       selectedItemClassName="bg-blue-500/10 text-blue-300"

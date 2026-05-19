@@ -8,8 +8,9 @@
  * Uses cobalt.tools API for YouTube audio extraction (no ytdl-core dependency).
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,8 +37,7 @@ function isValidYouTubeUrl(url: string): boolean {
 
 // ── Route Handler ────────────────────────────────────────────────────────────
 
-export async function POST(request: Request) {
-  try {
+export const POST = withApiHandler('POST /api/datasets/audio/extract', async (request: NextRequest) => {
     const body: ExtractRequest = await request.json();
     const { url, sampleLength = 1, projectId } = body;
 
@@ -199,11 +199,4 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ samples });
-  } catch (error) {
-    console.error('Audio extraction error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to extract audio' },
-      { status: 500 },
-    );
-  }
-}
+});

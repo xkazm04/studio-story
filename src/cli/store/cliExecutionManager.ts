@@ -8,6 +8,7 @@
 
 import { useCLISessionStore, type CLISessionId } from './cliSessionStore';
 import type { QueuedTask } from '../types';
+import { extractData } from '@/app/utils/api';
 
 // Polling state per session
 interface PollingState {
@@ -54,7 +55,7 @@ export async function startCLIExecution(
       return { success: false, error: err.error || 'Failed to start execution' };
     }
 
-    const { streamUrl, executionId } = await response.json();
+    const { streamUrl, executionId } = extractData<{ streamUrl: string; executionId: string }>(await response.json());
 
     // Store execution info for recovery
     store.setCurrentExecution(sessionId, executionId, task.id);
@@ -152,7 +153,8 @@ function startPollingFallback(
 
       if (!response.ok) return;
 
-      const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = extractData(await response.json());
 
       if (data.execution?.status !== 'running') {
         clearInterval(intervalId);
@@ -240,7 +242,8 @@ export async function recoverCLISessions(): Promise<void> {
             `/api/claude-terminal/query?executionId=${session.currentExecutionId}`
           );
           if (response.ok) {
-            const data = await response.json();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const data: any = extractData(await response.json());
             if (data.execution?.status === 'completed') {
               store.updateTaskStatus(session.id, runningTask.id, 'completed');
               setTimeout(() => store.removeTask(session.id, runningTask.id), 1000);

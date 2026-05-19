@@ -7,9 +7,10 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Check, Search, X } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TYPOGRAPHY, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
+import { SearchInput } from '@/app/components/UI/SearchInput';
 import { PromptColumn, PromptOption, PromptDimension } from '../types';
 
 interface OptionSelectorProps {
@@ -143,29 +144,12 @@ export function OptionSelector({
           >
             <div className="p-3 space-y-3">
               {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={`Search ${column.label.toLowerCase()}...`}
-                  className={cn(
-                    'w-full pl-8 pr-8 py-1.5 text-sm rounded-md',
-                    'bg-slate-800 border border-slate-700',
-                    'text-slate-200 placeholder:text-slate-500',
-                    'focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500'
-                  )}
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder={`Search ${column.label.toLowerCase()}...`}
+                className="bg-slate-800 placeholder:text-slate-500 focus:ring-cyan-500 focus:border-cyan-500"
+              />
 
               {/* Options Grid */}
               <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1">

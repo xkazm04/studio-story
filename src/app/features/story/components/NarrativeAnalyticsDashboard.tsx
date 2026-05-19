@@ -27,9 +27,10 @@ import {
   Minus,
   Info,
   Lightbulb,
-  Loader2,
+  Link2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getScoreColor, SCORE_4TIER_TEXT, SCORE_4TIER_HEALTH } from '@/lib/scoreColors';
 import { Button } from '@/app/components/UI/Button';
 
 import {
@@ -38,14 +39,18 @@ import {
   characterArcAnalyzer,
   thematicAnalyzer,
   engagementSimulator,
+  characterThemeCarrierAnalyzer,
+  type AnalysisIssue,
   type StructureAnalysisResult,
   type PacingAnalysisResult,
   type CharacterAnalysisResult,
   type ThematicAnalysisResult,
   type ReaderExperienceReport,
+  type CarrierMapResult,
   type StructureTemplate,
   type Genre,
 } from '@/lib/analytics';
+import { sortScenes } from '@/lib/analytics/utils';
 
 import type { Act } from '@/app/types/Act';
 import type { Beat } from '@/app/types/Beat';
@@ -73,6 +78,7 @@ interface AnalysisResults {
   characters: CharacterAnalysisResult;
   themes: ThematicAnalysisResult;
   engagement: ReaderExperienceReport;
+  carriers: CarrierMapResult;
 }
 
 // ============================================================================
@@ -86,14 +92,7 @@ interface HealthScoreProps {
 }
 
 const HealthScore: React.FC<HealthScoreProps> = ({ score, label, size = 'md' }) => {
-  const getColor = (s: number) => {
-    if (s >= 80) return { bg: 'bg-emerald-500', text: 'text-emerald-400', ring: 'ring-emerald-500/30' };
-    if (s >= 60) return { bg: 'bg-cyan-500', text: 'text-cyan-400', ring: 'ring-cyan-500/30' };
-    if (s >= 40) return { bg: 'bg-amber-500', text: 'text-amber-400', ring: 'ring-amber-500/30' };
-    return { bg: 'bg-red-500', text: 'text-red-400', ring: 'ring-red-500/30' };
-  };
-
-  const colors = getColor(score);
+  const colors = getScoreColor(score, SCORE_4TIER_HEALTH);
   const sizeClasses = {
     sm: 'w-12 h-12 text-sm',
     md: 'w-16 h-16 text-lg',
@@ -161,12 +160,6 @@ const Section: React.FC<SectionProps> = ({
   children,
   badge,
 }) => {
-  const getScoreColor = (s: number) => {
-    if (s >= 80) return 'text-emerald-400';
-    if (s >= 60) return 'text-cyan-400';
-    if (s >= 40) return 'text-amber-400';
-    return 'text-red-400';
-  };
 
   return (
     <div className="border border-slate-800 rounded-lg overflow-hidden bg-slate-900/50">
@@ -182,7 +175,7 @@ const Section: React.FC<SectionProps> = ({
           {badge}
         </div>
         <div className="flex items-center gap-3">
-          <span className={cn('text-sm font-mono font-bold', getScoreColor(score))}>
+          <span className={cn('text-sm font-mono font-bold', getScoreColor(score, SCORE_4TIER_TEXT))}>
             {score}
           </span>
           <motion.div
@@ -217,14 +210,8 @@ const Section: React.FC<SectionProps> = ({
 // Issue List Component
 // ============================================================================
 
-interface Issue {
-  message: string;
-  severity: 'critical' | 'warning' | 'info';
-  suggestion?: string;
-}
-
 interface IssueListProps {
-  issues: Issue[];
+  issues: AnalysisIssue[];
   maxVisible?: number;
 }
 
@@ -232,7 +219,7 @@ const IssueList: React.FC<IssueListProps> = ({ issues, maxVisible = 5 }) => {
   const [showAll, setShowAll] = useState(false);
   const displayedIssues = showAll ? issues : issues.slice(0, maxVisible);
 
-  const getSeverityIcon = (severity: Issue['severity']) => {
+  const getSeverityIcon = (severity: AnalysisIssue['severity']) => {
     switch (severity) {
       case 'critical':
         return <AlertTriangle className="w-3.5 h-3.5 text-red-400" />;
@@ -358,25 +345,24 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
   onNavigateToCharacter,
 }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']));
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Run all analyses
   const results = useMemo<AnalysisResults | null>(() => {
     if (scenes.length === 0 && beats.length === 0) return null;
 
-    setIsAnalyzing(true);
+    const sortedScenes = sortScenes(scenes, beats);
+    const preSorted = { preSorted: true } as const;
 
-    try {
-      const structure = structureAnalyzer.analyzeStructure(acts, beats, scenes, structureTemplate);
-      const pacing = pacingAnalyzer.analyzePacing(beats, scenes, genre);
-      const charAnalysis = characterArcAnalyzer.analyzeCharacters(characters, scenes, beats);
-      const themes = thematicAnalyzer.analyzeThemes(scenes, beats);
-      const engagement = engagementSimulator.simulateEngagement(scenes, beats);
+    const structure = structureAnalyzer.analyzeStructure(acts, beats, sortedScenes, structureTemplate);
+    const pacing = pacingAnalyzer.analyzePacing(beats, sortedScenes, genre);
+    const charAnalysis = characterArcAnalyzer.analyzeCharacters(characters, sortedScenes, beats, preSorted);
+    const themes = thematicAnalyzer.analyzeThemes(sortedScenes, beats, preSorted);
+    const engagement = engagementSimulator.simulateEngagement(sortedScenes, beats, {}, preSorted);
+    const carriers = characterThemeCarrierAnalyzer.analyzeCarriers(
+      characters, sortedScenes, beats, charAnalysis, themes, preSorted
+    );
 
-      return { structure, pacing, characters: charAnalysis, themes, engagement };
-    } finally {
-      setIsAnalyzing(false);
-    }
+    return { structure, pacing, characters: charAnalysis, themes, engagement, carriers };
   }, [acts, beats, scenes, characters, structureTemplate, genre]);
 
   // Calculate overall story health
@@ -402,6 +388,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
       ...results.characters.recommendations,
       ...results.themes.recommendations,
       ...results.engagement.recommendations,
+      ...results.carriers.insights,
     ].slice(0, 8);
   }, [results]);
 
@@ -416,17 +403,6 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
       return next;
     });
   };
-
-  if (isAnalyzing) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-          <span className="text-sm text-slate-400">Analyzing story...</span>
-        </div>
-      </div>
-    );
-  }
 
   if (!results) {
     return (
@@ -540,13 +516,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
               <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Issues
               </h4>
-              <IssueList
-                issues={results.structure.issues.map(i => ({
-                  message: i.message,
-                  severity: i.severity,
-                  suggestion: i.suggestion,
-                }))}
-              />
+              <IssueList issues={results.structure.issues} />
             </div>
           </div>
         </Section>
@@ -602,13 +572,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
               <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Issues
               </h4>
-              <IssueList
-                issues={results.pacing.issues.map(i => ({
-                  message: i.message,
-                  severity: i.severity,
-                  suggestion: i.suggestion,
-                }))}
-              />
+              <IssueList issues={results.pacing.issues} />
             </div>
           </div>
         </Section>
@@ -685,13 +649,119 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
               <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Consistency Issues
               </h4>
-              <IssueList
-                issues={results.characters.consistencyIssues.map(i => ({
-                  message: i.message,
-                  severity: i.severity,
-                  suggestion: i.suggestion,
-                }))}
-              />
+              <IssueList issues={results.characters.consistencyIssues} />
+            </div>
+          </div>
+        </Section>
+
+        {/* Character-Theme Carriers */}
+        <Section
+          title="Character-Theme Carriers"
+          icon={Link2}
+          score={results.carriers.carrierScore}
+          isExpanded={expandedSections.has('carriers')}
+          onToggle={() => toggleSection('carriers')}
+          badge={
+            results.carriers.orphanedThemes.length > 0 ? (
+              <span className="text-sm px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
+                {results.carriers.orphanedThemes.length} orphaned
+              </span>
+            ) : null
+          }
+        >
+          <div className="space-y-4">
+            {/* Carrier matrix — top theme-character pairings */}
+            {results.carriers.carriers.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
+                  Theme Carriers
+                </h4>
+                <div className="space-y-2">
+                  {results.carriers.carriers.slice(0, 6).map(carrier => (
+                    <div
+                      key={carrier.themeId}
+                      className={cn(
+                        'flex items-center gap-2 p-2 rounded-md',
+                        carrier.isOrphaned
+                          ? 'bg-amber-500/10 border border-amber-500/20'
+                          : 'bg-slate-800/50'
+                      )}
+                    >
+                      <span className="text-sm text-purple-400 w-28 truncate font-medium">
+                        {carrier.themeName}
+                      </span>
+                      <ChevronRight className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                      {carrier.primaryCarrier ? (
+                        <button
+                          onClick={() => onNavigateToCharacter?.(carrier.primaryCarrier!.characterId)}
+                          className="flex items-center gap-1.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
+                        >
+                          <span>{carrier.primaryCarrier.characterName}</span>
+                          <span className="text-sm text-slate-400 font-mono">
+                            {carrier.primaryCarrier.strength}%
+                          </span>
+                        </button>
+                      ) : (
+                        <span className="text-sm text-amber-400 italic">No champion</span>
+                      )}
+                      {carrier.secondaryCarriers.length > 0 && (
+                        <span className="text-sm text-slate-400 ml-auto">
+                          +{carrier.secondaryCarriers.length} more
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Character thematic profiles */}
+            {results.carriers.profiles.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
+                  Character Thematic Weight
+                </h4>
+                <div className="space-y-2">
+                  {results.carriers.profiles
+                    .filter(p => p.thematicWeight > 0)
+                    .sort((a, b) => b.thematicWeight - a.thematicWeight)
+                    .slice(0, 5)
+                    .map(profile => (
+                      <div key={profile.characterId} className="flex items-center gap-2">
+                        <button
+                          onClick={() => onNavigateToCharacter?.(profile.characterId)}
+                          className="text-sm text-slate-300 w-24 truncate text-left hover:text-cyan-400 transition-colors"
+                        >
+                          {profile.characterName}
+                        </button>
+                        <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${profile.thematicWeight}%` }}
+                            transition={{ duration: 0.5 }}
+                            className="h-full rounded-full bg-purple-500"
+                          />
+                        </div>
+                        <span className="text-sm text-slate-400 w-12 text-right">
+                          {profile.thematicWeight}
+                        </span>
+                        {profile.dominantTheme && (
+                          <span className="text-sm text-purple-400/70 w-20 truncate" title={profile.dominantTheme.themeName}>
+                            {profile.dominantTheme.themeName}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Carrier issues */}
+            <div>
+              <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
+                Issues
+              </h4>
+              <IssueList issues={results.carriers.issues} />
             </div>
           </div>
         </Section>
@@ -766,13 +836,7 @@ const NarrativeAnalyticsDashboard: React.FC<NarrativeAnalyticsDashboardProps> = 
               <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-2">
                 Thematic Issues
               </h4>
-              <IssueList
-                issues={results.themes.issues.map(i => ({
-                  message: i.message,
-                  severity: i.severity,
-                  suggestion: i.suggestion,
-                }))}
-              />
+              <IssueList issues={results.themes.issues} />
             </div>
           </div>
         </Section>

@@ -19,6 +19,10 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { expandVariants } from './motion';
+import type { SceneMetadata } from '@/app/types/Scene';
+
+export type { SceneMetadata };
 
 export interface LocationData {
   name: string;
@@ -26,17 +30,6 @@ export interface LocationData {
   type?: string; // indoor, outdoor, urban, rural, etc.
   features?: string[];
   atmosphere?: string;
-}
-
-export interface SceneMetadata {
-  timeOfDay?: 'dawn' | 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'midnight';
-  weather?: 'clear' | 'cloudy' | 'rainy' | 'stormy' | 'snowy' | 'foggy' | 'windy';
-  season?: 'spring' | 'summer' | 'autumn' | 'winter';
-  mood?: string;
-  temperature?: 'freezing' | 'cold' | 'cool' | 'mild' | 'warm' | 'hot';
-  lighting?: string;
-  soundscape?: string;
-  customNotes?: string;
 }
 
 interface LocationReferenceProps {
@@ -123,10 +116,10 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-1 px-2 py-1 rounded text-sm transition-colors',
+        'flex items-center gap-1 px-2 py-1 rounded text-sm transition-all duration-150 active:scale-[0.98]',
         selected
-          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-          : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300'
+          ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+          : 'bg-slate-800/50 text-slate-400 border border-transparent hover:text-slate-300 hover:bg-slate-800/80'
       )}
     >
       {icon}
@@ -135,11 +128,11 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
   );
 
   return (
-    <div className={cn('bg-slate-900/30 border border-slate-800 rounded-lg overflow-hidden', className)}>
+    <div className={cn('bg-slate-900/30 border border-slate-700/40/60 rounded-lg overflow-hidden', className)}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-3 hover:bg-slate-800/30 transition-colors"
+        className="w-full flex items-center justify-between p-3 hover:bg-slate-800/80 transition-colors duration-150"
       >
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 text-amber-400" />
@@ -155,9 +148,10 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            variants={expandVariants}
+            initial="collapsed"
+            animate="expanded"
+            exit="collapsed"
             className="overflow-hidden"
           >
             <div className="px-3 pb-3 space-y-3">
@@ -184,7 +178,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                       value={editLocationName}
                       onChange={(e) => setEditLocationName(e.target.value)}
                       placeholder="Location name..."
-                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700/40 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                       autoFocus
                     />
                     <textarea
@@ -192,7 +186,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                       onChange={(e) => setEditLocationDesc(e.target.value)}
                       placeholder="Description (optional)..."
                       rows={2}
-                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+                      className="w-full px-2 py-1.5 bg-slate-800 border border-slate-700/40 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
                     />
                     <div className="flex items-center gap-1">
                       <button
@@ -212,7 +206,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                     </div>
                   </div>
                 ) : location?.name ? (
-                  <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-2">
+                  <div className="bg-slate-800/50 border border-slate-700/40 rounded-lg p-2">
                     <div className="text-sm font-medium text-slate-200">{location.name}</div>
                     {location.description && (
                       <div className="text-sm text-slate-400 mt-1">{location.description}</div>
@@ -233,7 +227,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                 ) : (
                   <button
                     onClick={() => setIsEditingLocation(true)}
-                    className="w-full px-3 py-2 border border-dashed border-slate-700 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
+                    className="w-full p-3 border border-dashed border-slate-700/40 rounded text-sm text-slate-400 hover:text-slate-400 hover:border-slate-600 transition-colors"
                   >
                     + Set location
                   </button>
@@ -312,7 +306,7 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                   value={metadata.mood || ''}
                   onChange={(e) => updateMetadata({ mood: e.target.value })}
                   placeholder="e.g., tense, romantic, mysterious..."
-                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700/40 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
                 />
               </div>
 
@@ -326,13 +320,13 @@ export const LocationReference: React.FC<LocationReferenceProps> = ({
                   onChange={(e) => updateMetadata({ customNotes: e.target.value })}
                   placeholder="Additional scene notes..."
                   rows={2}
-                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
+                  className="w-full px-2 py-1.5 bg-slate-800/50 border border-slate-700/40 rounded text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 resize-none"
                 />
               </div>
 
               {/* Quick Summary */}
               {(metadata.timeOfDay || metadata.weather || location?.name) && (
-                <div className="pt-2 border-t border-slate-800">
+                <div className="pt-2 border-t border-slate-700/40">
                   <div className="text-sm text-slate-400">
                     <span className="text-slate-400">Setting: </span>
                     {[

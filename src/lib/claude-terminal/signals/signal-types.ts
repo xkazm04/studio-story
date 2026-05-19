@@ -17,11 +17,12 @@ export type SignalType =
   | 'retry_storm'          // Same tool retried 3+ times with same input
   | 'cache_miss'           // UI didn't refresh after mutation
   | 'performance'          // Execution took >60s for a simple task
-  | 'type_drift';          // Tool input doesn't match expected schema
+  | 'type_drift'           // Tool input doesn't match expected schema
+  | 'intent_signal';       // Successful tool chain capturing authorial pattern
 
 export type Severity = 'low' | 'medium' | 'high';
 
-export type Category = 'schema' | 'prompt' | 'performance' | 'cache' | 'tooling';
+export type Category = 'schema' | 'prompt' | 'performance' | 'cache' | 'tooling' | 'intent';
 
 // ============ Signal ============
 
@@ -36,6 +37,8 @@ export interface Signal {
   errorCode?: string;
   toolInput?: Record<string, unknown>;
   executionId: string;
+  /** Correlates this signal to the ToolObservation and AuditEntry that produced it */
+  observationId?: string;
   timestamp: number;
   resolved: boolean;
 }
@@ -69,6 +72,42 @@ export interface ImprovementRecord {
   filesChanged?: string[];
 }
 
+// ============ Intent Signal ============
+
+/**
+ * An IntentSignal captures a successful tool chain — a sequence of tool calls
+ * that completed without errors, representing an authorial workflow pattern.
+ */
+export interface IntentSignal {
+  id: string;
+  type: 'intent_signal';
+  /** Ordered tool names in the chain (e.g. ['create_character', 'create_trait', 'create_relationship']) */
+  toolChain: string[];
+  /** Fingerprint of the tool chain for deduplication */
+  fingerprint: string;
+  /** Entity types involved (derived from tool names, e.g. 'character', 'scene', 'trait') */
+  entityTypes: string[];
+  executionId: string;
+  timestamp: number;
+}
+
+/**
+ * An IntentPattern aggregates repeated IntentSignals into a frequency-ranked
+ * suggestion. Higher frequency + recency = stronger prediction.
+ */
+export interface IntentPattern {
+  fingerprint: string;
+  toolChain: string[];
+  entityTypes: string[];
+  count: number;
+  firstSeen: number;
+  lastSeen: number;
+  /** Priority score: count × recency factor */
+  score: number;
+  /** Human-readable suggestion derived from the pattern */
+  suggestion: string;
+}
+
 // ============ Constants ============
 
 export const SEVERITY_WEIGHT: Record<Severity, number> = {
@@ -87,6 +126,7 @@ export const SIGNAL_CATEGORY_MAP: Record<SignalType, Category> = {
   cache_miss: 'cache',
   performance: 'performance',
   type_drift: 'schema',
+  intent_signal: 'intent',
 };
 
 export const SIGNAL_SEVERITY_MAP: Record<SignalType, Severity> = {
@@ -99,4 +139,5 @@ export const SIGNAL_SEVERITY_MAP: Record<SignalType, Severity> = {
   cache_miss: 'low',
   performance: 'low',
   type_drift: 'medium',
+  intent_signal: 'low',
 };

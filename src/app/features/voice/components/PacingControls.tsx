@@ -66,7 +66,7 @@ export default function PacingControls({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-cyan-400" />
+            <Gauge className="w-4 h-4 text-voice-primary" />
             <label className="text-sm font-medium text-slate-200">Speech Rate</label>
           </div>
           <span className="text-sm text-slate-400">
@@ -87,7 +87,7 @@ export default function PacingControls({
                 onClick={() => handleChange('speed', preset.value)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border transition-all ${
                   isSelected
-                    ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
+                    ? 'border-voice-primary/50 bg-voice-primary/10 text-voice-primary'
                     : 'border-slate-800 bg-slate-900/40 text-slate-400 hover:border-slate-700'
                 }`}
               >
@@ -116,7 +116,7 @@ export default function PacingControls({
       {/* Pause Controls */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-amber-400" />
+          <Clock className="w-4 h-4 text-voice-accent" />
           <label className="text-sm font-medium text-slate-200">Pause Timing</label>
         </div>
 
@@ -155,7 +155,7 @@ export default function PacingControls({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Waves className="w-4 h-4 text-purple-400" />
+            <Waves className="w-4 h-4 text-voice-muted" />
             <label className="text-sm font-medium text-slate-200">Natural Variation</label>
           </div>
           <span className="text-sm text-slate-400">
@@ -178,7 +178,7 @@ export default function PacingControls({
       {/* Breath Pauses Toggle */}
       <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800">
         <div className="flex items-center gap-2">
-          <Wind className="w-4 h-4 text-emerald-400" />
+          <Wind className="w-4 h-4 text-voice-primary" />
           <div>
             <span className="text-sm text-slate-200">Breath Pauses</span>
             <p className="text-sm text-slate-400">Insert natural breathing sounds</p>
@@ -187,7 +187,7 @@ export default function PacingControls({
         <button
           onClick={() => handleChange('breathPauses', !pacing.breathPauses)}
           className={`relative w-11 h-6 rounded-full transition-colors ${
-            pacing.breathPauses ? 'bg-emerald-500' : 'bg-slate-700'
+            pacing.breathPauses ? 'bg-voice-primary' : 'bg-slate-700'
           }`}
         >
           <motion.div

@@ -17,6 +17,7 @@ import {
   deleteGenerations,
 } from '@/app/lib/ai';
 import type { AIError } from '@/app/lib/ai';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 interface GenerateRequest {
   prompts: Array<{ id: string; text: string }>;
@@ -24,8 +25,7 @@ interface GenerateRequest {
   height?: number;
 }
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/ai/generate-images', async (request: NextRequest) => {
     if (!isLeonardoAvailable()) {
       return NextResponse.json(
         { success: false, error: 'Leonardo API key not configured. Set LEONARDO_API_KEY in .env' },
@@ -73,22 +73,14 @@ export async function POST(request: NextRequest) {
 
     const generations = await Promise.all(generationPromises);
     return NextResponse.json({ success: true, generations });
-  } catch (error) {
-    console.error('Generate images error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Failed to start image generation' },
-      { status: 500 }
-    );
-  }
-}
+});
 
 export async function GET(request: NextRequest) {
   const generationId = new URL(request.url).searchParams.get('generationId');
   return checkGenerationStatus(generationId, 'image');
 }
 
-export async function DELETE(request: NextRequest) {
-  try {
+export const DELETE = withApiHandler('DELETE /api/ai/generate-images', async (request: NextRequest) => {
     const body = await request.json();
     const result = await deleteGenerations(body.generationIds);
     if (result.error === 'generationIds array is required') {
@@ -98,11 +90,4 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(result, { status: 503 });
     }
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('Delete generations error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Failed to delete generations' },
-      { status: 500 }
-    );
-  }
-}
+});

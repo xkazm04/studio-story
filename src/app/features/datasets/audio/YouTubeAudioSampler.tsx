@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Youtube, Loader2, Play, Download, AlertCircle } from 'lucide-react';
+import { extractData } from '@/app/utils/api';
 
 interface YouTubeAudioSamplerProps {
   projectId: string;
@@ -60,7 +61,7 @@ const YouTubeAudioSampler = ({ projectId, onSamplesExtracted }: YouTubeAudioSamp
         throw new Error('Failed to extract audio from YouTube');
       }
 
-      const data = await response.json();
+      const data = extractData<any>(await response.json());
       setExtractedSamples(data.samples || []);
 
       // Convert to File objects (placeholder)

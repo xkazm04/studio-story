@@ -42,6 +42,18 @@ export interface FileChange {
 }
 
 /**
+ * Detected pattern summary for signal notification cards
+ */
+export interface SignalPatternSummary {
+  fingerprint: string;
+  type: string;
+  severity: 'low' | 'medium' | 'high';
+  count: number;
+  toolName?: string;
+  suggestedFix?: string;
+}
+
+/**
  * Log entry for terminal display
  */
 export interface LogEntry {
@@ -52,6 +64,8 @@ export interface LogEntry {
   toolName?: string;
   toolInput?: Record<string, unknown>;
   model?: string;
+  /** When present, renders as a SignalNotificationCard instead of plain text */
+  signalPatterns?: SignalPatternSummary[];
 }
 
 /**
@@ -107,6 +121,10 @@ export interface CompactTerminalProps {
   onPromptSubmit?: (prompt: string) => void;
   /** V2 workspace integration: fires when CLI execution finishes (result or error). */
   onExecutionComplete?: (success: boolean) => void;
+  /** Pre-fill the input with this prompt (e.g., from template selection). */
+  pendingPrompt?: string | null;
+  /** Called after pendingPrompt is consumed (set to input). */
+  onPendingPromptConsumed?: () => void;
 }
 
 /**

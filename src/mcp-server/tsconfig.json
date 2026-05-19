@@ -5,7 +5,7 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
     "outDir": "../../dist/mcp-server",
-    "rootDir": ".",
+    "rootDir": "../..",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -14,6 +14,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "../lib/beats/schemas.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -31,6 +31,7 @@ import type {
   StyleDefinition,
   CharacterStyleScore,
 } from '../lib/styleEngine';
+import { getScoreColor } from '@/lib/scoreColors';
 
 // ============================================================================
 // Types
@@ -56,28 +57,21 @@ type FilterBy = 'all' | 'needsAttention' | 'consistent';
 // Constants
 // ============================================================================
 
-const SCORE_THRESHOLDS = {
-  excellent: 90,
-  good: 70,
-  fair: 50,
-  poor: 0,
-};
+const CAST_SCORE_COLORS = [
+  { min: 90, value: 'text-green-400 bg-green-500/20 border-green-500/30' },
+  { min: 70, value: 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30' },
+  { min: 50, value: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30' },
+  { min: 0, value: 'text-red-400 bg-red-500/20 border-red-500/30' },
+] as const;
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
-function getScoreColor(score: number): string {
-  if (score >= SCORE_THRESHOLDS.excellent) return 'text-green-400 bg-green-500/20 border-green-500/30';
-  if (score >= SCORE_THRESHOLDS.good) return 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30';
-  if (score >= SCORE_THRESHOLDS.fair) return 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30';
-  return 'text-red-400 bg-red-500/20 border-red-500/30';
-}
-
 function getScoreLabel(score: number): string {
-  if (score >= SCORE_THRESHOLDS.excellent) return 'Excellent';
-  if (score >= SCORE_THRESHOLDS.good) return 'Good';
-  if (score >= SCORE_THRESHOLDS.fair) return 'Fair';
+  if (score >= 90) return 'Excellent';
+  if (score >= 70) return 'Good';
+  if (score >= 50) return 'Fair';
   return 'Needs Work';
 }
 
@@ -157,7 +151,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
         {/* Score */}
         <div className={cn(
           'flex items-center gap-2 px-2 py-1 rounded border',
-          getScoreColor(consistencyScore)
+          getScoreColor(consistencyScore, CAST_SCORE_COLORS)
         )}>
           {needsRegeneration ? (
             <AlertTriangle size={14} />
@@ -218,7 +212,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
       {/* Score Badge */}
       <div className={cn(
         'absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded text-sm font-mono border',
-        getScoreColor(consistencyScore)
+        getScoreColor(consistencyScore, CAST_SCORE_COLORS)
       )}>
         {needsRegeneration ? (
           <AlertTriangle size={10} />
@@ -382,7 +376,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           </div>
           <div className={cn(
             'px-1.5 py-0.5 rounded text-sm font-mono border',
-            getScoreColor(stats.avgScore)
+            getScoreColor(stats.avgScore, CAST_SCORE_COLORS)
           )}>
             {stats.avgScore}%
           </div>
@@ -467,7 +461,7 @@ const CastPreview: React.FC<CastPreviewProps> = ({
           <span className="font-mono text-sm text-slate-400 uppercase">avg_score</span>
           <span className={cn(
             'px-1.5 py-0.5 rounded text-sm font-mono border',
-            getScoreColor(stats.avgScore)
+            getScoreColor(stats.avgScore, CAST_SCORE_COLORS)
           )}>
             {stats.avgScore}%
           </span>

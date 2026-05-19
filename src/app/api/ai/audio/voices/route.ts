@@ -7,7 +7,8 @@
  * Responses are cached for 5 minutes.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,8 +28,7 @@ interface ElevenLabsVoicesResponse {
 
 // ── Route Handler ────────────────────────────────────────────────────────────
 
-export async function GET() {
-  try {
+export const GET = withApiHandler('GET /api/ai/audio/voices', async (request: NextRequest) => {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -104,11 +104,4 @@ export async function GET() {
         },
       },
     );
-  } catch (error) {
-    console.error('Voices list error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to list voices' },
-      { status: 500 },
-    );
-  }
-}
+});

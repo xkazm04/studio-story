@@ -1,3 +1,14 @@
+export interface SceneMetadata {
+  timeOfDay?: 'dawn' | 'morning' | 'noon' | 'afternoon' | 'evening' | 'night' | 'midnight';
+  weather?: 'clear' | 'cloudy' | 'rainy' | 'stormy' | 'snowy' | 'foggy' | 'windy';
+  season?: 'spring' | 'summer' | 'autumn' | 'winter';
+  mood?: string;
+  temperature?: 'freezing' | 'cold' | 'cool' | 'mild' | 'warm' | 'hot';
+  lighting?: string;
+  soundscape?: string;
+  customNotes?: string;
+}
+
 export interface Scene {
   id: string;
   name: string;
@@ -19,6 +30,7 @@ export interface Scene {
   speaker?: string;
   speaker_type?: 'character' | 'narrator' | 'system';
   version?: number;
+  metadata?: SceneMetadata;
 }
 
 export interface SceneCreateInput {
@@ -46,5 +58,6 @@ export interface SceneUpdateInput {
   speaker?: string;
   speaker_type?: 'character' | 'narrator' | 'system';
   version?: number;
+  metadata?: SceneMetadata;
 }
 

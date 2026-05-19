@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/app/utils/logger';
 
 /**
  * HTTP Status Code Constants
@@ -35,57 +36,44 @@ export const API_CONSTANTS = {
 } as const;
 
 /**
- * Standard error response structure
+ * Standardized API response envelope.
+ * All routes wrapped with withApiHandler return this shape.
  */
-interface ErrorResponse {
-  error: string;
-  message?: string;
-  details?: unknown;
+export interface ApiEnvelope<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+    details?: unknown;
+  };
 }
 
 /**
- * Logger utility (can be extended with proper logging service)
+ * Creates a standardized success response wrapped in the API envelope.
  */
-export const logger = {
-  error: (context: string, error: unknown, additionalInfo?: Record<string, unknown>) => {
-    // In production, this should use a proper logging service
-    // For now, we'll use a structured approach instead of console.error
-    if (process.env.NODE_ENV === 'development') {
-      console.error(`[ERROR] ${context}:`, error, additionalInfo || '');
-    }
-    // TODO: Add proper logging service integration (e.g., Sentry, DataDog)
-  },
-
-  warn: (context: string, message: string, additionalInfo?: Record<string, unknown>) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(`[WARN] ${context}:`, message, additionalInfo || '');
-    }
-  },
-
-  info: (context: string, message: string, additionalInfo?: Record<string, unknown>) => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[INFO] ${context}:`, message, additionalInfo || '');
-    }
-  },
-};
+export function successResponse<T>(data: T, status = HTTP_STATUS.OK): NextResponse<ApiEnvelope<T>> {
+  return NextResponse.json({ success: true, data }, { status });
+}
 
 /**
- * Creates a standardized error response
+ * Creates a standardized error response wrapped in the API envelope.
  */
 export function createErrorResponse(
-  error: string,
+  code: string,
   status: number,
   message?: string,
   details?: unknown
-): NextResponse<ErrorResponse> {
-  const responseBody: ErrorResponse = { error };
-  if (message) {
-    responseBody.message = message;
-  }
-  if (details) {
-    responseBody.details = details;
-  }
-  return NextResponse.json(responseBody, { status });
+): NextResponse<ApiEnvelope<never>> {
+  const envelope: ApiEnvelope<never> = {
+    success: false,
+    error: {
+      code,
+      message: message || code,
+      ...(details !== undefined && { details }),
+    },
+  };
+  return NextResponse.json(envelope, { status });
 }
 
 /**
@@ -96,7 +84,7 @@ export function handleDatabaseError(
   operation: string,
   error: unknown,
   context?: string
-): NextResponse<ErrorResponse> {
+): NextResponse<ApiEnvelope<never>> {
   const contextStr = context ? `${context} - ${operation}` : operation;
   logger.error(contextStr, error);
 
@@ -119,7 +107,7 @@ export function handleDatabaseError(
 export function handleUnexpectedError(
   endpoint: string,
   error: unknown
-): NextResponse<ErrorResponse> {
+): NextResponse<ApiEnvelope<never>> {
   logger.error(`Unexpected error in ${endpoint}`, error);
 
   return createErrorResponse(
@@ -135,7 +123,7 @@ export function handleUnexpectedError(
 export function validateRequiredParams(
   params: Record<string, unknown>,
   required: string[]
-): NextResponse<ErrorResponse> | null {
+): NextResponse<ApiEnvelope<never>> | null {
   const missing = required.filter(param => !params[param]);
 
   if (missing.length > 0) {
@@ -150,18 +138,103 @@ export function validateRequiredParams(
 }
 
 /**
- * Wrapper for try-catch blocks in API routes
+ * Wraps a JSON NextResponse in the standardized API envelope.
+ *
+ * - Success (2xx): `{ success: true, data: <original body> }`
+ * - Error (4xx/5xx): `{ success: false, error: { code, message, details? } }`
+ * - Non-JSON or already-enveloped responses pass through unchanged.
  */
-export async function apiHandler<T>(
-  endpoint: string,
-  handler: () => Promise<NextResponse<T>>
-): Promise<NextResponse<T | ErrorResponse>> {
-  try {
-    return await handler();
-  } catch (error) {
-    return handleUnexpectedError(endpoint, error);
+async function wrapInEnvelope(response: NextResponse): Promise<NextResponse> {
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    return response;
   }
+
+  let body: unknown;
+  try {
+    body = await response.clone().json();
+  } catch {
+    return response;
+  }
+
+  // Already in envelope format — pass through
+  if (body && typeof body === 'object' && !Array.isArray(body) && 'success' in (body as Record<string, unknown>)) {
+    return response;
+  }
+
+  const status = response.status;
+
+  if (status >= 200 && status < 300) {
+    return NextResponse.json({ success: true, data: body }, { status });
+  }
+
+  // Transform legacy error shape into envelope
+  const err = body as Record<string, unknown> | null;
+  return NextResponse.json({
+    success: false,
+    error: {
+      code: String(err?.error || `HTTP_${status}`),
+      message: String(err?.message || err?.error || 'Request failed'),
+      ...(err?.details !== undefined && { details: err.details }),
+    },
+  }, { status });
 }
+
+/**
+ * Wraps a Next.js API route handler with:
+ * 1. Standardized error catching and logging
+ * 2. Automatic API envelope wrapping (`{ success, data?, error? }`)
+ *
+ * The handler is a normal async function that either returns a NextResponse or
+ * throws.  The wrapper catches any thrown error, logs it via `logger.apiError`
+ * with structured context (method, URL), and returns an envelope JSON error
+ * response.
+ *
+ * Works for both collection routes and dynamic `[id]` routes — the generic
+ * signature preserves the original handler's parameter types so Next.js type
+ * checking is unaffected.
+ *
+ * @example
+ * // Collection route
+ * export const GET = withApiHandler('GET /api/acts', async (request) => {
+ *   const data = await fetchActs(request);
+ *   return NextResponse.json(data);
+ * });
+ *
+ * // Dynamic route
+ * export const GET = withApiHandler('GET /api/acts/[id]', async (request, ctx) => {
+ *   const { id } = await ctx.params;
+ *   return NextResponse.json(await fetchAct(id));
+ * });
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function withApiHandler<T extends (request: NextRequest, ...rest: any[]) => Promise<NextResponse>>(
+  endpoint: string,
+  handler: T,
+): T {
+  const wrapped = async (...args: Parameters<T>): Promise<NextResponse> => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await (handler as any)(...args);
+      return wrapInEnvelope(response);
+    } catch (error) {
+      const request = args[0] as NextRequest;
+      logger.apiError(endpoint, error, {
+        method: request.method,
+        url: request.url,
+      });
+      return createErrorResponse(
+        'INTERNAL_SERVER_ERROR',
+        HTTP_STATUS.INTERNAL_SERVER_ERROR,
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+      );
+    }
+  };
+  return wrapped as T;
+}
+
+/** Alias — use whichever name reads better at the call-site. */
+export const withApiResponse = withApiHandler;
 
 /**
  * Type definitions for common API contexts

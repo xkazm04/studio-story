@@ -21,6 +21,7 @@ import {
 import { Button } from '@/app/components/UI/Button';
 import { Label } from '@/app/components/UI/Label';
 import { ImageUploadArea } from './ImageUploadArea';
+import { extractData } from '@/app/utils/api';
 
 // ============================================================================
 // Extraction stage types
@@ -336,15 +337,15 @@ export function ArtStyleExtractor({
               throw new Error(data.error || 'Failed to extract art style');
             }
 
-            const data = await response.json();
+            const data = extractData<Record<string, unknown>>(await response.json());
             const result: ExtractionResult = {
-              prompt: data.prompt || '',
-              technique: data.technique,
-              colorPalette: data.colorPalette,
-              mood: data.mood,
-              lighting: data.lighting,
-              detailLevel: data.detailLevel,
-              influences: data.influences,
+              prompt: (data.prompt as string) || '',
+              technique: data.technique as string | undefined,
+              colorPalette: data.colorPalette as string[] | undefined,
+              mood: data.mood as string | undefined,
+              lighting: data.lighting as string | undefined,
+              detailLevel: data.detailLevel as string | undefined,
+              influences: data.influences as string[] | undefined,
             };
 
             // Stop timers and store result, then reveal stages progressively

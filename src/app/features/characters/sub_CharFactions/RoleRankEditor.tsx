@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Save, X, Shield, TrendingUp, Crown, GitBranch, ChevronDown, ChevronUp } from 'lucide-react';
 import { Character, FACTION_ROLES, FactionRole } from '@/app/types/Character';
 import { characterApi } from '@/app/api/characters';
-import { HierarchyRole, FactionHierarchy } from '@/lib/hierarchy/HierarchyEngine';
+import { HierarchyRole, HierarchyNode, FactionHierarchy } from '@/lib/hierarchy/HierarchyEngine';
 import { cn } from '@/app/lib/utils';
 
 interface RoleRankEditorProps {
@@ -14,6 +14,8 @@ interface RoleRankEditorProps {
   onUpdate: () => void;
   /** Optional: Hierarchy roles for this faction (enables hierarchy-aware mode) */
   hierarchyRoles?: HierarchyRole[];
+  /** Optional: Hierarchy nodes — used to resolve node binding when a hierarchy role is selected */
+  hierarchyNodes?: HierarchyNode[];
   /** Optional: Auto-calculate rank from hierarchy level */
   autoRankFromHierarchy?: boolean;
 }
@@ -23,6 +25,7 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
   onClose,
   onUpdate,
   hierarchyRoles = [],
+  hierarchyNodes = [],
   autoRankFromHierarchy = true,
 }) => {
   const hasHierarchy = hierarchyRoles.length > 0;
@@ -79,9 +82,21 @@ const RoleRankEditor: React.FC<RoleRankEditorProps> = ({
         roleToSave = factionRole === 'Custom' ? customRole : factionRole;
       }
 
+      // Resolve hierarchy node ID when in hierarchy mode
+      let hierarchyNodeId: string | null = null;
+      if (useHierarchyMode && selectedHierarchyRole && hierarchyNodes.length > 0) {
+        // Find a node with this role that is either already bound to this character or vacant
+        const matchingNode = hierarchyNodes.find(
+          (n) => n.role_id === selectedHierarchyRole &&
+            (n.character_id === character.id || n.is_vacant)
+        );
+        hierarchyNodeId = matchingNode?.id ?? null;
+      }
+
       await characterApi.updateCharacter(character.id, {
         faction_role: roleToSave || undefined,
         faction_rank: factionRank,
+        faction_hierarchy_node_id: hierarchyNodeId,
       });
 
       onUpdate();

@@ -19,7 +19,7 @@ export interface DialogueLine {
   speakerType: 'character' | 'narrator' | 'system';
   text: string;
   emotion?: string;
-  direction?: string; // Stage direction like "(whispered)" or "(shouting)"
+  stageDirection?: string; // Parenthetical acting cue like "(whispered)" or "(shouting)"
   order: number;
 }
 
@@ -70,14 +70,14 @@ export interface DialogueGeneratorOptions {
   silenceBetweenLines?: number; // ms
   silenceBetweenParagraphs?: number; // ms
   preserveEmotions?: boolean;
-  parseDirections?: boolean;
+  parseStageDirections?: boolean;
 }
 
 const DEFAULT_OPTIONS: DialogueGeneratorOptions = {
   silenceBetweenLines: 500,
   silenceBetweenParagraphs: 1000,
   preserveEmotions: true,
-  parseDirections: true,
+  parseStageDirections: true,
 };
 
 /**
@@ -183,8 +183,8 @@ class DialogueGenerator {
         const speakerName = speakerRaw.trim();
         const character = characterLookup.get(speakerName.toLowerCase());
 
-        // Parse direction like "(whispered)"
-        const { cleanText, direction, emotion } = this.parseDirection(text);
+        // Parse stage direction like "(whispered)"
+        const { cleanText, stageDirection, emotion } = this.parseStageDirection(text);
 
         lines.push({
           id: `line_${scene.id}_${order}`,
@@ -192,7 +192,7 @@ class DialogueGenerator {
           speakerName: character?.name || speakerName,
           speakerType: character ? 'character' : 'narrator',
           text: cleanText,
-          direction,
+          stageDirection,
           emotion,
           order: order++,
         });
@@ -206,7 +206,7 @@ class DialogueGenerator {
         const speakerName = speakerRaw?.trim() || 'Narrator';
         const character = speakerRaw ? characterLookup.get(speakerName.toLowerCase()) : undefined;
 
-        const { cleanText, direction, emotion } = this.parseDirection(text);
+        const { cleanText, stageDirection, emotion } = this.parseStageDirection(text);
 
         lines.push({
           id: `line_${scene.id}_${order}`,
@@ -214,7 +214,7 @@ class DialogueGenerator {
           speakerName: character?.name || speakerName,
           speakerType: character ? 'character' : 'narrator',
           text: cleanText,
-          direction,
+          stageDirection,
           emotion,
           order: order++,
         });
@@ -224,7 +224,7 @@ class DialogueGenerator {
       // Pattern 3: Use scene's speaker info if available
       if (scene.speaker && scene.message) {
         const character = characterLookup.get(scene.speaker.toLowerCase());
-        const { cleanText, direction, emotion } = this.parseDirection(scene.message);
+        const { cleanText, stageDirection, emotion } = this.parseStageDirection(scene.message);
 
         lines.push({
           id: `line_${scene.id}_${order}`,
@@ -232,7 +232,7 @@ class DialogueGenerator {
           speakerName: character?.name || scene.speaker,
           speakerType: scene.speaker_type || (character ? 'character' : 'narrator'),
           text: cleanText,
-          direction,
+          stageDirection,
           emotion,
           order: order++,
         });
@@ -240,14 +240,14 @@ class DialogueGenerator {
       }
 
       // Default: Treat as narrator text
-      const { cleanText, direction, emotion } = this.parseDirection(trimmed);
+      const { cleanText, stageDirection, emotion } = this.parseStageDirection(trimmed);
       lines.push({
         id: `line_${scene.id}_${order}`,
         speakerId: 'narrator',
         speakerName: 'Narrator',
         speakerType: 'narrator',
         text: cleanText,
-        direction,
+        stageDirection,
         emotion,
         order: order++,
       });
@@ -259,23 +259,23 @@ class DialogueGenerator {
   /**
    * Parse stage directions from text
    */
-  private parseDirection(text: string): {
+  private parseStageDirection(text: string): {
     cleanText: string;
-    direction?: string;
+    stageDirection?: string;
     emotion?: string;
   } {
-    if (!this.options.parseDirections) {
+    if (!this.options.parseStageDirections) {
       return { cleanText: text };
     }
 
-    // Extract parenthetical directions like "(whispered)" or "(angrily)"
-    const directionMatch = text.match(/\(([^)]+)\)/);
-    const direction = directionMatch?.[1];
+    // Extract parenthetical stage directions like "(whispered)" or "(angrily)"
+    const cueMatch = text.match(/\(([^)]+)\)/);
+    const stageDirection = cueMatch?.[1];
     const cleanText = text.replace(/\([^)]+\)/g, '').trim();
 
-    // Infer emotion from direction
+    // Infer emotion from stage direction
     let emotion: string | undefined;
-    if (direction) {
+    if (stageDirection) {
       const emotionKeywords: Record<string, string> = {
         whispered: 'soft',
         shouted: 'angry',
@@ -289,7 +289,7 @@ class DialogueGenerator {
         nervously: 'anxious',
         excitedly: 'excited',
       };
-      const lower = direction.toLowerCase();
+      const lower = stageDirection.toLowerCase();
       for (const [keyword, emo] of Object.entries(emotionKeywords)) {
         if (lower.includes(keyword)) {
           emotion = emo;
@@ -298,7 +298,7 @@ class DialogueGenerator {
       }
     }
 
-    return { cleanText, direction, emotion };
+    return { cleanText, stageDirection, emotion };
   }
 
   /**

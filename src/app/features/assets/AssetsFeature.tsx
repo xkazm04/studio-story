@@ -6,6 +6,7 @@ import { Upload, FolderOpen, Search } from 'lucide-react';
 import { UploaderPanel, VisualSearch } from './components/uploader';
 import { ManagerPanel } from './components/manager';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { extractData } from '@/app/utils/api';
 import type { PaginatedAsset } from '@/app/types/Asset';
 
 type AssetTab = 'uploader' | 'manager' | 'search';
@@ -41,7 +42,7 @@ const AssetsFeature = () => {
     queryFn: async ({ pageParam = 1 }) => {
       const response = await fetch(`/api/assets?page=${pageParam}&limit=100`);
       if (!response.ok) throw new Error('Failed to fetch assets');
-      return response.json();
+      return extractData<PaginatedAsset>(await response.json());
     },
     getNextPageParam: (lastPage) =>
       lastPage.current_page < lastPage.total_pages

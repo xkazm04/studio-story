@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGeminiProvider, parseJsonFromGeminiResponse } from '@/app/lib/ai';
 import { fetchImageAsDataUrl } from '@/app/lib/ai/image-utils';
+import { withApiHandler } from '@/app/utils/apiErrorHandling';
 
 const EXTRACTION_PROMPTS: Record<string, string> = {
   character: `Analyze this image and extract character information. Return JSON only:
@@ -39,8 +40,7 @@ const EXTRACTION_PROMPTS: Record<string, string> = {
 }`,
 };
 
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withApiHandler('POST /api/image-extraction/gemini', async (request: NextRequest) => {
     const body = await request.json();
     const { imageUrl, type = 'general' } = body;
 
@@ -79,11 +79,4 @@ export async function POST(request: NextRequest) {
       data: parsed,
       extractionType: type,
     });
-  } catch (error) {
-    console.error('Image extraction error:', error);
-    return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+});

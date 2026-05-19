@@ -35,6 +35,21 @@ import {
   type SketchMode,
   type MoodOption,
 } from '../lib/sketchGeneration';
+import type { SceneMetadata } from '@/app/types/Scene';
+import { extractData } from '@/app/utils/api';
+
+/** Build an atmosphere prompt fragment from scene metadata */
+function buildAtmospherePrompt(meta?: SceneMetadata): string | undefined {
+  if (!meta) return undefined;
+  const parts: string[] = [];
+  if (meta.timeOfDay) parts.push(`Time: ${meta.timeOfDay}`);
+  if (meta.weather) parts.push(`Weather: ${meta.weather}`);
+  if (meta.season) parts.push(`Season: ${meta.season}`);
+  if (meta.temperature) parts.push(`Temperature: ${meta.temperature}`);
+  if (meta.lighting) parts.push(`Lighting: ${meta.lighting}`);
+  if (meta.mood) parts.push(`Mood: ${meta.mood}`);
+  return parts.length > 0 ? parts.join(', ') : undefined;
+}
 
 interface SceneSketchPanelProps {
   /** Story content for generating image description */
@@ -45,6 +60,8 @@ interface SceneSketchPanelProps {
   imagePrompt: string | null;
   /** Art style prompt to apply */
   artStylePrompt?: string;
+  /** Scene metadata for atmosphere enrichment */
+  sceneMetadata?: SceneMetadata;
   /** Callback when image is selected */
   onImageSelect: (imageUrl: string, prompt: string) => void;
   /** Callback when image is removed */
@@ -71,10 +88,12 @@ export function SceneSketchPanel({
   imageUrl,
   imagePrompt,
   artStylePrompt = '',
+  sceneMetadata,
   onImageSelect,
   onRemoveImage,
   isSaving,
 }: SceneSketchPanelProps) {
+  const atmospherePrompt = useMemo(() => buildAtmospherePrompt(sceneMetadata), [sceneMetadata]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // State
@@ -145,11 +164,11 @@ export function SceneSketchPanel({
           throw new Error(data.error || 'Failed to extract scene description');
         }
 
-        const data = await response.json();
+        const data = extractData<Record<string, unknown>>(await response.json());
 
         // Populate custom prompt with extracted description
         if (data.breakdown) {
-          const truncated = data.breakdown.slice(0, MAX_PROMPT_LENGTH);
+          const truncated = (data.breakdown as string).slice(0, MAX_PROMPT_LENGTH);
           setCustomPrompt(truncated);
           setSketchMode('custom');
         }
@@ -188,10 +207,10 @@ export function SceneSketchPanel({
         throw new Error(data.error || 'Failed to extract scene description');
       }
 
-      const data = await response.json();
+      const data = extractData<Record<string, unknown>>(await response.json());
 
       if (data.breakdown) {
-        const truncated = data.breakdown.slice(0, MAX_PROMPT_LENGTH);
+        const truncated = (data.breakdown as string).slice(0, MAX_PROMPT_LENGTH);
         setCustomPrompt(truncated);
         setSketchMode('custom');
       }
@@ -240,13 +259,14 @@ export function SceneSketchPanel({
 
     try {
       // Step 1: Generate image prompt from custom description
+      const combinedMood = [selectedMood?.prompt, atmospherePrompt].filter(Boolean).join('. ');
       const promptResponse = await fetch('/api/ai/scene-prompt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contentDescription: customPrompt.trim(),
           artStylePrompt: artStylePrompt || undefined,
-          moodPrompt: selectedMood?.prompt || undefined,
+          moodPrompt: combinedMood || undefined,
         }),
       });
 
@@ -255,8 +275,8 @@ export function SceneSketchPanel({
         throw new Error(errorData.error || 'Failed to generate image prompt');
       }
 
-      const promptData = await promptResponse.json();
-      const imagePromptText = promptData.prompt;
+      const promptData = extractData<Record<string, unknown>>(await promptResponse.json());
+      const imagePromptText = promptData.prompt as string;
 
       if (!imagePromptText) {
         throw new Error('No image prompt generated');
@@ -274,8 +294,8 @@ export function SceneSketchPanel({
         throw new Error(errorData.error || 'Failed to generate variations');
       }
 
-      const variationData = await variationResponse.json();
-      const variations = variationData.variations || [
+      const variationData = extractData<Record<string, unknown>>(await variationResponse.json());
+      const variations = (variationData.variations as Array<{ variation: string }>) || [
         { variation: imagePromptText },
       ];
 
@@ -300,8 +320,8 @@ export function SceneSketchPanel({
             return null;
           }
 
-          const data = await response.json();
-          const image = data.images?.[0];
+          const data = extractData<Record<string, unknown>>(await response.json());
+          const image = (data.images as Array<Record<string, unknown>>)?.[0];
           return image
             ? ({
                 ...image,
@@ -332,7 +352,7 @@ export function SceneSketchPanel({
     } finally {
       setIsGenerating(false);
     }
-  }, [customPrompt, isCustomPromptValid, artStylePrompt, selectedMood]);
+  }, [customPrompt, isCustomPromptValid, artStylePrompt, selectedMood, atmospherePrompt]);
 
   /**
    * Generate sketches from narrative (simplified - uses story content directly)
@@ -347,13 +367,14 @@ export function SceneSketchPanel({
 
     try {
       // Generate image prompt from story content
+      const narrativeMood = [selectedMood?.prompt, atmospherePrompt].filter(Boolean).join('. ');
       const promptResponse = await fetch('/api/ai/scene-prompt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contentDescription: storyContent.trim().slice(0, MAX_PROMPT_LENGTH),
           artStylePrompt: artStylePrompt || undefined,
-          moodPrompt: selectedMood?.prompt || undefined,
+          moodPrompt: narrativeMood || undefined,
         }),
       });
 
@@ -362,8 +383,8 @@ export function SceneSketchPanel({
         throw new Error(errorData.error || 'Failed to generate image prompt');
       }
 
-      const promptData = await promptResponse.json();
-      const imagePromptText = promptData.prompt;
+      const promptData = extractData<Record<string, unknown>>(await promptResponse.json());
+      const imagePromptText = promptData.prompt as string;
 
       if (!imagePromptText) {
         throw new Error('No image prompt generated');
@@ -381,8 +402,8 @@ export function SceneSketchPanel({
         throw new Error(errorData.error || 'Failed to generate variations');
       }
 
-      const variationData = await variationResponse.json();
-      const variations = variationData.variations || [
+      const variationData = extractData<Record<string, unknown>>(await variationResponse.json());
+      const variations = (variationData.variations as Array<{ variation: string }>) || [
         { variation: imagePromptText },
       ];
 
@@ -407,8 +428,8 @@ export function SceneSketchPanel({
             return null;
           }
 
-          const data = await response.json();
-          const image = data.images?.[0];
+          const data = extractData<Record<string, unknown>>(await response.json());
+          const image = (data.images as Array<Record<string, unknown>>)?.[0];
           return image
             ? ({
                 ...image,
@@ -439,7 +460,7 @@ export function SceneSketchPanel({
     } finally {
       setIsGenerating(false);
     }
-  }, [storyContent, hasStoryContent, artStylePrompt, selectedMood]);
+  }, [storyContent, hasStoryContent, artStylePrompt, selectedMood, atmospherePrompt]);
 
   // Select and use a sketch
   const handleUseSketch = useCallback(() => {
@@ -493,7 +514,7 @@ export function SceneSketchPanel({
               </Button>
             </div>
 
-            <div className="relative rounded-lg overflow-hidden border-2 border-slate-700 bg-slate-800">
+            <div className="relative rounded-lg overflow-hidden border-2 border-slate-700/60 bg-slate-800">
               <div className="aspect-[16/9]">
                 <img
                   src={imageUrl}
@@ -521,10 +542,10 @@ export function SceneSketchPanel({
               onClick={() => setSketchMode('custom')}
               disabled={isGenerating || isExtracting}
               className={cn(
-                'flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all',
+                'flex items-center justify-center gap-1.5 p-3 text-sm font-medium rounded-lg transition-all',
                 sketchMode === 'custom'
-                  ? 'bg-cyan-600 text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700 border border-slate-700'
+                  ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+                  : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800/80 border border-slate-700/40'
               )}
             >
               <Pencil className="w-3.5 h-3.5" />
@@ -534,10 +555,10 @@ export function SceneSketchPanel({
               onClick={() => setSketchMode('narrative')}
               disabled={isGenerating || isExtracting}
               className={cn(
-                'flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all',
+                'flex items-center justify-center gap-1.5 p-3 text-sm font-medium rounded-lg transition-all',
                 sketchMode === 'narrative'
-                  ? 'bg-cyan-600 text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700 border border-slate-700'
+                  ? 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+                  : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800/80 border border-slate-700/40'
               )}
             >
               <BookOpen className="w-3.5 h-3.5" />
@@ -567,7 +588,7 @@ export function SceneSketchPanel({
                 </button>
 
                 {extractorExpanded && (
-                  <div className="space-y-2 p-2 bg-slate-800/50 rounded-lg border border-slate-700">
+                  <div className="space-y-2 p-2 bg-slate-800/50 rounded-lg border border-slate-700/40">
                     {!uploadedImageUrl ? (
                       <>
                         <div
@@ -619,7 +640,7 @@ export function SceneSketchPanel({
                       </>
                     ) : (
                       <div className="space-y-2">
-                        <div className="relative rounded-lg border border-slate-700 overflow-hidden">
+                        <div className="relative rounded-lg border border-slate-700/40 overflow-hidden">
                           <img
                             src={uploadedImageUrl}
                             alt="Source for extraction"
@@ -694,7 +715,7 @@ export function SceneSketchPanel({
                       ? 'border-red-500'
                       : isCustomPromptTooShort
                         ? 'border-amber-500'
-                        : 'border-slate-700'
+                        : 'border-slate-700/40'
                   )}
                 />
                 {isCustomPromptTooShort && (
@@ -709,7 +730,7 @@ export function SceneSketchPanel({
 
           {/* Narrative Mode */}
           {sketchMode === 'narrative' && (
-            <div className="space-y-2 p-3 bg-slate-800/30 rounded-lg border border-slate-700">
+            <div className="space-y-2 p-3 bg-slate-800/30 rounded-lg border border-slate-700/40">
               <div className="flex items-center gap-2 text-sm text-slate-400">
                 <BookOpen className="w-4 h-4" />
                 <span className="font-medium">Auto-generate from story</span>
@@ -755,7 +776,7 @@ export function SceneSketchPanel({
             </button>
 
             {moodExpanded && (
-              <div className="grid grid-cols-2 gap-1.5 p-2 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div className="grid grid-cols-2 gap-1.5 p-2 bg-slate-800/50 rounded-lg border border-slate-700/40">
                 {MOOD_OPTIONS.map((mood) => {
                   const isSelected = selectedMood?.id === mood.id;
                   return (
@@ -769,7 +790,7 @@ export function SceneSketchPanel({
                         'flex items-center gap-1.5 px-2 py-1.5 text-sm rounded-md transition-all',
                         isSelected
                           ? 'bg-cyan-600 text-white'
-                          : 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-cyan-500/50'
+                          : 'bg-slate-800 border border-slate-700/40 text-slate-300 hover:border-cyan-500/50'
                       )}
                     >
                       <span>{mood.icon}</span>
@@ -850,7 +871,7 @@ export function SceneSketchPanel({
                     'relative rounded-lg overflow-hidden border-2 transition-all',
                     isSelected
                       ? 'border-cyan-500 ring-2 ring-cyan-500/30'
-                      : 'border-slate-700 hover:border-cyan-500/50'
+                      : 'border-slate-700/40 hover:border-cyan-500/50'
                   )}
                 >
                   <div className="aspect-[16/9]">

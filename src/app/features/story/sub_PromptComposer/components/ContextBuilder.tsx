@@ -9,6 +9,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCopyToClipboard } from '@/app/hooks/useCopyToClipboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -22,7 +23,6 @@ import {
   GripVertical,
   X,
   Plus,
-  Search,
   Filter,
   Copy,
   Check,
@@ -36,6 +36,7 @@ import {
 import { cn } from '@/lib/utils';
 import { TYPOGRAPHY, SEMANTIC_COLORS, FM_VARIANTS, FM_TRANSITION } from '@/workspace/theme/tokens';
 import { Button } from '@/app/components/UI/Button';
+import { SearchInput } from '@/app/components/UI/SearchInput';
 import { TokenBudget } from './TokenBudget';
 import {
   relevanceScorer,
@@ -251,7 +252,7 @@ export function ContextBuilder({
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<ContextType | 'all'>('all');
   const [showPreview, setShowPreview] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const { copy: copyToClipboard, copied } = useCopyToClipboard();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showSelectionControls, setShowSelectionControls] = useState(false);
   const [diffStats, setDiffStats] = useState<DiffStats | null>(null);
@@ -295,8 +296,8 @@ export function ContextBuilder({
   }, [scoredElements, selectedIds]);
 
   // Compress selected context (with optional differential mode)
-  const compressedContext = useMemo(() => {
-    if (selectedElements.length === 0) return null;
+  const { compressedContext, computedDiffStats } = useMemo(() => {
+    if (selectedElements.length === 0) return { compressedContext: null, computedDiffStats: null };
 
     const selectedContextElements = selectedElements.map(s => s.element);
 
@@ -307,20 +308,26 @@ export function ContextBuilder({
         compressionLevel,
         scoringConfig,
       });
-      setDiffStats(diffResult.stats);
-      return diffResult.compressed;
+      return { compressedContext: diffResult.compressed, computedDiffStats: diffResult.stats };
     }
 
     // Batch mode: standard full compression
-    setDiffStats(null);
-    return contextCompressor.compress(selectedContextElements, {
-      tokenBudget: budget,
-      compressionLevel,
-      preserveNames: true,
-      preserveRelationships: true,
-      scoringConfig,
-    });
+    return {
+      compressedContext: contextCompressor.compress(selectedContextElements, {
+        tokenBudget: budget,
+        compressionLevel,
+        preserveNames: true,
+        preserveRelationships: true,
+        scoringConfig,
+      }),
+      computedDiffStats: null,
+    };
   }, [selectedElements, budget, compressionLevel, scoringConfig, diffEnabled, sessionId]);
+
+  // Sync diffStats state from the pure computation above
+  useEffect(() => {
+    setDiffStats(computedDiffStats);
+  }, [computedDiffStats]);
 
   // Calculate current usage
   const usage: BudgetUsage = useMemo(() => {
@@ -402,11 +409,9 @@ export function ContextBuilder({
 
   const copyContext = useCallback(async () => {
     if (compressedContext) {
-      await navigator.clipboard.writeText(compressedContext.content);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await copyToClipboard(compressedContext.content);
     }
-  }, [compressedContext]);
+  }, [compressedContext, copyToClipboard]);
 
   // Available types
   const availableTypes = useMemo(() => {
@@ -427,21 +432,12 @@ export function ContextBuilder({
         />
 
         {/* Search — always visible */}
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search context..."
-            className={cn(
-              'w-full pl-8 pr-3 py-1.5 text-sm rounded-md',
-              'bg-slate-900/50 border border-slate-700',
-              'text-slate-200 placeholder:text-slate-400',
-              'focus:outline-none focus:ring-1 focus:ring-purple-500/50'
-            )}
-          />
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search context..."
+          className="focus:ring-purple-500/50"
+        />
 
         {/* Disclosure toggles + count */}
         <div className="flex items-center gap-3">

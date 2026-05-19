@@ -6,6 +6,7 @@ import { Package, Grid3X3, LayoutList, Loader2, BarChart3, AlertTriangle, Folder
 import { EmptyState } from '@/app/components/UI';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
+import { extractData } from '@/app/utils/api';
 import { useAssetManagerStore } from '../../store/assetManagerStore';
 import { useAssetFiltersStore } from '../../store/assetFiltersStore';
 import { useOrphanDetection } from '@/lib/assets';
@@ -57,7 +58,7 @@ async function fetchAssets({
   if (!response.ok) {
     throw new Error('Failed to fetch assets');
   }
-  return response.json();
+  return extractData<PaginatedAsset>(await response.json());
 }
 
 export default function ManagerPanel({ className = '' }: ManagerPanelProps) {

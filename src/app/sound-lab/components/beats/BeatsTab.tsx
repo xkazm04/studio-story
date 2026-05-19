@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Grid3X3 } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
+import { extractData } from '@/app/utils/api';
 import { getBeatSynthesizer } from '../../lib/beatSynthesizer';
 import { getSamplePlayer } from '../../lib/samplePlayer';
 import { MOCK_BEAT_PATTERNS } from '../../data/mockAudioData';

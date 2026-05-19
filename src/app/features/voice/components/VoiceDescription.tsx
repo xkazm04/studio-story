@@ -62,7 +62,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
     <div className="bg-slate-950/50 p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-purple-400" />
+          <Sparkles className="w-4 h-4 text-voice-muted" />
           Voice Description
         </h4>
 
@@ -72,7 +72,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
               <button
                 onClick={handleEnhance}
                 disabled={cli.isRunning}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-900 text-purple-200 hover:bg-purple-800 transition-colors text-sm disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-voice-muted/20 text-voice-muted/80 hover:bg-voice-muted/30 transition-colors text-sm disabled:opacity-50"
               >
                 {cli.isRunning ? (
                   <>
@@ -111,7 +111,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors text-sm disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-voice-primary/80 text-white hover:bg-voice-primary transition-colors text-sm disabled:opacity-50"
               >
                 {isSaving ? (
                   <>
@@ -136,7 +136,7 @@ Write a 100-200 word voice description covering tone, pace, vocabulary, patterns
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe the voice characteristics, tone, and ideal use cases..."
-            className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-voice-muted focus:border-transparent resize-none"
             rows={6}
           />
         </motion.div>

@@ -404,6 +404,43 @@ export class TemplateManager {
     return template;
   }
 
+  /**
+   * Register a template with a specific stable ID. Returns existing template
+   * if one with this ID already exists. Used by integrations (e.g., brainstorm
+   * engine) to create persistent template entries for effectiveness tracking.
+   */
+  ensureTemplate(
+    id: string,
+    data: Omit<PromptTemplate, 'id' | 'versions' | 'currentVersion' | 'createdAt' | 'updatedAt' | 'metrics' | 'ratings' | 'forkCount' | 'featured'>
+  ): PromptTemplate {
+    const existing = this.templates.get(id);
+    if (existing) return existing;
+
+    const now = Date.now();
+    const template: PromptTemplate = {
+      ...data,
+      id,
+      versions: [{
+        version: 1,
+        content: data.content,
+        variables: data.variables,
+        createdAt: now,
+        changeNote: 'Initial version',
+      }],
+      currentVersion: 1,
+      createdAt: now,
+      updatedAt: now,
+      metrics: { ...DEFAULT_METRICS },
+      ratings: [],
+      forkCount: 0,
+      featured: false,
+    };
+
+    this.templates.set(id, template);
+    this.saveToStorage();
+    return template;
+  }
+
   getTemplate(id: string): PromptTemplate | undefined {
     return this.templates.get(id);
   }

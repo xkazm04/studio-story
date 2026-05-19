@@ -6,9 +6,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { McpConfig } from '../config.js';
 import { dbSelect, dbSelectOne, dbInsert, dbUpdate } from '../db.js';
-
-const textContent = (text: string) => ({ content: [{ type: 'text' as const, text }] });
-const errorContent = (text: string) => ({ content: [{ type: 'text' as const, text }], isError: true });
+import { textContent, errorContent } from './helpers.js';
 
 export function registerSceneTools(server: McpServer, config: McpConfig) {
   server.tool(
@@ -37,7 +35,7 @@ export function registerSceneTools(server: McpServer, config: McpConfig) {
 
   server.tool(
     'get_scene',
-    `Get full scene details. Returns: id, project_id, act_id, name, description, order, script, location, image_url, image_prompt, created_at, updated_at.`,
+    `Get full scene details. Returns: id, project_id, act_id, name, description, order, script, location, image_url, image_prompt, metadata (JSONB with timeOfDay, weather, season, mood, temperature, lighting, soundscape, customNotes), created_at, updated_at.`,
     {
       sceneId: z.string().describe('Scene UUID.'),
     },
@@ -76,10 +74,10 @@ export function registerSceneTools(server: McpServer, config: McpConfig) {
 
   server.tool(
     'update_scene',
-    `Update scene fields. Pass a JSON object with only the fields to change. Updatable columns: name, description, order, script (dialogue/screenplay text), location (setting like "INT. CASTLE - NIGHT"), image_url, image_prompt. Use "description" for narrative prose, "script" for screenplay format.`,
+    `Update scene fields. Pass a JSON object with only the fields to change. Updatable columns: name, description, order, script (dialogue/screenplay text), location (setting like "INT. CASTLE - NIGHT"), image_url, image_prompt, metadata (JSONB object with optional keys: timeOfDay, weather, season, mood, temperature, lighting, soundscape, customNotes). Use "description" for narrative prose, "script" for screenplay format.`,
     {
       sceneId: z.string().describe('Scene UUID to update.'),
-      updates: z.string().describe('JSON string of fields to update. Example: {"description":"A tense confrontation","script":"@scene\\nINT. CASTLE - NIGHT\\n\\n@dialogue[GUARD]\\nHalt! Who goes there?","location":"INT. CASTLE - NIGHT"}'),
+      updates: z.string().describe('JSON string of fields to update. Example: {"description":"A tense confrontation","script":"@scene\\nINT. CASTLE - NIGHT\\n\\n@dialogue[GUARD]\\nHalt! Who goes there?","location":"INT. CASTLE - NIGHT","metadata":{"timeOfDay":"night","weather":"stormy","mood":"tense"}}'),
     },
     async ({ sceneId, updates }) => {
       let parsed: Record<string, unknown>;
